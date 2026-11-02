@@ -1,0 +1,32 @@
+{
+  "level": "S1",
+  "manifest": "memory://runs/sync-tiny-ckpt@0.1.0/manifest.json",
+  "report": "memory://runs/sync-tiny-ckpt@0.1.0/report.html",
+  "metrics": [
+    {
+      "name": "checkpoint_duration_s",
+      "value": 0.0882793664932251
+    },
+    {
+      "name": "training_stall_s",
+      "value": 0.0882793664932251
+    },
+    {
+      "name": "restore_duration_s",
+      "value": 0.014803124591708183
+    },
+    {
+      "name": "write_throughput_bps",
+      "value": 760187421.657021
+    },
+    {
+      "name": "metadata_commit_ms",
+      "value": 2.3825280368328094
+    },
+    {
+      "name": "write_latency_p99_ms",
+      "value": 1.1387672275304794
+    }
+  ],
+  "slo": []
+}
