@@ -4,6 +4,7 @@
 
 ## Unreleased
 
+- 新增 [`playbook/ckpt-sample-interface.md`](playbook/ckpt-sample-interface.md)：checkpoint 样本的接口用 viba 写成 public / apis / types / configs 四个模块，`public` 只做转发；每个 SLI 指标是具名类型，SLO 判定用 `MetricLE` / `MetricGE` 泛型。
 - 仓库改为多项目结构：playbook 与 bench 的整体移入 `aisp/bench/`，以后 `aisp/tla/` 等与 `aisp/bench/` 并列；`aisp` 同时作为 Python 包名。仓库更名 `ai-infra-storage-playbook`。文档内的相对链接不变，schema 的 `$id` 改为 `.../ai-infra-storage-playbook/aisp/bench/schemas/`。
 - README 开头新增「它评什么」：用一张表列出 checkpoint / dataset / kvcache 每次运行记录的 SLI 指标。
 - 拆分 SLI 与 SLO：SLI 覆盖全部样本并全量留存，SLO 只判重保子集、阈值由部署方提供；新增 `schemas/sli.schema.json`、`schemas/slo.schema.json` 与 `examples/sli.json`。
