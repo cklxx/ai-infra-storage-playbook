@@ -15,6 +15,7 @@ Start = apis.Start
 Stop = apis.Stop
 Query = apis.Query
 Execute = apis.Execute
+GetLevel = apis.GetLevel
 RunSpec = types.RunSpec
 RunRecord = types.RunRecord
 Artifacts = types.Artifacts
@@ -26,6 +27,7 @@ SampleConfigBase = configs.SampleConfigBase
 ## apis
 
 ```bash
+import configs
 import types
 
 Start =
@@ -47,6 +49,11 @@ Execute =
     types.Artifacts
   <- $spec (types.RunSpec * { 同一份运行请求 })
   <- { 执行接口：同一份请求同步跑到结束，返回时四份产物已经写完。它由 Start 在后台触发；Start 只拿到标识与状态，拿不到产物本身 }
+
+GetLevel =
+    types.Level
+  <- $config (configs.SampleConfigBase * { 样本配置 })
+  <- { 导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给 }
 ```
 
 ## types
@@ -143,6 +150,15 @@ MetadataCommitMetric = float * { 分片元数据提交到可见的时长，毫�
 
 WriteLatencyP99Metric = float * { 单个写请求的 P99，毫秒 }
 
+Level =
+  Oneof
+  | "S0" * { 单机，最小参数规模；对齐基准 }
+  | "S1" * { 单机多卡或双机；引入并行切分与多 rank 并发 }
+  | "S2" * { 数十至百卡；引入网络与共享存储的争用 }
+  | "S3" * { 千卡；引入调度与故障恢复 }
+  | "S4" * { 万卡；实测上限 }
+  | "S5" * { 十万卡；外推目标 }
+
 Failure =
   Object
   * $kind (str * { 失败分类：environment、dependency、timeout、observation、assertion 等 })
@@ -155,7 +171,6 @@ Failure =
 SampleConfigBase =
   Object
   * $model (Model * { 被评估的模型 })
-  * $level (str * { 规模档位 S0 到 S5 })
   * $topology (Topology * { 节点、卡、网络、挂载 })
   * $observe (ObservationConfig * { 观测设置 })
 
