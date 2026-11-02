@@ -1,6 +1,6 @@
 # 贡献规范
 
-本仓库的主体是文档与配方，改动的影响面比代码仓库大：一条错误的验收口径会让下游所有评估结论失效。因此改动分两类，流程不同。
+本项目的主体是文档与配方，改动的影响面比代码仓库大：一条错误的验收口径会让下游所有评估结论失效。因此改动分两类，流程不同。
 
 ## 可以小步改的内容
 
@@ -26,7 +26,7 @@
 2. 填 `recipe.yaml`。`bypass`、`fidelity_boundary`、`io_pattern_invariants`、`scaling_plan` 四项不允许留空，理由写在 `notes` 里。
 3. 填 `metrics.yaml`，只选 `metrics/registry.yaml` 已登记的指标；阈值写在 `tolerance`，键必须是 check 支持的度量项名。需要新指标时先加文档与登记表，再走评审。
 4. 填 `README.md`：目标、输入、输出、步骤、验收标准、负责人。步骤要能照着做，不写"参考某某实现"。
-5. 本配方专属校验放 `recipes/<name>/checks/`，由该配方自己的 CI 任务运行；通用校验放仓库根 `checks/`。`scripts/run_checks.py` 只跑通用校验。
+5. 本配方专属校验放 `recipes/<name>/checks/`，由该配方自己的 CI 任务运行；通用校验放 `aisp/bench/checks/`。`scripts/run_checks.py` 只跑通用校验。
 6. 本地运行 `python3 scripts/run_checks.py`（含 `selftest` 负例），必须在 `examples/` 与 `examples/invalid/` 上都符合预期。
 7. 在 `CHANGELOG.md` 的 `Unreleased` 下加一行。
 

@@ -12,7 +12,7 @@
 2. 一套**可复现的下载与验证流程**：别人照着配方能在新机器上重建清单。
 3. 一份**覆盖度报告**：按架构族、规模、框架版本统计的覆盖矩阵，空白格子明确登记。
 
-代码本身与清单放在对象存储，不放在本仓库。本仓库只放配方、schema 与一份最小样例（`examples/tiny-model/`）。
+代码本身与清单放在对象存储，不放在本项目。本项目只放配方、schema 与一份最小样例（`examples/tiny-model/`）。
 
 ## 2. 收集 model id
 
@@ -175,8 +175,8 @@ ws 的约束：
 | 模型代码 | 对象存储，按 `models/<org>/<name>/<commit>/` 组织 |
 | 清单（manifest） | 对象存储，每次收集一个版本，带 sha256 |
 | 覆盖度报告 | 对象存储，仓库里只写回链 |
-| schema | 本仓库 `schemas/` |
-| 最小样例 | 本仓库 `examples/tiny-model/` |
+| schema | 本项目 `schemas/` |
+| 最小样例 | 本项目 `examples/tiny-model/` |
 
 清单的字段定义见 `recipes/model-code-collection/README.md`，schema 见 `schemas/model-manifest.schema.json`。
 

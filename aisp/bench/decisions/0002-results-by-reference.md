@@ -31,6 +31,6 @@
 
 ## 相关
 
-- `README.md` 的「本仓库是什么，不是什么」
+- `README.md` 的「本项目是什么，不是什么」
 - `playbook/evaluation-service.md` 的「产物与回链」
 - `playbook/principles.md` 的「三条硬原则」

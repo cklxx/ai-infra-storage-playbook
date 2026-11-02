@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/ai-infra-storage-bench-playbook/schemas/sli.schema.json",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/schemas/sli.schema.json",
   "title": "SLIRecord",
   "description": "一次样本运行的 SLI 记录。没有阈值，只记录测量值与存储版本身份。",
   "type": "object",

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/ai-infra-storage-bench-playbook/schemas/slo.schema.json",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/schemas/slo.schema.json",
   "title": "SLOConfig",
   "description": "部署时提供的 SLO 配置：只覆盖重保子集，阈值与出处由使用方填写。",
   "type": "object",
