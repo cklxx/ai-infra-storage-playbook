@@ -11,7 +11,7 @@
           "$ref": "#/$defs/bench.BenchStorageLayerKind"
         },
         "component": {
-          "$ref": "#/$defs/types.Component"
+          "$ref": "#/$defs/ckpt_sample.Component"
         },
         "env": {
           "type": "string"
@@ -34,7 +34,7 @@
         }
       ]
     },
-    "types.Component": {
+    "ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {

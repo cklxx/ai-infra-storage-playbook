@@ -22,7 +22,7 @@ EnterGate = acceptance_template_api.EnterGate
 
 这份文档是验收清单模板，按 G0 到 G4 五道门逐条列出要勾的验收项。每道门都要勾，未勾选的门不允许进入下一道门；勾选时附上回链或证据位置。
 
-## 问题
+## acceptance_template
 
 问题形式化为 `acceptance_template` 模块，概念分成类型与枚举两类。清单结构写成 Object 类型：`AcceptanceTemplate` 是整份验收清单，`$gates` 收按 G0 到 G4 排列的 `AcceptanceTemplateGateChecklist`，每个 `AcceptanceTemplateGateChecklist` 把 `gates.Gate` 的一个取值与这道门的 `AcceptanceTemplateItem` 的列表配成一对；`AcceptanceTemplateRecord` 的 `$checks` 收已经勾过的 `AcceptanceTemplateCheck`，`AcceptanceTemplateGateReview` 汇总某道门里已勾选与未勾选的验收项，并给出这道门是否勾完的判定。取值只能落在有限集合里的概念写成 Oneof 枚举：`AcceptanceTemplateItem` 是可勾的验收项，`AcceptanceTemplateCheckState` 是未勾选与已勾选两种状态，`AcceptanceTemplateEvidence` 是回链或证据位置，`AcceptanceTemplateAdmission` 是进入某道门的结果。关联落在字段上：`AcceptanceTemplateCheck` 的 `$item` 取 `AcceptanceTemplateItem`、`$state` 取 `AcceptanceTemplateCheckState`，`AcceptanceTemplateCheckState` 的 `$checked` 分支携带一个 `AcceptanceTemplateEvidence`；`AcceptanceTemplateAdmission` 的 `$allowed` 分支携带允许进入的那道 `gates.Gate`，`$blocked` 分支携带造成拒绝的 `AcceptanceTemplateGateReview` 列表。
 
@@ -50,7 +50,7 @@ AcceptanceTemplateItem =
   | "g3_next_level_prediction_written" * { G3 逐级 scaling：下一级预测值与预测依据已写 }
   | "g4_latest_run_written" * { G4 结论登记：latest_run 已由评估服务写入，回链三要素齐全 }
   | "g4_coverage_matrix_updated" * { G4 结论登记：覆盖度矩阵已更新 }
-  | "g4_remaining_biases_logged" * { G4 结论登记：未解决的偏差已登记进 playbook/pitfalls.md }
+  | "g4_remaining_biases_logged" * { G4 结论登记：未解决的偏差已登记进 checkpoint/pitfalls.md }
   | "g4_versions_consistent" * { G4 结论登记：配方版本、指标版本、服务版本一致且可查 }
 
 AcceptanceTemplateEvidence =
@@ -98,7 +98,7 @@ AcceptanceTemplateAdmission =
 
 解决这个问题需要三个操作。每道门都要勾，未勾选的门不允许进入下一道门。勾选（CheckItem）：把一条验收项记为已勾选，并附上回链或证据位置，写进勾选记录。复核（ReviewGate）：对照某道门的验收项，列出已勾选与未勾选的项，并判定这道门是否全部勾选。进入（EnterGate）：按 G0 到 G4 的顺序申请进入一道门，G0 直接允许，其余门要求前面的每一道门都已勾完，有未勾完的门就拒绝并交回这些门的复核结果。
 
-## 接口
+## acceptance_template_api
 
 ```viba acceptance_template_api
 import acceptance_template
@@ -125,7 +125,7 @@ EnterGate =
   <- { 进入一道门：G0 直接允许；其余门要求它前面的每一道门 complete，有未勾完的门就拒绝，并交回这些门的复核结果 }
 ```
 
-## 组织
+## acceptance_template_flow
 
 ```viba acceptance_template_flow
 import acceptance_template

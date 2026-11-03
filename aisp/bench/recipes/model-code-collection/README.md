@@ -20,9 +20,9 @@ CheckAcceptance = recipe_collection_api.CheckAcceptance
 
 ## 背景
 
-本配方收集 1000 个以上可跑的推理模型代码、尽量配对训练代码，生产另外两个配方的原料：一份可复现、去重后、验证过能跑的 LLM 模型代码语料。给定清单与 commit，语料要能在新机器上重建出同样的文件集合；结构族、规模量级、注意力变体的覆盖矩阵要能计算。方法说明见 [`playbook/model-code-collection.md`](../../playbook/model-code-collection.md)，开放问题见同一篇文档的「开放问题」。
+本配方收集 1000 个以上可跑的推理模型代码、尽量配对训练代码，生产另外两个配方的原料：一份可复现、去重后、验证过能跑的 LLM 模型代码语料。给定清单与 commit，语料要能在新机器上重建出同样的文件集合；结构族、规模量级、注意力变体的覆盖矩阵要能计算。方法说明见 [`checkpoint/model-code-collection.md`](../../checkpoint/model-code-collection.md)，开放问题见同一篇文档的「开放问题」。
 
-## 问题
+## recipe_collection
 
 这个问题被形式化成一组 viba 类型与枚举：要记录的数据写成 `Object` 类型，取值封闭的概念写成 `Oneof` 枚举，字段声明把两者接起来。输入与产物的种类由 `RecipeCollectionInputKind`、`RecipeCollectionOutputKind` 给出，`RecipeCollectionInput`、`RecipeCollectionOutput` 各用一个 `$kind` 字段引用它们；候选筛选、下载失败、代码角色、去重、可跑性、训练代码配对以及覆盖度与验收指标同样写成枚举，分别是 `RecipeCollectionCandidateFilter`、`RecipeCollectionFetchFailureKind`、`RecipeCollectionCodeRole`、`RecipeCollectionDedupDecision`、`RecipeCollectionRunnableState`、`RecipeCollectionTrainingStatus`、`RecipeCollectionCoverageDimension`、`RecipeCollectionGapKind`、`RecipeCollectionAcceptanceMetric`。类型之间靠字段嵌套：`RecipeCollectionCandidate` 与 `RecipeCollectionWorkspace` 由 `RecipeCollectionCandidateSet` 收拢，`RecipeCollectionCorpusEntry` 把一条语料的候选、下载、指纹、去重、可跑性与训练代码配对串起来，`RecipeCollectionAcceptanceReport` 汇总 `RecipeCollectionAcceptanceItem` 与 `RecipeCollectionCoverage`，`RecipeCollectionAcceptance` 则给出这些验收项的口径。
 
@@ -229,7 +229,7 @@ RecipeCollectionAcceptanceReport =
 
 先抓取候选并建立工作区：调用平台模型列表接口，按 `pipeline_tag`、`library_name`、下载量与创建时间筛选，每个候选记 model id、组织、许可证、tags、创建时间；候选数量达到目标数量的 3 倍后停止抓取，多抓的部分用于补偿下载失败与去重淘汰；再按 `transformers` 主版本把候选分组，每组一个工作区镜像，工作区里放一套独立依赖、固定的磁盘配额与清理规则、一个按白名单取文件的下载器。接着下载代码与配置并判定代码角色：白名单见方法文档的「只取代码与配置」，下载后计算每个文件的 `sha256`、记录仓库的当前 commit、校验文件数与清单一致，失败按网络、权限、不存在、许可未接受四类分别记录；对每个模型产出 `code_role` 与 `code_role_evidence`，证据不足时写 `unknown`，不要猜，`unknown` 计入覆盖缺口。然后提取配置层与代码层特征做结构指纹，按架构族分组，组内计算加权距离，按最大边际覆盖保留代表样本，去重决定写进清单的 `dedup` 字段；阈值初始值 0.15，标定前不对外引用去重率。再做可跑性验证：用固定 rank 数（默认 2）初始化 mock 的进程组，每个 rank 单独起进程、分时占用同一张卡、跑一次前向，输入维度用配置允许的小值；记录 `yes` / `no` / `partial` 与失败步骤、错误摘要，超时统一设为 10 分钟并单独归类。随后按方法文档的四条规则配对训练代码，产出 `paired_training.status`（`paired` / `external` / `unpaired`）与 `ref`，配对证据不足时一律 `unpaired`。最后统计覆盖度并验收：用 `checks/check_coverage.py` 计算覆盖矩阵与缺口清单，按 [`acceptance-checklist.md`](acceptance-checklist.md) 逐项确认可跑模型数、可跑率、架构族覆盖、规模覆盖、注意力变体覆盖、训练代码配对率、语料可复现七项指标；语料版本升级前必须由负责人确认覆盖缺口清单，负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner` 字段。
 
-## 接口
+## recipe_collection_api
 
 ```viba recipe_collection_api
 import recipe_collection
@@ -269,7 +269,7 @@ CheckAcceptance =
   <- { 覆盖度统计与验收：用 checks/check_coverage.py 计算覆盖矩阵与缺口清单，按验收清单逐项确认七项指标；返回每项指标的实际值与是否达标，以及覆盖矩阵与缺口清单，七项全部达标才算验收通过 }
 ```
 
-## 组织
+## recipe_collection_flow
 
 ```viba recipe_collection_flow
 import recipe_collection

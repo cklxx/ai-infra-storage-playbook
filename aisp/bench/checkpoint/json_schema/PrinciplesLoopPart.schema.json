@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesLoopPart.schema.json",
+  "title": "PrinciplesLoopPart",
+  "$ref": "#/$defs/principles.PrinciplesLoopPart",
+  "$defs": {
+    "principles.PrinciplesLoopPart": {
+      "oneOf": [
+        {
+          "const": "eval_set"
+        },
+        {
+          "const": "eval_service"
+        },
+        {
+          "const": "extension"
+        }
+      ]
+    }
+  }
+}

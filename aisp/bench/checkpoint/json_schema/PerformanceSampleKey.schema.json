@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceSampleKey.schema.json",
+  "title": "PerformanceSampleKey",
+  "$ref": "#/$defs/performance.PerformanceSampleKey",
+  "$defs": {
+    "performance.PerformanceSampleKey": {
+      "type": "string"
+    }
+  }
+}

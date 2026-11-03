@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/QueueProgress.schema.json",
+  "title": "QueueProgress",
+  "$ref": "#/$defs/ckpt_sample.QueueProgress",
+  "$defs": {
+    "ckpt_sample.QueueProgress": {
+      "type": "object",
+      "properties": {
+        "pos": {
+          "type": "integer"
+        },
+        "len": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pos",
+        "len"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

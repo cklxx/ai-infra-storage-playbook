@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/WriteThroughputMetric.schema.json",
+  "title": "WriteThroughputMetric",
+  "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric",
+  "$defs": {
+    "ckpt_sample.WriteThroughputMetric": {
+      "type": "number"
+    }
+  }
+}

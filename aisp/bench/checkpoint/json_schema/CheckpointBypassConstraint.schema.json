@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointBypassConstraint.schema.json",
+  "title": "CheckpointBypassConstraint",
+  "$ref": "#/$defs/checkpoint.CheckpointBypassConstraint",
+  "$defs": {
+    "checkpoint.CheckpointBypassConstraint": {
+      "oneOf": [
+        {
+          "const": "model_code_source"
+        },
+        {
+          "const": "parallel_strategy"
+        },
+        {
+          "const": "parameter_init"
+        },
+        {
+          "const": "mixed_precision"
+        }
+      ]
+    }
+  }
+}

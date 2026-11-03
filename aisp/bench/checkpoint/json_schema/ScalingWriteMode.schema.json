@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingWriteMode.schema.json",
+  "title": "ScalingWriteMode",
+  "$ref": "#/$defs/scaling.ScalingWriteMode",
+  "$defs": {
+    "scaling.ScalingWriteMode": {
+      "oneOf": [
+        {
+          "const": "sync"
+        },
+        {
+          "const": "async"
+        }
+      ]
+    }
+  }
+}

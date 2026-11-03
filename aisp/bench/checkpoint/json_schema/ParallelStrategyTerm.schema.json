@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ParallelStrategyTerm.schema.json",
+  "title": "ParallelStrategyTerm",
+  "$ref": "#/$defs/glossary.ParallelStrategyTerm",
+  "$defs": {
+    "glossary.ParallelStrategyTerm": {
+      "oneOf": [
+        {
+          "const": "DP"
+        },
+        {
+          "const": "TP"
+        },
+        {
+          "const": "PP"
+        },
+        {
+          "const": "EP"
+        }
+      ]
+    }
+  }
+}

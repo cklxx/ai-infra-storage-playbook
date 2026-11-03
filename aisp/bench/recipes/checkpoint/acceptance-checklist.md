@@ -21,7 +21,7 @@ JudgeChecklist = acceptance_checkpoint_api.JudgeChecklist
 
 这份文档是 checkpoint 评估的验收清单，按 G0 能跑、G1 旁路可跑、G2 小规模对齐、G3 逐级 scaling、G4 结论登记五个阶段逐条列出需要确认的事项。清单从真实运行跑通前向、反向、optimizer.step 与一次 checkpoint 写入开始，经旁路与小规模对齐、逐级 scaling，到结论登记结束，共 24 条验收项。
 
-## 问题
+## acceptance_checkpoint
 
 清单里的每条验收项写成 `AcceptanceCheckpointItem` 的一个变体，24 条验收项合起来构成这个 Oneof，变体名是条目的标识，变体后附的说明是该条的验收要求。阶段门沿用 `gates.Gate` 枚举，G3 的档位顺序沿用 `levels.Level` 枚举。五个阶段写成 `AcceptanceCheckpointSection`，每个阶段把 `$gate` 与 `$items` 绑在一起；整份清单 `AcceptanceCheckpointChecklist` 再由 `$sections` 与 `AcceptanceCheckpointLadder` 组成。进度与判定各自成为类型：`AcceptanceCheckpointProgress` 保存已勾选与未勾选的验收项，`AcceptanceCheckpointGateVerdict` 是一条阶段判定，`AcceptanceCheckpointVerdict` 用 `$gates` 汇总各阶段的判定。
 
@@ -53,7 +53,7 @@ AcceptanceCheckpointItem =
   | "g3_tail_latency_split_by_node" * { G3 逐级 scaling：尾延迟（P99/P999）已按节点拆分排查 }
   | "g4_latest_run_written_with_backlink" * { G4 结论登记：latest_run 已由评估服务写入，回链三要素齐全 }
   | "g4_coverage_matrix_updated" * { G4 结论登记：覆盖度矩阵已更新 }
-  | "g4_unresolved_deviations_registered" * { G4 结论登记：未解决的偏差已登记进 playbook/pitfalls.md }
+  | "g4_unresolved_deviations_registered" * { G4 结论登记：未解决的偏差已登记进 checkpoint/pitfalls.md }
   | "g4_versions_queryable" * { G4 结论登记：checkpoint 实现、框架版本与服务版本均可查 }
 
 AcceptanceCheckpointSection =
@@ -90,7 +90,7 @@ AcceptanceCheckpointVerdict =
 
 先取清单：按原清单结构拿到 G0 到 G4 五个阶段的验收项。开始验收时把全部验收项记为未勾选，之后每确认一条就勾选一条，勾选状态按原清单顺序累积。每完成一个阶段就对这个阶段做判定：该阶段的验收项全部勾选才算通过，没通过时列出还差哪几条。最后对整份清单做判定：五个阶段的验收项全部勾选才算整份通过，并给出每个阶段一条判定。
 
-## 接口
+## acceptance_checkpoint_api
 
 ```viba acceptance_checkpoint_api
 import acceptance_checkpoint
@@ -119,7 +119,7 @@ JudgeChecklist =
   <- { 判定整份清单：按 G0 到 G4 逐阶段判定，五个阶段的验收项全部已勾选时 passed 为 true；返回整份判定与每阶段一条判定 }
 ```
 
-## 组织
+## acceptance_checkpoint_flow
 
 ```viba acceptance_checkpoint_flow
 import acceptance_checkpoint

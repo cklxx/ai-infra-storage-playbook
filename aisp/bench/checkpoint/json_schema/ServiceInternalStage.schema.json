@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceInternalStage.schema.json",
+  "title": "ServiceInternalStage",
+  "$ref": "#/$defs/service.ServiceInternalStage",
+  "$defs": {
+    "service.ServiceInternalStage": {
+      "oneOf": [
+        {
+          "const": "validate"
+        },
+        {
+          "const": "prepare"
+        },
+        {
+          "const": "collect"
+        }
+      ]
+    }
+  }
+}

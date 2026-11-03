@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceMetricDelta.schema.json",
+  "title": "PerformanceMetricDelta",
+  "$ref": "#/$defs/performance.PerformanceMetricDelta",
+  "$defs": {
+    "performance.PerformanceMetricDelta": {
+      "type": "object",
+      "properties": {
+        "before": {
+          "$ref": "#/$defs/ckpt_sample.CkptSli"
+        },
+        "after": {
+          "$ref": "#/$defs/ckpt_sample.CkptSli"
+        },
+        "absolute": {
+          "type": "number"
+        },
+        "relative": {
+          "type": "number"
+        },
+        "noise_band": {
+          "$ref": "#/$defs/performance.PerformanceNoiseBand"
+        },
+        "verdict": {
+          "$ref": "#/$defs/performance.PerformanceComparisonVerdict"
+        }
+      },
+      "required": [
+        "before",
+        "after",
+        "absolute",
+        "relative",
+        "noise_band",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.CkptSli": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+            }
+          },
+          "required": [
+            "check_point_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_sli": {
+              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+            }
+          },
+          "required": [
+            "training_stall_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+            }
+          },
+          "required": [
+            "restore_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+            }
+          },
+          "required": [
+            "write_throughput_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_sli": {
+              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+            }
+          },
+          "required": [
+            "metadata_commit_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+            }
+          },
+          "required": [
+            "write_latency_p99_sli"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CheckPointDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.TrainingStallMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.RestoreDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteThroughputMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.MetadataCommitMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteLatencyP99Metric": {
+      "type": "number"
+    },
+    "performance.PerformanceNoiseBand": {
+      "type": "object",
+      "properties": {
+        "k": {
+          "type": "number"
+        },
+        "cv": {
+          "type": "number"
+        },
+        "repeats": {
+          "type": "integer"
+        },
+        "calibration_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "k",
+        "cv",
+        "repeats",
+        "calibration_ref"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceComparisonVerdict": {
+      "oneOf": [
+        {
+          "const": "提升"
+        },
+        {
+          "const": "退化"
+        },
+        {
+          "const": "不可比"
+        }
+      ]
+    }
+  }
+}

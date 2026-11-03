@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Topology.schema.json",
+  "title": "Topology",
+  "$ref": "#/$defs/ckpt_sample.Topology",
+  "$defs": {
+    "ckpt_sample.Topology": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "integer"
+        },
+        "gpus_per_node": {
+          "type": "integer"
+        },
+        "network": {
+          "type": "string"
+        },
+        "mount": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nodes",
+        "gpus_per_node",
+        "network",
+        "mount"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

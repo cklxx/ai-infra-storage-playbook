@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionRunnableFailureKind.schema.json",
+  "title": "CollectionRunnableFailureKind",
+  "$ref": "#/$defs/collection.CollectionRunnableFailureKind",
+  "$defs": {
+    "collection.CollectionRunnableFailureKind": {
+      "oneOf": [
+        {
+          "const": "timeout"
+        },
+        {
+          "const": "oom"
+        },
+        {
+          "const": "assertion"
+        },
+        {
+          "const": "missing_dependency"
+        }
+      ]
+    }
+  }
+}

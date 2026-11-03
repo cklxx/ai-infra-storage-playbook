@@ -22,7 +22,7 @@ Exit = check_template_api.Exit
 
 配方里有一批只对这个评估集成立的校验；通用校验不在这里重复实现，放 `aisp/bench/checks/`。这份文档规定这类校验放在哪里、脚本接收什么输入、往标准输出写什么、用哪些退出码，让同一配方里的 check 脚本对外表现一致。
 
-## 问题
+## check_template
 
 问题形式化为 `check_template` 模块：需要组合的结构写成对象类型，取值范围固定的概念写成枚举类型。对象类型有 `CheckTemplateRunDir`、`CheckTemplateReport`、`CheckTemplateContract` 与 `CheckTemplateSpec`：`CheckTemplateRunDir` 描述用例目录，`CheckTemplateReport` 描述一次 check 写出的报告，`CheckTemplateContract` 把输入、输出与退出码归结到一起，`CheckTemplateSpec` 再由归属、示例和这份契约组成。枚举类型有 `CheckTemplatePlacement`、`CheckTemplateExampleCheck`、`CheckTemplateCaseFile`、`CheckTemplateStatus` 与 `CheckTemplateExitCode`：`CheckTemplateSpec` 的 `placement` 取 `CheckTemplatePlacement`、`examples` 的元素取 `CheckTemplateExampleCheck`，`CheckTemplateRunDir` 的 `files` 元素取 `CheckTemplateCaseFile`，`CheckTemplateReport` 的 `status` 取 `CheckTemplateStatus`，契约的 `exit_code` 取 `CheckTemplateExitCode`。
 
@@ -83,7 +83,7 @@ CheckTemplateSpec =
 
 解决这个问题需要四个操作。归属：判断一条校验是不是只对这个评估集成立，成立就放进本配方的 `checks/`，不成立就是通用校验，放 `aisp/bench/checks/`，不在配方里重复实现。读入：按 `--run-dir <path>` 收下用例目录，确认目录里有 `metrics.json` 与 `manifest.json`，缺任何一份按输入缺失处理。运行：在用例目录上执行这个 check，往标准输出写一行 JSON，字段是 `check`、`status`、`detail`，`status` 只取 `pass`、`fail`、`skip`。退出：按结果给出退出码，0 表示通过，1 表示不通过，2 表示缺依赖或输入缺失。
 
-## 接口
+## check_template_api
 
 ```viba check_template_api
 import check_template
@@ -110,7 +110,7 @@ Exit =
   <- { 退出接口：按状态交回退出码，pass 交回 0，fail 交回 1；skip 表示缺依赖或输入缺失，交回 2 }
 ```
 
-## 组织
+## check_template_flow
 
 ```viba check_template_flow
 import check_template

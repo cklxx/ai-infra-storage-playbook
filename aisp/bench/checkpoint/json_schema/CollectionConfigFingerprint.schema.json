@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionConfigFingerprint.schema.json",
+  "title": "CollectionConfigFingerprint",
+  "$ref": "#/$defs/collection.CollectionConfigFingerprint",
+  "$defs": {
+    "collection.CollectionConfigFingerprint": {
+      "type": "object",
+      "properties": {
+        "architectures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "num_hidden_layers": {
+          "type": "integer"
+        },
+        "hidden_size": {
+          "type": "integer"
+        },
+        "num_attention_heads": {
+          "type": "integer"
+        },
+        "num_key_value_heads": {
+          "type": "integer"
+        },
+        "intermediate_size": {
+          "type": "integer"
+        },
+        "vocab_size": {
+          "type": "integer"
+        },
+        "max_position_embeddings": {
+          "type": "integer"
+        },
+        "torch_dtype": {
+          "type": "string"
+        },
+        "tie_word_embeddings": {
+          "type": "boolean"
+        },
+        "moe": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionMoeSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "positional_encoding": {
+          "$ref": "#/$defs/collection.CollectionPositionalEncoding"
+        },
+        "attention": {
+          "$ref": "#/$defs/collection.CollectionAttentionVariant"
+        }
+      },
+      "required": [
+        "architectures",
+        "num_hidden_layers",
+        "hidden_size",
+        "num_attention_heads",
+        "num_key_value_heads",
+        "intermediate_size",
+        "vocab_size",
+        "max_position_embeddings",
+        "torch_dtype",
+        "tie_word_embeddings",
+        "moe",
+        "positional_encoding",
+        "attention"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionMoeSpec": {
+      "type": "object",
+      "properties": {
+        "num_experts": {
+          "type": "integer"
+        },
+        "num_active_experts": {
+          "type": "integer"
+        },
+        "num_shared_experts": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "num_experts",
+        "num_active_experts",
+        "num_shared_experts"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionPositionalEncoding": {
+      "oneOf": [
+        {
+          "const": "rope"
+        },
+        {
+          "const": "alibi"
+        },
+        {
+          "const": "absolute"
+        }
+      ]
+    },
+    "collection.CollectionAttentionVariant": {
+      "oneOf": [
+        {
+          "const": "mha"
+        },
+        {
+          "const": "gqa"
+        },
+        {
+          "const": "mqa"
+        },
+        {
+          "const": "mla"
+        },
+        {
+          "const": "linear"
+        },
+        {
+          "const": "sliding_window"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,416 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointSpec.schema.json",
+  "title": "CheckpointSpec",
+  "$ref": "#/$defs/checkpoint.CheckpointSpec",
+  "$defs": {
+    "checkpoint.CheckpointSpec": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/checkpoint.CheckpointSubject"
+        },
+        "bypass": {
+          "$ref": "#/$defs/checkpoint.CheckpointBypassPlan"
+        },
+        "fidelity": {
+          "$ref": "#/$defs/checkpoint.CheckpointFidelity"
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointGate"
+          }
+        },
+        "alignment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointAlignmentStep"
+          }
+        },
+        "scaling": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointScalingDimension"
+          }
+        },
+        "extrapolation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointExtrapolationRule"
+          }
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointAcceptanceItem"
+          }
+        }
+      },
+      "required": [
+        "subject",
+        "bypass",
+        "fidelity",
+        "gates",
+        "alignment",
+        "scaling",
+        "extrapolation",
+        "acceptance"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint.CheckpointSubject": {
+      "type": "object",
+      "properties": {
+        "implementation": {
+          "$ref": "#/$defs/ckpt_sample.Component"
+        },
+        "sharding": {
+          "type": "string"
+        },
+        "write_features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointWriteFeature"
+          }
+        },
+        "read_features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointReadFeature"
+          }
+        }
+      },
+      "required": [
+        "implementation",
+        "sharding",
+        "write_features",
+        "read_features"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint.CheckpointWriteFeature": {
+      "oneOf": [
+        {
+          "const": "total_bytes"
+        },
+        {
+          "const": "shard_count_and_size"
+        },
+        {
+          "const": "write_concurrency"
+        },
+        {
+          "const": "sync_or_async"
+        },
+        {
+          "const": "compression"
+        },
+        {
+          "const": "metadata_commit"
+        },
+        {
+          "const": "write_period"
+        }
+      ]
+    },
+    "checkpoint.CheckpointReadFeature": {
+      "oneOf": [
+        {
+          "const": "overlap_with_training_start"
+        },
+        {
+          "const": "per_rank_parallel_read"
+        },
+        {
+          "const": "hash_verification"
+        }
+      ]
+    },
+    "checkpoint.CheckpointBypassPlan": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointBypassStep"
+          }
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointBypassConstraint"
+          }
+        }
+      },
+      "required": [
+        "steps",
+        "constraints"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint.CheckpointBypassStep": {
+      "oneOf": [
+        {
+          "const": "meta_model"
+        },
+        {
+          "const": "meta_forward"
+        },
+        {
+          "const": "placeholder_backward"
+        },
+        {
+          "const": "mock_optimizer"
+        },
+        {
+          "const": "unchanged_checkpoint_write"
+        }
+      ]
+    },
+    "checkpoint.CheckpointBypassConstraint": {
+      "oneOf": [
+        {
+          "const": "model_code_source"
+        },
+        {
+          "const": "parallel_strategy"
+        },
+        {
+          "const": "parameter_init"
+        },
+        {
+          "const": "mixed_precision"
+        }
+      ]
+    },
+    "checkpoint.CheckpointFidelity": {
+      "type": "object",
+      "properties": {
+        "forward_backward": {
+          "$ref": "#/$defs/fidelity.FidelityBoundary"
+        },
+        "optimizer_step": {
+          "$ref": "#/$defs/fidelity.FidelityBoundary"
+        },
+        "parallel_split": {
+          "$ref": "#/$defs/fidelity.FidelityBoundary"
+        },
+        "checkpoint_write": {
+          "$ref": "#/$defs/fidelity.FidelityBoundary"
+        },
+        "checkpoint_read": {
+          "$ref": "#/$defs/fidelity.FidelityBoundary"
+        }
+      },
+      "required": [
+        "forward_backward",
+        "optimizer_step",
+        "parallel_split",
+        "checkpoint_write",
+        "checkpoint_read"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.FidelityBoundary": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "bypassed": {
+          "$ref": "#/$defs/fidelity.Bypassed"
+        },
+        "method": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bypass.BypassMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fidelity": {
+          "$ref": "#/$defs/bypass.FidelityLevel"
+        },
+        "kept": {
+          "type": "string"
+        },
+        "known_bias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bypassed",
+        "method",
+        "fidelity",
+        "kept",
+        "known_bias"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.Bypassed": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    },
+    "bypass.BypassMethod": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "cpu_offload"
+        },
+        {
+          "const": "real_small_scale"
+        }
+      ]
+    },
+    "bypass.FidelityLevel": {
+      "oneOf": [
+        {
+          "const": "L0"
+        },
+        {
+          "const": "L1"
+        },
+        {
+          "const": "L2"
+        },
+        {
+          "const": "L3"
+        }
+      ]
+    },
+    "checkpoint.CheckpointGate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3-a"
+        },
+        {
+          "const": "G3-b"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    },
+    "checkpoint.CheckpointAlignmentStep": {
+      "oneOf": [
+        {
+          "const": "minimal_config"
+        },
+        {
+          "const": "real_and_bypass_runs"
+        },
+        {
+          "const": "compare_metrics"
+        },
+        {
+          "const": "attribute_deviations"
+        }
+      ]
+    },
+    "checkpoint.CheckpointScalingDimension": {
+      "oneOf": [
+        {
+          "const": "parameter_count"
+        },
+        {
+          "const": "cluster_size"
+        },
+        {
+          "const": "data_parallel"
+        },
+        {
+          "const": "tensor_pipeline_parallel"
+        },
+        {
+          "const": "expert_parallel"
+        }
+      ]
+    },
+    "checkpoint.CheckpointExtrapolationRule": {
+      "oneOf": [
+        {
+          "const": "aggregate_bandwidth"
+        },
+        {
+          "const": "metadata_operations"
+        },
+        {
+          "const": "parameter_bytes"
+        }
+      ]
+    },
+    "checkpoint.CheckpointAcceptanceItem": {
+      "oneOf": [
+        {
+          "const": "io_pattern_alignment"
+        },
+        {
+          "const": "scaling_consistency"
+        },
+        {
+          "const": "fidelity"
+        },
+        {
+          "const": "reproducibility"
+        },
+        {
+          "const": "coverage"
+        }
+      ]
+    }
+  }
+}

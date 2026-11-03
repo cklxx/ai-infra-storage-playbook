@@ -20,7 +20,7 @@
           }
         },
         "run": {
-          "$ref": "#/$defs/types.RunRecord"
+          "$ref": "#/$defs/ckpt_sample.RunRecord"
         }
       },
       "required": [
@@ -133,20 +133,20 @@
         }
       ]
     },
-    "types.RunRecord": {
+    "ckpt_sample.RunRecord": {
       "type": "object",
       "properties": {
         "run_id": {
           "type": "string"
         },
         "state": {
-          "$ref": "#/$defs/types.State"
+          "$ref": "#/$defs/ckpt_sample.State"
         },
         "progress": {
-          "$ref": "#/$defs/types.WorkProgress"
+          "$ref": "#/$defs/ckpt_sample.WorkProgress"
         },
         "artifacts": {
-          "$ref": "#/$defs/types.Artifacts"
+          "$ref": "#/$defs/ckpt_sample.Artifacts"
         }
       },
       "required": [
@@ -157,13 +157,13 @@
       ],
       "additionalProperties": false
     },
-    "types.State": {
+    "ckpt_sample.State": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "queued": {
-              "$ref": "#/$defs/types.QueueProgress"
+              "$ref": "#/$defs/ckpt_sample.QueueProgress"
             }
           },
           "required": [
@@ -199,7 +199,7 @@
           "type": "object",
           "properties": {
             "failed": {
-              "$ref": "#/$defs/types.Failure"
+              "$ref": "#/$defs/ckpt_sample.Failure"
             }
           },
           "required": [
@@ -211,7 +211,7 @@
           "type": "object",
           "properties": {
             "rejected": {
-              "$ref": "#/$defs/types.Failure"
+              "$ref": "#/$defs/ckpt_sample.Failure"
             }
           },
           "required": [
@@ -233,7 +233,7 @@
         }
       ]
     },
-    "types.QueueProgress": {
+    "ckpt_sample.QueueProgress": {
       "type": "object",
       "properties": {
         "pos": {
@@ -249,7 +249,7 @@
       ],
       "additionalProperties": false
     },
-    "types.Failure": {
+    "ckpt_sample.Failure": {
       "type": "object",
       "properties": {
         "kind": {
@@ -265,7 +265,7 @@
       ],
       "additionalProperties": false
     },
-    "types.WorkProgress": {
+    "ckpt_sample.WorkProgress": {
       "type": "object",
       "properties": {
         "done": {
@@ -281,7 +281,7 @@
       ],
       "additionalProperties": false
     },
-    "types.Artifacts": {
+    "ckpt_sample.Artifacts": {
       "type": "object",
       "properties": {
         "manifest": {
@@ -290,13 +290,13 @@
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/types.CkptSli"
+            "$ref": "#/$defs/ckpt_sample.CkptSli"
           }
         },
         "slo": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/types.CkptSlo"
+            "$ref": "#/$defs/ckpt_sample.CkptSlo"
           }
         },
         "report": {
@@ -311,13 +311,13 @@
       ],
       "additionalProperties": false
     },
-    "types.CkptSli": {
+    "ckpt_sample.CkptSli": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "check_point_duration_sli": {
-              "$ref": "#/$defs/types.CheckPointDurationMetric"
+              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
             }
           },
           "required": [
@@ -329,7 +329,7 @@
           "type": "object",
           "properties": {
             "training_stall_sli": {
-              "$ref": "#/$defs/types.TrainingStallMetric"
+              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
             }
           },
           "required": [
@@ -341,7 +341,7 @@
           "type": "object",
           "properties": {
             "restore_duration_sli": {
-              "$ref": "#/$defs/types.RestoreDurationMetric"
+              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
             }
           },
           "required": [
@@ -353,7 +353,7 @@
           "type": "object",
           "properties": {
             "write_throughput_sli": {
-              "$ref": "#/$defs/types.WriteThroughputMetric"
+              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
             }
           },
           "required": [
@@ -365,7 +365,7 @@
           "type": "object",
           "properties": {
             "metadata_commit_sli": {
-              "$ref": "#/$defs/types.MetadataCommitMetric"
+              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
             }
           },
           "required": [
@@ -377,7 +377,7 @@
           "type": "object",
           "properties": {
             "write_latency_p99_sli": {
-              "$ref": "#/$defs/types.WriteLatencyP99Metric"
+              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
             }
           },
           "required": [
@@ -387,31 +387,31 @@
         }
       ]
     },
-    "types.CheckPointDurationMetric": {
+    "ckpt_sample.CheckPointDurationMetric": {
       "type": "number"
     },
-    "types.TrainingStallMetric": {
+    "ckpt_sample.TrainingStallMetric": {
       "type": "number"
     },
-    "types.RestoreDurationMetric": {
+    "ckpt_sample.RestoreDurationMetric": {
       "type": "number"
     },
-    "types.WriteThroughputMetric": {
+    "ckpt_sample.WriteThroughputMetric": {
       "type": "number"
     },
-    "types.MetadataCommitMetric": {
+    "ckpt_sample.MetadataCommitMetric": {
       "type": "number"
     },
-    "types.WriteLatencyP99Metric": {
+    "ckpt_sample.WriteLatencyP99Metric": {
       "type": "number"
     },
-    "types.CkptSlo": {
+    "ckpt_sample.CkptSlo": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "check_point_duration_slo": {
-              "$ref": "#/$defs/types.MetricLE@1910e53e"
+              "$ref": "#/$defs/ckpt_sample.MetricLE@e80cc34b"
             }
           },
           "required": [
@@ -423,7 +423,7 @@
           "type": "object",
           "properties": {
             "training_stall_slo": {
-              "$ref": "#/$defs/types.MetricLE@f4dd4d27"
+              "$ref": "#/$defs/ckpt_sample.MetricLE@843aec0a"
             }
           },
           "required": [
@@ -435,7 +435,7 @@
           "type": "object",
           "properties": {
             "restore_duration_slo": {
-              "$ref": "#/$defs/types.MetricLE@f421fc96"
+              "$ref": "#/$defs/ckpt_sample.MetricLE@4efeec8b"
             }
           },
           "required": [
@@ -447,7 +447,7 @@
           "type": "object",
           "properties": {
             "write_throughput_slo": {
-              "$ref": "#/$defs/types.MetricGE@c5b2fe43"
+              "$ref": "#/$defs/ckpt_sample.MetricGE@ff80faa5"
             }
           },
           "required": [
@@ -459,7 +459,7 @@
           "type": "object",
           "properties": {
             "metadata_commit_slo": {
-              "$ref": "#/$defs/types.MetricLE@292a31ac"
+              "$ref": "#/$defs/ckpt_sample.MetricLE@60ef8e55"
             }
           },
           "required": [
@@ -471,7 +471,7 @@
           "type": "object",
           "properties": {
             "write_latency_p99_slo": {
-              "$ref": "#/$defs/types.MetricLE@9a4b591e"
+              "$ref": "#/$defs/ckpt_sample.MetricLE@e2e968c9"
             }
           },
           "required": [
@@ -481,14 +481,14 @@
         }
       ]
     },
-    "types.MetricLE@1910e53e": {
+    "ckpt_sample.MetricLE@e80cc34b": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/types.CheckPointDurationMetric"
+          "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/types.CheckPointDurationMetric"
+          "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
         }
       },
       "required": [
@@ -497,14 +497,14 @@
       ],
       "additionalProperties": false
     },
-    "types.MetricLE@f4dd4d27": {
+    "ckpt_sample.MetricLE@843aec0a": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/types.TrainingStallMetric"
+          "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/types.TrainingStallMetric"
+          "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
         }
       },
       "required": [
@@ -513,14 +513,14 @@
       ],
       "additionalProperties": false
     },
-    "types.MetricLE@f421fc96": {
+    "ckpt_sample.MetricLE@4efeec8b": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/types.RestoreDurationMetric"
+          "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/types.RestoreDurationMetric"
+          "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
         }
       },
       "required": [
@@ -529,14 +529,14 @@
       ],
       "additionalProperties": false
     },
-    "types.MetricGE@c5b2fe43": {
+    "ckpt_sample.MetricGE@ff80faa5": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/types.WriteThroughputMetric"
+          "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/types.WriteThroughputMetric"
+          "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
         }
       },
       "required": [
@@ -545,14 +545,14 @@
       ],
       "additionalProperties": false
     },
-    "types.MetricLE@292a31ac": {
+    "ckpt_sample.MetricLE@60ef8e55": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/types.MetadataCommitMetric"
+          "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/types.MetadataCommitMetric"
+          "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
         }
       },
       "required": [
@@ -561,14 +561,14 @@
       ],
       "additionalProperties": false
     },
-    "types.MetricLE@9a4b591e": {
+    "ckpt_sample.MetricLE@e2e968c9": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/types.WriteLatencyP99Metric"
+          "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
         },
         "threshold": {
-          "$ref": "#/$defs/types.WriteLatencyP99Metric"
+          "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
         }
       },
       "required": [

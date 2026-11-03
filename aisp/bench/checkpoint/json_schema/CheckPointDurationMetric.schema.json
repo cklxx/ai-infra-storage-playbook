@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckPointDurationMetric.schema.json",
+  "title": "CheckPointDurationMetric",
+  "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric",
+  "$defs": {
+    "ckpt_sample.CheckPointDurationMetric": {
+      "type": "number"
+    }
+  }
+}

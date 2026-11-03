@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceOutOfScope.schema.json",
+  "title": "ServiceOutOfScope",
+  "$ref": "#/$defs/service.ServiceOutOfScope",
+  "$defs": {
+    "service.ServiceOutOfScope": {
+      "oneOf": [
+        {
+          "const": "decide_coverage"
+        },
+        {
+          "const": "change_recipe_semantics"
+        },
+        {
+          "const": "explain_business_result"
+        },
+        {
+          "const": "retain_raw_trace"
+        },
+        {
+          "const": "merge_metric_change"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionFilter.schema.json",
+  "title": "CollectionFilter",
+  "$ref": "#/$defs/collection.CollectionFilter",
+  "$defs": {
+    "collection.CollectionFilter": {
+      "oneOf": [
+        {
+          "const": "text_generation"
+        },
+        {
+          "const": "transformers_or_modeling_file"
+        },
+        {
+          "const": "param_scale"
+        },
+        {
+          "const": "one_revision_per_model"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Gap.schema.json",
+  "title": "Gap",
+  "$ref": "#/$defs/ckpt_bench.Gap",
+  "$defs": {
+    "ckpt_bench.Gap": {
+      "type": "object",
+      "properties": {
+        "what": {
+          "type": "string"
+        },
+        "why": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "what",
+        "why"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

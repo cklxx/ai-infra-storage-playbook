@@ -43,7 +43,7 @@
           "const": "playbook"
         },
         {
-          "const": "playbook/json_schema"
+          "const": "checkpoint/json_schema"
         },
         {
           "const": "recipes"

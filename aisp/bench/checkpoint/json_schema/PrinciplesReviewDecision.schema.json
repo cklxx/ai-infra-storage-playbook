@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesReviewDecision.schema.json",
+  "title": "PrinciplesReviewDecision",
+  "$ref": "#/$defs/principles.PrinciplesReviewDecision",
+  "$defs": {
+    "principles.PrinciplesReviewDecision": {
+      "oneOf": [
+        {
+          "const": "allowed"
+        },
+        {
+          "const": "self_review_forbidden"
+        }
+      ]
+    }
+  }
+}

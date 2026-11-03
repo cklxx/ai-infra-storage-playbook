@@ -22,7 +22,7 @@ Judge = io_pattern_api.Judge
 
 旁路运行必须与同等规模的真实运行在 IO 上对齐，旁路实现才算成立；这份文档定义对齐度怎么记录、怎么算、怎么判。对齐度不是一个数，而是一组分项：分项由配方的 `metrics.yaml` 用 `items` 与 `tolerance` 声明，check 脚本只算声明过的项，逐项判定，全部通过才算对齐。它是阶段门 G2 的门槛。
 
-## 问题
+## io_pattern
 
 问题形式化为 `io_pattern` 模块，概念分成类型与枚举两类：承载字段的结构写成 Object 类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`IoPatternSpec` 是入口类型，`$record` 是一条 `IoPatternRecord`，`$runs`、`$items`、`$tolerance` 分别是 `IoPatternRunRole`、`IoPatternMetricItem`、`IoPatternTolerance` 的列表，`$verdict` 是一个 `IoPatternVerdict` 取值；`IoPatternRecord` 记录一次运行，由六个类型组成：`IoPatternWindow`、`IoPatternTotals`、`IoPatternHistogram` 是必填的采集窗口、读写总量与请求大小直方图，`IoPatternConcurrency`、`IoPatternHotness`、`IoPatternTiming` 是可选的并发度分布、块访问热度与每秒峰值字节数，`$sources` 的元素类型是 `observation.ObservationLayer`；`IoPatternComparison` 是两条记录的比较结果，包含 `$real` 与 `$bypass` 两条 `IoPatternRecord`，`$items` 是 `IoPatternMetricResult` 的列表，`IoPatternMetricResult` 是单项度量结果，它的 `$item` 与 `$unit` 分别取 `IoPatternMetricItem` 与 `IoPatternUnit` 的一个取值。枚举定义取值有限的词汇：`IoPatternRunRole` 区分真实运行与旁路运行，`IoPatternMetricItem` 列出全部度量项，`IoPatternUnit` 给出 `distance`、`ratio` 与 `absolute` 三种单位，`IoPatternToleranceSource` 区分参考阈值与标定值，`IoPatternDeviationDirection` 给出偏差方向，`IoPatternLimitation` 列出已知限制，`IoPatternVerdict` 给出四种判定结论。容差与判定通过字段引用关联：`IoPatternTolerance` 是一项容差，它的 `$item` 取 `IoPatternMetricItem`、`$source` 取 `IoPatternToleranceSource`、`$calibration` 可选一条 `IoPatternCalibration` 标定记录；`IoPatternAttribution` 是单项超出阈值的归因，它的 `$item` 取 `IoPatternMetricItem`、`$direction` 取 `IoPatternDeviationDirection`；`IoPatternExplanation` 汇总 `IoPatternAttribution` 的列表、`timing_valid` 与 `IoPatternLimitation` 的列表；`IoPatternJudgement` 是最终判定，它的 `$verdict` 取 `IoPatternVerdict`、`$checks` 是 `IoPatternToleranceCheck` 的列表、`$explanation` 是 `IoPatternExplanation`；`IoPatternToleranceCheck` 记录单项对照阈值的结果。
 
@@ -193,16 +193,16 @@ IoPatternJudgement =
 
 解决这个问题需要四个操作。采集：在旁路运行与同等规模的真实运行上，从应用层 hook 记录每次请求的偏移、大小、时间戳与方向，从系统层取设备或客户端的请求统计，并记录 `tokens_generated` 与 `timing.peak_bytes_per_second`；记录必须声明至少两层采集来源且包含 `sys`，应用层与系统层的总字节数偏差超过 1% 时先解释偏差。比较：两侧使用相同的时间窗口，只计算配方 `metrics.yaml` 用 `items` 声明过的度量项，逐项算差值；直方图的 `bucket_edges` 不一致时判为不可比，不给结论。归因：对超出容差的项写清原因，并说明偏差方向是否可控；观测开销超过 3% 时时序分项结论无效。判定：按 `tolerance` 里的阈值逐项对照，全部在阈值内是对齐通过，任一项超出但归因已写清且偏差方向可控是有条件通过（需评审确认），归因不明是不通过，阈值缺失、记录非法或观测失败是不可比并重跑。
 
-## 接口
+## io_pattern_api
 
 ```viba io_pattern_api
 import io_pattern
 import observation
-import types
+import ckpt_sample
 
 Collect =
      io_pattern.IoPatternRecord
-  <- $run (types.RunRecord * { 要采集的那次运行：旁路运行或同等规模的真实运行 })
+  <- $run (ckpt_sample.RunRecord * { 要采集的那次运行：旁路运行或同等规模的真实运行 })
   <- $role (io_pattern.IoPatternRunRole * { 这次运行是哪一侧 })
   <- $layers (list[observation.ObservationLayer] * { 采集层；至少两层且必须含 sys，否则不能用于对齐判定 })
   <- $warmup_rounds (int * { 丢弃前 N 轮，N 写进配方参数 })
@@ -229,7 +229,7 @@ Explain =
   <- { 归因：对超出阈值的每一项写清原因与偏差方向是否可控，并列出已知限制；观测开销超过 3% 时时序分项结论无效。返回归因 }
 ```
 
-## 组织
+## io_pattern_flow
 
 ```viba io_pattern_flow
 import io_pattern

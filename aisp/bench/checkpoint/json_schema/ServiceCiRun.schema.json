@@ -1,0 +1,498 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceCiRun.schema.json",
+  "title": "ServiceCiRun",
+  "$ref": "#/$defs/service.ServiceCiRun",
+  "$defs": {
+    "service.ServiceCiRun": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "$ref": "#/$defs/service.ServiceCiTrigger"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ckpt_sample.RunRecord"
+          }
+        },
+        "small_scale_only": {
+          "type": "boolean"
+        },
+        "backlink_required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "trigger",
+        "records",
+        "small_scale_only",
+        "backlink_required"
+      ],
+      "additionalProperties": false
+    },
+    "service.ServiceCiTrigger": {
+      "oneOf": [
+        {
+          "const": "recipe_change"
+        },
+        {
+          "const": "framework_upgrade"
+        },
+        {
+          "const": "storage_change"
+        },
+        {
+          "const": "regression"
+        },
+        {
+          "const": "exploration"
+        }
+      ]
+    },
+    "ckpt_sample.RunRecord": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/ckpt_sample.State"
+        },
+        "progress": {
+          "$ref": "#/$defs/ckpt_sample.WorkProgress"
+        },
+        "artifacts": {
+          "$ref": "#/$defs/ckpt_sample.Artifacts"
+        }
+      },
+      "required": [
+        "run_id",
+        "state",
+        "progress",
+        "artifacts"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.State": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "queued": {
+              "$ref": "#/$defs/ckpt_sample.QueueProgress"
+            }
+          },
+          "required": [
+            "queued"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "running": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "running"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "completed": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "completed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "failed": {
+              "$ref": "#/$defs/ckpt_sample.Failure"
+            }
+          },
+          "required": [
+            "failed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rejected": {
+              "$ref": "#/$defs/ckpt_sample.Failure"
+            }
+          },
+          "required": [
+            "rejected"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cancelled": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "cancelled"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.QueueProgress": {
+      "type": "object",
+      "properties": {
+        "pos": {
+          "type": "integer"
+        },
+        "len": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pos",
+        "len"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Failure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.WorkProgress": {
+      "type": "object",
+      "properties": {
+        "done": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "done",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Artifacts": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ckpt_sample.CkptSli"
+          }
+        },
+        "slo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ckpt_sample.CkptSlo"
+          }
+        },
+        "report": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "metrics",
+        "slo",
+        "report"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.CkptSli": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+            }
+          },
+          "required": [
+            "check_point_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_sli": {
+              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+            }
+          },
+          "required": [
+            "training_stall_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+            }
+          },
+          "required": [
+            "restore_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+            }
+          },
+          "required": [
+            "write_throughput_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_sli": {
+              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+            }
+          },
+          "required": [
+            "metadata_commit_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+            }
+          },
+          "required": [
+            "write_latency_p99_sli"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CheckPointDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.TrainingStallMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.RestoreDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteThroughputMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.MetadataCommitMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteLatencyP99Metric": {
+      "type": "number"
+    },
+    "ckpt_sample.CkptSlo": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_slo": {
+              "$ref": "#/$defs/ckpt_sample.MetricLE@e80cc34b"
+            }
+          },
+          "required": [
+            "check_point_duration_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_slo": {
+              "$ref": "#/$defs/ckpt_sample.MetricLE@843aec0a"
+            }
+          },
+          "required": [
+            "training_stall_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_slo": {
+              "$ref": "#/$defs/ckpt_sample.MetricLE@4efeec8b"
+            }
+          },
+          "required": [
+            "restore_duration_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_slo": {
+              "$ref": "#/$defs/ckpt_sample.MetricGE@ff80faa5"
+            }
+          },
+          "required": [
+            "write_throughput_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_slo": {
+              "$ref": "#/$defs/ckpt_sample.MetricLE@60ef8e55"
+            }
+          },
+          "required": [
+            "metadata_commit_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_slo": {
+              "$ref": "#/$defs/ckpt_sample.MetricLE@e2e968c9"
+            }
+          },
+          "required": [
+            "write_latency_p99_slo"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.MetricLE@e80cc34b": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.MetricLE@843aec0a": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.MetricLE@4efeec8b": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.MetricGE@ff80faa5": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.MetricLE@60ef8e55": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.MetricLE@e2e968c9": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

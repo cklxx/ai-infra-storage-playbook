@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionRegressionScope.schema.json",
+  "title": "ExtensionRegressionScope",
+  "$ref": "#/$defs/extension.ExtensionRegressionScope",
+  "$defs": {
+    "extension.ExtensionRegressionScope": {
+      "oneOf": [
+        {
+          "const": "smoke"
+        },
+        {
+          "const": "regular"
+        },
+        {
+          "const": "full"
+        }
+      ]
+    }
+  }
+}

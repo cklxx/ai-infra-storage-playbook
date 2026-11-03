@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyFailureMode.schema.json",
+  "title": "MethodologyFailureMode",
+  "$ref": "#/$defs/methodology.MethodologyFailureMode",
+  "$defs": {
+    "methodology.MethodologyFailureMode": {
+      "oneOf": [
+        {
+          "const": "observation_overhead"
+        },
+        {
+          "const": "buffer_merge"
+        },
+        {
+          "const": "timing_compression"
+        },
+        {
+          "const": "single_device_serial"
+        },
+        {
+          "const": "cache_difference"
+        },
+        {
+          "const": "communication_mock"
+        }
+      ]
+    }
+  }
+}

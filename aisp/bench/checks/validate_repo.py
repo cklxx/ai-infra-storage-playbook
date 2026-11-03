@@ -40,7 +40,7 @@ except ImportError as exc:  # pragma: no cover - depends on environment
 ROOT = Path(__file__).resolve().parents[1]
 RECIPES = ROOT / "recipes"
 SCHEMAS = ROOT / "schemas"
-GENERATED_SCHEMAS = ROOT / "playbook" / "json_schema"
+GENERATED_SCHEMAS = ROOT / "checkpoint" / "json_schema"
 REGISTRY = ROOT / "metrics" / "registry.yaml"
 REQUIRED_FILES = ("README.md", "recipe.yaml", "metrics.yaml", "acceptance-checklist.md")
 

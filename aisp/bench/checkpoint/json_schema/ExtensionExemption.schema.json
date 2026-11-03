@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionExemption.schema.json",
+  "title": "ExtensionExemption",
+  "$ref": "#/$defs/extension.ExtensionExemption",
+  "$defs": {
+    "extension.ExtensionExemption": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason",
+        "review_date"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

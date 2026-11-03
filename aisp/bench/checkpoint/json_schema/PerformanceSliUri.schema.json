@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceSliUri.schema.json",
+  "title": "PerformanceSliUri",
+  "$ref": "#/$defs/performance.PerformanceSliUri",
+  "$defs": {
+    "performance.PerformanceSliUri": {
+      "type": "string"
+    }
+  }
+}

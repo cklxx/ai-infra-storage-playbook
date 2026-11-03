@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyReproduction.schema.json",
+  "title": "MethodologyReproduction",
+  "$ref": "#/$defs/methodology.MethodologyReproduction",
+  "$defs": {
+    "methodology.MethodologyReproduction": {
+      "type": "object",
+      "properties": {
+        "fixed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyReproducibilityItem"
+          }
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyReproducibilityItem"
+          }
+        }
+      },
+      "required": [
+        "fixed",
+        "missing"
+      ],
+      "additionalProperties": false
+    },
+    "methodology.MethodologyReproducibilityItem": {
+      "oneOf": [
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "config"
+        },
+        {
+          "const": "dependencies"
+        },
+        {
+          "const": "topology"
+        },
+        {
+          "const": "warmup"
+        },
+        {
+          "const": "observation"
+        },
+        {
+          "const": "randomness"
+        }
+      ]
+    }
+  }
+}

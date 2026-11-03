@@ -1,0 +1,655 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Run.schema.json",
+  "title": "Run",
+  "$ref": "#/$defs/ckpt_bench.Run",
+  "$defs": {
+    "ckpt_bench.Run": {
+      "type": "object",
+      "properties": {
+        "io": {
+          "$ref": "#/$defs/io_pattern.IoPatternRecord"
+        },
+        "sli": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/performance.PerformanceSliRecord"
+          }
+        },
+        "slo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/performance.PerformanceSloResult"
+          }
+        },
+        "manifest": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "io",
+        "sli",
+        "slo",
+        "manifest"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternRecord": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "recipe": {
+          "type": "string"
+        },
+        "window": {
+          "$ref": "#/$defs/io_pattern.IoPatternWindow"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        },
+        "totals": {
+          "$ref": "#/$defs/io_pattern.IoPatternTotals"
+        },
+        "request_size_histogram": {
+          "$ref": "#/$defs/io_pattern.IoPatternHistogram"
+        },
+        "concurrency": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternConcurrency"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequentiality_ratio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hotness": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternHotness"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observation_overhead_ratio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tokens_generated": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timing": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternTiming"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "run_id",
+        "recipe",
+        "window",
+        "sources",
+        "totals",
+        "request_size_histogram",
+        "concurrency",
+        "sequentiality_ratio",
+        "hotness",
+        "observation_overhead_ratio",
+        "tokens_generated",
+        "timing"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternWindow": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    },
+    "io_pattern.IoPatternTotals": {
+      "type": "object",
+      "properties": {
+        "read_bytes": {
+          "type": "integer"
+        },
+        "write_bytes": {
+          "type": "integer"
+        },
+        "read_ops": {
+          "type": "integer"
+        },
+        "write_ops": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "read_bytes",
+        "write_bytes",
+        "read_ops",
+        "write_ops"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternHistogram": {
+      "type": "object",
+      "properties": {
+        "bucket_edges": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "bucket_edges",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternConcurrency": {
+      "type": "object",
+      "properties": {
+        "p50": {
+          "type": "number"
+        },
+        "p95": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "p50",
+        "p95",
+        "max"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternHotness": {
+      "type": "object",
+      "properties": {
+        "top_k": {
+          "type": "integer"
+        },
+        "top_k_share": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "top_k",
+        "top_k_share"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternTiming": {
+      "type": "object",
+      "properties": {
+        "peak_bytes_per_second": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "peak_bytes_per_second"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceSliRecord": {
+      "type": "object",
+      "properties": {
+        "sample_key": {
+          "$ref": "#/$defs/performance.PerformanceSampleKey"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "workload": {
+          "$ref": "#/$defs/performance.PerformanceWorkload"
+        },
+        "storage": {
+          "$ref": "#/$defs/performance.PerformanceStorageVersion"
+        },
+        "window": {
+          "$ref": "#/$defs/performance.PerformanceWindow"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ckpt_sample.CkptSli"
+          }
+        },
+        "attribution": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/performance.PerformanceAttribution"
+          }
+        },
+        "evidence": {
+          "$ref": "#/$defs/performance.PerformanceEvidence"
+        }
+      },
+      "required": [
+        "sample_key",
+        "run_id",
+        "workload",
+        "storage",
+        "window",
+        "metrics",
+        "attribution",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceSampleKey": {
+      "type": "string"
+    },
+    "performance.PerformanceWorkload": {
+      "oneOf": [
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "performance.PerformanceStorageVersion": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "$ref": "#/$defs/performance.PerformanceStorageLayer"
+        },
+        "adapter": {
+          "$ref": "#/$defs/performance.PerformanceStorageLayer"
+        }
+      },
+      "required": [
+        "backend",
+        "adapter"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceStorageLayer": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ckpt_sample.Component"
+        },
+        "config_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "config_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceWindow": {
+      "type": "object",
+      "properties": {
+        "warmup": {
+          "$ref": "#/$defs/performance.PerformanceWarmup"
+        },
+        "steady_start": {
+          "type": "string"
+        },
+        "steady_end": {
+          "type": "string"
+        },
+        "cv": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "warmup",
+        "steady_start",
+        "steady_end",
+        "cv"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceWarmup": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "fraction": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "fraction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rounds": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "rounds"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CkptSli": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+            }
+          },
+          "required": [
+            "check_point_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_sli": {
+              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+            }
+          },
+          "required": [
+            "training_stall_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+            }
+          },
+          "required": [
+            "restore_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+            }
+          },
+          "required": [
+            "write_throughput_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_sli": {
+              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+            }
+          },
+          "required": [
+            "metadata_commit_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+            }
+          },
+          "required": [
+            "write_latency_p99_sli"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CheckPointDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.TrainingStallMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.RestoreDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteThroughputMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.MetadataCommitMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteLatencyP99Metric": {
+      "type": "number"
+    },
+    "performance.PerformanceAttribution": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/performance.PerformanceAttributionKind"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceAttributionKind": {
+      "oneOf": [
+        {
+          "const": "throughput"
+        },
+        {
+          "const": "iops"
+        },
+        {
+          "const": "latency_percentile"
+        },
+        {
+          "const": "queue_depth"
+        },
+        {
+          "const": "saturation"
+        },
+        {
+          "const": "rank_fairness"
+        },
+        {
+          "const": "error_and_retry"
+        },
+        {
+          "const": "metadata_op_rate"
+        },
+        {
+          "const": "window_stability"
+        },
+        {
+          "const": "ceiling_efficiency"
+        }
+      ]
+    },
+    "performance.PerformanceEvidence": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "io_pattern": {
+          "type": "string"
+        },
+        "raw_data": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "io_pattern",
+        "raw_data",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceSloResult": {
+      "type": "object",
+      "properties": {
+        "sample_key": {
+          "$ref": "#/$defs/performance.PerformanceSampleKey"
+        },
+        "slo_ref": {
+          "type": "string"
+        },
+        "metric": {
+          "type": "string"
+        },
+        "target": {
+          "type": "number"
+        },
+        "observed": {
+          "type": "number"
+        },
+        "verdict": {
+          "$ref": "#/$defs/performance.PerformanceSloVerdict"
+        },
+        "sli_uri": {
+          "$ref": "#/$defs/performance.PerformanceSliUri"
+        }
+      },
+      "required": [
+        "sample_key",
+        "slo_ref",
+        "metric",
+        "target",
+        "observed",
+        "verdict",
+        "sli_uri"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceSloVerdict": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "inconclusive"
+        }
+      ]
+    },
+    "performance.PerformanceSliUri": {
+      "type": "string"
+    }
+  }
+}

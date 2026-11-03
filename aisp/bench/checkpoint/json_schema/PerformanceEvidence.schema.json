@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceEvidence.schema.json",
+  "title": "PerformanceEvidence",
+  "$ref": "#/$defs/performance.PerformanceEvidence",
+  "$defs": {
+    "performance.PerformanceEvidence": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "io_pattern": {
+          "type": "string"
+        },
+        "raw_data": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "io_pattern",
+        "raw_data",
+        "sha256"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -21,7 +21,7 @@ Verify = examples_api.Verify
 
 `examples/` 下的文件让校验脚本有可跑通的输入，也让新同学看到各类清单长什么样。所有内容都是样例，不代表任何真实运行。这份文档给出每个样例的用途、正向与负向样例的划分，以及整套和单项的跑法。
 
-## 问题
+## examples
 
 问题形式化为 `examples` 模块，概念分成类型与枚举两类。样例路径与极性写成枚举：正向样例的每条路径是 `ExamplePositiveSample` 的一个取值，负向样例的每条路径是 `ExampleNegativeSample` 的一个取值，`ExamplePolarity` 只有 positive 与 negative 两个取值，三者都是 Oneof 枚举。承载字段的结构写成对象类型：`ExampleSampleSet` 的 `$positive` 与 `$negative` 分别是 `ExamplePositiveSample` 与 `ExampleNegativeSample` 的列表，`ExampleAllRun` 与 `ExampleSingleRun` 各收下一种跑法要用的取值，`ExampleRunPlan` 再用 `$all` 与 `$single` 两个分支把这两个对象类型合成一个 Oneof 枚举。判结果的部分同样有类型：`ExampleOutcome` 是只有 accepted 与 rejected 两个取值的 Oneof 枚举，`ExampleRunResult` 由样例路径列表、期望的 `ExamplePolarity` 与实际给出的 `ExampleOutcome` 组成，`ExampleRunReport` 再收下 `ExampleRunResult` 的列表与不一致的样例路径。
 
@@ -93,7 +93,7 @@ ExampleRunReport =
 
 解决这个问题需要四个操作。列样例：交回正向样例与负向样例，并说明每个样例的用途；负向样例放在 `invalid/` 下，必须被拒绝。整套跑：执行 `python3 scripts/run_checks.py`，一次跑完全部样例。单项跑：执行 `python3 checks/check_io_pattern.py`，用 `--real`、`--bypassed` 与 `--metrics` 指定输入；单独跑一项时阈值从配方读取，示例里取 `recipes/checkpoint/metrics.yaml`。判结果：正向样例应当被接受，负向样例应当被拒绝；负向样例由 `checks/selftest.py` 使用，证明检查不只会通过。
 
-## 接口
+## examples_api
 
 ```viba examples_api
 import examples
@@ -120,7 +120,7 @@ Verify =
   <- { 判结果：逐个样例比对 outcome 与 expected，并确认每个样例的 expected 与它在样例集里的正负一致、且都有结果；正向样例应当 accepted，负向样例应当 rejected。返回结果清单与不一致的样例路径 }
 ```
 
-## 组织
+## examples_flow
 
 ```viba examples_flow
 import examples

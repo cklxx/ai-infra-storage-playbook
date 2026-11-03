@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyToleranceStatistic.schema.json",
+  "title": "MethodologyToleranceStatistic",
+  "$ref": "#/$defs/methodology.MethodologyToleranceStatistic",
+  "$defs": {
+    "methodology.MethodologyToleranceStatistic": {
+      "oneOf": [
+        {
+          "const": "bucket_frequency_l1"
+        },
+        {
+          "const": "byte_ratio_relative_error"
+        },
+        {
+          "const": "concurrency_median_relative_error"
+        },
+        {
+          "const": "concurrency_p95_relative_error"
+        },
+        {
+          "const": "peak_window_bytes_relative_error"
+        },
+        {
+          "const": "top_k_share_absolute_difference"
+        },
+        {
+          "const": "sequential_request_share_absolute_difference"
+        }
+      ]
+    }
+  }
+}

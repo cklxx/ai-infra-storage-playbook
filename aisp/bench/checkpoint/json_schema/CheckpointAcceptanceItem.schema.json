@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointAcceptanceItem.schema.json",
+  "title": "CheckpointAcceptanceItem",
+  "$ref": "#/$defs/checkpoint.CheckpointAcceptanceItem",
+  "$defs": {
+    "checkpoint.CheckpointAcceptanceItem": {
+      "oneOf": [
+        {
+          "const": "io_pattern_alignment"
+        },
+        {
+          "const": "scaling_consistency"
+        },
+        {
+          "const": "fidelity"
+        },
+        {
+          "const": "reproducibility"
+        },
+        {
+          "const": "coverage"
+        }
+      ]
+    }
+  }
+}

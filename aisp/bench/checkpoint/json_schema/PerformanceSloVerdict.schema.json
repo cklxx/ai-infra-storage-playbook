@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceSloVerdict.schema.json",
+  "title": "PerformanceSloVerdict",
+  "$ref": "#/$defs/performance.PerformanceSloVerdict",
+  "$defs": {
+    "performance.PerformanceSloVerdict": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "inconclusive"
+        }
+      ]
+    }
+  }
+}

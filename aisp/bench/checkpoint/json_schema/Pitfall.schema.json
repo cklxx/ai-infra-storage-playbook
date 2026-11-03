@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Pitfall.schema.json",
+  "title": "Pitfall",
+  "$ref": "#/$defs/pitfalls.Pitfall",
+  "$defs": {
+    "pitfalls.Pitfall": {
+      "oneOf": [
+        {
+          "const": "observation_overhead"
+        },
+        {
+          "const": "layer_mismatch"
+        },
+        {
+          "const": "timing_compressed"
+        },
+        {
+          "const": "serial_ranks"
+        },
+        {
+          "const": "cold_warm_cache"
+        },
+        {
+          "const": "bypass_memory_leak"
+        },
+        {
+          "const": "dependency_hell"
+        },
+        {
+          "const": "runnability_as_performance"
+        },
+        {
+          "const": "mock_comm_wrong_tensor"
+        },
+        {
+          "const": "dedup_false_positive"
+        },
+        {
+          "const": "fake_pairing"
+        },
+        {
+          "const": "missing_license"
+        },
+        {
+          "const": "meta_device_incompatible"
+        },
+        {
+          "const": "async_checkpoint_timing"
+        },
+        {
+          "const": "shard_metadata_cost"
+        },
+        {
+          "const": "optimizer_state_dropped"
+        },
+        {
+          "const": "parallel_run_interference"
+        },
+        {
+          "const": "missing_backlink"
+        },
+        {
+          "const": "invalid_run_counted"
+        },
+        {
+          "const": "version_drift"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionLicenseState.schema.json",
+  "title": "CollectionLicenseState",
+  "$ref": "#/$defs/collection.CollectionLicenseState",
+  "$defs": {
+    "collection.CollectionLicenseState": {
+      "oneOf": [
+        {
+          "const": "declared"
+        },
+        {
+          "const": "missing"
+        }
+      ]
+    }
+  }
+}

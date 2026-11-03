@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingExtrapolation.schema.json",
+  "title": "ScalingExtrapolation",
+  "$ref": "#/$defs/scaling.ScalingExtrapolation",
+  "$defs": {
+    "scaling.ScalingExtrapolation": {
+      "type": "object",
+      "properties": {
+        "from_level": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "to_level": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling.ScalingExtrapolationRule"
+          }
+        },
+        "saturated": {
+          "type": "boolean"
+        },
+        "saturation_point": {
+          "type": "string"
+        },
+        "timing": {
+          "$ref": "#/$defs/scaling.ScalingTiming"
+        },
+        "tail_latency": {
+          "type": "string"
+        },
+        "nonlinear_sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling.ScalingNonlinearSource"
+          }
+        },
+        "prediction": {
+          "type": "string"
+        },
+        "basis": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "from_level",
+        "to_level",
+        "rules",
+        "saturated",
+        "saturation_point",
+        "timing",
+        "tail_latency",
+        "nonlinear_sources",
+        "prediction",
+        "basis"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    },
+    "scaling.ScalingExtrapolationRule": {
+      "oneOf": [
+        {
+          "const": "aggregate_bandwidth"
+        },
+        {
+          "const": "data_bytes"
+        },
+        {
+          "const": "metadata_operations"
+        },
+        {
+          "const": "timing_overlap"
+        },
+        {
+          "const": "tail_latency"
+        }
+      ]
+    },
+    "scaling.ScalingTiming": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/$defs/scaling.ScalingWriteMode"
+        },
+        "bandwidth_demand": {
+          "type": "number"
+        },
+        "real_compute_median_s": {
+          "type": "number"
+        },
+        "stretch_rule": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "mode",
+        "bandwidth_demand",
+        "real_compute_median_s",
+        "stretch_rule"
+      ],
+      "additionalProperties": false
+    },
+    "scaling.ScalingWriteMode": {
+      "oneOf": [
+        {
+          "const": "sync"
+        },
+        {
+          "const": "async"
+        }
+      ]
+    },
+    "scaling.ScalingNonlinearSource": {
+      "oneOf": [
+        {
+          "const": "storage_saturation"
+        },
+        {
+          "const": "metadata_hotspot"
+        },
+        {
+          "const": "network_congestion"
+        },
+        {
+          "const": "cache_hit_drop"
+        },
+        {
+          "const": "load_imbalance"
+        },
+        {
+          "const": "scheduling_jitter"
+        },
+        {
+          "const": "failure_recovery"
+        }
+      ]
+    }
+  }
+}

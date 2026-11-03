@@ -21,7 +21,7 @@ RunForward = tiny_model_api.RunForward
 
 这份最小模型样例演示语料里的一条记录长什么样：它演示清单条目的字段，给 [`checks/`](../../checks/) 的脚本一个可以跑通的最小输入，也让新同学在五分钟内看懂收集与验证流程。它不是评估目标。
 
-## 问题
+## tiny_model
 
 问题的形式化以 `TinyModelSample` 这个 Object 类型为入口：`$path` 与 `$evaluation_target` 是 `str` 与 `bool` 两个字段，`$purpose`、`$files`、`$checks` 分别取 `TinyModelPurpose`、`TinyModelFile`、`TinyModelCheck` 三个枚举的列表，`$manifest` 取对象类型 `TinyModelManifestEntry`。这三个枚举都用 Oneof 表示，取值只能落在列出的分支上；`TinyModelManifestEntry` 则是只含两个 `str` 字段的小 Object 类型。核对结果不放进 `TinyModelSample` 的字段，单独写成 Oneof 枚举 `TinyModelCheckStatus`，由 `$passed`、`$failed`、`$skipped` 三个分支覆盖，并作为 `## 接口` 里 `CheckConfig`、`CheckManifest` 与 `RunForward` 的返回类型。
 
@@ -69,7 +69,7 @@ TinyModelSample =
 
 先 `Inspect` 读取样例：用途、三个文件各是什么、清单条目遵循哪份 schema、有哪几条核对方法。`CheckConfig` 解析 [`config.json`](config.json)，`CheckManifest` 解析 [`manifest-entry.json`](manifest-entry.json)；清单条目与 [`schemas/model-manifest.schema.json`](../../schemas/model-manifest.schema.json) 一致。`RunForward` 在装了 PyTorch 的环境里运行 [`modeling_tiny.py`](modeling_tiny.py)，在 meta device 上做一次前向。没有安装 PyTorch 时 `RunForward` 返回跳过，不报错；跳过的运行不写进任何结论。
 
-## 接口
+## tiny_model_api
 
 ```viba tiny_model_api
 import tiny_model
@@ -95,7 +95,7 @@ RunForward =
   <- { 跑一次前向：在 meta device 上执行 modeling_tiny.py；需要 PyTorch，没有安装时返回 skipped，不报错，这次跳过不写进任何结论 }
 ```
 
-## 组织
+## tiny_model_flow
 
 ```viba tiny_model_flow
 import tiny_model

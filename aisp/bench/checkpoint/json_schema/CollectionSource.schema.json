@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionSource.schema.json",
+  "title": "CollectionSource",
+  "$ref": "#/$defs/collection.CollectionSource",
+  "$defs": {
+    "collection.CollectionSource": {
+      "oneOf": [
+        {
+          "const": "hub_api"
+        },
+        {
+          "const": "org_page"
+        },
+        {
+          "const": "paper"
+        },
+        {
+          "const": "own_registry"
+        }
+      ]
+    }
+  }
+}

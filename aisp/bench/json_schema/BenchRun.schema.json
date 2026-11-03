@@ -11,7 +11,7 @@
           "type": "string"
         },
         "state": {
-          "$ref": "#/$defs/types.State"
+          "$ref": "#/$defs/ckpt_sample.State"
         },
         "artifacts": {
           "$ref": "#/$defs/bench.BenchRunArtifacts"
@@ -28,13 +28,13 @@
       ],
       "additionalProperties": false
     },
-    "types.State": {
+    "ckpt_sample.State": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "queued": {
-              "$ref": "#/$defs/types.QueueProgress"
+              "$ref": "#/$defs/ckpt_sample.QueueProgress"
             }
           },
           "required": [
@@ -70,7 +70,7 @@
           "type": "object",
           "properties": {
             "failed": {
-              "$ref": "#/$defs/types.Failure"
+              "$ref": "#/$defs/ckpt_sample.Failure"
             }
           },
           "required": [
@@ -82,7 +82,7 @@
           "type": "object",
           "properties": {
             "rejected": {
-              "$ref": "#/$defs/types.Failure"
+              "$ref": "#/$defs/ckpt_sample.Failure"
             }
           },
           "required": [
@@ -104,7 +104,7 @@
         }
       ]
     },
-    "types.QueueProgress": {
+    "ckpt_sample.QueueProgress": {
       "type": "object",
       "properties": {
         "pos": {
@@ -120,7 +120,7 @@
       ],
       "additionalProperties": false
     },
-    "types.Failure": {
+    "ckpt_sample.Failure": {
       "type": "object",
       "properties": {
         "kind": {

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingInvariant.schema.json",
+  "title": "ScalingInvariant",
+  "$ref": "#/$defs/scaling.ScalingInvariant",
+  "$defs": {
+    "scaling.ScalingInvariant": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "definition": {
+          "type": "string"
+        },
+        "computation": {
+          "type": "string"
+        },
+        "tolerance": {
+          "type": "string"
+        },
+        "verdict": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "definition",
+        "computation",
+        "tolerance",
+        "verdict"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionGapKind.schema.json",
+  "title": "CollectionGapKind",
+  "$ref": "#/$defs/collection.CollectionGapKind",
+  "$defs": {
+    "collection.CollectionGapKind": {
+      "oneOf": [
+        {
+          "const": "unknown_code_role"
+        },
+        {
+          "const": "unpaired_training"
+        },
+        {
+          "const": "empty_cell"
+        }
+      ]
+    }
+  }
+}

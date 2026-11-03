@@ -22,7 +22,7 @@ CheckRegistration = acceptance_collection_api.CheckRegistration
 
 这份文档是模型代码收集配方的验收清单，按 G0 能跑、G1 旁路可跑、G2 小规模对齐、G3 逐级 scaling、G4 结论登记五道门列出 15 条验收项。它回答这套配方在每个阶段要满足什么条件才算完成，验收时按门逐条核对。
 
-## 问题
+## acceptance_collection
 
 问题形式化为一个模块 `acceptance_collection`：取值落在有限集合里的概念写成 `Oneof` 枚举，`AcceptanceCollectionItem` 把每条验收项列成一个带字符串标签的分支，阶段门则由 `gates` 模块的枚举 `gates.Gate` 定义，本模块只引用它。其余概念写成对象类型：`AcceptanceCollectionGate` 表示一道门与它的验收项，`AcceptanceCollectionChecklist` 表示整份清单，`AcceptanceCollectionCoverageRun` 表示覆盖度脚本的一次运行，`AcceptanceCollectionItemResult` 与 `AcceptanceCollectionGateResult` 分别表示单条验收项和一道门的判定结果。这些类型逐层嵌套：`AcceptanceCollectionChecklist` 的 `$gates` 是 `list[AcceptanceCollectionGate]`，`AcceptanceCollectionGate` 的 `$items` 是 `list[AcceptanceCollectionItem]`，`AcceptanceCollectionGateResult` 的 `$items` 是 `list[AcceptanceCollectionItemResult]`。`AcceptanceCollectionGate` 与 `AcceptanceCollectionGateResult` 的 `$gate` 都取一个 `gates.Gate` 值，`AcceptanceCollectionItem` 每个分支的标签前缀标出它属于哪道门，验收项与门由此对应起来。
 
@@ -78,7 +78,7 @@ AcceptanceCollectionGateResult =
 
 先验收 G0 能跑：核对候选清单的数量达到目标数量的 3 倍，至少一个模型走完下载与可跑性验证全流程，工作区镜像按 transformers 主版本分好组。再验收 G1 旁路可跑：mock 进程组要已实现并用已知能跑的模型验证过返回值，fidelity_boundary 要填好且通信路径标为 L1，分时占用的调度方式要记录且并发为 1。G2 只核对两件事：本配方不做 IO 对齐、下游配方引用时的指标版本一致，覆盖度计算脚本在 50 个模型的子集上跑通。G3 在本配方不适用，确认语料规模扩展由 scaling_plan 的 S0–S2 覆盖即可。最后验收 G4 结论登记：清单上传并记下 sha256，覆盖度清单的缺口按优先级排好，无法判定代码角色与未配对训练代码的样本都计入缺口，可跑率、架构族覆盖、规模覆盖、配对率达标，重跑一次文件集合与 sha256 完全一致。
 
-## 接口
+## acceptance_collection_api
 
 ```viba acceptance_collection_api
 import acceptance_collection
@@ -118,7 +118,7 @@ CheckRegistration =
   <- { 验收 G4 结论登记：清单已上传且 sha256 已记录；覆盖度清单已生成且缺口按优先级排序；无法判定代码角色与未配对训练代码的样本都计入缺口；可跑率、架构族覆盖、规模覆盖、配对率均达到验收目标；重跑一次文件集合与 sha256 完全一致。返回这六条验收项的逐条判定与门的结论 }
 ```
 
-## 组织
+## acceptance_collection_flow
 
 ```viba acceptance_collection_flow
 import acceptance_collection

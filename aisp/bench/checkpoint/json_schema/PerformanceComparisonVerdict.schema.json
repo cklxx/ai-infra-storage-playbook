@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceComparisonVerdict.schema.json",
+  "title": "PerformanceComparisonVerdict",
+  "$ref": "#/$defs/performance.PerformanceComparisonVerdict",
+  "$defs": {
+    "performance.PerformanceComparisonVerdict": {
+      "oneOf": [
+        {
+          "const": "提升"
+        },
+        {
+          "const": "退化"
+        },
+        {
+          "const": "不可比"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Sample.schema.json",
+  "title": "Sample",
+  "$ref": "#/$defs/ckpt_bench.Sample",
+  "$defs": {
+    "ckpt_bench.Sample": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/ckpt_sample.Model"
+        },
+        "parallel": {
+          "type": "string"
+        },
+        "load": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "model",
+        "parallel",
+        "load"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

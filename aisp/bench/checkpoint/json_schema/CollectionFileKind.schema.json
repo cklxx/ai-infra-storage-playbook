@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionFileKind.schema.json",
+  "title": "CollectionFileKind",
+  "$ref": "#/$defs/collection.CollectionFileKind",
+  "$defs": {
+    "collection.CollectionFileKind": {
+      "oneOf": [
+        {
+          "const": "config"
+        },
+        {
+          "const": "configuration"
+        },
+        {
+          "const": "modeling"
+        },
+        {
+          "const": "referenced_module"
+        },
+        {
+          "const": "tokenizer_config"
+        },
+        {
+          "const": "generation_config"
+        }
+      ]
+    }
+  }
+}

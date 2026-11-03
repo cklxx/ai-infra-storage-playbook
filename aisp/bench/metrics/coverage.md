@@ -21,7 +21,7 @@ JudgeCoverage = coverage_api.JudgeCoverage
 
 这份文档定义覆盖度的口径、阈值与判定：覆盖度决定评估集是否够用，它是评估集在目标维度矩阵上的填充程度，用来判断还有哪些场景没测过，也是 playbook 生成下一版评估集的输入。覆盖度按矩阵计算，轴由配方声明，每个格子按最近一次运行的结果记为 covered、failed、stale、gap 或 exempt。覆盖度低于配方的 `coverage_ratio_min` 时不通过、缺口按优先级补；轴是人定的，轴选错了，覆盖度再高也测不到真正的风险。
 
-## 问题
+## coverage
 
 问题形式化为 `coverage` 模块：枚举 `CoverageAxis` 的九个取值是覆盖矩阵的九条轴，枚举 `CoverageCellState` 的五个取值是格子所处的五种状态，其中 `exempt` 状态要配一条 `CoverageExemption`。对象 `CoverageAxisValue` 把一条轴与这条轴上的一个取值配成一对，`$axis` 取 `CoverageAxis` 的一个取值，`$value` 是这条轴上的取值字符串；别名 `CoverageCellKey` 是 `CoverageAxisValue` 的列表，也就是一个格子的坐标。对象 `CoverageCell` 由坐标、状态与可选的 `CoverageExemption` 组成，别名 `CoverageGap` 就是 `CoverageCellKey`，指应有但没有的格子；对象 `CoverageManifest` 收配方声明的轴与全部格子。对象 `CoverageStats` 是计算产物，收分母、已覆盖数、覆盖度、缺口率与 `CoverageGap` 清单；Oneof `CoverageReport` 的两个分支分别携带 `CoverageStats` 与清单非法的原因；对象 `CoverageThreshold` 单独收通过判定用的 `$coverage_ratio_min`；Oneof `CoverageVerdict` 的取值是 `pass`、`fail`、`incomparable`，由 `CoverageReport` 与 `CoverageThreshold` 判定得到。
 
@@ -99,7 +99,7 @@ CoverageVerdict =
 
 解决这个问题需要四个操作。登记格子：按最近一次运行的结果，把一条格子的状态写进覆盖度清单，清单由评估服务在每次运行后更新。算覆盖率：按清单算覆盖度与缺口率，exempt 不进分母，豁免过期自动转为 gap，缺口按优先级排序。判定是否够：用覆盖度对照配方 metrics.yaml 里的 coverage_ratio_min，大于或等于阈值判通过，低于阈值判不通过；清单缺轴或状态未知时判不可比，重跑。登记豁免：对明确不需要覆盖的格子记下理由与复核日期，写进清单，状态记为 exempt；超过复核日期自动转为 gap。
 
-## 接口
+## coverage_api
 
 ```viba coverage_api
 import coverage
@@ -130,7 +130,7 @@ GrantExemption =
   <- { 登记豁免：明确判定这个格子不需要覆盖，记下理由与复核日期，把这条格子按 exempt 状态写进覆盖度清单；exempt 不进分母；超过复核日期后自动转为 gap。返回更新后的清单 }
 ```
 
-## 组织
+## coverage_flow
 
 ```viba coverage_flow
 import coverage

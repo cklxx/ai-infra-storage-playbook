@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ObservationConfig.schema.json",
+  "title": "ObservationConfig",
+  "$ref": "#/$defs/ckpt_sample.ObservationConfig",
+  "$defs": {
+    "ckpt_sample.ObservationConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "sample_rate": {
+          "type": "number"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "sample_rate",
+        "layers"
+      ],
+      "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    }
+  }
+}

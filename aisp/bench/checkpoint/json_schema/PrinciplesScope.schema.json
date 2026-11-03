@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesScope.schema.json",
+  "title": "PrinciplesScope",
+  "$ref": "#/$defs/principles.PrinciplesScope",
+  "$defs": {
+    "principles.PrinciplesScope": {
+      "type": "object",
+      "properties": {
+        "included": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesIncludedWork"
+          }
+        },
+        "excluded": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesExcludedWork"
+          }
+        }
+      },
+      "required": [
+        "included",
+        "excluded"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesIncludedWork": {
+      "oneOf": [
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "scaling"
+        },
+        {
+          "const": "service"
+        },
+        {
+          "const": "extension"
+        },
+        {
+          "const": "metrics"
+        }
+      ]
+    },
+    "principles.PrinciplesExcludedWork": {
+      "oneOf": [
+        {
+          "const": "performance_tuning"
+        },
+        {
+          "const": "kernel_optimization"
+        },
+        {
+          "const": "hardware_selection"
+        },
+        {
+          "const": "production_ops"
+        },
+        {
+          "const": "report_archival"
+        },
+        {
+          "const": "raw_assets"
+        }
+      ]
+    }
+  }
+}

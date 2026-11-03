@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceThresholdScope.schema.json",
+  "title": "PerformanceThresholdScope",
+  "$ref": "#/$defs/performance.PerformanceThresholdScope",
+  "$defs": {
+    "performance.PerformanceThresholdScope": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "adapter": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "topology": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/levels.Level"
+          }
+        }
+      },
+      "required": [
+        "backend",
+        "adapter",
+        "topology"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    }
+  }
+}

@@ -20,15 +20,15 @@ Register = recipe_checkpoint_api.Register
 
 ## 背景
 
-训练侧存储评估，评估对象是训练框架的 checkpoint 写入与读取两条路径，计算部分被旁路。目标是在真实存储与传输路径上测出训练任务产生的 IO 特征，不在合成负载上测，并把结论从单机小参数外推到十万卡。方法说明见 [`playbook/checkpoint.md`](../../playbook/checkpoint.md)。
+训练侧存储评估，评估对象是训练框架的 checkpoint 写入与读取两条路径，计算部分被旁路。目标是在真实存储与传输路径上测出训练任务产生的 IO 特征，不在合成负载上测，并把结论从单机小参数外推到十万卡。方法说明见 [`checkpoint/checkpoint.md`](../../checkpoint/checkpoint.md)。
 
-## 问题
+## recipe_checkpoint
 
-问题形式化为 `recipe_checkpoint` 模块，概念分成类型与枚举两类：承载字段的结构写成对象类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`RecipeCheckpointSpec` 是入口类型，五个字段分别收下输入 `RecipeCheckpointInput`、配置要求 `RecipeCheckpointConfig`、`RecipeCheckpointStage` 的列表、产出 `RecipeCheckpointProducts` 与 `RecipeCheckpointAcceptanceItem` 的列表；`RecipeCheckpointInput` 用 `RecipeCheckpointVersionedName` 描述框架、storage.backend 与 storage.adapter，用 `RecipeCheckpointParallel` 描述四个并行度数，`RecipeCheckpointConfig` 的并行策略覆盖与写入方式分别取 `RecipeCheckpointParallelLead` 与 `RecipeCheckpointWriteMode` 这两个枚举的列表。步骤、阶段门与验收项写成枚举：`RecipeCheckpointStep` 给出六个步骤，`RecipeCheckpointGate` 给出六个阶段门，`RecipeCheckpointAcceptanceItem` 给出验收项，`RecipeCheckpointStage` 把 `RecipeCheckpointStep` 的一个取值与 `RecipeCheckpointGate` 的一个取值配成一对；`RecipeCheckpointBypass` 由 `RecipeCheckpointBypassStep` 的列表、`fidelity.FidelityBoundary` 的列表与一条 `types.RunRecord` 组成。判定与放大的结果各有类型：`RecipeCheckpointAlignment` 由 `RecipeCheckpointAlignmentItem` 的列表与一个 `bool` 结论组成，`RecipeCheckpointScaling` 由 `RecipeCheckpointParameterScaling` 与 `RecipeCheckpointClusterScaling` 组成，两者的检查分别取 `RecipeCheckpointParameterScalingCheck` 与 `RecipeCheckpointClusterScalingCheck` 的列表，并各带一个 `RecipeCheckpointGate`；`RecipeCheckpointRegistration` 记录登记结果，`RecipeCheckpointProducts` 的四个字段都是 `str`，给出四份产出的位置。
+问题形式化为 `recipe_checkpoint` 模块，概念分成类型与枚举两类：承载字段的结构写成对象类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`RecipeCheckpointSpec` 是入口类型，五个字段分别收下输入 `RecipeCheckpointInput`、配置要求 `RecipeCheckpointConfig`、`RecipeCheckpointStage` 的列表、产出 `RecipeCheckpointProducts` 与 `RecipeCheckpointAcceptanceItem` 的列表；`RecipeCheckpointInput` 用 `RecipeCheckpointVersionedName` 描述框架、storage.backend 与 storage.adapter，用 `RecipeCheckpointParallel` 描述四个并行度数，`RecipeCheckpointConfig` 的并行策略覆盖与写入方式分别取 `RecipeCheckpointParallelLead` 与 `RecipeCheckpointWriteMode` 这两个枚举的列表。步骤、阶段门与验收项写成枚举：`RecipeCheckpointStep` 给出六个步骤，`RecipeCheckpointGate` 给出六个阶段门，`RecipeCheckpointAcceptanceItem` 给出验收项，`RecipeCheckpointStage` 把 `RecipeCheckpointStep` 的一个取值与 `RecipeCheckpointGate` 的一个取值配成一对；`RecipeCheckpointBypass` 由 `RecipeCheckpointBypassStep` 的列表、`fidelity.FidelityBoundary` 的列表与一条 `ckpt_sample.RunRecord` 组成。判定与放大的结果各有类型：`RecipeCheckpointAlignment` 由 `RecipeCheckpointAlignmentItem` 的列表与一个 `bool` 结论组成，`RecipeCheckpointScaling` 由 `RecipeCheckpointParameterScaling` 与 `RecipeCheckpointClusterScaling` 组成，两者的检查分别取 `RecipeCheckpointParameterScalingCheck` 与 `RecipeCheckpointClusterScalingCheck` 的列表，并各带一个 `RecipeCheckpointGate`；`RecipeCheckpointRegistration` 记录登记结果，`RecipeCheckpointProducts` 的四个字段都是 `str`，给出四份产出的位置。
 
 ```viba recipe_checkpoint
 import fidelity
-import types
+import ckpt_sample
 
 RecipeCheckpointInput =
   Object
@@ -63,7 +63,7 @@ RecipeCheckpointBypass =
   Object
   * $steps (list[RecipeCheckpointBypassStep] * { 旁路做法，按原顺序：构建模型、前向、反向、optimizer、checkpoint 写入与读取 })
   * $fidelity_boundary (list[fidelity.FidelityBoundary] * { 保真边界表；第 2 步的通过条件是它填完 })
-  * $run (types.RunRecord * { 旁路后跑完与第 1 步相同流程的运行记录；取得 G1 })
+  * $run (ckpt_sample.RunRecord * { 旁路后跑完与第 1 步相同流程的运行记录；取得 G1 })
 
 RecipeCheckpointConfig =
   Object
@@ -128,7 +128,7 @@ RecipeCheckpointAlignmentItem =
   * $metric (str * { 分项名称，按 metrics.yaml 的度量项 })
   * $within_tolerance (bool * { 这一项是否在容差内 })
   * $conditional (bool * { 这一项是否属于有条件通过 })
-  * $attribution (str * { 这一项的偏差归因；不通过项按 playbook/methodology.md 的归因顺序排查，结论写进本目录的 notes 或方法文档的坑表 })
+  * $attribution (str * { 这一项的偏差归因；不通过项按 checkpoint/methodology.md 的归因顺序排查，结论写进本目录的 notes 或方法文档的坑表 })
 
 RecipeCheckpointAlignment =
   Object
@@ -181,16 +181,16 @@ RecipeCheckpointSpec =
 
 ## 基本操作
 
-先跑通一次不旁路的训练（`RunBaseline`）：选语料里参数量最小的一档模型，按真实并行配置跑若干训练步，取得 G0。然后接入旁路（`PrepareBypass`）：模型用 meta device 构建，前向用 meta 输入，反向用占位梯度，optimizer 换成占位更新，checkpoint 写入与读取不改，旁路后跑完同一流程并填完保真边界表，取得 G1。同一配置各跑一次真实运行与旁路运行，按 `metrics.yaml` 的容差做分项对比（`Align`），全部分项在容差内或有条件通过即取得 G2；不通过的项按 [`playbook/methodology.md`](../../playbook/methodology.md) 的归因顺序排查。对齐通过后逐级放大（`Scale`）：先固定集群规模与并行策略放大参数量，按 G3-a 判定三项检查；再固定参数量把集群规模放到万卡、外推到十万卡，按 G3-b 判定四项检查，偏差要有归因。最后登记（`Register`）：回链写入 [`recipe.yaml`](recipe.yaml) 的 `latest_run`，更新覆盖度矩阵，未解决的偏差进坑表，取得 G4。
+先跑通一次不旁路的训练（`RunBaseline`）：选语料里参数量最小的一档模型，按真实并行配置跑若干训练步，取得 G0。然后接入旁路（`PrepareBypass`）：模型用 meta device 构建，前向用 meta 输入，反向用占位梯度，optimizer 换成占位更新，checkpoint 写入与读取不改，旁路后跑完同一流程并填完保真边界表，取得 G1。同一配置各跑一次真实运行与旁路运行，按 `metrics.yaml` 的容差做分项对比（`Align`），全部分项在容差内或有条件通过即取得 G2；不通过的项按 [`checkpoint/methodology.md`](../../checkpoint/methodology.md) 的归因顺序排查。对齐通过后逐级放大（`Scale`）：先固定集群规模与并行策略放大参数量，按 G3-a 判定三项检查；再固定参数量把集群规模放到万卡、外推到十万卡，按 G3-b 判定四项检查，偏差要有归因。最后登记（`Register`）：回链写入 [`recipe.yaml`](recipe.yaml) 的 `latest_run`，更新覆盖度矩阵，未解决的偏差进坑表，取得 G4。
 
-## 接口
+## recipe_checkpoint_api
 
 ```viba recipe_checkpoint_api
 import recipe_checkpoint
-import types
+import ckpt_sample
 
 RunBaseline =
-     types.RunRecord
+     ckpt_sample.RunRecord
   <- $input (recipe_checkpoint.RecipeCheckpointInput * { 配方输入：模型代码、训练框架与版本、并行配置、数据集布局、storage.backend 与 storage.adapter })
   <- $config (recipe_checkpoint.RecipeCheckpointConfig * { 配置要求：并行策略覆盖、checkpoint 实现、写入方式、数据布局、预热 })
   <- $steps (int * { 这次要跑的训练步数；第 1 步要求跑通若干训练步 })
@@ -198,14 +198,14 @@ RunBaseline =
 
 PrepareBypass =
      recipe_checkpoint.RecipeCheckpointBypass
-  <- $baseline (types.RunRecord * { 第 1 步跑通的不旁路运行；G0 已通过 })
+  <- $baseline (ckpt_sample.RunRecord * { 第 1 步跑通的不旁路运行；G0 已通过 })
   <- { 第 2 步接入旁路：模型用 torch.device("meta") 构建，前向用 meta 输入执行，反向用占位梯度保证 param.grad 存在且尺寸正确，optimizer 换成占位更新并保留 state_dict() 的键结构与分片，checkpoint 写入与读取不改。返回旁路做法、填完的保真边界表与这次旁路运行记录；取得 G1 }
 
 Align =
      recipe_checkpoint.RecipeCheckpointAlignment
-  <- $real (types.RunRecord * { 不做旁路的运行；与旁路运行同一配置，观测配置相同 })
-  <- $bypass (types.RunRecord * { 旁路运行；与真实运行同一配置，观测配置相同 })
-  <- { 第 3 步小规模对齐：同一配置跑两遍，一次真实、一次旁路，观测配置相同；按 metrics.yaml 的容差判定分项，不通过的项按 playbook/methodology.md 的归因顺序排查；全部在容差内或有条件通过取得 G2。返回分项对比与判定 }
+  <- $real (ckpt_sample.RunRecord * { 不做旁路的运行；与旁路运行同一配置，观测配置相同 })
+  <- $bypass (ckpt_sample.RunRecord * { 旁路运行；与真实运行同一配置，观测配置相同 })
+  <- { 第 3 步小规模对齐：同一配置跑两遍，一次真实、一次旁路，观测配置相同；按 metrics.yaml 的容差判定分项，不通过的项按 checkpoint/methodology.md 的归因顺序排查；全部在容差内或有条件通过取得 G2。返回分项对比与判定 }
 
 Scale =
      recipe_checkpoint.RecipeCheckpointScaling
@@ -224,19 +224,19 @@ Register =
   <- { 第 6 步登记：把回链写入 recipe.yaml 的 latest_run，更新覆盖度矩阵，未解决的偏差进坑表；取得 G4。返回登记结果 }
 ```
 
-## 组织
+## recipe_checkpoint_flow
 
 `recipe_checkpoint_flow` 把输入、配置、五个操作与四份产出串成一次完整评估：五个操作覆盖六个步骤，阶段门按原顺序判定。
 
 ```viba recipe_checkpoint_flow
 import recipe_checkpoint
 import recipe_checkpoint_api
-import types
+import ckpt_sample
 
 RecipeCheckpointBaselineDuty =
   Object
   * $step (recipe_checkpoint_api.RunBaseline * { 第 1 步选型与跑通：取得 G0 })
-  * $run (types.RunRecord * { 产物：不旁路运行的记录 })
+  * $run (ckpt_sample.RunRecord * { 产物：不旁路运行的记录 })
 
 RecipeCheckpointBypassDuty =
   Object
@@ -270,6 +270,6 @@ RecipeCheckpointFlow =
   * $acceptance (list[recipe_checkpoint.RecipeCheckpointAcceptanceItem] * { 五项验收目标 })
 ```
 
-验收里的 SLO 指标与判定顺序见 [`playbook/storage-performance.md`](../../playbook/storage-performance.md) 的 3.1 节。负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner`；开放问题见 [`playbook/checkpoint.md`](../../playbook/checkpoint.md) 的「开放问题」。
+验收里的 SLO 指标与判定顺序见 [`checkpoint/storage-performance.md`](../../checkpoint/storage-performance.md) 的 3.1 节。负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner`；开放问题见 [`checkpoint/checkpoint.md`](../../checkpoint/checkpoint.md) 的「开放问题」。
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

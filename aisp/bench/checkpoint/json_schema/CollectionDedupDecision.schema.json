@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionDedupDecision.schema.json",
+  "title": "CollectionDedupDecision",
+  "$ref": "#/$defs/collection.CollectionDedupDecision",
+  "$defs": {
+    "collection.CollectionDedupDecision": {
+      "oneOf": [
+        {
+          "const": "kept"
+        },
+        {
+          "const": "dropped"
+        }
+      ]
+    }
+  }
+}

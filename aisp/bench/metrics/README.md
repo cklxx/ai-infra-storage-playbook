@@ -19,9 +19,9 @@ ValidateRefs = metrics_registry_api.ValidateRefs
 
 ## 背景
 
-指标登记表是校验脚本的输入。任何进入 `recipes/*/metrics.yaml` 的指标，必须先在 `metrics/` 有口径定义，并在 `metrics/registry.yaml` 登记；同一个指标名口径不同，算出来的数就不同，历史结果就不可比，回归全部失效。本目录的三个指标衡量评估集自身是否可信：[IO pattern 对齐度](io-pattern-alignment.md) 判断旁路运行能否代表真实运行，[覆盖度](coverage.md) 判断评估集是否覆盖目标维度，[scaling 一致性](scaling-consistency.md) 判断外推依据是否成立；被测对象在一个样本上的 SLI 与 SLO 不在本目录，见 [`playbook/storage-performance.md`](../playbook/storage-performance.md)。
+指标登记表是校验脚本的输入。任何进入 `recipes/*/metrics.yaml` 的指标，必须先在 `metrics/` 有口径定义，并在 `metrics/registry.yaml` 登记；同一个指标名口径不同，算出来的数就不同，历史结果就不可比，回归全部失效。本目录的三个指标衡量评估集自身是否可信：[IO pattern 对齐度](io-pattern-alignment.md) 判断旁路运行能否代表真实运行，[覆盖度](coverage.md) 判断评估集是否覆盖目标维度，[scaling 一致性](scaling-consistency.md) 判断外推依据是否成立；被测对象在一个样本上的 SLI 与 SLO 不在本目录，见 [`checkpoint/storage-performance.md`](../checkpoint/storage-performance.md)。
 
-## 问题
+## metrics_registry
 
 指标登记表的形式化分成类型与枚举两类。登记记录、配方引用、查询结果与校验未通过项写成了类型：`MetricsRegistryEntry` 是一条登记记录，七个字段收下指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向；`MetricsRegistryRef` 是配方对指标的一次引用，`$gate` 取 `gates.Gate` 的一个取值，`$acceptance_gates` 与 `$compatible_versions` 收下配方在 `acceptance.gates` 与 `compatible_metrics` 里为该指标列出的门与版本；`MetricsRegistryVersionInfo` 是查询结果，收下当前版本与支持的版本；`MetricsRegistryProblem` 是校验未通过的一项，收下出问题的指标名、未通过的那条检查与具体说明。指标名、版本、单位与方向各自写成 `str` 上的类型别名 `MetricsRegistryName`、`MetricsRegistryVersion`、`MetricsRegistryUnit` 与 `MetricsRegistryDirection`，`MetricsRegistryEntry` 与 `MetricsRegistryRef` 的对应字段都取这些别名；校验一个 `MetricsRegistryRef` 就是把它与登记表中的 `MetricsRegistryEntry` 逐项比对。未通过的检查种类写成了枚举：`MetricsRegistryProblemKind` 是 Oneof 枚举，六个取值各对应一条检查，`MetricsRegistryProblem` 的 `$kind` 字段取其中一个取值。
 
@@ -80,7 +80,7 @@ MetricsRegistryVersionInfo =
 
 先在 `metrics/` 下写这个指标的文档：定义、口径、阈值、采集、判定、已知限制、变更记录七项都要有，口径一节写清计算公式、统计范围、时间窗口、单位与方向。把指标登记进 `metrics/registry.yaml`：写当前版本、支持的版本、可服务的阶段门与文档位置，单位与方向随口径一起核对。按指标名查它的版本，拿到当前版本与支持的版本；配方使用的版本和 `compatible_metrics` 里列出的每个版本都必须在其中。配方写好后用登记表校验引用：指标要已登记，版本要受支持，配方声明的 gate 要是登记表为该指标列出的 gate，该 gate 还要出现在配方的 `acceptance.gates` 里，指标与版本必须出现在 `compatible_metrics` 里。校验通过才允许配方使用这个指标；阈值放在配方 `metrics.yaml` 的 `tolerance` 里，文档里的数值只是参考，不是执行值。
 
-## 接口
+## metrics_registry_api
 
 ```viba metrics_registry_api
 import metrics_registry
@@ -102,7 +102,7 @@ ValidateRefs =
   <- { 校验引用：逐条检查指标是否已登记、版本是否受支持、gate 是否在登记表为该指标列出的 gate 里、该 gate 是否在配方的 acceptance.gates 里、该指标与版本是否在 compatible_metrics 里、compatible_metrics 里的版本是否都已发布；返回没有通过的项，空列表表示通过 }
 ```
 
-## 组织
+## metrics_registry_flow
 
 ```viba metrics_registry_flow
 import metrics_registry

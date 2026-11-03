@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionRegression.schema.json",
+  "title": "ExtensionRegression",
+  "$ref": "#/$defs/extension.ExtensionRegression",
+  "$defs": {
+    "extension.ExtensionRegression": {
+      "type": "object",
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/extension.ExtensionCandidate"
+        },
+        "scope": {
+          "$ref": "#/$defs/extension.ExtensionRegressionScope"
+        },
+        "baseline": {
+          "type": "string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/extension.ExtensionRegressionVerdict"
+        }
+      },
+      "required": [
+        "candidate",
+        "scope",
+        "baseline",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionCandidate": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/extension.ExtensionCandidateSource"
+        },
+        "model": {
+          "$ref": "#/$defs/ckpt_sample.Model"
+        },
+        "config": {
+          "type": "string"
+        },
+        "load": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "model",
+        "config",
+        "load"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionCandidateSource": {
+      "oneOf": [
+        {
+          "const": "model_list_new_item"
+        },
+        {
+          "const": "architecture_family_gap"
+        },
+        {
+          "const": "framework_capability_gap"
+        },
+        {
+          "const": "failure_reproduction"
+        },
+        {
+          "const": "load_gap"
+        }
+      ]
+    },
+    "ckpt_sample.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionRegressionScope": {
+      "oneOf": [
+        {
+          "const": "smoke"
+        },
+        {
+          "const": "regular"
+        },
+        {
+          "const": "full"
+        }
+      ]
+    },
+    "extension.ExtensionRegressionVerdict": {
+      "oneOf": [
+        {
+          "const": "passed"
+        },
+        {
+          "const": "not_comparable"
+        },
+        {
+          "const": "failed"
+        },
+        {
+          "const": "no_conclusion"
+        }
+      ]
+    }
+  }
+}

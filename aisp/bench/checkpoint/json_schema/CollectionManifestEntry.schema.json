@@ -1,0 +1,701 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionManifestEntry.schema.json",
+  "title": "CollectionManifestEntry",
+  "$ref": "#/$defs/collection.CollectionManifestEntry",
+  "$defs": {
+    "collection.CollectionManifestEntry": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/ckpt_sample.Model"
+        },
+        "source": {
+          "$ref": "#/$defs/collection.CollectionSource"
+        },
+        "license": {
+          "$ref": "#/$defs/collection.CollectionLicense"
+        },
+        "params_b": {
+          "type": "number"
+        },
+        "code_role": {
+          "$ref": "#/$defs/collection.CollectionCodeRole"
+        },
+        "code_role_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionCodeRoleEvidence"
+          }
+        },
+        "download": {
+          "$ref": "#/$defs/collection.CollectionDownload"
+        },
+        "fingerprint": {
+          "$ref": "#/$defs/collection.CollectionFingerprint"
+        },
+        "workspaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionWorkspace"
+          }
+        },
+        "dedup": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionDedupRecord"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runnable": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionRunnableRecord"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "training": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionTrainingPairing"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "model",
+        "source",
+        "license",
+        "params_b",
+        "code_role",
+        "code_role_evidence",
+        "download",
+        "fingerprint",
+        "workspaces",
+        "dedup",
+        "runnable",
+        "training"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionSource": {
+      "oneOf": [
+        {
+          "const": "hub_api"
+        },
+        {
+          "const": "org_page"
+        },
+        {
+          "const": "paper"
+        },
+        {
+          "const": "own_registry"
+        }
+      ]
+    },
+    "collection.CollectionLicense": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "$ref": "#/$defs/collection.CollectionLicenseState"
+        }
+      },
+      "required": [
+        "id",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionLicenseState": {
+      "oneOf": [
+        {
+          "const": "declared"
+        },
+        {
+          "const": "missing"
+        }
+      ]
+    },
+    "collection.CollectionCodeRole": {
+      "oneOf": [
+        {
+          "const": "inference"
+        },
+        {
+          "const": "pretrain"
+        },
+        {
+          "const": "both"
+        },
+        {
+          "const": "unknown"
+        }
+      ]
+    },
+    "collection.CollectionCodeRoleEvidence": {
+      "oneOf": [
+        {
+          "const": "repo_structure"
+        },
+        {
+          "const": "training_entry"
+        },
+        {
+          "const": "framework_marker"
+        },
+        {
+          "const": "readme_training"
+        },
+        {
+          "const": "weight_release"
+        }
+      ]
+    },
+    "collection.CollectionDownload": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionCodeFile"
+          }
+        },
+        "oversized": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionFetchFailure"
+          }
+        },
+        "resumed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "files",
+        "oversized",
+        "failures",
+        "resumed"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionCodeFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/collection.CollectionFileKind"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionFileKind": {
+      "oneOf": [
+        {
+          "const": "config"
+        },
+        {
+          "const": "configuration"
+        },
+        {
+          "const": "modeling"
+        },
+        {
+          "const": "referenced_module"
+        },
+        {
+          "const": "tokenizer_config"
+        },
+        {
+          "const": "generation_config"
+        }
+      ]
+    },
+    "collection.CollectionFetchFailure": {
+      "oneOf": [
+        {
+          "const": "network"
+        },
+        {
+          "const": "permission"
+        },
+        {
+          "const": "not_found"
+        },
+        {
+          "const": "license_not_accepted"
+        }
+      ]
+    },
+    "collection.CollectionFingerprint": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "#/$defs/collection.CollectionConfigFingerprint"
+        },
+        "code": {
+          "$ref": "#/$defs/collection.CollectionCodeFingerprint"
+        }
+      },
+      "required": [
+        "config",
+        "code"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionConfigFingerprint": {
+      "type": "object",
+      "properties": {
+        "architectures": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "num_hidden_layers": {
+          "type": "integer"
+        },
+        "hidden_size": {
+          "type": "integer"
+        },
+        "num_attention_heads": {
+          "type": "integer"
+        },
+        "num_key_value_heads": {
+          "type": "integer"
+        },
+        "intermediate_size": {
+          "type": "integer"
+        },
+        "vocab_size": {
+          "type": "integer"
+        },
+        "max_position_embeddings": {
+          "type": "integer"
+        },
+        "torch_dtype": {
+          "type": "string"
+        },
+        "tie_word_embeddings": {
+          "type": "boolean"
+        },
+        "moe": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionMoeSpec"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "positional_encoding": {
+          "$ref": "#/$defs/collection.CollectionPositionalEncoding"
+        },
+        "attention": {
+          "$ref": "#/$defs/collection.CollectionAttentionVariant"
+        }
+      },
+      "required": [
+        "architectures",
+        "num_hidden_layers",
+        "hidden_size",
+        "num_attention_heads",
+        "num_key_value_heads",
+        "intermediate_size",
+        "vocab_size",
+        "max_position_embeddings",
+        "torch_dtype",
+        "tie_word_embeddings",
+        "moe",
+        "positional_encoding",
+        "attention"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionMoeSpec": {
+      "type": "object",
+      "properties": {
+        "num_experts": {
+          "type": "integer"
+        },
+        "num_active_experts": {
+          "type": "integer"
+        },
+        "num_shared_experts": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "num_experts",
+        "num_active_experts",
+        "num_shared_experts"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionPositionalEncoding": {
+      "oneOf": [
+        {
+          "const": "rope"
+        },
+        {
+          "const": "alibi"
+        },
+        {
+          "const": "absolute"
+        }
+      ]
+    },
+    "collection.CollectionAttentionVariant": {
+      "oneOf": [
+        {
+          "const": "mha"
+        },
+        {
+          "const": "gqa"
+        },
+        {
+          "const": "mqa"
+        },
+        {
+          "const": "mla"
+        },
+        {
+          "const": "linear"
+        },
+        {
+          "const": "sliding_window"
+        }
+      ]
+    },
+    "collection.CollectionCodeFingerprint": {
+      "type": "object",
+      "properties": {
+        "module_classes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "calls": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionKeyCall"
+          }
+        },
+        "special": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionSpecialOp"
+          }
+        }
+      },
+      "required": [
+        "module_classes",
+        "calls",
+        "special"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionKeyCall": {
+      "oneOf": [
+        {
+          "const": "attention"
+        },
+        {
+          "const": "norm"
+        },
+        {
+          "const": "mlp"
+        },
+        {
+          "const": "residual"
+        },
+        {
+          "const": "routing"
+        }
+      ]
+    },
+    "collection.CollectionSpecialOp": {
+      "oneOf": [
+        {
+          "const": "custom_kernel"
+        },
+        {
+          "const": "fused_op"
+        },
+        {
+          "const": "quantization_branch"
+        }
+      ]
+    },
+    "collection.CollectionWorkspace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "env": {
+          "type": "string"
+        },
+        "framework_major": {
+          "type": "string"
+        },
+        "disk_policy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "env",
+        "framework_major",
+        "disk_policy"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionDedupRecord": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/collection.CollectionDedupDecision"
+        },
+        "dropped_by": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ckpt_sample.Model"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "group",
+        "decision",
+        "dropped_by"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionDedupDecision": {
+      "oneOf": [
+        {
+          "const": "kept"
+        },
+        {
+          "const": "dropped"
+        }
+      ]
+    },
+    "collection.CollectionRunnableRecord": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/$defs/collection.CollectionRunnableState"
+        },
+        "workload": {
+          "$ref": "#/$defs/collection.CollectionRankWorkload"
+        },
+        "ranks": {
+          "type": "integer"
+        },
+        "backend": {
+          "type": "string"
+        },
+        "concurrency": {
+          "type": "integer"
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionRunnableFailure"
+          }
+        }
+      },
+      "required": [
+        "state",
+        "workload",
+        "ranks",
+        "backend",
+        "concurrency",
+        "failures"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionRunnableState": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    },
+    "collection.CollectionRankWorkload": {
+      "oneOf": [
+        {
+          "const": "forward"
+        },
+        {
+          "const": "prefill"
+        }
+      ]
+    },
+    "collection.CollectionRunnableFailure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/collection.CollectionRunnableFailureKind"
+        },
+        "step": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "step",
+        "summary"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionRunnableFailureKind": {
+      "oneOf": [
+        {
+          "const": "timeout"
+        },
+        {
+          "const": "oom"
+        },
+        {
+          "const": "assertion"
+        },
+        {
+          "const": "missing_dependency"
+        }
+      ]
+    },
+    "collection.CollectionTrainingPairing": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/collection.CollectionPairingKind"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionPairingTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "target"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionPairingKind": {
+      "oneOf": [
+        {
+          "const": "same_org"
+        },
+        {
+          "const": "same_architecture"
+        },
+        {
+          "const": "external_link"
+        },
+        {
+          "const": "unpaired"
+        }
+      ]
+    },
+    "collection.CollectionPairingTarget": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "commit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "repo",
+        "commit"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

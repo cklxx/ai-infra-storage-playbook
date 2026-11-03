@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CkptSli.schema.json",
+  "title": "CkptSli",
+  "$ref": "#/$defs/ckpt_sample.CkptSli",
+  "$defs": {
+    "ckpt_sample.CkptSli": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+            }
+          },
+          "required": [
+            "check_point_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_sli": {
+              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+            }
+          },
+          "required": [
+            "training_stall_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+            }
+          },
+          "required": [
+            "restore_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+            }
+          },
+          "required": [
+            "write_throughput_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_sli": {
+              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+            }
+          },
+          "required": [
+            "metadata_commit_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+            }
+          },
+          "required": [
+            "write_latency_p99_sli"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CheckPointDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.TrainingStallMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.RestoreDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteThroughputMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.MetadataCommitMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteLatencyP99Metric": {
+      "type": "number"
+    }
+  }
+}

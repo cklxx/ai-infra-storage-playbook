@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointScalingDimension.schema.json",
+  "title": "CheckpointScalingDimension",
+  "$ref": "#/$defs/checkpoint.CheckpointScalingDimension",
+  "$defs": {
+    "checkpoint.CheckpointScalingDimension": {
+      "oneOf": [
+        {
+          "const": "parameter_count"
+        },
+        {
+          "const": "cluster_size"
+        },
+        {
+          "const": "data_parallel"
+        },
+        {
+          "const": "tensor_pipeline_parallel"
+        },
+        {
+          "const": "expert_parallel"
+        }
+      ]
+    }
+  }
+}

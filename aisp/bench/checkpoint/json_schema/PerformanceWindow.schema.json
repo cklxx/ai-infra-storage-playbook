@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceWindow.schema.json",
+  "title": "PerformanceWindow",
+  "$ref": "#/$defs/performance.PerformanceWindow",
+  "$defs": {
+    "performance.PerformanceWindow": {
+      "type": "object",
+      "properties": {
+        "warmup": {
+          "$ref": "#/$defs/performance.PerformanceWarmup"
+        },
+        "steady_start": {
+          "type": "string"
+        },
+        "steady_end": {
+          "type": "string"
+        },
+        "cv": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "warmup",
+        "steady_start",
+        "steady_end",
+        "cv"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceWarmup": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "fraction": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "fraction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rounds": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "rounds"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

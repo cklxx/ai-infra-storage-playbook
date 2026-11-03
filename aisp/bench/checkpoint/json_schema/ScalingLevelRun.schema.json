@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingLevelRun.schema.json",
+  "title": "ScalingLevelRun",
+  "$ref": "#/$defs/scaling.ScalingLevelRun",
+  "$defs": {
+    "scaling.ScalingLevelRun": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "dimension": {
+          "$ref": "#/$defs/scaling.ScalingDimension"
+        },
+        "samples": {
+          "type": "integer"
+        },
+        "complete_measurement": {
+          "type": "boolean"
+        },
+        "invariants_kept": {
+          "type": "boolean"
+        },
+        "focus": {
+          "type": "string"
+        },
+        "attribution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "dimension",
+        "samples",
+        "complete_measurement",
+        "invariants_kept",
+        "focus",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    },
+    "scaling.ScalingDimension": {
+      "oneOf": [
+        {
+          "const": "model_scale"
+        },
+        {
+          "const": "cluster_size"
+        },
+        {
+          "const": "parallel_strategy"
+        },
+        {
+          "const": "load"
+        },
+        {
+          "const": "storage_backend"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceRunDir.schema.json",
+  "title": "ServiceRunDir",
+  "$ref": "#/$defs/service.ServiceRunDir",
+  "$defs": {
+    "service.ServiceRunDir": {
+      "type": "string"
+    }
+  }
+}

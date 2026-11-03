@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceResponsibility.schema.json",
+  "title": "ServiceResponsibility",
+  "$ref": "#/$defs/service.ServiceResponsibility",
+  "$defs": {
+    "service.ServiceResponsibility": {
+      "oneOf": [
+        {
+          "const": "accept_and_validate"
+        },
+        {
+          "const": "prepare_and_execute"
+        },
+        {
+          "const": "collect_and_aggregate"
+        },
+        {
+          "const": "write_artifacts_and_manifest"
+        },
+        {
+          "const": "write_back_latest_run"
+        }
+      ]
+    }
+  }
+}

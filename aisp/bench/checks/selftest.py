@@ -42,7 +42,7 @@ def run_check(script: str, *args: str) -> int:
 
 
 def load_schema(schema_name: str) -> dict:
-    for directory in (SCHEMAS, ROOT / "playbook" / "json_schema"):
+    for directory in (SCHEMAS, ROOT / "checkpoint" / "json_schema"):
         path = directory / schema_name
         if path.is_file():
             with path.open(encoding="utf-8") as handle:

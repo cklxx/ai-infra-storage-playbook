@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyReproducibilityItem.schema.json",
+  "title": "MethodologyReproducibilityItem",
+  "$ref": "#/$defs/methodology.MethodologyReproducibilityItem",
+  "$defs": {
+    "methodology.MethodologyReproducibilityItem": {
+      "oneOf": [
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "config"
+        },
+        {
+          "const": "dependencies"
+        },
+        {
+          "const": "topology"
+        },
+        {
+          "const": "warmup"
+        },
+        {
+          "const": "observation"
+        },
+        {
+          "const": "randomness"
+        }
+      ]
+    }
+  }
+}

@@ -21,7 +21,7 @@ RunAllChecks = checks_api.RunAllChecks
 
 这份文档说明本目录的通用校验脚本怎么用：本目录放通用校验，只对这个评估集成立的校验放 `recipes/<name>/checks/`。文档逐个说明五个脚本的作用、入参、退出码，以及阈值来源、输出约定、目录约定与依赖安装。
 
-## 问题
+## checks
 
 问题形式化为一个模块：`checks` 定义五个脚本、每个脚本的输入、输出、退出码与依赖，以及阈值来源、目录约定与指标文档的对应关系。
 
@@ -180,7 +180,7 @@ CheckSpec =
 
 解决这个问题需要两个操作。跑一个检查：需要阈值时只从配方的 `metrics.yaml` 读，脚本通过 `--metrics` 读同一份文件，不在代码里保留默认值；`validate_repo.py` 与 `selftest.py` 不收参数；`check_io_pattern.py` 收 `--real` 与 `--bypassed`，可用 `--tolerance` 逐项覆盖；`check_coverage.py` 收 `--manifest`，可用 `--min-coverage` 覆盖；`check_scaling_consistency.py` 收 `--input`，默认容差来自 `per_level` 与 `first_last`。输出按脚本分两种：`check_*.py` 与 `selftest.py` 往标准输出打印一行 JSON，至少含 `check` 与 `status`；`validate_repo.py` 打印人读的逐项结果与错误清单，不使用单行 JSON。退出码统一为 0 通过、1 不通过、2 缺依赖或输入非法或缺阈值；跳过不等于通过。依赖用 `pip install -r ../requirements.txt` 安装，缺依赖时按跳过处理，不假装通过。跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码，每个脚本按自己的约定判定。
 
-## 接口
+## checks_api
 
 ```viba checks_api
 import checks
@@ -197,7 +197,7 @@ RunAllChecks =
   <- { 跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码；每个脚本按自己的约定判定 }
 ```
 
-## 组织
+## checks_flow
 
 ```viba checks_flow
 import checks

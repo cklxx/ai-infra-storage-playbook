@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesReviewVerdict.schema.json",
+  "title": "PrinciplesReviewVerdict",
+  "$ref": "#/$defs/principles.PrinciplesReviewVerdict",
+  "$defs": {
+    "principles.PrinciplesReviewVerdict": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/principles.PrinciplesReviewSubject"
+        },
+        "role": {
+          "$ref": "#/$defs/principles.PrinciplesRole"
+        },
+        "decision": {
+          "$ref": "#/$defs/principles.PrinciplesReviewDecision"
+        }
+      },
+      "required": [
+        "subject",
+        "role",
+        "decision"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesReviewSubject": {
+      "oneOf": [
+        {
+          "const": "metric_change"
+        },
+        {
+          "const": "threshold_change"
+        },
+        {
+          "const": "incomparable_change"
+        }
+      ]
+    },
+    "principles.PrinciplesRole": {
+      "oneOf": [
+        {
+          "const": "recipe_maintainer"
+        },
+        {
+          "const": "metric_maintainer"
+        },
+        {
+          "const": "service_maintainer"
+        },
+        {
+          "const": "reviewer"
+        }
+      ]
+    },
+    "principles.PrinciplesReviewDecision": {
+      "oneOf": [
+        {
+          "const": "allowed"
+        },
+        {
+          "const": "self_review_forbidden"
+        }
+      ]
+    }
+  }
+}

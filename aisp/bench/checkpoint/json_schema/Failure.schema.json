@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Failure.schema.json",
+  "title": "Failure",
+  "$ref": "#/$defs/ckpt_sample.Failure",
+  "$defs": {
+    "ckpt_sample.Failure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -21,7 +21,7 @@ ScaffoldRecipe = recipe_template_api.ScaffoldRecipe
 
 本文解决新建配方时从哪里开始的问题：复制本目录到 `recipes/<评估集名>/`，逐项替换尖括号内的占位内容，复制后不要保留尖括号。它说明配方目录里六个文件各管什么、`recipe.yaml` 与 `metrics.yaml` 要填哪些字段，以及复制脚手架之后必须满足的硬要求。
 
-## 问题
+## recipe_template
 
 问题的形式化分成类型与枚举两类。`RecipeTemplateSpec` 是入口的 Object 类型，`$template` 取一个 `RecipeTemplateDirectory`，`$requirements` 与 `$steps` 分别是 `RecipeTemplateRequirement` 与 `RecipeTemplateScaffoldStep` 的列表。配方目录里的每个文件各自写成一个类型：`RecipeTemplateDirectory` 的 `$recipe`、`$metrics`、`$readme`、`$acceptance_checklist` 分别取 `RecipeTemplateRecipeYaml`、`RecipeTemplateMetricsYaml`、`RecipeTemplateReadme`、`RecipeTemplateAcceptanceChecklist`，`RecipeTemplateRecipeYaml` 再展开出 `RecipeTemplateInvariant`、`RecipeTemplateScalingPlan` 与 `fidelity.FidelityBoundary`，`RecipeTemplateMetricsYaml` 的 `$metrics` 是 `RecipeTemplateMetric` 的列表。取值只能落在有限集合里的概念写成 Oneof 枚举：`RecipeTemplateRequirement` 的六个取值是填写的硬要求，`RecipeTemplateScaffoldStep` 的四个取值是脚手架的步骤，`RecipeTemplateBuildStage` 的三个取值是配方入口的阶段；`RecipeTemplateCheckReport` 的 `$passed` 与 `$failed` 都以 `RecipeTemplateRequirement` 为元素类型，`RecipeTemplateScaffold` 把复制出的 `RecipeTemplateDirectory` 与一份 `RecipeTemplateCheckReport` 配在一起。
 
@@ -132,7 +132,7 @@ RecipeTemplateScaffold =
 
 复制脚手架的四个操作是复制目录、替换占位内容、检查硬要求、运行生成脚本。先把本目录复制到 `recipes/<评估集名>/`，得到配方目录的六个文件。再逐项替换尖括号内的占位内容，复制后不要保留尖括号。检查 `recipe.yaml` 与 `metrics.yaml` 的硬要求：`fidelity_boundary` 中存储与传输路径的 `fidelity` 不得是 `L0`，`io_pattern_invariants` 写 3–6 条且每条都有可计算的定义与容差，`scaling_plan` 至少两级并写明固定哪些维度、放大哪个维度，`compatible_metrics` 按指标名列出版本且覆盖 `metrics.yaml` 实际使用的版本，阈值只写在 `metrics.yaml` 的 `tolerance`，`latest_run` 初始为 `null`。也可以直接运行 `python3 scripts/new_recipe.py <评估集名>`，由脚本完成复制与基础替换并检查新目录是否满足硬要求。
 
-## 接口
+## recipe_template_api
 
 ```viba recipe_template_api
 import recipe_template
@@ -161,7 +161,7 @@ ScaffoldRecipe =
   <- { 运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求；返回复制出的配方目录与检查结果 }
 ```
 
-## 组织
+## recipe_template_flow
 
 ```viba recipe_template_flow
 import recipe_template

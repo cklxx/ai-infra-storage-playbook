@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/SampleConfigBase.schema.json",
+  "title": "SampleConfigBase",
+  "$ref": "#/$defs/ckpt_sample.SampleConfigBase",
+  "$defs": {
+    "ckpt_sample.SampleConfigBase": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/ckpt_sample.Model"
+        },
+        "topology": {
+          "$ref": "#/$defs/ckpt_sample.Topology"
+        },
+        "observe": {
+          "$ref": "#/$defs/ckpt_sample.ObservationConfig"
+        }
+      },
+      "required": [
+        "model",
+        "topology",
+        "observe"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Topology": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "integer"
+        },
+        "gpus_per_node": {
+          "type": "integer"
+        },
+        "network": {
+          "type": "string"
+        },
+        "mount": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nodes",
+        "gpus_per_node",
+        "network",
+        "mount"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.ObservationConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "sample_rate": {
+          "type": "number"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "sample_rate",
+        "layers"
+      ],
+      "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    }
+  }
+}

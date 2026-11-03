@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PitfallCategory.schema.json",
+  "title": "PitfallCategory",
+  "$ref": "#/$defs/pitfalls.PitfallCategory",
+  "$defs": {
+    "pitfalls.PitfallCategory": {
+      "oneOf": [
+        {
+          "const": "methodology"
+        },
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset_kvcache"
+        },
+        {
+          "const": "evaluation_service"
+        }
+      ]
+    }
+  }
+}

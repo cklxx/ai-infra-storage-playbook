@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesAcceptVerdict.schema.json",
+  "title": "PrinciplesAcceptVerdict",
+  "$ref": "#/$defs/principles.PrinciplesAcceptVerdict",
+  "$defs": {
+    "principles.PrinciplesAcceptVerdict": {
+      "oneOf": [
+        {
+          "const": "built"
+        },
+        {
+          "const": "not_built"
+        }
+      ]
+    }
+  }
+}

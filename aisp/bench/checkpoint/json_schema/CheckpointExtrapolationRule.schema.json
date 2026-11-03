@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointExtrapolationRule.schema.json",
+  "title": "CheckpointExtrapolationRule",
+  "$ref": "#/$defs/checkpoint.CheckpointExtrapolationRule",
+  "$defs": {
+    "checkpoint.CheckpointExtrapolationRule": {
+      "oneOf": [
+        {
+          "const": "aggregate_bandwidth"
+        },
+        {
+          "const": "metadata_operations"
+        },
+        {
+          "const": "parameter_bytes"
+        }
+      ]
+    }
+  }
+}

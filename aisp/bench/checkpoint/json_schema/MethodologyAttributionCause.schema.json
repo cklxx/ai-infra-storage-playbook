@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyAttributionCause.schema.json",
+  "title": "MethodologyAttributionCause",
+  "$ref": "#/$defs/methodology.MethodologyAttributionCause",
+  "$defs": {
+    "methodology.MethodologyAttributionCause": {
+      "oneOf": [
+        {
+          "const": "observation_overhead"
+        },
+        {
+          "const": "local_buffer_or_merge"
+        },
+        {
+          "const": "bypass_timing"
+        },
+        {
+          "const": "allocator"
+        },
+        {
+          "const": "cache_warmup"
+        },
+        {
+          "const": "communication_mock"
+        }
+      ]
+    }
+  }
+}

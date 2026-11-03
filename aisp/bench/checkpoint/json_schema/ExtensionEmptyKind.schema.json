@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionEmptyKind.schema.json",
+  "title": "ExtensionEmptyKind",
+  "$ref": "#/$defs/extension.ExtensionEmptyKind",
+  "$defs": {
+    "extension.ExtensionEmptyKind": {
+      "oneOf": [
+        {
+          "const": "should_exist"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "not_needed": {
+              "$ref": "#/$defs/extension.ExtensionExemption"
+            }
+          },
+          "required": [
+            "not_needed"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "extension.ExtensionExemption": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason",
+        "review_date"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

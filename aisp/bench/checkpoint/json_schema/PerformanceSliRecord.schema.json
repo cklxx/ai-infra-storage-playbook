@@ -1,0 +1,349 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PerformanceSliRecord.schema.json",
+  "title": "PerformanceSliRecord",
+  "$ref": "#/$defs/performance.PerformanceSliRecord",
+  "$defs": {
+    "performance.PerformanceSliRecord": {
+      "type": "object",
+      "properties": {
+        "sample_key": {
+          "$ref": "#/$defs/performance.PerformanceSampleKey"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "workload": {
+          "$ref": "#/$defs/performance.PerformanceWorkload"
+        },
+        "storage": {
+          "$ref": "#/$defs/performance.PerformanceStorageVersion"
+        },
+        "window": {
+          "$ref": "#/$defs/performance.PerformanceWindow"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ckpt_sample.CkptSli"
+          }
+        },
+        "attribution": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/performance.PerformanceAttribution"
+          }
+        },
+        "evidence": {
+          "$ref": "#/$defs/performance.PerformanceEvidence"
+        }
+      },
+      "required": [
+        "sample_key",
+        "run_id",
+        "workload",
+        "storage",
+        "window",
+        "metrics",
+        "attribution",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceSampleKey": {
+      "type": "string"
+    },
+    "performance.PerformanceWorkload": {
+      "oneOf": [
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "performance.PerformanceStorageVersion": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "$ref": "#/$defs/performance.PerformanceStorageLayer"
+        },
+        "adapter": {
+          "$ref": "#/$defs/performance.PerformanceStorageLayer"
+        }
+      },
+      "required": [
+        "backend",
+        "adapter"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceStorageLayer": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "$ref": "#/$defs/ckpt_sample.Component"
+        },
+        "config_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "component",
+        "config_ref"
+      ],
+      "additionalProperties": false
+    },
+    "ckpt_sample.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceWindow": {
+      "type": "object",
+      "properties": {
+        "warmup": {
+          "$ref": "#/$defs/performance.PerformanceWarmup"
+        },
+        "steady_start": {
+          "type": "string"
+        },
+        "steady_end": {
+          "type": "string"
+        },
+        "cv": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "warmup",
+        "steady_start",
+        "steady_end",
+        "cv"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceWarmup": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "fraction": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "fraction"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rounds": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "rounds"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CkptSli": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+            }
+          },
+          "required": [
+            "check_point_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_sli": {
+              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+            }
+          },
+          "required": [
+            "training_stall_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_sli": {
+              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+            }
+          },
+          "required": [
+            "restore_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+            }
+          },
+          "required": [
+            "write_throughput_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_sli": {
+              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+            }
+          },
+          "required": [
+            "metadata_commit_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_sli": {
+              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+            }
+          },
+          "required": [
+            "write_latency_p99_sli"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "ckpt_sample.CheckPointDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.TrainingStallMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.RestoreDurationMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteThroughputMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.MetadataCommitMetric": {
+      "type": "number"
+    },
+    "ckpt_sample.WriteLatencyP99Metric": {
+      "type": "number"
+    },
+    "performance.PerformanceAttribution": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/performance.PerformanceAttributionKind"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceAttributionKind": {
+      "oneOf": [
+        {
+          "const": "throughput"
+        },
+        {
+          "const": "iops"
+        },
+        {
+          "const": "latency_percentile"
+        },
+        {
+          "const": "queue_depth"
+        },
+        {
+          "const": "saturation"
+        },
+        {
+          "const": "rank_fairness"
+        },
+        {
+          "const": "error_and_retry"
+        },
+        {
+          "const": "metadata_op_rate"
+        },
+        {
+          "const": "window_stability"
+        },
+        {
+          "const": "ceiling_efficiency"
+        }
+      ]
+    },
+    "performance.PerformanceEvidence": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "io_pattern": {
+          "type": "string"
+        },
+        "raw_data": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "io_pattern",
+        "raw_data",
+        "sha256"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionLoop.schema.json",
+  "title": "ExtensionLoop",
+  "$ref": "#/$defs/extension_flow.ExtensionLoop",
+  "$defs": {
+    "extension_flow.ExtensionLoop": {
+      "type": "object",
+      "properties": {
+        "trigger": {
+          "$ref": "#/$defs/extension.ExtensionTrigger"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/extension_flow.ExtensionStep"
+          }
+        }
+      },
+      "required": [
+        "trigger",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionTrigger": {
+      "oneOf": [
+        {
+          "const": "new_model_release"
+        },
+        {
+          "const": "framework_release"
+        },
+        {
+          "const": "coverage_decline"
+        },
+        {
+          "const": "failure_mode_change"
+        },
+        {
+          "const": "new_parallel_strategy"
+        },
+        {
+          "const": "storage_backend_change"
+        },
+        {
+          "const": "overturned_conclusion"
+        }
+      ]
+    },
+    "extension_flow.ExtensionStep": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "find_gap": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/extension.ExtensionGap"
+              }
+            }
+          },
+          "required": [
+            "find_gap"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "propose_candidate": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/extension.ExtensionCandidate"
+              }
+            }
+          },
+          "required": [
+            "propose_candidate"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "regress": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/extension.ExtensionRegression"
+              }
+            }
+          },
+          "required": [
+            "regress"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "converge": {
+              "$ref": "#/$defs/extension.ExtensionVersion"
+            }
+          },
+          "required": [
+            "converge"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "extension.ExtensionGap": {
+      "type": "object",
+      "properties": {
+        "cell": {
+          "$ref": "#/$defs/extension.ExtensionCell"
+        },
+        "priority": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "cell",
+        "priority"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionCell": {
+      "type": "object",
+      "properties": {
+        "axes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "cases": {
+          "type": "integer"
+        },
+        "last_passed_at": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_failed_at": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "empty": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/extension.ExtensionEmptyKind"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "axes",
+        "cases",
+        "last_passed_at",
+        "last_failed_at",
+        "empty"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionEmptyKind": {
+      "oneOf": [
+        {
+          "const": "should_exist"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "not_needed": {
+              "$ref": "#/$defs/extension.ExtensionExemption"
+            }
+          },
+          "required": [
+            "not_needed"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "extension.ExtensionExemption": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason",
+        "review_date"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionCandidate": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/extension.ExtensionCandidateSource"
+        },
+        "model": {
+          "$ref": "#/$defs/ckpt_sample.Model"
+        },
+        "config": {
+          "type": "string"
+        },
+        "load": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "model",
+        "config",
+        "load"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionCandidateSource": {
+      "oneOf": [
+        {
+          "const": "model_list_new_item"
+        },
+        {
+          "const": "architecture_family_gap"
+        },
+        {
+          "const": "framework_capability_gap"
+        },
+        {
+          "const": "failure_reproduction"
+        },
+        {
+          "const": "load_gap"
+        }
+      ]
+    },
+    "ckpt_sample.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionRegression": {
+      "type": "object",
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/extension.ExtensionCandidate"
+        },
+        "scope": {
+          "$ref": "#/$defs/extension.ExtensionRegressionScope"
+        },
+        "baseline": {
+          "type": "string"
+        },
+        "verdict": {
+          "$ref": "#/$defs/extension.ExtensionRegressionVerdict"
+        }
+      },
+      "required": [
+        "candidate",
+        "scope",
+        "baseline",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionRegressionScope": {
+      "oneOf": [
+        {
+          "const": "smoke"
+        },
+        {
+          "const": "regular"
+        },
+        {
+          "const": "full"
+        }
+      ]
+    },
+    "extension.ExtensionRegressionVerdict": {
+      "oneOf": [
+        {
+          "const": "passed"
+        },
+        {
+          "const": "not_comparable"
+        },
+        {
+          "const": "failed"
+        },
+        {
+          "const": "no_conclusion"
+        }
+      ]
+    },
+    "extension.ExtensionVersion": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "type": "string"
+        },
+        "cases": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "recipe",
+        "cases",
+        "metrics"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

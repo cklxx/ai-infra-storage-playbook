@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/GlossaryCategory.schema.json",
+  "title": "GlossaryCategory",
+  "$ref": "#/$defs/glossary.GlossaryCategory",
+  "$defs": {
+    "glossary.GlossaryCategory": {
+      "oneOf": [
+        {
+          "const": "parallel_strategy"
+        },
+        {
+          "const": "model_structure"
+        },
+        {
+          "const": "storage_io"
+        },
+        {
+          "const": "bypass"
+        }
+      ]
+    }
+  }
+}

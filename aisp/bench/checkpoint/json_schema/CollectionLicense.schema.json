@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionLicense.schema.json",
+  "title": "CollectionLicense",
+  "$ref": "#/$defs/collection.CollectionLicense",
+  "$defs": {
+    "collection.CollectionLicense": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "state": {
+          "$ref": "#/$defs/collection.CollectionLicenseState"
+        }
+      },
+      "required": [
+        "id",
+        "state"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionLicenseState": {
+      "oneOf": [
+        {
+          "const": "declared"
+        },
+        {
+          "const": "missing"
+        }
+      ]
+    }
+  }
+}

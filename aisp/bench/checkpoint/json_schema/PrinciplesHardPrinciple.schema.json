@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesHardPrinciple.schema.json",
+  "title": "PrinciplesHardPrinciple",
+  "$ref": "#/$defs/principles.PrinciplesHardPrinciple",
+  "$defs": {
+    "principles.PrinciplesHardPrinciple": {
+      "oneOf": [
+        {
+          "const": "fake_compute_real_io"
+        },
+        {
+          "const": "align_then_extrapolate"
+        },
+        {
+          "const": "link_only"
+        }
+      ]
+    }
+  }
+}

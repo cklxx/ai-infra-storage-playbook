@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointConclusion.schema.json",
+  "title": "CheckpointConclusion",
+  "$ref": "#/$defs/checkpoint.CheckpointConclusion",
+  "$defs": {
+    "checkpoint.CheckpointConclusion": {
+      "type": "object",
+      "properties": {
+        "alignment": {
+          "$ref": "#/$defs/checkpoint.CheckpointAlignment"
+        },
+        "scaling": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointScalingRun"
+          }
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointAcceptanceItem"
+          }
+        },
+        "backlink": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "alignment",
+        "scaling",
+        "acceptance",
+        "backlink"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint.CheckpointAlignment": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checkpoint.CheckpointAlignmentStep"
+          }
+        },
+        "within_tolerance": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "steps",
+        "within_tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint.CheckpointAlignmentStep": {
+      "oneOf": [
+        {
+          "const": "minimal_config"
+        },
+        {
+          "const": "real_and_bypass_runs"
+        },
+        {
+          "const": "compare_metrics"
+        },
+        {
+          "const": "attribute_deviations"
+        }
+      ]
+    },
+    "checkpoint.CheckpointScalingRun": {
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "$ref": "#/$defs/checkpoint.CheckpointScalingDimension"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/levels.Level"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "invariants_kept": {
+          "type": "boolean"
+        },
+        "attribution": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dimension",
+        "target",
+        "invariants_kept",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "checkpoint.CheckpointScalingDimension": {
+      "oneOf": [
+        {
+          "const": "parameter_count"
+        },
+        {
+          "const": "cluster_size"
+        },
+        {
+          "const": "data_parallel"
+        },
+        {
+          "const": "tensor_pipeline_parallel"
+        },
+        {
+          "const": "expert_parallel"
+        }
+      ]
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    },
+    "checkpoint.CheckpointAcceptanceItem": {
+      "oneOf": [
+        {
+          "const": "io_pattern_alignment"
+        },
+        {
+          "const": "scaling_consistency"
+        },
+        {
+          "const": "fidelity"
+        },
+        {
+          "const": "reproducibility"
+        },
+        {
+          "const": "coverage"
+        }
+      ]
+    }
+  }
+}

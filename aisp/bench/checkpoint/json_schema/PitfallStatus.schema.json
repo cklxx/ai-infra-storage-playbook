@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PitfallStatus.schema.json",
+  "title": "PitfallStatus",
+  "$ref": "#/$defs/pitfalls.PitfallStatus",
+  "$defs": {
+    "pitfalls.PitfallStatus": {
+      "oneOf": [
+        {
+          "const": "resolved"
+        },
+        {
+          "const": "partially_resolved"
+        },
+        {
+          "const": "open"
+        },
+        {
+          "const": "rule_fixed"
+        },
+        {
+          "const": "rule_fixed_unquantified"
+        }
+      ]
+    }
+  }
+}
