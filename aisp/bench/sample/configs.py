@@ -6,14 +6,21 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Literal, get_args
+from dataclasses import dataclass
+from typing import Any, Literal, cast, get_args
 
 
 @dataclass(frozen=True)
 class Model:
     id: str         # HuggingFace repo id 之类
     git_commit_id: str
+
+    def to_json(self) -> dict[str, Any]:
+        return {"id": self.id, "git_commit_id": self.git_commit_id}
+
+    @classmethod
+    def from_json(cls, raw: dict[str, Any]) -> "Model":
+        return cls(id=raw["id"], git_commit_id=raw["git_commit_id"])
 
 
 Network = Literal["rdma", "tcp", "none"]
@@ -32,12 +39,44 @@ class Topology:
     def total_gpus(self) -> int:
         return self.nodes * self.gpus_per_node
 
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "nodes": self.nodes,
+            "gpus_per_node": self.gpus_per_node,
+            "network": self.network,
+            "mount": self.mount,
+        }
+
+    @classmethod
+    def from_json(cls, raw: dict[str, Any]) -> "Topology":
+        return cls(
+            nodes=raw["nodes"],
+            gpus_per_node=raw["gpus_per_node"],
+            network=cast(Network, raw["network"]),
+            mount=cast(Mount, raw["mount"]),
+        )
+
 
 @dataclass(frozen=True)
 class ObservationConfig:
     enabled: bool
     sample_rate: float  # 0..1
     layers: tuple[ObserveLayer, ...] = ()
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "enabled": self.enabled,
+            "sample_rate": self.sample_rate,
+            "layers": list(self.layers),
+        }
+
+    @classmethod
+    def from_json(cls, raw: dict[str, Any]) -> "ObservationConfig":
+        return cls(
+            enabled=raw["enabled"],
+            sample_rate=raw["sample_rate"],
+            layers=tuple(cast(ObserveLayer, item) for item in raw["layers"]),
+        )
 
 
 @dataclass(frozen=True)
@@ -47,6 +86,21 @@ class SampleConfigBase:
     model: Model
     topology: Topology
     observe: ObservationConfig
+
+    def to_json(self) -> dict[str, Any]:
+        return {
+            "model": self.model.to_json(),
+            "topology": self.topology.to_json(),
+            "observe": self.observe.to_json(),
+        }
+
+    @classmethod
+    def from_json(cls, raw: dict[str, Any]) -> "SampleConfigBase":
+        return cls(
+            model=Model.from_json(raw["model"]),
+            topology=Topology.from_json(raw["topology"]),
+            observe=ObservationConfig.from_json(raw["observe"]),
+        )
 
 
 # 供 GetLevel 使用的默认 scaling 阶梯。配方可以在自己的 scaling_plan 里覆盖。

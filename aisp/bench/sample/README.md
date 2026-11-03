@@ -3,6 +3,8 @@
 对齐 [`playbook/ckpt-sample-interface.md`](../playbook/ckpt-sample-interface.md)。
 一次运行 = 一条样本 × 一个存储版本；一份 `RunSpec` 进，一条 `RunRecord` 出。
 
+每个导出类型的 `to_json()` 输出，直接通过 [`playbook/json_schema/`](../playbook/json_schema/) 的同名 schema。
+
 ## 模块
 
 | 文件 | 对应文档模块 | 是什么 |
@@ -13,17 +15,28 @@
 | `memory.py` | — | `InMemorySampleService` 参考实现：后台线程跑 Start、锁内推进状态机、可取消 |
 | `__init__.py` | `public` | 只做转发与重绑定，外部 `from aisp.bench.sample import ...` |
 
+## JSON 形态
+
+oneof 是单键对象，键名就是 schema 里的属性名：
+
+```json
+{"state": {"queued": {"pos": 1, "len": 3}}}
+{"state": {"completed": null}}
+{"metrics": [{"check_point_duration_sli": 0.064}, {"write_throughput_sli": 5.2e8}]}
+{"slo": [{"check_point_duration_slo": {"actual": 0.064, "threshold": 0.1}}]}
+```
+
+`RunRecord` 的四个字段与 `Artifacts` 的四个字段在 schema 里都是必填；未产出的路径用空字符串占位。
+
 ## 最小用法
 
 ```python
 from sample import (
-    InMemorySampleService, RunSpec, StorageLayer, Component,
+    InMemorySampleService, RunSpec, StorageLayer, Component, CheckPointDuration,
 )
 
 def my_sample(spec, config):
-    return [  # 六种 CkptSli 任选
-        # CheckPointDuration(value=...),
-    ]
+    return [CheckPointDuration(value=12.5)]  # 六种 CkptSli 任选
 
 svc = InMemorySampleService(
     runners={"tiny-ckpt@0.1.0": my_sample},
@@ -39,7 +52,7 @@ record = svc.start(RunSpec(
     ),
     seed=20261103,
 ))
-# record.state 在 queued / running / completed / failed / rejected / cancelled 之间迁移
+record.to_json()  # 直接可过 RunRecord.schema.json
 ```
 
 ## 自检
@@ -48,10 +61,11 @@ record = svc.start(RunSpec(
 python3 checks/check_sample_interface.py
 ```
 
-覆盖：GetLevel 落档、Execute 同步返回产物、Start 异步跑完翻 completed、Stop 置 cancelled、非法样本 Rejected、MetricLE/GE 判定。
+27 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled、非法样本 Rejected、MetricLE/GE 判定，以及六份 schema 的逐类型校验。
 
 ## 边界
 
 - 这是**样本接口**的落地，不是评估服务的 HTTP 层。HTTP/CLI 适配在 `playbook/evaluation-service.md`，后续再做。
 - `InMemorySampleService` 只用于开发期自检：不做进程隔离，产物路径是 `memory://` 占位，生产实现要替换 `artifact_writer` 落对象存储。
 - S0–S5 阶梯的默认阈值在 `configs.py`；配方要覆盖时由 `get_level` 注入自己的阶梯，不在代码里写死。
+- `Topology` 的 `network` / `mount` 用 `Literal` 收窄，比 schema 的 `string` 更严；schema 只约束类型，取值约束来自文档 Hint。

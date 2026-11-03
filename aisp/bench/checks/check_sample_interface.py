@@ -8,8 +8,9 @@
   4. Stop 把运行置为 cancelled。
   5. 非法样本名 / 格式错 -> Rejected；不存在的 run_id -> KeyError。
   6. MetricLE / MetricGE 的 passed 判定。
+  7. 序列化结果通过 playbook/json_schema/ 的六份 schema。
 
-退出码：0 全过，1 有失败。
+退出码：0 全过，1 有失败，2 缺 jsonschema。
 """
 
 from __future__ import annotations
@@ -25,24 +26,44 @@ sys.path.insert(0, str(BENCH))
 
 from sample import (  # noqa: E402
     Artifacts,
+    CheckPointDuration,
+    Component,
     InMemorySampleService,
+    MetadataCommit,
     Model,
     ObservationConfig,
+    RestoreDuration,
     RunSpec,
     SampleConfigBase,
     StorageLayer,
     Topology,
-    Component,
-    CheckPointDuration,
+    TrainingStall,
+    WriteLatencyP99,
     WriteThroughput,
     resolve_level,
 )
 from sample.types import (  # noqa: E402
+    Cancelled,
+    Completed,
     CkptSloCheckpointDuration,
+    CkptSloMetadataCommit,
+    CkptSloRestoreDuration,
+    CkptSloTrainingStall,
+    CkptSloWriteLatencyP99,
     CkptSloWriteThroughput,
+    Failed,
+    Failure,
     MetricGE,
     MetricLE,
+    Queued,
+    QueueProgress,
+    Rejected,
+    RunRecord,
+    Running,
+    WorkProgress,
 )
+
+SCHEMAS = BENCH / "playbook" / "json_schema"
 
 
 def _make_config(nodes: int, gpus: int) -> SampleConfigBase:
@@ -61,7 +82,6 @@ def _runner(spec: RunSpec, config: SampleConfigBase):
 
 
 def _loader(name: str) -> SampleConfigBase:
-    # 自检里不区分不同 config 名，统一返回一个 S0 配置。
     return _make_config(nodes=1, gpus=8)
 
 
@@ -79,9 +99,9 @@ def check_level() -> list[tuple[str, bool]]:
         ((2, 8), "S1"),
         ((8, 8), "S2"),       # 64 卡
         ((64, 8), "S3"),      # 512 卡
-        ((128, 8), "S4"),      # 1024 卡 = 万卡档起点
-        ((1024, 8), "S4"),     # 8192 卡
-        ((2048, 8), "S5"),     # 16384 卡
+        ((128, 8), "S4"),     # 1024 卡 = 万卡档起点
+        ((1024, 8), "S4"),    # 8192 卡
+        ((2048, 8), "S5"),    # 16384 卡
         ((12500, 8), "S5"),
     ]
     out = []
@@ -108,7 +128,7 @@ def _spec(sample: str = "tiny-ckpt@0.1.0") -> RunSpec:
         config="tiny-64-s0",
         storage=StorageLayer(
             backend=Component(name="gpfs", version="5.1"),
-            adapter=Component(name="torchstore", version="0.2"),
+            adapter=Component(name="torchstore", version="0.2", git_commit_id="9f2c1a4"),
         ),
         seed=20261103,
     )
@@ -117,11 +137,13 @@ def _spec(sample: str = "tiny-ckpt@0.1.0") -> RunSpec:
 def check_execute() -> list[tuple[str, bool]]:
     svc = _service()
     artifacts = svc.execute(_spec())
+    payload = artifacts.to_json()
     ok = (
         isinstance(artifacts, Artifacts)
         and len(artifacts.metrics) == 2
-        and artifacts.manifest is not None
-        and artifacts.report is not None
+        and payload["manifest"] != ""
+        and payload["report"] != ""
+        and payload["metrics"][0] == {"check_point_duration_sli": 12.5}
     )
     return [("execute returns artifacts with metrics and paths", ok)]
 
@@ -141,13 +163,12 @@ def check_start_and_query() -> list[tuple[str, bool]]:
     out.append(("async run reaches completed", final is not None and final.state.tag == "completed"))
     out.append((
         "completed run carries artifacts",
-        final is not None and final.artifacts is not None and len(final.artifacts.metrics) == 2,
+        final is not None and len(final.artifacts.metrics) == 2,
     ))
     return out
 
 
 def check_stop() -> list[tuple[str, bool]]:
-    # 用一个会阻塞的 runner 制造可取消窗口。
     import threading
 
     release = threading.Event()
@@ -167,7 +188,7 @@ def check_stop() -> list[tuple[str, bool]]:
         seed=1,
     ))
     time.sleep(0.1)
-    stopped = svc.stop(record.run_id)
+    svc.stop(record.run_id)
     release.set()
 
     deadline = time.time() + 3.0
@@ -176,11 +197,7 @@ def check_stop() -> list[tuple[str, bool]]:
         time.sleep(0.05)
         final = svc.query(record.run_id)
 
-    out = [(
-        "stop flips state to cancelled",
-        final.state.tag == "cancelled",
-    )]
-    return out
+    return [("stop flips state to cancelled", final.state.tag == "cancelled")]
 
 
 def check_rejected() -> list[tuple[str, bool]]:
@@ -193,6 +210,71 @@ def check_rejected() -> list[tuple[str, bool]]:
     ]
 
 
+def check_schema() -> list[tuple[str, bool]]:
+    """每个导出类型的序列化结果都过对应 schema。"""
+
+    try:
+        import jsonschema
+    except ImportError:
+        return [("jsonschema available", False)]
+
+    if not SCHEMAS.is_dir():
+        return [("json_schema/ exists", False)]
+
+    def validates(schema_name: str, instance: object) -> bool:
+        schema = json.loads((SCHEMAS / f"{schema_name}.schema.json").read_text(encoding="utf-8"))
+        try:
+            jsonschema.Draft202012Validator(schema).validate(instance)
+            return True
+        except jsonschema.ValidationError:
+            return False
+
+    full_artifacts = Artifacts(
+        manifest="s3://bucket/runs/x/manifest.json",
+        metrics=(
+            CheckPointDuration(value=1.0),
+            TrainingStall(value=1.0),
+            RestoreDuration(value=1.0),
+            WriteThroughput(value=1.0),
+            MetadataCommit(value=1.0),
+            WriteLatencyP99(value=1.0),
+        ),
+        slo=(
+            CkptSloCheckpointDuration(verdict=MetricLE(1.0, 2.0)),
+            CkptSloTrainingStall(verdict=MetricLE(1.0, 2.0)),
+            CkptSloRestoreDuration(verdict=MetricLE(1.0, 2.0)),
+            CkptSloWriteThroughput(verdict=MetricGE(1.0, 2.0)),
+            CkptSloMetadataCommit(verdict=MetricLE(1.0, 2.0)),
+            CkptSloWriteLatencyP99(verdict=MetricLE(1.0, 2.0)),
+        ),
+        report="s3://bucket/runs/x/report.html",
+    )
+
+    states = [
+        Queued(queue=QueueProgress(pos=1, len=3)),
+        Running(),
+        Completed(),
+        Failed(error=Failure(kind="timeout", detail="x")),
+        Rejected(error=Failure(kind="request", detail="x")),
+        Cancelled(),
+    ]
+    records = [
+        RunRecord(run_id="r", state=state, progress=WorkProgress(0, 0), artifacts=full_artifacts)
+        for state in states
+    ]
+
+    out = [
+        ("RunSpec.to_json passes RunSpec.schema.json", validates("RunSpec", _spec().to_json())),
+        ("SampleConfigBase.to_json passes schema", validates("SampleConfigBase", _make_config(1, 8).to_json())),
+        ("Artifacts.to_json passes Artifacts.schema.json", validates("Artifacts", full_artifacts.to_json())),
+    ]
+    out += [
+        (f"RunRecord({state.tag}).to_json passes schema", validates("RunRecord", record.to_json()))
+        for state, record in zip(states, records)
+    ]
+    return out
+
+
 def main() -> int:
     suites = [
         check_level(),
@@ -201,6 +283,7 @@ def main() -> int:
         check_start_and_query(),
         check_stop(),
         check_rejected(),
+        check_schema(),
     ]
     results = [case for suite in suites for case in suite]
     failed = [name for name, ok in results if not ok]

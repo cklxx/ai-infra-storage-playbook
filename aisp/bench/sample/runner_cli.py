@@ -65,18 +65,9 @@ def load_config(path: Path) -> SampleConfigBase:
 
 
 def artifacts_to_json(artifacts, level: str) -> dict:
-    return {
-        "level": level,
-        "manifest": artifacts.manifest,
-        "report": artifacts.report,
-        "metrics": [
-            {"name": m.tag, "value": m.value} for m in artifacts.metrics
-        ],
-        "slo": [
-            {"name": s.tag, "actual": s.verdict.actual, "threshold": s.verdict.threshold}
-            for s in artifacts.slo
-        ],
-    }
+    """外层带 level 元信息；artifacts 子对象直接符合 Artifacts.schema.json。"""
+
+    return {"level": level, "artifacts": artifacts.to_json()}
 
 
 def main() -> int:

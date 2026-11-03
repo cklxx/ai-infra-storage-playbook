@@ -1,32 +1,28 @@
 {
   "level": "S0",
-  "manifest": "memory://runs/sync-tiny-ckpt@0.1.0/manifest.json",
-  "report": "memory://runs/sync-tiny-ckpt@0.1.0/report.html",
-  "metrics": [
-    {
-      "name": "checkpoint_duration_s",
-      "value": 0.06376230344176292
-    },
-    {
-      "name": "training_stall_s",
-      "value": 0.06376230344176292
-    },
-    {
-      "name": "restore_duration_s",
-      "value": 0.0076061151921749115
-    },
-    {
-      "name": "write_throughput_bps",
-      "value": 526242469.12043923
-    },
-    {
-      "name": "metadata_commit_ms",
-      "value": 1.3726688921451569
-    },
-    {
-      "name": "write_latency_p99_ms",
-      "value": 0.3503821790218353
-    }
-  ],
-  "slo": []
+  "artifacts": {
+    "manifest": "memory://runs/sync-tiny-ckpt@0.1.0/manifest.json",
+    "metrics": [
+      {
+        "check_point_duration_sli": 0.05454816296696663
+      },
+      {
+        "training_stall_sli": 0.05454816296696663
+      },
+      {
+        "restore_duration_sli": 0.007953131571412086
+      },
+      {
+        "write_throughput_sli": 615134042.5583159
+      },
+      {
+        "metadata_commit_sli": 2.346951514482498
+      },
+      {
+        "write_latency_p99_sli": 0.43978728353977203
+      }
+    ],
+    "slo": [],
+    "report": "memory://runs/sync-tiny-ckpt@0.1.0/report.html"
+  }
 }
