@@ -85,10 +85,20 @@ class InMemorySampleService:
         run_id = uuid.uuid4().hex
         try:
             self._validate(spec)
+            # config 也要在 start 时解析掉：加载不出来的请求没资格进队列，
+            # 应该直接 Rejected，而不是起线程后再 Failed。
+            config = self._load_config(spec.config)
         except ValueError as exc:
             record = RunRecord(
                 run_id=run_id,
                 state=Rejected(error=Failure(kind="request", detail=str(exc))),
+            )
+            self._records[run_id] = record
+            return record
+        except Exception as exc:  # noqa: BLE001 - config 加载异常同样归为请求不合法
+            record = RunRecord(
+                run_id=run_id,
+                state=Rejected(error=Failure(kind="request", detail=f"config: {type(exc).__name__}: {exc}")),
             )
             self._records[run_id] = record
             return record
@@ -106,7 +116,9 @@ class InMemorySampleService:
             self._cancel_events[run_id] = cancel_event
 
         thread = threading.Thread(
-            target=self._run_background, args=(run_id, spec, cancel_event), daemon=True
+            target=self._run_background,
+            args=(run_id, spec, config, cancel_event),
+            daemon=True,
         )
         self._threads[run_id] = thread
         thread.start()
@@ -164,11 +176,18 @@ class InMemorySampleService:
             raise ValueError(f"sample 必须写成 name@version，得到 {spec.sample!r}")
         if spec.sample not in self._runners:
             raise ValueError(f"未注册的样本: {spec.sample}")
-        if spec.seed < 0:
-            raise ValueError("seed 必须为非负整数")
+        if not isinstance(spec.seed, int) or isinstance(spec.seed, bool) or spec.seed < 0:
+            raise ValueError(f"seed 必须是非负整数，得到 {spec.seed!r}")
+        for layer in (spec.storage.backend, spec.storage.adapter):
+            if not layer.name.strip() or not layer.version.strip():
+                raise ValueError(f"组件 name/version 不能为空: {layer}")
 
     def _run_background(
-        self, run_id: str, spec: RunSpec, cancel_event: threading.Event
+        self,
+        run_id: str,
+        spec: RunSpec,
+        config: SampleConfigBase,
+        cancel_event: threading.Event,
     ) -> None:
         try:
             self._set_state(run_id, Running(), progress=WorkProgress(0, 0))
@@ -176,7 +195,6 @@ class InMemorySampleService:
                 self._set_state(run_id, Cancelled())
                 return
 
-            config = self._load_config(spec.config)
             runner = self._runners[spec.sample]
 
             # 样本执行期间，runner 自己决定是否响应取消；这里只在结束点检查一次。

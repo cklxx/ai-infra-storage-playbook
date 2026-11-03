@@ -260,9 +260,25 @@ def check_rejected() -> list[tuple[str, bool]]:
     svc = _service()
     bad1 = svc.start(_spec(sample="not-registered@9.9.9"))
     bad2 = svc.start(_spec(sample="no-at-sign"))
+
+    # seed 非 int / storage 空字段 / config 加载失败，都必须在 start 时 Rejected
+    bad_seed = svc.start(RunSpec(sample="s@1", config="c", storage=_spec().storage, seed=1.5))
+    bad_storage = svc.start(RunSpec(
+        sample="s@1", config="tiny-64-s0",
+        storage=StorageLayer(Component(name="", version=""), Component(name="a", version="1")),
+        seed=1,
+    ))
+
+    def failing_loader(name): raise RuntimeError("no such config")
+    svc_bad = InMemorySampleService({"s@1": lambda s, c: []}, failing_loader)
+    bad_cfg = svc_bad.start(_spec())
+
     return [
         ("unknown sample -> rejected", bad1.state.tag == "rejected"),
         ("malformed sample -> rejected", bad2.state.tag == "rejected"),
+        ("seed must be int -> rejected", bad_seed.state.tag == "rejected"),
+        ("storage component name must be non-empty -> rejected", bad_storage.state.tag == "rejected"),
+        ("config that fails to load -> rejected, not failed", bad_cfg.state.tag == "rejected"),
     ]
 
 

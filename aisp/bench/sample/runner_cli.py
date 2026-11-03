@@ -45,6 +45,7 @@ def main() -> int:
     level = svc.get_level(config)
     artifacts = svc.execute(spec)
 
+    args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(
         json.dumps(artifacts.to_json(), indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
