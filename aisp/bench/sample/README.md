@@ -97,6 +97,15 @@ python3 checks/check_sample_interface.py
 - `Topology` 要求 `nodes` 与 `gpus_per_node` 至少为 1。schema 只写了 `integer`，没有下限；0 规模算不出有意义的档位，样本侧也会退化成空跑，因此解码与构造都拒绝。
 - `start()` 只登记请求就返回；`stop()` 是取消请求，返回时状态已是 `cancelled`，但样本本身可能还跑到下一个检查点。`cancelled` 是吸收态，后台线程迟到的 `completed` / `failed` 不会覆盖它。
 - 记录默认最多留 1000 条（`max_records`），超出时按插入顺序淘汰最早的终态记录；被淘汰的 `run_id` 再 `query` 会抛 `KeyError`。运行中的记录不淘汰。
-- `progress` 恒为 0/0，表示「该实现不报告细粒度工作量」；完成与否只看 `state`。不拿 SLI 条数当 `total`。
+- `progress` 恒为 0/0。文档对 `WorkProgress.total` 的原话是「总工作量；还没算出来时是 0」，0 是这个字段的合法取值；`SampleRunner` 的返回类型只有 `list[CkptSli]`，没有进度回调通道，服务层拿不到中间量。所以这里报「未知」，不拿 SLI 条数冒充 `total`，完成与否只看 `state`。
+- 运行中的 `Artifacts` 用四个空值占位（`""` / `[]`），schema 里四个字段都是 required 且没有 nullable，只能这样表达「尚未产出」；已验证空值形态通过 `Artifacts.schema.json`。详见下面「与文档的差异」。
 - `public` 层按文档转发：`import ckpt_sample`、`import ckpt_sample_api`，再绑定十一个名字（Start / Stop / Query / Execute / GetLevel / RunSpec / RunRecord / Artifacts / CkptSli / CkptSlo / SampleConfigBase）。实现类要从 `sample.memory`、`sample.types`、`sample.levels` 导入。
 - `Start` / `Stop` 等是 `SampleService` 的未绑定方法，使用时要带实例：`Start(svc, spec)`。
+
+## 与文档的差异
+
+| 项 | 文档 | schema / 实现 | 处理 |
+|---|---|---|---|
+| `Artifacts` 未完成形态 | 「没跑完时相应字段缺」 | schema 四字段全 required、无 nullable | 实现选 schema 侧，用空值占位；冲突待上游决定放宽 schema 还是改措辞 |
+| `Topology.network` / `mount` | 明确列 `rdma / tcp / none` 与 `local-nvme / nfs / fuse` | schema 只写 `string`，无 enum | 实现按文档用 `Literal` 收窄；建议给 schema 补 enum |
+| `Failure.kind` 的拒绝类取值 | 「environment、dependency、timeout、observation、assertion 等」，以「等」结尾 | schema 只写 `string` | `rejected` 必须带 `Failure`，文档未给拒绝类分类，实现取 `request`，落在「等」的开放集合内 |
