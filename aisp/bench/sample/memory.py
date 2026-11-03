@@ -12,7 +12,7 @@ import uuid
 from dataclasses import replace
 from typing import Callable, Dict, Optional
 
-from .apis import SampleRunner
+from .ckpt_sample_api import SampleRunner
 from .configs import SampleConfigBase
 from .levels import Level, resolve_level
 from .types import (

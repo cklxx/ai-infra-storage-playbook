@@ -1,7 +1,7 @@
 """Checkpoint 样本接口的类型定义。
 
-对齐 ``playbook/ckpt-sample-interface.md`` 的 ``types`` 模块，
-序列化结果与 ``playbook/json_schema/`` 的六份 schema 逐字段一致。
+对齐 ``checkpoint/ckpt-sample-interface.md`` 的 ``ckpt_sample`` 模块，
+序列化结果与 ``checkpoint/json_schema/`` 的六份 schema 逐字段一致。
 
 oneof 在 JSON 里是单键对象：``{"queued": {...}}``、``{"running": null}``、
 ``{"check_point_duration_sli": 0.064}``。dataclass 用 ``tag`` 字段承载键名。

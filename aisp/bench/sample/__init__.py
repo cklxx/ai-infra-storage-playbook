@@ -1,27 +1,28 @@
 """checkpoint 样本接口的 public 层。
 
-只做转发：从 apis、configs、types 里 import，再把要发布的名字重新绑定一次。
-对齐 ``playbook/ckpt-sample-interface.md`` 的 ``public`` 模块，导出集合严格按文档；
-实现类走各自的子模块（``sample.memory``、``sample.types``、``sample.levels``）。
+只做转发：从 ``ckpt_sample`` 与 ``ckpt_sample_api`` 里 import，再把要发布的名字
+重新绑定一次，对齐 ``checkpoint/ckpt-sample-interface.md`` 的 ``public`` 模块。
+实现类走各自的子模块（``sample.memory``、``sample.types``、``sample.configs``、
+``sample.levels``）。
 """
 
-from . import apis, configs, types
+from . import ckpt_sample, ckpt_sample_api
 
-Start = apis.Start
-Stop = apis.Stop
-Query = apis.Query
-Execute = apis.Execute
-GetLevel = apis.GetLevel
+Start = ckpt_sample_api.Start
+Stop = ckpt_sample_api.Stop
+Query = ckpt_sample_api.Query
+Execute = ckpt_sample_api.Execute
+GetLevel = ckpt_sample_api.GetLevel
 
-RunSpec = types.RunSpec
-RunRecord = types.RunRecord
-Artifacts = types.Artifacts
-CkptSli = types.CkptSli
-CkptSlo = types.CkptSlo
-SampleConfigBase = configs.SampleConfigBase
+RunSpec = ckpt_sample.RunSpec
+RunRecord = ckpt_sample.RunRecord
+Artifacts = ckpt_sample.Artifacts
+CkptSli = ckpt_sample.CkptSli
+CkptSlo = ckpt_sample.CkptSlo
+SampleConfigBase = ckpt_sample.SampleConfigBase
 
 __all__ = [
-    "apis", "configs", "types",
+    "ckpt_sample", "ckpt_sample_api",
     "Start", "Stop", "Query", "Execute", "GetLevel",
     "RunSpec", "RunRecord", "Artifacts", "CkptSli", "CkptSlo",
     "SampleConfigBase",

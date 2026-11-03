@@ -1,4 +1,4 @@
-"""规模档位：对齐 ``playbook/scaling.md`` 的 ``levels`` 模块。
+"""规模档位：对齐 ``checkpoint/scaling.md`` 的 ``levels`` 模块。
 
 ``Level`` 只声明取值；阈值由配方的 scaling 阶梯给，代码里留一份默认表供
 自检与样例使用。

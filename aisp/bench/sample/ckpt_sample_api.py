@@ -1,6 +1,6 @@
 """五个接口的签名。
 
-对齐 ``playbook/ckpt-sample-interface.md`` 的 ``apis`` 模块。
+对齐 ``checkpoint/ckpt-sample-interface.md`` 的 ``ckpt_sample_api`` 模块。
 调用方只依赖这个 Protocol；内存实现与后续 HTTP/CLI 适配都实现它。
 """
 
@@ -8,9 +8,8 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-from .configs import SampleConfigBase
+from .ckpt_sample import Artifacts, RunRecord, RunSpec, SampleConfigBase
 from .levels import Level
-from .types import Artifacts, RunRecord, RunSpec
 
 
 @runtime_checkable

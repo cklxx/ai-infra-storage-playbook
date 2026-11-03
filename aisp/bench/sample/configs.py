@@ -1,6 +1,6 @@
 """样本配置基类。
 
-对齐 ``playbook/ckpt-sample-interface.md`` 的 ``configs`` 模块。
+对齐 ``checkpoint/ckpt-sample-interface.md`` 的 ``ckpt_sample`` 模块。
 样本 repo 里每份配置必须包含这三个子结构；样本可以在此基础上扩展自己的字段。
 """
 
@@ -74,6 +74,14 @@ class ObservationConfig:
     enabled: bool
     sample_rate: float  # 0..1
     layers: tuple[ObservationLayer, ...] = ()
+
+    def __post_init__(self) -> None:
+        # 文档：采集层至少两层，其中必须含 sys（应用层与系统层的总字节数要交叉核对）。
+        if self.enabled:
+            if len(self.layers) < 2:
+                raise ValueError(f"采集层至少两层，得到 {list(self.layers)}")
+            if "sys" not in self.layers:
+                raise ValueError(f"采集层必须含 sys，得到 {list(self.layers)}")
 
     def to_json(self) -> dict[str, Any]:
         return {

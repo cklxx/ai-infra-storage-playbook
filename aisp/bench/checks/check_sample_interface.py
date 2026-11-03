@@ -8,7 +8,7 @@
   4. Stop 把运行置为 cancelled。
   5. 非法样本名 / 格式错 -> Rejected；不存在的 run_id -> KeyError。
   6. MetricLE / MetricGE 的 passed 判定。
-  7. 序列化结果通过 playbook/json_schema/ 的六份 schema。
+  7. 序列化结果通过 checkpoint/json_schema/ 的同名 schema。
 
 退出码：0 全过，1 有失败，2 缺 jsonschema。
 """
@@ -81,7 +81,7 @@ from sample.types import (  # noqa: E402
     WorkProgress,
 )
 
-SCHEMAS = BENCH / "playbook" / "json_schema"
+SCHEMAS = BENCH / "checkpoint" / "json_schema"
 
 
 def _make_config(nodes: int, gpus: int) -> SampleConfigBase:
@@ -337,7 +337,22 @@ def check_contract_matrix() -> list[tuple[str, bool]]:
         ("Topology rejects nodes=0", _rejects_value(Topology, 0, 8)),
         ("Topology rejects gpus_per_node=0", _rejects_value(Topology, 1, 0)),
     ]
+    # 文档：采集层至少两层，其中必须含 sys。
+    out += [
+        ("ObservationConfig rejects a single layer",
+         _rejects_layers(("app",))),
+        ("ObservationConfig rejects layers without sys",
+         _rejects_layers(("app", "storage"))),
+    ]
     return out
+
+
+def _rejects_layers(layers) -> bool:
+    try:
+        ObservationConfig(True, 0.1, tuple(layers))
+        return False
+    except ValueError:
+        return True
 
 
 def _rejects_value(cls, nodes: int, gpus: int) -> bool:

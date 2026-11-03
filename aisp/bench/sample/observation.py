@@ -1,4 +1,4 @@
-"""观测采集层：对齐 ``playbook/methodology.md`` 的 ``observation`` 模块。"""
+"""观测采集层：对齐 ``checkpoint/methodology.md`` 的 ``observation`` 模块。"""
 
 from __future__ import annotations
 

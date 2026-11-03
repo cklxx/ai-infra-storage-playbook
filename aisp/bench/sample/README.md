@@ -1,21 +1,22 @@
 # sample：checkpoint 样本接口的 Python 落地
 
-对齐 [`playbook/ckpt-sample-interface.md`](../playbook/ckpt-sample-interface.md)。
+对齐 [`checkpoint/ckpt-sample-interface.md`](../checkpoint/ckpt-sample-interface.md)。
 一次运行 = 一条样本 × 一个存储版本；一份 `RunSpec` 进，一条 `RunRecord` 出。
 
-每个导出类型的 `to_json()` 输出，直接通过 [`playbook/json_schema/`](../playbook/json_schema/) 的同名 schema。
+每个导出类型的 `to_json()` 输出，直接通过 [`checkpoint/json_schema/`](../checkpoint/json_schema/) 的同名 schema。
 
 ## 模块
 
 | 文件 | 对应文档模块 | 是什么 |
 |---|---|---|
-| `types.py` | `types` | RunSpec / RunRecord / StorageLayer / Component / State(oneof) / QueueProgress / WorkProgress / Artifacts / CkptSli(6 种) / CkptSlo(MetricLE/GE) / 6 个 Metric / Failure |
-| `configs.py` | `configs` | SampleConfigBase（model + topology + observe）；Model / Topology / ObservationConfig |
-| `levels.py` | `levels`（scaling.md） | `Level` = S0..S5；默认阶梯与 `resolve_level` |
-| `observation.py` | `observation`（methodology.md） | `ObservationLayer` = app / sys / storage |
-| `apis.py` | `apis` | `SampleService` Protocol：Start / Stop / Query / Execute / GetLevel；`SampleRunner` 是样本作者要实现的 callable |
+| `ckpt_sample.py` | `ckpt_sample` | 聚合层，按文档模块视图导出全部类型；值类型在 `types.py`，配置在 `configs.py` |
+| `types.py` | — | RunSpec / RunRecord / StorageLayer / Component / State(oneof) / QueueProgress / WorkProgress / Artifacts / CkptSli(6 种) / CkptSlo(MetricLE/GE) / 6 个 Metric / Failure |
+| `configs.py` | — | SampleConfigBase（model + topology + observe）；Model / Topology / ObservationConfig |
+| `levels.py` | `levels`（checkpoint/scaling.md） | `Level` = S0..S5；默认阶梯与 `resolve_level` |
+| `observation.py` | `observation`（checkpoint/methodology.md） | `ObservationLayer` = app / sys / storage |
+| `ckpt_sample_api.py` | `ckpt_sample_api` | `SampleService` Protocol：Start / Stop / Query / Execute / GetLevel；`SampleRunner` 是样本作者要实现的 callable |
 | `memory.py` | — | `InMemorySampleService` 参考实现：后台线程跑 Start、锁内推进状态机、可取消 |
-| `__init__.py` | `public` | 只做转发；导出集合严格等于文档 public 的十个名字 |
+| `__init__.py` | `public` | 只做转发：`import ckpt_sample`、`import ckpt_sample_api`，再绑定十一个名字 |
 
 ## JSON 形态
 
@@ -74,13 +75,14 @@ python3 checks/check_sample_interface.py
 
 ## 边界
 
-- 这是**样本接口**的落地，不是评估服务的 HTTP 层。HTTP/CLI 适配在 `playbook/evaluation-service.md`，后续再做。
+- 这是**样本接口**的落地，不是评估服务的 HTTP 层。HTTP/CLI 适配在 `checkpoint/evaluation-service.md`，后续再做。
 - `InMemorySampleService` 只用于开发期自检：不做进程隔离，产物路径是 `memory://` 占位，生产实现要替换 `artifact_writer` 落对象存储。
 - S0–S5 阶梯的默认阈值在 `levels.py`；配方要覆盖时由 `get_level` 注入自己的阶梯，不在代码里写死。
 - `Topology` 的 `network` / `mount` 用 `Literal` 收窄，比 schema 的 `string` 更严；schema 只约束类型，取值约束来自文档 Hint。
+- `ObservationConfig` 开启观测时要求 `layers` 至少两层且包含 `sys`，这是文档对交叉核对的要求。
 - `Topology` 要求 `nodes` 与 `gpus_per_node` 至少为 1。schema 只写了 `integer`，没有下限；0 规模算不出有意义的档位，样本侧也会退化成空跑，因此解码与构造都拒绝。
 - `start()` 只登记请求就返回；`stop()` 是取消请求，返回时状态已是 `cancelled`，但样本本身可能还跑到下一个检查点。`cancelled` 是吸收态，后台线程迟到的 `completed` / `failed` 不会覆盖它。
 - 记录默认最多留 1000 条（`max_records`），超出时按插入顺序淘汰最早的终态记录；被淘汰的 `run_id` 再 `query` 会抛 `KeyError`。运行中的记录不淘汰。
 - `progress` 恒为 0/0，表示「该实现不报告细粒度工作量」；完成与否只看 `state`。不拿 SLI 条数当 `total`。
-- `public` 层只导出文档列的十个名字（Start / Stop / Query / Execute / GetLevel / RunSpec / RunRecord / Artifacts / CkptSli / CkptSlo / SampleConfigBase）。实现类要从 `sample.memory`、`sample.types`、`sample.levels` 导入。
+- `public` 层按文档转发：`import ckpt_sample`、`import ckpt_sample_api`，再绑定十一个名字（Start / Stop / Query / Execute / GetLevel / RunSpec / RunRecord / Artifacts / CkptSli / CkptSlo / SampleConfigBase）。实现类要从 `sample.memory`、`sample.types`、`sample.levels` 导入。
 - `Start` / `Stop` 等是 `SampleService` 的未绑定方法，使用时要带实例：`Start(svc, spec)`。
