@@ -1,12 +1,30 @@
 # 核心方法论：旁路计算，保真 IO
 
+## public
+
+只做转发：从 `## 问题` 的 `methodology` 模块与 `## 接口` 的 `methodology_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `MethodologySpec`、`MethodologyBypassPlan`、`MethodologyBoundaryTable`、`MethodologyTolerance`，操作 `PlanBypass`、`RecordBoundary`、`Observe`、`Align`；先看 `MethodologySpec` 与 `PlanBypass`，再看 `RecordBoundary` 交回的 `MethodologyBoundaryTable` 与 `Observe`、`Align` 判定用的 `MethodologyTolerance`。
+
+```viba methodology_public
+import methodology
+import methodology_api
+
+MethodologySpec = methodology.MethodologySpec
+MethodologyBypassPlan = methodology.MethodologyBypassPlan
+MethodologyBoundaryTable = methodology.MethodologyBoundaryTable
+MethodologyTolerance = methodology.MethodologyTolerance
+PlanBypass = methodology_api.PlanBypass
+RecordBoundary = methodology_api.RecordBoundary
+Observe = methodology_api.Observe
+Align = methodology_api.Align
+```
+
 ## 背景
 
 本文是整套方法的唯一出处：旁路、保真等级、保真边界表、IO pattern 度量项、对齐判定、阶段门只在这里定义一次；三类评估集的配方引用本文的章节，只写各自的差异。本文解决"评估集怎么建、怎么判它可信"。存储在一个样本上的表现（SLI）怎么测、重保子集怎么判（SLO）、两个存储版本怎么比，见 [`storage-performance.md`](storage-performance.md)，两篇的分工不要混。
 
 ## 问题
 
-问题形式化为五个模块：`methodology` 汇总整套方法；`gates`、`bypass`、`fidelity`、`observation` 分别定义阶段门、旁路手段与保真等级、保真边界表、观测层。
+问题形式化为五个模块：`methodology` 汇总整套方法；`gates`、`bypass`、`fidelity`、`observation` 分别定义阶段门、旁路手段与保真等级、保真边界表、观测层。对象类型 `MethodologySpec`、`MethodologyBypassPlan`、`MethodologyBypassPremise`、`MethodologyBoundaryTable`、`MethodologyObservation`、`MethodologyAlignment`、`MethodologyScaling`、`MethodologyReproduction`、`MethodologyTolerance` 与 `MethodologyToleranceCalibration` 分别表示整套方法的汇总、旁路方案、旁路前提、保真边界表、一次采集、一次对齐判定、一级放大、可复现条件、一项容差与这项容差的标定记录。取值只能落在有限集合里的概念写成 `Oneof` 枚举：`MethodologyMetric`、`MethodologyToleranceStatistic`、`MethodologyAttributionCause`、`MethodologyScaleRule`、`MethodologyReproducibilityItem` 与 `MethodologyFailureMode` 分别表示 IO pattern 度量项、对齐统计量、偏差归因、scaling 规则、可复现项与失效模式。`MethodologySpec` 的九个字段分别引用这些类型：`$gates`、`$bypass_methods`、`$fidelity_boundaries`、`$observation_layers` 分别是 `gates.Gate`、`bypass.BypassMethod`、`fidelity.FidelityBoundary`、`observation.ObservationLayer` 的列表，`$metrics`、`$tolerances`、`$scale_rules`、`$failure_modes` 分别是 `MethodologyMetric`、`MethodologyTolerance`、`MethodologyScaleRule`、`MethodologyFailureMode` 的列表，`$reproduction` 是 `MethodologyReproduction`；`MethodologyBypassPlan` 的 `$method` 与 `$fidelity` 分别取 `bypass.BypassMethod` 与 `bypass.FidelityLevel` 的一个取值，`MethodologyTolerance` 的 `$metric` 与 `$statistic` 分别取 `MethodologyMetric` 与 `MethodologyToleranceStatistic` 的一个取值。
 
 ```viba methodology
 import bypass

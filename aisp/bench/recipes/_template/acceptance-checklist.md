@@ -1,10 +1,30 @@
 # 验收清单模板
 
+## public
+
+只做转发：从 `## 问题` 的 `acceptance_template` 模块与 `## 接口` 的 `acceptance_template_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `AcceptanceTemplate`、`AcceptanceTemplateItem`、`AcceptanceTemplateRecord`、`AcceptanceTemplateGateReview` 与 `AcceptanceTemplateAdmission`，操作 `CheckItem`、`ReviewGate` 与 `EnterGate`；先看 `AcceptanceTemplate` 与 `AcceptanceTemplateItem`，再看 `CheckItem` 与 `AcceptanceTemplateRecord`，最后看 `ReviewGate`、`AcceptanceTemplateGateReview`、`EnterGate` 与 `AcceptanceTemplateAdmission`。
+
+```viba acceptance_template_public
+import acceptance_template
+import acceptance_template_api
+
+AcceptanceTemplate = acceptance_template.AcceptanceTemplate
+AcceptanceTemplateItem = acceptance_template.AcceptanceTemplateItem
+AcceptanceTemplateRecord = acceptance_template.AcceptanceTemplateRecord
+AcceptanceTemplateGateReview = acceptance_template.AcceptanceTemplateGateReview
+AcceptanceTemplateAdmission = acceptance_template.AcceptanceTemplateAdmission
+CheckItem = acceptance_template_api.CheckItem
+ReviewGate = acceptance_template_api.ReviewGate
+EnterGate = acceptance_template_api.EnterGate
+```
+
 ## 背景
 
 这份文档是验收清单模板，按 G0 到 G4 五道门逐条列出要勾的验收项。每道门都要勾，未勾选的门不允许进入下一道门；勾选时附上回链或证据位置。
 
 ## 问题
+
+问题形式化为 `acceptance_template` 模块，概念分成类型与枚举两类。清单结构写成 Object 类型：`AcceptanceTemplate` 是整份验收清单，`$gates` 收按 G0 到 G4 排列的 `AcceptanceTemplateGateChecklist`，每个 `AcceptanceTemplateGateChecklist` 把 `gates.Gate` 的一个取值与这道门的 `AcceptanceTemplateItem` 的列表配成一对；`AcceptanceTemplateRecord` 的 `$checks` 收已经勾过的 `AcceptanceTemplateCheck`，`AcceptanceTemplateGateReview` 汇总某道门里已勾选与未勾选的验收项，并给出这道门是否勾完的判定。取值只能落在有限集合里的概念写成 Oneof 枚举：`AcceptanceTemplateItem` 是可勾的验收项，`AcceptanceTemplateCheckState` 是未勾选与已勾选两种状态，`AcceptanceTemplateEvidence` 是回链或证据位置，`AcceptanceTemplateAdmission` 是进入某道门的结果。关联落在字段上：`AcceptanceTemplateCheck` 的 `$item` 取 `AcceptanceTemplateItem`、`$state` 取 `AcceptanceTemplateCheckState`，`AcceptanceTemplateCheckState` 的 `$checked` 分支携带一个 `AcceptanceTemplateEvidence`；`AcceptanceTemplateAdmission` 的 `$allowed` 分支携带允许进入的那道 `gates.Gate`，`$blocked` 分支携带造成拒绝的 `AcceptanceTemplateGateReview` 列表。
 
 ```viba acceptance_template
 import gates

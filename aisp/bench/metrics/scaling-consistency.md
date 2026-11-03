@@ -1,10 +1,30 @@
 # Scaling 一致性
 
+## public
+
+只做转发：从 `## 问题` 的 `scaling_consistency` 模块与 `## 接口` 的 `scaling_consistency_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `ScalingConsistencySpec`、`ScalingConsistencyLadder`、`ScalingConsistencyJudgement`、`ScalingConsistencyReport`，操作 `RecordLevel`、`CompareAdjacent`、`Judge`、`Report`；先看 `ScalingConsistencySpec` 与 `RecordLevel`，再按 `CompareAdjacent`、`Judge`、`Report` 的顺序读到 `ScalingConsistencyJudgement` 与 `ScalingConsistencyReport`。
+
+```viba scaling_consistency_public
+import scaling_consistency
+import scaling_consistency_api
+
+ScalingConsistencySpec = scaling_consistency.ScalingConsistencySpec
+ScalingConsistencyLadder = scaling_consistency.ScalingConsistencyLadder
+ScalingConsistencyJudgement = scaling_consistency.ScalingConsistencyJudgement
+ScalingConsistencyReport = scaling_consistency.ScalingConsistencyReport
+RecordLevel = scaling_consistency_api.RecordLevel
+CompareAdjacent = scaling_consistency_api.CompareAdjacent
+Judge = scaling_consistency_api.Judge
+Report = scaling_consistency_api.Report
+```
+
 ## 背景
 
 从较小规模外推到较大规模时，必须逐级验证声明的 scaling 不变量是否仍保持在容差内，外推依据才算成立。本文定义逐级记录、偏差计算、阈值来源与五种判定结论，它是阶段门 G3 的门槛；当前版本 1.0.0。
 
 ## 问题
+
+问题形式化为 `scaling_consistency` 模块：判定从较小规模外推到较大规模时，声明的 scaling 不变量是否逐级保持在容差内。对象类型 `ScalingConsistencySpec` 是问题定义，收下逐级记录 `ScalingConsistencyLadder`、不变量列表 `ScalingConsistencyInvariant`、默认容差 `ScalingConsistencyTolerance`、判定结论 `ScalingConsistencyVerdict` 的五个取值、已知限制 `ScalingConsistencyLimit`、阶段门 `gates.Gate` 与计算脚本名；`ScalingConsistencyLadder` 由若干 `ScalingConsistencyLevelRecord` 按规模从小到大组成，每条记录把这一级上每条不变量的实测值收成以不变量名为键的字典，值写成 Oneof 类型 `ScalingConsistencyMeasurement`，取 `scalar` 或 `distribution` 两种之一。取值只能落在有限集合里的概念写成 Oneof 枚举：`ScalingConsistencyVerdict` 是判定结论，`ScalingConsistencyDeviationMode` 是不变量偏差的计算口径，`ScalingConsistencyDirection` 是相邻级的变化方向，`ScalingConsistencyLimit` 是这项指标测不出什么；`ScalingConsistencyInvariant` 的 `$mode` 取 `ScalingConsistencyDeviationMode` 的一个取值，`$tolerance` 为空时用 `ScalingConsistencyTolerance` 的 `per_level`。比较、判定与报告各有自己的类型：`ScalingConsistencyComparisonSet` 收相邻级与首末级的比较结果、最大相邻偏差与可比性标志，每一次比较写成 `ScalingConsistencyComparison`；`ScalingConsistencyDrift` 记一条不变量的逐级变化方向与是否单调漂移，`$directions` 是 `ScalingConsistencyDirection` 的列表，`ScalingConsistencyAttribution` 记超出容差的不变量怎么归因；`ScalingConsistencyJudgement` 由 `ScalingConsistencyVerdict` 的一个取值、`ScalingConsistencyDrift` 的列表与没通过的不变量名组成，`ScalingConsistencyReport` 把 `ScalingConsistencyLadder`、`ScalingConsistencyComparisonSet`、`ScalingConsistencyTolerance` 与 `ScalingConsistencyJudgement` 汇总成一份报告。
 
 ```viba scaling_consistency
 import gates

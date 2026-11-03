@@ -1,10 +1,30 @@
 # 评估服务
 
+## public
+
+只做转发：从 `## 问题` 的 `service` 模块与 `## 接口` 的 `service_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `RunRequest`、`ServiceManifest`、`ServiceRunVerdict`、`ServiceBacklink`，操作 `Submit`、`Query`、`Collect`、`Cancel`。先看 `RunRequest` 与 `Submit`，再顺着 `Query`、`Collect`、`Cancel` 读到 `ServiceRunVerdict` 与 `ServiceBacklink`；`ServiceManifest` 是运行清单，回链与历史可比性都从它出发。
+
+```viba service_public
+import service
+import service_api
+
+RunRequest = service.RunRequest
+ServiceManifest = service.ServiceManifest
+ServiceRunVerdict = service.ServiceRunVerdict
+ServiceBacklink = service.ServiceBacklink
+Submit = service_api.Submit
+Query = service_api.Query
+Collect = service_api.Collect
+Cancel = service_api.Cancel
+```
+
 ## 背景
 
 评估集不能只是一堆配方：配方解决"怎么测"，服务解决"谁来跑、跑完放哪、结论怎么回到配方上"。这份文档定义评估服务受理运行请求、执行与调度、出产物与回链所需的类型与操作，让评估集能被持续运行。
 
 ## 问题
+
+问题的形式化分成类型与枚举两类。配置与产物写成了类型：`RunRequest` 是一次运行的完整输入，`Framework` 与 `Load` 是它引用的两个类型，分别描述推理框架与负载；`ServiceManifest` 是运行清单，它的 `$request` 字段是 `RunRequest`，`$files` 字段是 `ServiceArtifactFile` 的列表；`ServiceRunDir` 直接取 `str` 类型，表示 `runs/<run-id>/` 这个运行目录；`ServiceBacklink` 是写回配方的回链，`ServiceVersionSet` 是必须同时记录的版本集合，`ServiceScheduling` 是排队与资源约束，`ServiceCiRun` 是一次 CI 运行。判定与分类写成了枚举：`ServiceRunVerdict` 是一次运行的结论，`passed`、`failed`、`invalid` 是它的三个取值；`ServiceFailureKind` 是失败分类，`ServicePriority` 是队列优先级，`ServiceInternalStage` 是执行中的内部阶段，`ServiceCiTrigger` 是 `ServiceCiRun` 的触发场景，`ServiceMetric` 是服务自身的观测指标，`ServiceOpenQuestion` 是尚未解决的问题。`ServiceBoundary` 的 `$does` 与 `$does_not` 都由枚举构成：`$does` 是 `ServiceResponsibility` 的列表，`$does_not` 是 `ServiceOutOfScope` 的列表；`ServiceBacklink` 的 `$status` 取 `ServiceRunVerdict`，`ServiceScheduling` 的 `$priority_order` 取 `ServicePriority` 的列表。
 
 ```viba service
 import configs

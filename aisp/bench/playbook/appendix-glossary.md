@@ -1,10 +1,27 @@
 # 附录 A：基础术语
 
+## public
+
+本文对外发布 5 个名字，全部是转发：类型 `GlossaryTerm`、`GlossaryCategory`、`GlossaryDefinition` 来自 glossary，操作 `Lookup`、`Define` 来自 glossary_api。先看 `GlossaryTerm` 与 `GlossaryCategory` 弄清一个词归哪一类，再看 `Lookup` 与 `Define` 怎么查到它的定义。
+
+```viba glossary_public
+import glossary
+import glossary_api
+
+GlossaryCategory = glossary.GlossaryCategory
+GlossaryTerm = glossary.GlossaryTerm
+GlossaryDefinition = glossary.GlossaryDefinition
+Lookup = glossary_api.Lookup
+Define = glossary_api.Define
+```
+
 ## 背景
 
 本附录解释各篇文档里反复出现、但属于存储与推理领域而非本项目的词，按并行策略、模型结构、存储与 IO、旁路相关四类组织。项目自造词（评估集、配方、旁路、保真、回链）在 [`README.md`](../README.md) 的「术语」里，本附录不重复。读到不认识的词先查本附录，本附录没有的再去 README 查；两处都没有，就是文档的缺口，补进来。
 
 ## 问题
+
+术语表分成「分类」与「术语」两层，都写成枚举：`GlossaryCategory` 是分类枚举，四个取值分别对应并行策略、模型结构、存储与 IO、旁路相关；每一类术语各有一个术语枚举，即 `ParallelStrategyTerm`、`ModelStructureTerm`、`StorageIoTerm`、`BypassTerm`，枚举中的每个取值就是一个术语。`GlossaryTerm` 把四个术语枚举收进同一个枚举，四个变体各携带其中一个取值，因此一个 `GlossaryTerm` 取值同时确定术语本身与它所属的 `GlossaryCategory`。术语的定义单独写成 `GlossaryDefinition`，类型是 `str`，与 `GlossaryTerm` 的取值一一对应。
 
 ```viba glossary
 GlossaryCategory =

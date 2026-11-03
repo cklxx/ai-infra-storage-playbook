@@ -1,10 +1,30 @@
 # playbook 与 bench 评估集
 
+## public
+
+只做转发：从 `## 问题` 的 `bench` 模块与 `## 接口` 的 `bench_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `BenchSpec`、`BenchStorageVersion`、`BenchEvalSet`、`BenchRun` 与 `BenchCheckReport`，操作 `RunBench`、`CheckRepo` 与 `ExtendBench`；先看 `BenchSpec` 与 `RunBench`，存储两层看 `BenchStorageVersion`，评估集与校验结果看 `BenchEvalSet` 与 `BenchCheckReport`。
+
+```viba bench_public
+import bench
+import bench_api
+
+BenchSpec = bench.BenchSpec
+BenchStorageVersion = bench.BenchStorageVersion
+BenchEvalSet = bench.BenchEvalSet
+BenchRun = bench.BenchRun
+BenchCheckReport = bench.BenchCheckReport
+RunBench = bench_api.RunBench
+CheckRepo = bench_api.CheckRepo
+ExtendBench = bench_api.ExtendBench
+```
+
 ## 背景
 
 本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序；它的产物是 **bench**，即两类带版本的静态评估集——模型代码收集与 checkpoint 存储评估。评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为；评估集本身不会变化，让它变化的是这里的配方、指标与扩展流程。dataset 与 kvcache 待做（TODO）；完整指标表、SLO 的配置结构与版本比较方法见 [`playbook/storage-performance.md`](playbook/storage-performance.md)。
 
 ## 问题
+
+问题的形式化以 `BenchSpec` 这个 Object 类型为入口：评估对象、存储版本、评估集、指标与目录结构分别收进 `$subjects`（`BenchSubject` 的列表）、`$storage`（`BenchStorageVersion`）、`$eval_sets`（`BenchEvalSet` 的列表）、`$metrics`（`BenchMetricSet` 的列表）与 `$layout`（`BenchLayout`）五个字段。其中四项继续展开成 Object 类型：`BenchStorageVersion` 的 `$layers` 是 `BenchStorageLayer` 的列表，后者用 `$kind` 取 `BenchStorageLayerKind`、用 `$component` 取 `types.Component`；`BenchEvalSet` 的 `$subject` 取 `BenchSubject`，`$entry` 取 `BenchEvalSetEntry` 或 `nil`；`BenchMetricSet` 的 `$subject` 与 `$tier` 分取 `BenchSubject` 与 `BenchMetricTier`，`BenchLayout` 的 `$areas` 取 `BenchRepoArea` 的列表。`BenchRun` 与 `BenchCheckReport` 不在 `BenchSpec` 的字段里：前者由 `BenchRunArtifacts` 与 `BenchBacklink` 组成，后者收拢一次校验的结果。取值只能落在有限集合里的概念写成 Oneof 枚举：`BenchSubject` 表示评估对象，`BenchStorageLayerKind` 表示存储一层的种类，`BenchMetricTier` 表示指标层级，`BenchRepoArea` 表示仓库里要列出的目录与文件，`BenchCheckScope` 表示校验范围，`BenchGapKind` 表示覆盖缺口；`BenchStorageVersion` 的 `$changed_layers`、`BenchEvalSet` 与 `BenchMetricSet` 的 `$subject` 都引用这些枚举类型。
 
 ```viba bench
 import types

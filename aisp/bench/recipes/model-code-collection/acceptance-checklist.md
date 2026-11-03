@@ -1,10 +1,30 @@
 # 模型代码收集：验收清单
 
+## public
+
+只做转发：从 `## 问题` 的 `acceptance_collection` 模块与 `## 接口` 的 `acceptance_collection_api` 模块 import，对外发布八个名字：类型 `AcceptanceCollectionChecklist`、`AcceptanceCollectionItem`、`AcceptanceCollectionGateResult`，操作 `CheckRunnable`、`CheckBypass`、`CheckAlignment`、`CheckScaling`、`CheckRegistration`。先看 `AcceptanceCollectionItem` 里列出的 15 条验收项，再看 `AcceptanceCollectionChecklist` 怎么按 G0 到 G4 分门，然后按门的顺序看五个操作各自核对什么。
+
+```viba acceptance_collection_public
+import acceptance_collection
+import acceptance_collection_api
+
+AcceptanceCollectionChecklist = acceptance_collection.AcceptanceCollectionChecklist
+AcceptanceCollectionItem = acceptance_collection.AcceptanceCollectionItem
+AcceptanceCollectionGateResult = acceptance_collection.AcceptanceCollectionGateResult
+CheckRunnable = acceptance_collection_api.CheckRunnable
+CheckBypass = acceptance_collection_api.CheckBypass
+CheckAlignment = acceptance_collection_api.CheckAlignment
+CheckScaling = acceptance_collection_api.CheckScaling
+CheckRegistration = acceptance_collection_api.CheckRegistration
+```
+
 ## 背景
 
 这份文档是模型代码收集配方的验收清单，按 G0 能跑、G1 旁路可跑、G2 小规模对齐、G3 逐级 scaling、G4 结论登记五道门列出 15 条验收项。它回答这套配方在每个阶段要满足什么条件才算完成，验收时按门逐条核对。
 
 ## 问题
+
+问题形式化为一个模块 `acceptance_collection`：取值落在有限集合里的概念写成 `Oneof` 枚举，`AcceptanceCollectionItem` 把每条验收项列成一个带字符串标签的分支，阶段门则由 `gates` 模块的枚举 `gates.Gate` 定义，本模块只引用它。其余概念写成对象类型：`AcceptanceCollectionGate` 表示一道门与它的验收项，`AcceptanceCollectionChecklist` 表示整份清单，`AcceptanceCollectionCoverageRun` 表示覆盖度脚本的一次运行，`AcceptanceCollectionItemResult` 与 `AcceptanceCollectionGateResult` 分别表示单条验收项和一道门的判定结果。这些类型逐层嵌套：`AcceptanceCollectionChecklist` 的 `$gates` 是 `list[AcceptanceCollectionGate]`，`AcceptanceCollectionGate` 的 `$items` 是 `list[AcceptanceCollectionItem]`，`AcceptanceCollectionGateResult` 的 `$items` 是 `list[AcceptanceCollectionItemResult]`。`AcceptanceCollectionGate` 与 `AcceptanceCollectionGateResult` 的 `$gate` 都取一个 `gates.Gate` 值，`AcceptanceCollectionItem` 每个分支的标签前缀标出它属于哪道门，验收项与门由此对应起来。
 
 ```viba acceptance_collection
 import gates

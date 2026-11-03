@@ -1,5 +1,22 @@
 # 校验脚本
 
+## public
+
+只做转发：从 `## 问题` 的 `checks` 模块与 `## 接口` 的 `checks_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `CheckScript`、`CheckArgs`、`CheckOutput`、`CheckStatus` 与 `CheckExitCode`，操作 `RunCheck` 与 `RunAllChecks`；先看 `CheckScript`、`CheckArgs` 与 `CheckOutput`，弄清一个脚本收什么输入、往标准输出写什么，再看 `CheckStatus` 与 `CheckExitCode` 怎么判定，最后按 `RunCheck`、`RunAllChecks` 的顺序读。
+
+```viba checks_public
+import checks
+import checks_api
+
+CheckScript = checks.CheckScript
+CheckArgs = checks.CheckArgs
+CheckOutput = checks.CheckOutput
+CheckStatus = checks.CheckStatus
+CheckExitCode = checks.CheckExitCode
+RunCheck = checks_api.RunCheck
+RunAllChecks = checks_api.RunAllChecks
+```
+
 ## 背景
 
 这份文档说明本目录的通用校验脚本怎么用：本目录放通用校验，只对这个评估集成立的校验放 `recipes/<name>/checks/`。文档逐个说明五个脚本的作用、入参、退出码，以及阈值来源、输出约定、目录约定与依赖安装。

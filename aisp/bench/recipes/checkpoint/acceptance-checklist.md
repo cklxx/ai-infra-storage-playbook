@@ -1,10 +1,29 @@
 # checkpoint：验收清单
 
+## public
+
+只做转发：从 `## 问题` 的 `acceptance_checkpoint` 模块与 `## 接口` 的 `acceptance_checkpoint_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `AcceptanceCheckpointChecklist`、`AcceptanceCheckpointProgress` 与 `AcceptanceCheckpointVerdict`，操作 `Start`、`CheckItem`、`JudgeGate` 与 `JudgeChecklist`；先看 `AcceptanceCheckpointChecklist` 与 `Start`，再按 `CheckItem`、`JudgeGate`、`JudgeChecklist` 的顺序读到 `AcceptanceCheckpointProgress` 与 `AcceptanceCheckpointVerdict`。
+
+```viba acceptance_checkpoint_public
+import acceptance_checkpoint
+import acceptance_checkpoint_api
+
+AcceptanceCheckpointChecklist = acceptance_checkpoint.AcceptanceCheckpointChecklist
+AcceptanceCheckpointProgress = acceptance_checkpoint.AcceptanceCheckpointProgress
+AcceptanceCheckpointVerdict = acceptance_checkpoint.AcceptanceCheckpointVerdict
+Start = acceptance_checkpoint_api.Start
+CheckItem = acceptance_checkpoint_api.CheckItem
+JudgeGate = acceptance_checkpoint_api.JudgeGate
+JudgeChecklist = acceptance_checkpoint_api.JudgeChecklist
+```
+
 ## 背景
 
 这份文档是 checkpoint 评估的验收清单，按 G0 能跑、G1 旁路可跑、G2 小规模对齐、G3 逐级 scaling、G4 结论登记五个阶段逐条列出需要确认的事项。清单从真实运行跑通前向、反向、optimizer.step 与一次 checkpoint 写入开始，经旁路与小规模对齐、逐级 scaling，到结论登记结束，共 24 条验收项。
 
 ## 问题
+
+清单里的每条验收项写成 `AcceptanceCheckpointItem` 的一个变体，24 条验收项合起来构成这个 Oneof，变体名是条目的标识，变体后附的说明是该条的验收要求。阶段门沿用 `gates.Gate` 枚举，G3 的档位顺序沿用 `levels.Level` 枚举。五个阶段写成 `AcceptanceCheckpointSection`，每个阶段把 `$gate` 与 `$items` 绑在一起；整份清单 `AcceptanceCheckpointChecklist` 再由 `$sections` 与 `AcceptanceCheckpointLadder` 组成。进度与判定各自成为类型：`AcceptanceCheckpointProgress` 保存已勾选与未勾选的验收项，`AcceptanceCheckpointGateVerdict` 是一条阶段判定，`AcceptanceCheckpointVerdict` 用 `$gates` 汇总各阶段的判定。
 
 ```viba acceptance_checkpoint
 import gates

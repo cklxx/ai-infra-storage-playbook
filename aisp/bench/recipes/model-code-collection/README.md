@@ -1,10 +1,30 @@
 # 模型代码收集配方
 
+## public
+
+只做转发：从 `## 问题` 的 `recipe_collection` 模块与 `## 接口` 的 `recipe_collection_api` 模块 import，对外发布八个名字：类型 `RecipeCollectionCorpusEntry` 与 `RecipeCollectionAcceptanceReport`，操作 `CollectCandidates`、`FetchCode`、`DedupCorpus`、`ProbeRunnable`、`PairTrainingCode`、`CheckAcceptance`。先看 `RecipeCollectionCorpusEntry`：一条语料一个模型，`FetchCode` 造出它，`DedupCorpus`、`ProbeRunnable`、`PairTrainingCode` 依次在它上面写上指纹、去重决定、可跑性结论与训练代码配对，`CheckAcceptance` 再把整批条目算成 `RecipeCollectionAcceptanceReport`。
+
+```viba recipe_collection_public
+import recipe_collection
+import recipe_collection_api
+
+RecipeCollectionCorpusEntry = recipe_collection.RecipeCollectionCorpusEntry
+RecipeCollectionAcceptanceReport = recipe_collection.RecipeCollectionAcceptanceReport
+CollectCandidates = recipe_collection_api.CollectCandidates
+FetchCode = recipe_collection_api.FetchCode
+DedupCorpus = recipe_collection_api.DedupCorpus
+ProbeRunnable = recipe_collection_api.ProbeRunnable
+PairTrainingCode = recipe_collection_api.PairTrainingCode
+CheckAcceptance = recipe_collection_api.CheckAcceptance
+```
+
 ## 背景
 
 本配方收集 1000 个以上可跑的推理模型代码、尽量配对训练代码，生产另外两个配方的原料：一份可复现、去重后、验证过能跑的 LLM 模型代码语料。给定清单与 commit，语料要能在新机器上重建出同样的文件集合；结构族、规模量级、注意力变体的覆盖矩阵要能计算。方法说明见 [`playbook/model-code-collection.md`](../../playbook/model-code-collection.md)，开放问题见同一篇文档的「开放问题」。
 
 ## 问题
+
+这个问题被形式化成一组 viba 类型与枚举：要记录的数据写成 `Object` 类型，取值封闭的概念写成 `Oneof` 枚举，字段声明把两者接起来。输入与产物的种类由 `RecipeCollectionInputKind`、`RecipeCollectionOutputKind` 给出，`RecipeCollectionInput`、`RecipeCollectionOutput` 各用一个 `$kind` 字段引用它们；候选筛选、下载失败、代码角色、去重、可跑性、训练代码配对以及覆盖度与验收指标同样写成枚举，分别是 `RecipeCollectionCandidateFilter`、`RecipeCollectionFetchFailureKind`、`RecipeCollectionCodeRole`、`RecipeCollectionDedupDecision`、`RecipeCollectionRunnableState`、`RecipeCollectionTrainingStatus`、`RecipeCollectionCoverageDimension`、`RecipeCollectionGapKind`、`RecipeCollectionAcceptanceMetric`。类型之间靠字段嵌套：`RecipeCollectionCandidate` 与 `RecipeCollectionWorkspace` 由 `RecipeCollectionCandidateSet` 收拢，`RecipeCollectionCorpusEntry` 把一条语料的候选、下载、指纹、去重、可跑性与训练代码配对串起来，`RecipeCollectionAcceptanceReport` 汇总 `RecipeCollectionAcceptanceItem` 与 `RecipeCollectionCoverage`，`RecipeCollectionAcceptance` 则给出这些验收项的口径。
 
 ```viba recipe_collection
 RecipeCollectionInputKind =

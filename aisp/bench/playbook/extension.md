@@ -1,10 +1,30 @@
 # 扩展：从缺口到新版本
 
+## public
+
+只做转发：从 `## 问题` 的 `extension` 模块与 `## 接口` 的 `extension_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `ExtensionCoverage`、`ExtensionGap`、`ExtensionCandidate`、`ExtensionVersion`，操作 `FindGap`、`ProposeCandidate`、`Regress`、`Converge`。先看 `ExtensionCoverage` 与 `FindGap`，再顺着 `ProposeCandidate`、`Regress`、`Converge` 走完整条闭环；`ExtensionGap` 与 `ExtensionCandidate` 分别是缺口清单与候选用例，`ExtensionVersion` 是收敛出的新评估集版本。
+
+```viba extension_public
+import extension
+import extension_api
+
+ExtensionCoverage = extension.ExtensionCoverage
+ExtensionGap = extension.ExtensionGap
+ExtensionCandidate = extension.ExtensionCandidate
+ExtensionVersion = extension.ExtensionVersion
+FindGap = extension_api.FindGap
+ProposeCandidate = extension_api.ProposeCandidate
+Regress = extension_api.Regress
+Converge = extension_api.Converge
+```
+
 ## 背景
 
 评估集是静态产物：一个版本的用例清单构建完成之后，不会自己变化。新模型出现、框架升级、并行策略变化时，覆盖度会随时间下降；本篇要解决的是让 playbook 持续产出覆盖不衰减的新版本，并且不让历史结论悄悄失效。对外常说的「自进化」指的是 playbook 的这套能力，不是评估集自己会动。
 
 ## 问题
+
+问题形式化为 `extension` 模块：对象类型 `ExtensionCoverage`、`ExtensionCell`、`ExtensionExemption`、`ExtensionGap`、`ExtensionCandidate`、`ExtensionRegression` 与 `ExtensionVersion` 分别表示覆盖度矩阵、矩阵中的一个格子、一条豁免记录、一个缺口、一个候选用例、一次回归验证与一个评估集版本。枚举 `ExtensionAxis`、`ExtensionEmptyKind`、`ExtensionCandidateSource`、`ExtensionRegressionScope`、`ExtensionRegressionVerdict` 与 `ExtensionTrigger` 分别表示矩阵的轴、空格子的性质、候选的生成路径、回归的范围、回归的结论与闭环的触发条件。`ExtensionCoverage` 由 `ExtensionAxis` 的取值与若干 `ExtensionCell` 组成，`ExtensionCell` 的 `empty` 字段在格子为空时取 `ExtensionEmptyKind` 的一个取值，取 `not_needed` 时携带 `ExtensionExemption`；`ExtensionGap` 指向 `empty` 为 `should_exist` 的 `ExtensionCell` 并携带优先级。闭环由 `ExtensionTrigger` 的一个取值启动；`ExtensionCandidate` 的 `source` 字段取 `ExtensionCandidateSource` 的一个取值；`ExtensionRegression` 记录 `ExtensionCandidate`、`ExtensionRegressionScope` 与 `ExtensionRegressionVerdict` 各一个取值；`ExtensionVersion` 由回归结论收敛得到。
 
 ```viba extension
 import configs

@@ -1,10 +1,29 @@
 # 已知坑与开放问题
 
+## public
+
+只做转发：从 `## 问题` 的 `pitfalls` 模块与 `## 接口` 的 `pitfalls_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `PitfallEntry`、`PitfallCategory`、`Pitfall`、`PitfallStatus`，操作 `RegisterPitfall`、`JudgeResolved`、`OpenQuestion`；先看 `PitfallEntry` 与 `RegisterPitfall`，再看 `JudgeResolved` 与 `OpenQuestion`。
+
+```viba pitfalls_public
+import pitfalls
+import pitfalls_api
+
+PitfallCategory = pitfalls.PitfallCategory
+Pitfall = pitfalls.Pitfall
+PitfallStatus = pitfalls.PitfallStatus
+PitfallEntry = pitfalls.PitfallEntry
+RegisterPitfall = pitfalls_api.RegisterPitfall
+JudgeResolved = pitfalls_api.JudgeResolved
+OpenQuestion = pitfalls_api.OpenQuestion
+```
+
 ## 背景
 
 这份文档记录评估里反复踩到的坑、还在排查的问题，以及还没有答案的问题：每条坑写清现象、原因、处置、状态，每条开放问题写清影响范围与当前处置方式。新增条目按已有字段填写，不留空；已经解决的问题不删除，状态改为"已解决"并写明解决方式。dataset 与 kvcache 还没有定义，只留 TODO。
 
 ## 问题
+
+问题形式化为一份坑登记表。一条登记记录写成 `PitfallEntry` 这个 Object 类型，六个字段分别收下分类、具体坑、现象、原因、处置与状态。`PitfallCategory`、`Pitfall`、`PitfallStatus` 与 `PitfallOpenQuestion` 都是 Oneof 枚举：`PitfallCategory` 给出条目所属的类别，`Pitfall` 的每个取值对应一条已知坑，`PitfallStatus` 给出 `$status` 字段的取值，`PitfallOpenQuestion` 承接未解决的坑挂出的开放问题。分类、具体坑与状态不是自由文本，分别取自 `PitfallCategory`、`Pitfall` 与 `PitfallStatus` 的取值。
 
 ```viba pitfalls
 PitfallCategory =

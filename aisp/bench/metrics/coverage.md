@@ -1,10 +1,29 @@
 # 覆盖度
 
+## public
+
+只做转发：从 `## 问题` 的 `coverage` 模块与 `## 接口` 的 `coverage_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `CoverageManifest`、`CoverageCell`、`CoverageStats` 与 `CoverageVerdict`，操作 `RecordCell`、`ComputeCoverage` 与 `JudgeCoverage`；先看 `CoverageManifest` 与 `RecordCell`，再看 `CoverageStats` 与 `ComputeCoverage`，最后看 `CoverageVerdict` 与 `JudgeCoverage`。
+
+```viba coverage_public
+import coverage
+import coverage_api
+
+CoverageManifest = coverage.CoverageManifest
+CoverageCell = coverage.CoverageCell
+CoverageStats = coverage.CoverageStats
+CoverageVerdict = coverage.CoverageVerdict
+RecordCell = coverage_api.RecordCell
+ComputeCoverage = coverage_api.ComputeCoverage
+JudgeCoverage = coverage_api.JudgeCoverage
+```
+
 ## 背景
 
 这份文档定义覆盖度的口径、阈值与判定：覆盖度决定评估集是否够用，它是评估集在目标维度矩阵上的填充程度，用来判断还有哪些场景没测过，也是 playbook 生成下一版评估集的输入。覆盖度按矩阵计算，轴由配方声明，每个格子按最近一次运行的结果记为 covered、failed、stale、gap 或 exempt。覆盖度低于配方的 `coverage_ratio_min` 时不通过、缺口按优先级补；轴是人定的，轴选错了，覆盖度再高也测不到真正的风险。
 
 ## 问题
+
+问题形式化为 `coverage` 模块：枚举 `CoverageAxis` 的九个取值是覆盖矩阵的九条轴，枚举 `CoverageCellState` 的五个取值是格子所处的五种状态，其中 `exempt` 状态要配一条 `CoverageExemption`。对象 `CoverageAxisValue` 把一条轴与这条轴上的一个取值配成一对，`$axis` 取 `CoverageAxis` 的一个取值，`$value` 是这条轴上的取值字符串；别名 `CoverageCellKey` 是 `CoverageAxisValue` 的列表，也就是一个格子的坐标。对象 `CoverageCell` 由坐标、状态与可选的 `CoverageExemption` 组成，别名 `CoverageGap` 就是 `CoverageCellKey`，指应有但没有的格子；对象 `CoverageManifest` 收配方声明的轴与全部格子。对象 `CoverageStats` 是计算产物，收分母、已覆盖数、覆盖度、缺口率与 `CoverageGap` 清单；Oneof `CoverageReport` 的两个分支分别携带 `CoverageStats` 与清单非法的原因；对象 `CoverageThreshold` 单独收通过判定用的 `$coverage_ratio_min`；Oneof `CoverageVerdict` 的取值是 `pass`、`fail`、`incomparable`，由 `CoverageReport` 与 `CoverageThreshold` 判定得到。
 
 ```viba coverage
 CoverageAxis =

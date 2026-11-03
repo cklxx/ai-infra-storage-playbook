@@ -1,10 +1,30 @@
 # Checkpoint 存储评估
 
+## public
+
+只做转发：从 `## 问题` 的 `checkpoint` 模块与 `## 接口` 的 `checkpoint_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `CheckpointSpec`、`CheckpointFidelity` 与 `CheckpointConclusion`，操作 `PrepareBypass`、`RecordBoundary`、`Align`、`ScaleUp` 与 `Register`；先看 `CheckpointSpec` 与 `PrepareBypass`，再按 `RecordBoundary`、`Align`、`ScaleUp`、`Register` 的顺序读到 `CheckpointFidelity` 与 `CheckpointConclusion`。
+
+```viba checkpoint_public
+import checkpoint
+import checkpoint_api
+
+CheckpointSpec = checkpoint.CheckpointSpec
+CheckpointFidelity = checkpoint.CheckpointFidelity
+CheckpointConclusion = checkpoint.CheckpointConclusion
+PrepareBypass = checkpoint_api.PrepareBypass
+RecordBoundary = checkpoint_api.RecordBoundary
+Align = checkpoint_api.Align
+ScaleUp = checkpoint_api.ScaleUp
+Register = checkpoint_api.Register
+```
+
 ## 背景
 
 训练侧的存储评估，评估对象是 checkpoint 的写入与读取。目标是在真实存储与传输路径上测出训练任务产生的 IO 行为，并把结论从单卡、小参数规模外推到十万卡。本篇只写这两条路径的特殊之处，旁路与保真的总则见 [`methodology.md`](methodology.md)。
 
 ## 问题
+
+checkpoint 存储评估的形式化分成类型与枚举两类。`CheckpointSpec` 是入口的 Object 类型，把评估对象 `CheckpointSubject`、旁路方案 `CheckpointBypassPlan` 与保真边界 `CheckpointFidelity` 分别收成 `$subject`、`$bypass` 与 `$fidelity` 三个字段，把阶段门、小规模对齐、放大维度、外推规则与验收项收成 `$gates`、`$alignment`、`$scaling`、`$extrapolation`、`$acceptance` 五个列表字段；`CheckpointFidelity` 的每一行是 `fidelity.FidelityBoundary`。可选项写成 Oneof 枚举：`CheckpointGate`、`CheckpointAlignmentStep`、`CheckpointScalingDimension`、`CheckpointExtrapolationRule` 与 `CheckpointAcceptanceItem` 依次是 `CheckpointSpec` 的 `$gates`、`$alignment`、`$scaling`、`$extrapolation` 与 `$acceptance` 的元素类型；`CheckpointWriteFeature` 与 `CheckpointReadFeature` 是写入侧与读取侧要记录的特征，`CheckpointBypassStep` 与 `CheckpointBypassConstraint` 是旁路的一个步骤与一条约束，分别构成 `CheckpointSubject` 的 `$write_features`、`$read_features` 与 `CheckpointBypassPlan` 的 `$steps`、`$constraints`。对齐、放大、结论、登记与并行配置各有自己的类型：`CheckpointAlignment` 记对齐步骤与容差判定，`CheckpointScalingRun` 记逐级放大的每一级，其中 `$dimension` 取 `CheckpointScalingDimension` 的一个取值，`CheckpointConclusion` 的 `$alignment` 取 `CheckpointAlignment`、`$scaling` 取 `CheckpointScalingRun` 的列表，另收验收项与回链，`CheckpointRegistration` 记结论与覆盖矩阵的更新状态，`CheckpointParallel` 记 DP/TP/PP/EP 四个度数。
 
 ```viba checkpoint
 import fidelity

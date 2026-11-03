@@ -1,10 +1,30 @@
 # IO pattern 对齐度
 
+## public
+
+只做转发：从 `## 问题` 的 `io_pattern` 模块与 `## 接口` 的 `io_pattern_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `IoPatternSpec`、`IoPatternRecord`、`IoPatternComparison`、`IoPatternJudgement`，操作 `Collect`、`Compare`、`Explain`、`Judge`；先看 `IoPatternSpec` 与 `Collect`，再按 `Compare`、`Explain`、`Judge` 的顺序读到 `IoPatternComparison` 与 `IoPatternJudgement`，`IoPatternRecord` 是两侧各采一条的记录。
+
+```viba io_pattern_public
+import io_pattern
+import io_pattern_api
+
+IoPatternSpec = io_pattern.IoPatternSpec
+IoPatternRecord = io_pattern.IoPatternRecord
+IoPatternComparison = io_pattern.IoPatternComparison
+IoPatternJudgement = io_pattern.IoPatternJudgement
+Collect = io_pattern_api.Collect
+Compare = io_pattern_api.Compare
+Explain = io_pattern_api.Explain
+Judge = io_pattern_api.Judge
+```
+
 ## 背景
 
 旁路运行必须与同等规模的真实运行在 IO 上对齐，旁路实现才算成立；这份文档定义对齐度怎么记录、怎么算、怎么判。对齐度不是一个数，而是一组分项：分项由配方的 `metrics.yaml` 用 `items` 与 `tolerance` 声明，check 脚本只算声明过的项，逐项判定，全部通过才算对齐。它是阶段门 G2 的门槛。
 
 ## 问题
+
+问题形式化为 `io_pattern` 模块，概念分成类型与枚举两类：承载字段的结构写成 Object 类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`IoPatternSpec` 是入口类型，`$record` 是一条 `IoPatternRecord`，`$runs`、`$items`、`$tolerance` 分别是 `IoPatternRunRole`、`IoPatternMetricItem`、`IoPatternTolerance` 的列表，`$verdict` 是一个 `IoPatternVerdict` 取值；`IoPatternRecord` 记录一次运行，由六个类型组成：`IoPatternWindow`、`IoPatternTotals`、`IoPatternHistogram` 是必填的采集窗口、读写总量与请求大小直方图，`IoPatternConcurrency`、`IoPatternHotness`、`IoPatternTiming` 是可选的并发度分布、块访问热度与每秒峰值字节数，`$sources` 的元素类型是 `observation.ObservationLayer`；`IoPatternComparison` 是两条记录的比较结果，包含 `$real` 与 `$bypass` 两条 `IoPatternRecord`，`$items` 是 `IoPatternMetricResult` 的列表，`IoPatternMetricResult` 是单项度量结果，它的 `$item` 与 `$unit` 分别取 `IoPatternMetricItem` 与 `IoPatternUnit` 的一个取值。枚举定义取值有限的词汇：`IoPatternRunRole` 区分真实运行与旁路运行，`IoPatternMetricItem` 列出全部度量项，`IoPatternUnit` 给出 `distance`、`ratio` 与 `absolute` 三种单位，`IoPatternToleranceSource` 区分参考阈值与标定值，`IoPatternDeviationDirection` 给出偏差方向，`IoPatternLimitation` 列出已知限制，`IoPatternVerdict` 给出四种判定结论。容差与判定通过字段引用关联：`IoPatternTolerance` 是一项容差，它的 `$item` 取 `IoPatternMetricItem`、`$source` 取 `IoPatternToleranceSource`、`$calibration` 可选一条 `IoPatternCalibration` 标定记录；`IoPatternAttribution` 是单项超出阈值的归因，它的 `$item` 取 `IoPatternMetricItem`、`$direction` 取 `IoPatternDeviationDirection`；`IoPatternExplanation` 汇总 `IoPatternAttribution` 的列表、`timing_valid` 与 `IoPatternLimitation` 的列表；`IoPatternJudgement` 是最终判定，它的 `$verdict` 取 `IoPatternVerdict`、`$checks` 是 `IoPatternToleranceCheck` 的列表、`$explanation` 是 `IoPatternExplanation`；`IoPatternToleranceCheck` 记录单项对照阈值的结果。
 
 ```viba io_pattern
 import observation

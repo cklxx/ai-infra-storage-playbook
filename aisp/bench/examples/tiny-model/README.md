@@ -1,10 +1,29 @@
 # 最小模型样例
 
+## public
+
+只做转发：从 `## 问题` 的 `tiny_model` 模块与 `## 接口` 的 `tiny_model_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `TinyModelPurpose`、`TinyModelSample` 与 `TinyModelCheckStatus`，操作 `Inspect`、`CheckConfig`、`CheckManifest` 与 `RunForward`；先看 `TinyModelSample` 与 `Inspect`，再按 `CheckConfig`、`CheckManifest`、`RunForward` 的顺序读到 `TinyModelCheckStatus`，`TinyModelPurpose` 说明这份样例为什么存在。
+
+```viba tiny_model_public
+import tiny_model
+import tiny_model_api
+
+TinyModelPurpose = tiny_model.TinyModelPurpose
+TinyModelSample = tiny_model.TinyModelSample
+TinyModelCheckStatus = tiny_model.TinyModelCheckStatus
+Inspect = tiny_model_api.Inspect
+CheckConfig = tiny_model_api.CheckConfig
+CheckManifest = tiny_model_api.CheckManifest
+RunForward = tiny_model_api.RunForward
+```
+
 ## 背景
 
 这份最小模型样例演示语料里的一条记录长什么样：它演示清单条目的字段，给 [`checks/`](../../checks/) 的脚本一个可以跑通的最小输入，也让新同学在五分钟内看懂收集与验证流程。它不是评估目标。
 
 ## 问题
+
+问题的形式化以 `TinyModelSample` 这个 Object 类型为入口：`$path` 与 `$evaluation_target` 是 `str` 与 `bool` 两个字段，`$purpose`、`$files`、`$checks` 分别取 `TinyModelPurpose`、`TinyModelFile`、`TinyModelCheck` 三个枚举的列表，`$manifest` 取对象类型 `TinyModelManifestEntry`。这三个枚举都用 Oneof 表示，取值只能落在列出的分支上；`TinyModelManifestEntry` 则是只含两个 `str` 字段的小 Object 类型。核对结果不放进 `TinyModelSample` 的字段，单独写成 Oneof 枚举 `TinyModelCheckStatus`，由 `$passed`、`$failed`、`$skipped` 三个分支覆盖，并作为 `## 接口` 里 `CheckConfig`、`CheckManifest` 与 `RunForward` 的返回类型。
 
 ```viba tiny_model
 TinyModelPurpose =

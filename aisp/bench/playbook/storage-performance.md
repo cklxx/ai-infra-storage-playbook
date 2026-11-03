@@ -1,10 +1,33 @@
 # 存储表现：SLI、SLO 与存储版本对比
 
+## public
+
+只做转发：从 `## 问题` 的 `performance` 模块与 `## 接口` 的 `performance_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `PerformanceSliRecord`、`PerformanceStorageVersion`、`PerformanceStorageComparison`、`PerformanceSloThreshold`、`PerformanceSloResult`，操作 `Measure`、`Compare`、`Judge`。先看 `PerformanceSliRecord` 与 `Measure`，再顺着 `Compare` 与 `Judge` 读到存储版本比较与达标判定。
+
+```viba performance_public
+import performance
+import performance_api
+
+PerformanceSliRecord = performance.PerformanceSliRecord
+PerformanceStorageVersion = performance.PerformanceStorageVersion
+PerformanceStorageComparison = performance.PerformanceStorageComparison
+PerformanceSloThreshold = performance.PerformanceSloThreshold
+PerformanceSloResult = performance.PerformanceSloResult
+Measure = performance_api.Measure
+Compare = performance_api.Compare
+Judge = performance_api.Judge
+```
+
 ## 背景
 
 同一份负载换一个存储版本之后，要能说清差多少、往哪个方向差，并且把差异归到 backend 还是 adapter 这一层。重保子集（评估集里选定要达标的那部分负载）还要能说清是否达标，阈值由使用方在部署评估集时给出。这份文档定义存储版本比较与重保判定各自需要的记录、窗口、阈值与判定结果，以及跨存储版本比较时使用的噪声带。
 
 ## 问题
+
+存储版本比较与重保判定被形式化为 `performance` 模块，记录、比较、阈值与判定写成 Object 类型：`PerformanceStorageLayer` 是一层存储组件，`PerformanceStorageVersion` 是 backend 与 adapter 两层的组合，`PerformanceWindow` 是一次测量所用的窗口，`PerformanceAttribution` 是一条底层 SLI 归因，`PerformanceEvidence` 是一次运行留存的证据，`PerformanceSliRecord` 是一条 SLI 记录，`PerformanceNoiseBand` 是一项指标的噪声带，`PerformanceMetricDelta` 是一条逐指标差值，`PerformanceStorageComparison` 是两个存储版本的比较，`PerformanceThresholdProvenance` 是一个阈值的来源，`PerformanceThresholdScope` 是一个阈值的适用范围，`PerformanceSloThreshold` 是一条 SLO 阈值，`PerformanceSloResult` 是一条判定结果。
+取值只能落在有限集合里的概念写成 Oneof 枚举：`PerformanceWorkload` 是负载类别，`PerformanceWarmup` 是预热丢弃规则，`PerformanceAttributionKind` 是底层 SLI 的种类，`PerformanceComparisonVerdict` 是比较结论，`PerformanceLayer` 是变化发生在哪一层，`PerformanceThresholdProvenanceKind` 是阈值来源的类别，`PerformanceComparator` 是比较方向，`PerformanceSloVerdict` 是达标判定。
+`PerformanceSampleKey`、`PerformanceSliUri` 与 `PerformanceStorageId` 是 `str` 类型，分别表示负载身份、一份 sli.json 的位置与存储版本身份；关系落在字段上：`PerformanceStorageVersion` 的 `$backend` 与 `$adapter` 都是 `PerformanceStorageLayer`；`PerformanceSliRecord` 的 `$sample_key`、`$storage`、`$window` 与 `$workload` 分别取 `PerformanceSampleKey`、`PerformanceStorageVersion`、`PerformanceWindow` 与 `PerformanceWorkload`，`$attribution` 是 `PerformanceAttribution` 的列表，`$evidence` 取 `PerformanceEvidence`，`$metrics` 取 `types.CkptSli` 的列表。
+`PerformanceStorageComparison` 的 `$sample_key` 取 `PerformanceSampleKey`，`$before` 与 `$after` 都是 `PerformanceStorageId`，`$deltas` 的元素是 `PerformanceMetricDelta`，`$changed_layers` 的元素是 `PerformanceLayer`；`PerformanceMetricDelta` 的 `$before` 与 `$after` 取 `types.CkptSli`，`$noise_band` 取 `PerformanceNoiseBand`，`$verdict` 取 `PerformanceComparisonVerdict`；`PerformanceSloThreshold` 的 `$comparator`、`$provenance` 与 `$valid_for` 分别取 `PerformanceComparator`、`PerformanceThresholdProvenance` 与 `PerformanceThresholdScope`，`PerformanceSloResult` 的 `$verdict` 与 `$sli_uri` 分别取 `PerformanceSloVerdict` 与 `PerformanceSliUri`。
 
 ```viba performance
 import levels

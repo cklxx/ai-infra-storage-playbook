@@ -1,10 +1,30 @@
 # 定位与原则
 
+## public
+
+只做转发：从 `## 问题` 的 `principles` 模块与 `## 接口` 的 `principles_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `PrinciplesSpec`、`PrinciplesSuccessCriterion`、`PrinciplesAcceptance`、`PrinciplesReviewVerdict` 与 `PrinciplesGapRoute`，操作 `AcceptGate`、`ReviewChange` 与 `RouteGap`；先看入口 `PrinciplesSpec` 与验收操作 `AcceptGate`，再看 `ReviewChange`、`RouteGap` 各自交回的 `PrinciplesReviewVerdict` 与 `PrinciplesGapRoute`。
+
+```viba principles_public
+import principles
+import principles_api
+
+PrinciplesSpec = principles.PrinciplesSpec
+PrinciplesSuccessCriterion = principles.PrinciplesSuccessCriterion
+PrinciplesAcceptance = principles.PrinciplesAcceptance
+PrinciplesReviewVerdict = principles.PrinciplesReviewVerdict
+PrinciplesGapRoute = principles.PrinciplesGapRoute
+AcceptGate = principles_api.AcceptGate
+ReviewChange = principles_api.ReviewChange
+RouteGap = principles_api.RouteGap
+```
+
 ## 背景
 
 本项目是生成评估集的 playbook：一套配方、指标与流程，产出 AI Infra 存储与传输侧的评估集。一次性的测跑只能回答当前实现有多快，回答不了覆盖是否够、结论是否可外推、覆盖度是否在随时间衰减，所以需要一套持续维护的 benchmark。评估集提供覆盖与外推依据，评估服务负责持续运行，扩展机制负责覆盖度不衰减——三者缺一，闭环就断。
 
 ## 问题
+
+问题的形式化以 `PrinciplesSpec` 这个 Object 类型为入口：定位、持续维护 benchmark 的理由、评估集关系、边界、硬原则、成功判据与角色分工分别收进 `$positioning`（`PrinciplesPositioning`）、`$benchmark`（`PrinciplesContinuousBenchmark`）、`$eval_sets`（`PrinciplesEvalSetRelation`）、`$scope`（`PrinciplesScope`）、`$hard_principles`（`PrinciplesHardPrinciple` 的列表）、`$success_criteria`（`PrinciplesSuccessCriterion` 的列表）与 `$roles`（`PrinciplesRoles`）七个字段。`PrinciplesSpec` 的中间字段继续展开成 Object 类型：`PrinciplesPositioning` 的 `$parts`、`$questions`、`$output` 分别是 `PrinciplesPart`、`PrinciplesQuestion` 的列表与单个 `PrinciplesEvalSet`；`PrinciplesContinuousBenchmark` 的 `$reasons` 是 `PrinciplesBenchmarkReason` 的列表，`$loop` 是 `PrinciplesClosedLoop`，后者的 `$parts`、`$stages`、`$human` 分别取 `PrinciplesLoopPart`、`PrinciplesLoopStage` 与 `PrinciplesHumanInLoop`，而 `PrinciplesHumanInLoop` 的 `$automatic`、`$reviewed` 又分别取 `PrinciplesAutomatedStep`、`PrinciplesReviewSubject`；`PrinciplesEvalSetRelation` 的 `$source` 是 `PrinciplesModelCodeLibrary`，`$derived` 是 `PrinciplesEvalSet`；`PrinciplesScope` 的 `$included`、`$excluded` 分别是 `PrinciplesIncludedWork`、`PrinciplesExcludedWork` 的列表，`PrinciplesRoles` 的 `$roles`、`$rules` 分别是 `PrinciplesRole`、`PrinciplesRoleRule` 的列表。取值只能落在有限集合里的概念写成 Oneof 枚举：`PrinciplesPart`、`PrinciplesQuestion`、`PrinciplesBenchmarkReason` 表示本项目的组成部分、本项目回答的问题与持续维护 benchmark 的理由，`PrinciplesLoopPart`、`PrinciplesLoopStage`、`PrinciplesAutomatedStep`、`PrinciplesReviewSubject` 表示闭环的组成部分、阶段、自动步骤与人审事项，`PrinciplesEvalSet`、`PrinciplesIncludedWork`、`PrinciplesExcludedWork` 表示评估集类别与范围的两侧，`PrinciplesHardPrinciple`、`PrinciplesSuccessCriterion`、`PrinciplesRole`、`PrinciplesRoleRule` 表示硬原则、成功判据、角色与角色规则，`PrinciplesAcceptVerdict`、`PrinciplesReviewDecision`、`PrinciplesGapKind` 表示验收结论、评审结论与缺口来源。`PrinciplesAcceptance`、`PrinciplesReviewVerdict` 与 `PrinciplesGapRoute` 不在 `PrinciplesSpec` 的字段里，它们复用同一批枚举：`PrinciplesAcceptance` 的 `$eval_set`、`$verdict` 分取 `PrinciplesEvalSet`、`PrinciplesAcceptVerdict`，`$missing` 是 `PrinciplesSuccessCriterion` 的列表，`PrinciplesReviewVerdict` 的 `$subject`、`$decision` 分取 `PrinciplesReviewSubject`、`PrinciplesReviewDecision`，`PrinciplesGapRoute` 的 `$gap` 是 `PrinciplesGap`、`$stages` 是 `PrinciplesLoopStage` 的列表，`PrinciplesGap` 的 `$kind` 取 `PrinciplesGapKind`。
 
 ```viba principles
 PrinciplesSpec =

@@ -1,10 +1,30 @@
 # Checkpoint 存储评估配方
 
+## public
+
+只做转发：从 `## 问题` 的 `recipe_checkpoint` 模块与 `## 接口` 的 `recipe_checkpoint_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `RecipeCheckpointSpec`、`RecipeCheckpointBypass` 与 `RecipeCheckpointProducts`，操作 `RunBaseline`、`PrepareBypass`、`Align`、`Scale` 与 `Register`；先看 `RecipeCheckpointSpec` 与 `RecipeCheckpointBypass`，再按 `RunBaseline`、`PrepareBypass`、`Align`、`Scale`、`Register` 的顺序读到 `RecipeCheckpointProducts`。
+
+```viba recipe_checkpoint_public
+import recipe_checkpoint
+import recipe_checkpoint_api
+
+RecipeCheckpointSpec = recipe_checkpoint.RecipeCheckpointSpec
+RecipeCheckpointBypass = recipe_checkpoint.RecipeCheckpointBypass
+RecipeCheckpointProducts = recipe_checkpoint.RecipeCheckpointProducts
+RunBaseline = recipe_checkpoint_api.RunBaseline
+PrepareBypass = recipe_checkpoint_api.PrepareBypass
+Align = recipe_checkpoint_api.Align
+Scale = recipe_checkpoint_api.Scale
+Register = recipe_checkpoint_api.Register
+```
+
 ## 背景
 
 训练侧存储评估，评估对象是训练框架的 checkpoint 写入与读取两条路径，计算部分被旁路。目标是在真实存储与传输路径上测出训练任务产生的 IO 特征，不在合成负载上测，并把结论从单机小参数外推到十万卡。方法说明见 [`playbook/checkpoint.md`](../../playbook/checkpoint.md)。
 
 ## 问题
+
+问题形式化为 `recipe_checkpoint` 模块，概念分成类型与枚举两类：承载字段的结构写成对象类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`RecipeCheckpointSpec` 是入口类型，五个字段分别收下输入 `RecipeCheckpointInput`、配置要求 `RecipeCheckpointConfig`、`RecipeCheckpointStage` 的列表、产出 `RecipeCheckpointProducts` 与 `RecipeCheckpointAcceptanceItem` 的列表；`RecipeCheckpointInput` 用 `RecipeCheckpointVersionedName` 描述框架、storage.backend 与 storage.adapter，用 `RecipeCheckpointParallel` 描述四个并行度数，`RecipeCheckpointConfig` 的并行策略覆盖与写入方式分别取 `RecipeCheckpointParallelLead` 与 `RecipeCheckpointWriteMode` 这两个枚举的列表。步骤、阶段门与验收项写成枚举：`RecipeCheckpointStep` 给出六个步骤，`RecipeCheckpointGate` 给出六个阶段门，`RecipeCheckpointAcceptanceItem` 给出验收项，`RecipeCheckpointStage` 把 `RecipeCheckpointStep` 的一个取值与 `RecipeCheckpointGate` 的一个取值配成一对；`RecipeCheckpointBypass` 由 `RecipeCheckpointBypassStep` 的列表、`fidelity.FidelityBoundary` 的列表与一条 `types.RunRecord` 组成。判定与放大的结果各有类型：`RecipeCheckpointAlignment` 由 `RecipeCheckpointAlignmentItem` 的列表与一个 `bool` 结论组成，`RecipeCheckpointScaling` 由 `RecipeCheckpointParameterScaling` 与 `RecipeCheckpointClusterScaling` 组成，两者的检查分别取 `RecipeCheckpointParameterScalingCheck` 与 `RecipeCheckpointClusterScalingCheck` 的列表，并各带一个 `RecipeCheckpointGate`；`RecipeCheckpointRegistration` 记录登记结果，`RecipeCheckpointProducts` 的四个字段都是 `str`，给出四份产出的位置。
 
 ```viba recipe_checkpoint
 import fidelity
