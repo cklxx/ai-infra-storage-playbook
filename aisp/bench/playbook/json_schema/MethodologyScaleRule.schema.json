@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MethodologyScaleRule.schema.json",
+  "title": "MethodologyScaleRule",
+  "$ref": "#/$defs/methodology.MethodologyScaleRule",
+  "$defs": {
+    "methodology.MethodologyScaleRule": {
+      "oneOf": [
+        {
+          "const": "alignment_first"
+        },
+        {
+          "const": "revalidate_each_level"
+        }
+      ]
+    }
+  }
+}

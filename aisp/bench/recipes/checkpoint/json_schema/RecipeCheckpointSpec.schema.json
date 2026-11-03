@@ -1,0 +1,277 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointSpec.schema.json",
+  "title": "RecipeCheckpointSpec",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointSpec",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointSpec": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointInput"
+        },
+        "config": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointConfig"
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStage"
+          }
+        },
+        "products": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointProducts"
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointAcceptanceItem"
+          }
+        }
+      },
+      "required": [
+        "input",
+        "config",
+        "stages",
+        "products",
+        "acceptance"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointInput": {
+      "type": "object",
+      "properties": {
+        "model_code": {
+          "type": "string"
+        },
+        "framework": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        },
+        "parallel": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallel"
+        },
+        "dataset_layout": {
+          "type": "string"
+        },
+        "storage_backend": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        },
+        "storage_adapter": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        }
+      },
+      "required": [
+        "model_code",
+        "framework",
+        "parallel",
+        "dataset_layout",
+        "storage_backend",
+        "storage_adapter"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointVersionedName": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointParallel": {
+      "type": "object",
+      "properties": {
+        "dp": {
+          "type": "integer"
+        },
+        "tp": {
+          "type": "integer"
+        },
+        "pp": {
+          "type": "integer"
+        },
+        "ep": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dp",
+        "tp",
+        "pp",
+        "ep"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointConfig": {
+      "type": "object",
+      "properties": {
+        "parallel_coverage": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallelLead"
+          }
+        },
+        "checkpoint_implementation": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        },
+        "write_modes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointWriteMode"
+          }
+        },
+        "data_layout": {
+          "type": "string"
+        },
+        "warmup_rounds": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "parallel_coverage",
+        "checkpoint_implementation",
+        "write_modes",
+        "data_layout",
+        "warmup_rounds"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointParallelLead": {
+      "oneOf": [
+        {
+          "const": "dp_led"
+        },
+        {
+          "const": "tp_led"
+        },
+        {
+          "const": "pp_led"
+        },
+        {
+          "const": "ep"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointWriteMode": {
+      "oneOf": [
+        {
+          "const": "sync"
+        },
+        {
+          "const": "async"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointStage": {
+      "type": "object",
+      "properties": {
+        "step": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStep"
+        },
+        "gate": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate"
+        }
+      },
+      "required": [
+        "step",
+        "gate"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointStep": {
+      "oneOf": [
+        {
+          "const": "select_and_run"
+        },
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "alignment"
+        },
+        {
+          "const": "scale_parameters"
+        },
+        {
+          "const": "scale_cluster"
+        },
+        {
+          "const": "register"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointGate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3-a"
+        },
+        {
+          "const": "G3-b"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointProducts": {
+      "type": "object",
+      "properties": {
+        "io_pattern": {
+          "type": "string"
+        },
+        "alignment_report": {
+          "type": "string"
+        },
+        "scaling_report": {
+          "type": "string"
+        },
+        "backlink": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "io_pattern",
+        "alignment_report",
+        "scaling_report",
+        "backlink"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointAcceptanceItem": {
+      "oneOf": [
+        {
+          "const": "alignment"
+        },
+        {
+          "const": "per_parameter_bytes"
+        },
+        {
+          "const": "scaling_consistency"
+        },
+        {
+          "const": "coverage"
+        },
+        {
+          "const": "reproducibility"
+        }
+      ]
+    }
+  }
+}

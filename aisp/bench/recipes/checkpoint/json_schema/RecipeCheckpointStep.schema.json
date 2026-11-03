@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointStep.schema.json",
+  "title": "RecipeCheckpointStep",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStep",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointStep": {
+      "oneOf": [
+        {
+          "const": "select_and_run"
+        },
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "alignment"
+        },
+        {
+          "const": "scale_parameters"
+        },
+        {
+          "const": "scale_cluster"
+        },
+        {
+          "const": "register"
+        }
+      ]
+    }
+  }
+}

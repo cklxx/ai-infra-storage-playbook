@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ScalingInvariantSet.schema.json",
+  "title": "ScalingInvariantSet",
+  "$ref": "#/$defs/scaling.ScalingInvariantSet",
+  "$defs": {
+    "scaling.ScalingInvariantSet": {
+      "type": "object",
+      "properties": {
+        "invariants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling.ScalingInvariant"
+          }
+        },
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unmeasurable": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "invariants",
+        "variables",
+        "references",
+        "unmeasurable"
+      ],
+      "additionalProperties": false
+    },
+    "scaling.ScalingInvariant": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "definition": {
+          "type": "string"
+        },
+        "computation": {
+          "type": "string"
+        },
+        "tolerance": {
+          "type": "string"
+        },
+        "verdict": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "definition",
+        "computation",
+        "tolerance",
+        "verdict"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

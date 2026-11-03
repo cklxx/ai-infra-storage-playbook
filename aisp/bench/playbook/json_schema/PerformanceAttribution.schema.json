@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PerformanceAttribution.schema.json",
+  "title": "PerformanceAttribution",
+  "$ref": "#/$defs/performance.PerformanceAttribution",
+  "$defs": {
+    "performance.PerformanceAttribution": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/performance.PerformanceAttributionKind"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "kind",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "performance.PerformanceAttributionKind": {
+      "oneOf": [
+        {
+          "const": "throughput"
+        },
+        {
+          "const": "iops"
+        },
+        {
+          "const": "latency_percentile"
+        },
+        {
+          "const": "queue_depth"
+        },
+        {
+          "const": "saturation"
+        },
+        {
+          "const": "rank_fairness"
+        },
+        {
+          "const": "error_and_retry"
+        },
+        {
+          "const": "metadata_op_rate"
+        },
+        {
+          "const": "window_stability"
+        },
+        {
+          "const": "ceiling_efficiency"
+        }
+      ]
+    }
+  }
+}

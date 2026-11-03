@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ScalingFixedDimension.schema.json",
+  "title": "ScalingFixedDimension",
+  "$ref": "#/$defs/scaling.ScalingFixedDimension",
+  "$defs": {
+    "scaling.ScalingFixedDimension": {
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "$ref": "#/$defs/scaling.ScalingDimension"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "dimension",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "scaling.ScalingDimension": {
+      "oneOf": [
+        {
+          "const": "model_scale"
+        },
+        {
+          "const": "cluster_size"
+        },
+        {
+          "const": "parallel_strategy"
+        },
+        {
+          "const": "load"
+        },
+        {
+          "const": "storage_backend"
+        }
+      ]
+    }
+  }
+}

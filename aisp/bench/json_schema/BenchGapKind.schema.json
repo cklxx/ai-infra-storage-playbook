@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchGapKind.schema.json",
+  "title": "BenchGapKind",
+  "$ref": "#/$defs/bench.BenchGapKind",
+  "$defs": {
+    "bench.BenchGapKind": {
+      "oneOf": [
+        {
+          "const": "new_model"
+        },
+        {
+          "const": "new_framework"
+        },
+        {
+          "const": "new_parallel_strategy"
+        }
+      ]
+    }
+  }
+}

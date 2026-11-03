@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckScript.schema.json",
+  "title": "CheckScript",
+  "$ref": "#/$defs/checks.CheckScript",
+  "$defs": {
+    "checks.CheckScript": {
+      "oneOf": [
+        {
+          "const": "validate_repo"
+        },
+        {
+          "const": "selftest"
+        },
+        {
+          "const": "check_io_pattern"
+        },
+        {
+          "const": "check_coverage"
+        },
+        {
+          "const": "check_scaling_consistency"
+        }
+      ]
+    }
+  }
+}

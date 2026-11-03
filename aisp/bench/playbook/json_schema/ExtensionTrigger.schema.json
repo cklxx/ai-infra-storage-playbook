@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ExtensionTrigger.schema.json",
+  "title": "ExtensionTrigger",
+  "$ref": "#/$defs/extension.ExtensionTrigger",
+  "$defs": {
+    "extension.ExtensionTrigger": {
+      "oneOf": [
+        {
+          "const": "new_model_release"
+        },
+        {
+          "const": "framework_release"
+        },
+        {
+          "const": "coverage_decline"
+        },
+        {
+          "const": "failure_mode_change"
+        },
+        {
+          "const": "new_parallel_strategy"
+        },
+        {
+          "const": "storage_backend_change"
+        },
+        {
+          "const": "overturned_conclusion"
+        }
+      ]
+    }
+  }
+}

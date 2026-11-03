@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryProblem.schema.json",
+  "title": "MetricsRegistryProblem",
+  "$ref": "#/$defs/metrics_registry.MetricsRegistryProblem",
+  "$defs": {
+    "metrics_registry.MetricsRegistryProblem": {
+      "type": "object",
+      "properties": {
+        "metric": {
+          "$ref": "#/$defs/metrics_registry.MetricsRegistryName"
+        },
+        "kind": {
+          "$ref": "#/$defs/metrics_registry.MetricsRegistryProblemKind"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "metric",
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "metrics_registry.MetricsRegistryName": {
+      "type": "string"
+    },
+    "metrics_registry.MetricsRegistryProblemKind": {
+      "oneOf": [
+        {
+          "const": "not_registered"
+        },
+        {
+          "const": "version_not_supported"
+        },
+        {
+          "const": "gate_not_declared"
+        },
+        {
+          "const": "gate_not_in_acceptance"
+        },
+        {
+          "const": "not_compatible"
+        },
+        {
+          "const": "version_not_published"
+        }
+      ]
+    }
+  }
+}

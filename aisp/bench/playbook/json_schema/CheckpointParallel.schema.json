@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CheckpointParallel.schema.json",
+  "title": "CheckpointParallel",
+  "$ref": "#/$defs/checkpoint.CheckpointParallel",
+  "$defs": {
+    "checkpoint.CheckpointParallel": {
+      "type": "object",
+      "properties": {
+        "dp": {
+          "type": "integer"
+        },
+        "tp": {
+          "type": "integer"
+        },
+        "pp": {
+          "type": "integer"
+        },
+        "ep": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dp",
+        "tp",
+        "pp",
+        "ep"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

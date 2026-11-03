@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionDedupPolicy.schema.json",
+  "title": "CollectionDedupPolicy",
+  "$ref": "#/$defs/collection.CollectionDedupPolicy",
+  "$defs": {
+    "collection.CollectionDedupPolicy": {
+      "type": "object",
+      "properties": {
+        "threshold": {
+          "type": "number"
+        },
+        "weights": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        },
+        "variety": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionVarietyAxis"
+          }
+        }
+      },
+      "required": [
+        "threshold",
+        "weights",
+        "variety"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionVarietyAxis": {
+      "oneOf": [
+        {
+          "const": "scale"
+        },
+        {
+          "const": "positional_encoding"
+        },
+        {
+          "const": "attention_variant"
+        },
+        {
+          "const": "moe"
+        }
+      ]
+    }
+  }
+}

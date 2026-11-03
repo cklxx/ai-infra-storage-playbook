@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternTotals.schema.json",
+  "title": "IoPatternTotals",
+  "$ref": "#/$defs/io_pattern.IoPatternTotals",
+  "$defs": {
+    "io_pattern.IoPatternTotals": {
+      "type": "object",
+      "properties": {
+        "read_bytes": {
+          "type": "integer"
+        },
+        "write_bytes": {
+          "type": "integer"
+        },
+        "read_ops": {
+          "type": "integer"
+        },
+        "write_ops": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "read_bytes",
+        "write_bytes",
+        "read_ops",
+        "write_ops"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

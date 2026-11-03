@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckBatch.schema.json",
+  "title": "CheckBatch",
+  "$ref": "#/$defs/checks.CheckBatch",
+  "$defs": {
+    "checks.CheckBatch": {
+      "type": "object",
+      "properties": {
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checks.CheckRun"
+          }
+        }
+      },
+      "required": [
+        "runs"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckRun": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "$ref": "#/$defs/checks.CheckScript"
+        },
+        "output": {
+          "$ref": "#/$defs/checks.CheckOutput"
+        },
+        "outcome": {
+          "$ref": "#/$defs/checks.CheckOutcome"
+        }
+      },
+      "required": [
+        "script",
+        "output",
+        "outcome"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckScript": {
+      "oneOf": [
+        {
+          "const": "validate_repo"
+        },
+        {
+          "const": "selftest"
+        },
+        {
+          "const": "check_io_pattern"
+        },
+        {
+          "const": "check_coverage"
+        },
+        {
+          "const": "check_scaling_consistency"
+        }
+      ]
+    },
+    "checks.CheckOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "json_line": {
+              "$ref": "#/$defs/checks.CheckJsonLine"
+            }
+          },
+          "required": [
+            "json_line"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "readable": {
+              "$ref": "#/$defs/checks.CheckReadableOutput"
+            }
+          },
+          "required": [
+            "readable"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checks.CheckJsonLine": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        }
+      },
+      "required": [
+        "check",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "checks.CheckReadableOutput": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "items",
+        "errors"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckOutcome": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        },
+        "exit_code": {
+          "$ref": "#/$defs/checks.CheckExitCode"
+        }
+      },
+      "required": [
+        "status",
+        "exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckExitCode": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": 1
+        },
+        {
+          "const": 2
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,581 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointBypass.schema.json",
+  "title": "RecipeCheckpointBypass",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointBypass",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointBypass": {
+      "type": "object",
+      "properties": {
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointBypassStep"
+          }
+        },
+        "fidelity_boundary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fidelity.FidelityBoundary"
+          }
+        },
+        "run": {
+          "$ref": "#/$defs/types.RunRecord"
+        }
+      },
+      "required": [
+        "steps",
+        "fidelity_boundary",
+        "run"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointBypassStep": {
+      "oneOf": [
+        {
+          "const": "meta_model"
+        },
+        {
+          "const": "meta_forward"
+        },
+        {
+          "const": "placeholder_backward"
+        },
+        {
+          "const": "placeholder_optimizer"
+        },
+        {
+          "const": "unchanged_checkpoint_io"
+        }
+      ]
+    },
+    "fidelity.FidelityBoundary": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "bypassed": {
+          "$ref": "#/$defs/fidelity.Bypassed"
+        },
+        "method": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bypass.BypassMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fidelity": {
+          "$ref": "#/$defs/bypass.FidelityLevel"
+        },
+        "kept": {
+          "type": "string"
+        },
+        "known_bias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bypassed",
+        "method",
+        "fidelity",
+        "kept",
+        "known_bias"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.Bypassed": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    },
+    "bypass.BypassMethod": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "cpu_offload"
+        },
+        {
+          "const": "real_small_scale"
+        }
+      ]
+    },
+    "bypass.FidelityLevel": {
+      "oneOf": [
+        {
+          "const": "L0"
+        },
+        {
+          "const": "L1"
+        },
+        {
+          "const": "L2"
+        },
+        {
+          "const": "L3"
+        }
+      ]
+    },
+    "types.RunRecord": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/types.State"
+        },
+        "progress": {
+          "$ref": "#/$defs/types.WorkProgress"
+        },
+        "artifacts": {
+          "$ref": "#/$defs/types.Artifacts"
+        }
+      },
+      "required": [
+        "run_id",
+        "state",
+        "progress",
+        "artifacts"
+      ],
+      "additionalProperties": false
+    },
+    "types.State": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "queued": {
+              "$ref": "#/$defs/types.QueueProgress"
+            }
+          },
+          "required": [
+            "queued"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "running": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "running"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "completed": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "completed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "failed": {
+              "$ref": "#/$defs/types.Failure"
+            }
+          },
+          "required": [
+            "failed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rejected": {
+              "$ref": "#/$defs/types.Failure"
+            }
+          },
+          "required": [
+            "rejected"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cancelled": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "cancelled"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "types.QueueProgress": {
+      "type": "object",
+      "properties": {
+        "pos": {
+          "type": "integer"
+        },
+        "len": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pos",
+        "len"
+      ],
+      "additionalProperties": false
+    },
+    "types.Failure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "types.WorkProgress": {
+      "type": "object",
+      "properties": {
+        "done": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "done",
+        "total"
+      ],
+      "additionalProperties": false
+    },
+    "types.Artifacts": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/types.CkptSli"
+          }
+        },
+        "slo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/types.CkptSlo"
+          }
+        },
+        "report": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "metrics",
+        "slo",
+        "report"
+      ],
+      "additionalProperties": false
+    },
+    "types.CkptSli": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_sli": {
+              "$ref": "#/$defs/types.CheckPointDurationMetric"
+            }
+          },
+          "required": [
+            "check_point_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_sli": {
+              "$ref": "#/$defs/types.TrainingStallMetric"
+            }
+          },
+          "required": [
+            "training_stall_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_sli": {
+              "$ref": "#/$defs/types.RestoreDurationMetric"
+            }
+          },
+          "required": [
+            "restore_duration_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_sli": {
+              "$ref": "#/$defs/types.WriteThroughputMetric"
+            }
+          },
+          "required": [
+            "write_throughput_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_sli": {
+              "$ref": "#/$defs/types.MetadataCommitMetric"
+            }
+          },
+          "required": [
+            "metadata_commit_sli"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_sli": {
+              "$ref": "#/$defs/types.WriteLatencyP99Metric"
+            }
+          },
+          "required": [
+            "write_latency_p99_sli"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "types.CheckPointDurationMetric": {
+      "type": "number"
+    },
+    "types.TrainingStallMetric": {
+      "type": "number"
+    },
+    "types.RestoreDurationMetric": {
+      "type": "number"
+    },
+    "types.WriteThroughputMetric": {
+      "type": "number"
+    },
+    "types.MetadataCommitMetric": {
+      "type": "number"
+    },
+    "types.WriteLatencyP99Metric": {
+      "type": "number"
+    },
+    "types.CkptSlo": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "check_point_duration_slo": {
+              "$ref": "#/$defs/types.MetricLE@1910e53e"
+            }
+          },
+          "required": [
+            "check_point_duration_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "training_stall_slo": {
+              "$ref": "#/$defs/types.MetricLE@f4dd4d27"
+            }
+          },
+          "required": [
+            "training_stall_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "restore_duration_slo": {
+              "$ref": "#/$defs/types.MetricLE@f421fc96"
+            }
+          },
+          "required": [
+            "restore_duration_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_throughput_slo": {
+              "$ref": "#/$defs/types.MetricGE@c5b2fe43"
+            }
+          },
+          "required": [
+            "write_throughput_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "metadata_commit_slo": {
+              "$ref": "#/$defs/types.MetricLE@292a31ac"
+            }
+          },
+          "required": [
+            "metadata_commit_slo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_latency_p99_slo": {
+              "$ref": "#/$defs/types.MetricLE@9a4b591e"
+            }
+          },
+          "required": [
+            "write_latency_p99_slo"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "types.MetricLE@1910e53e": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/types.CheckPointDurationMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/types.CheckPointDurationMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "types.MetricLE@f4dd4d27": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/types.TrainingStallMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/types.TrainingStallMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "types.MetricLE@f421fc96": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/types.RestoreDurationMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/types.RestoreDurationMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "types.MetricGE@c5b2fe43": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/types.WriteThroughputMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/types.WriteThroughputMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "types.MetricLE@292a31ac": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/types.MetadataCommitMetric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/types.MetadataCommitMetric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    },
+    "types.MetricLE@9a4b591e": {
+      "type": "object",
+      "properties": {
+        "actual": {
+          "$ref": "#/$defs/types.WriteLatencyP99Metric"
+        },
+        "threshold": {
+          "$ref": "#/$defs/types.WriteLatencyP99Metric"
+        }
+      },
+      "required": [
+        "actual",
+        "threshold"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternWindow.schema.json",
+  "title": "IoPatternWindow",
+  "$ref": "#/$defs/io_pattern.IoPatternWindow",
+  "$defs": {
+    "io_pattern.IoPatternWindow": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

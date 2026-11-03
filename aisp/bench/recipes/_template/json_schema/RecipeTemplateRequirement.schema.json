@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateRequirement.schema.json",
+  "title": "RecipeTemplateRequirement",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement",
+  "$defs": {
+    "recipe_template.RecipeTemplateRequirement": {
+      "oneOf": [
+        {
+          "const": "fidelity_boundary_no_l0"
+        },
+        {
+          "const": "io_pattern_invariants_3_to_6"
+        },
+        {
+          "const": "scaling_plan_at_least_two_levels"
+        },
+        {
+          "const": "compatible_metrics_cover_used_versions"
+        },
+        {
+          "const": "tolerance_only_in_metrics"
+        },
+        {
+          "const": "latest_run_null_until_first_run"
+        }
+      ]
+    }
+  }
+}

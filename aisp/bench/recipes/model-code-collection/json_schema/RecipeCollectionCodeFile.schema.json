@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model-code-collection/json_schema/RecipeCollectionCodeFile.schema.json",
+  "title": "RecipeCollectionCodeFile",
+  "$ref": "#/$defs/recipe_collection.RecipeCollectionCodeFile",
+  "$defs": {
+    "recipe_collection.RecipeCollectionCodeFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

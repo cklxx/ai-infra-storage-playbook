@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyReport.schema.json",
+  "title": "ScalingConsistencyReport",
+  "$ref": "#/$defs/scaling_consistency.ScalingConsistencyReport",
+  "$defs": {
+    "scaling_consistency.ScalingConsistencyReport": {
+      "type": "object",
+      "properties": {
+        "ladder": {
+          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLadder"
+        },
+        "comparisons": {
+          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparisonSet"
+        },
+        "tolerance": {
+          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyTolerance"
+        },
+        "judgement": {
+          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyJudgement"
+        }
+      },
+      "required": [
+        "ladder",
+        "comparisons",
+        "tolerance",
+        "judgement"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyLadder": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLevelRecord"
+          }
+        }
+      },
+      "required": [
+        "levels"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyLevelRecord": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyMeasurement"
+          }
+        }
+      },
+      "required": [
+        "level",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    },
+    "scaling_consistency.ScalingConsistencyMeasurement": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "scalar": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "scalar"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "distribution": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          "required": [
+            "distribution"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "scaling_consistency.ScalingConsistencyComparisonSet": {
+      "type": "object",
+      "properties": {
+        "adjacent": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+          }
+        },
+        "first_last": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+          }
+        },
+        "max_adjacent": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "comparable": {
+          "type": "boolean"
+        },
+        "incomparable_reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "adjacent",
+        "first_last",
+        "max_adjacent",
+        "comparable",
+        "incomparable_reason"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyComparison": {
+      "type": "object",
+      "properties": {
+        "invariant": {
+          "type": "string"
+        },
+        "from": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "to": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "deviation": {
+          "type": "number"
+        },
+        "tolerance": {
+          "type": "number"
+        },
+        "within": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "invariant",
+        "from",
+        "to",
+        "deviation",
+        "tolerance",
+        "within"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyTolerance": {
+      "type": "object",
+      "properties": {
+        "per_level": {
+          "type": "number"
+        },
+        "first_last": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "per_level",
+        "first_last"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyJudgement": {
+      "type": "object",
+      "properties": {
+        "verdict": {
+          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyVerdict"
+        },
+        "drift": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyDrift"
+          }
+        },
+        "failed_invariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "verdict",
+        "drift",
+        "failed_invariants"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyVerdict": {
+      "oneOf": [
+        {
+          "const": "consistent"
+        },
+        {
+          "const": "conditionally_consistent"
+        },
+        {
+          "const": "inconsistent"
+        },
+        {
+          "const": "wrong_invariant"
+        },
+        {
+          "const": "incomparable"
+        }
+      ]
+    },
+    "scaling_consistency.ScalingConsistencyDrift": {
+      "type": "object",
+      "properties": {
+        "invariant": {
+          "type": "string"
+        },
+        "directions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyDirection"
+          }
+        },
+        "monotonic": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "invariant",
+        "directions",
+        "monotonic"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyDirection": {
+      "oneOf": [
+        {
+          "const": "up"
+        },
+        {
+          "const": "down"
+        },
+        {
+          "const": "flat"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ScalingOpenQuestion.schema.json",
+  "title": "ScalingOpenQuestion",
+  "$ref": "#/$defs/scaling.ScalingOpenQuestion",
+  "$defs": {
+    "scaling.ScalingOpenQuestion": {
+      "oneOf": [
+        {
+          "const": "sample_points"
+        },
+        {
+          "const": "simulation_substitute"
+        },
+        {
+          "const": "backend_specific_rules"
+        },
+        {
+          "const": "single_dimension_exception"
+        }
+      ]
+    }
+  }
+}

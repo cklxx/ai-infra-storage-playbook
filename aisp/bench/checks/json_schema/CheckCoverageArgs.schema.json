@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckCoverageArgs.schema.json",
+  "title": "CheckCoverageArgs",
+  "$ref": "#/$defs/checks.CheckCoverageArgs",
+  "$defs": {
+    "checks.CheckCoverageArgs": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "min_coverage": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "manifest",
+        "metrics",
+        "min_coverage"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

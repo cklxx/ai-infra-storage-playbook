@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateMetric.schema.json",
+  "title": "RecipeTemplateMetric",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateMetric",
+  "$defs": {
+    "recipe_template.RecipeTemplateMetric": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tolerance": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "params",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

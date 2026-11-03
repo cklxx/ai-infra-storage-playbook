@@ -1,0 +1,188 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchRun.schema.json",
+  "title": "BenchRun",
+  "$ref": "#/$defs/bench.BenchRun",
+  "$defs": {
+    "bench.BenchRun": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "state": {
+          "$ref": "#/$defs/types.State"
+        },
+        "artifacts": {
+          "$ref": "#/$defs/bench.BenchRunArtifacts"
+        },
+        "backlink": {
+          "$ref": "#/$defs/bench.BenchBacklink"
+        }
+      },
+      "required": [
+        "run_id",
+        "state",
+        "artifacts",
+        "backlink"
+      ],
+      "additionalProperties": false
+    },
+    "types.State": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "queued": {
+              "$ref": "#/$defs/types.QueueProgress"
+            }
+          },
+          "required": [
+            "queued"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "running": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "running"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "completed": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "completed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "failed": {
+              "$ref": "#/$defs/types.Failure"
+            }
+          },
+          "required": [
+            "failed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "rejected": {
+              "$ref": "#/$defs/types.Failure"
+            }
+          },
+          "required": [
+            "rejected"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "cancelled": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "cancelled"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "types.QueueProgress": {
+      "type": "object",
+      "properties": {
+        "pos": {
+          "type": "integer"
+        },
+        "len": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "pos",
+        "len"
+      ],
+      "additionalProperties": false
+    },
+    "types.Failure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchRunArtifacts": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "sli": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "alignment": {
+          "type": "string"
+        },
+        "report": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "sli",
+        "metrics",
+        "alignment",
+        "report"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchBacklink": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "sha256",
+        "state"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

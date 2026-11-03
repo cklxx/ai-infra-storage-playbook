@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckThresholdSource.schema.json",
+  "title": "CheckThresholdSource",
+  "$ref": "#/$defs/checks.CheckThresholdSource",
+  "$defs": {
+    "checks.CheckThresholdSource": {
+      "oneOf": [
+        {
+          "const": "metrics_yaml"
+        },
+        {
+          "const": "command_line"
+        }
+      ]
+    }
+  }
+}

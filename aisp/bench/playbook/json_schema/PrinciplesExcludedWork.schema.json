@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesExcludedWork.schema.json",
+  "title": "PrinciplesExcludedWork",
+  "$ref": "#/$defs/principles.PrinciplesExcludedWork",
+  "$defs": {
+    "principles.PrinciplesExcludedWork": {
+      "oneOf": [
+        {
+          "const": "performance_tuning"
+        },
+        {
+          "const": "kernel_optimization"
+        },
+        {
+          "const": "hardware_selection"
+        },
+        {
+          "const": "production_ops"
+        },
+        {
+          "const": "report_archival"
+        },
+        {
+          "const": "raw_assets"
+        }
+      ]
+    }
+  }
+}

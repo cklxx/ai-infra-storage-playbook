@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointParameterScaling.schema.json",
+  "title": "RecipeCheckpointParameterScaling",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParameterScaling",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointParameterScaling": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParameterScalingCheck"
+          }
+        },
+        "gate": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate"
+        }
+      },
+      "required": [
+        "checks",
+        "gate"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointParameterScalingCheck": {
+      "oneOf": [
+        {
+          "const": "per_rank_request_size_distribution"
+        },
+        {
+          "const": "per_parameter_bytes"
+        },
+        {
+          "const": "shard_count_and_size"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointGate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3-a"
+        },
+        {
+          "const": "G3-b"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    }
+  }
+}

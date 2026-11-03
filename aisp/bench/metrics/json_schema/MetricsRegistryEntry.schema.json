@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryEntry.schema.json",
+  "title": "MetricsRegistryEntry",
+  "$ref": "#/$defs/metrics_registry.MetricsRegistryEntry",
+  "$defs": {
+    "metrics_registry.MetricsRegistryEntry": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "$ref": "#/$defs/metrics_registry.MetricsRegistryName"
+        },
+        "doc": {
+          "type": "string"
+        },
+        "version": {
+          "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+        },
+        "supported": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+          }
+        },
+        "gates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/gates.Gate"
+          }
+        },
+        "unit": {
+          "$ref": "#/$defs/metrics_registry.MetricsRegistryUnit"
+        },
+        "direction": {
+          "$ref": "#/$defs/metrics_registry.MetricsRegistryDirection"
+        }
+      },
+      "required": [
+        "name",
+        "doc",
+        "version",
+        "supported",
+        "gates",
+        "unit",
+        "direction"
+      ],
+      "additionalProperties": false
+    },
+    "metrics_registry.MetricsRegistryName": {
+      "type": "string"
+    },
+    "metrics_registry.MetricsRegistryVersion": {
+      "type": "string"
+    },
+    "gates.Gate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    },
+    "metrics_registry.MetricsRegistryUnit": {
+      "type": "string"
+    },
+    "metrics_registry.MetricsRegistryDirection": {
+      "type": "string"
+    }
+  }
+}

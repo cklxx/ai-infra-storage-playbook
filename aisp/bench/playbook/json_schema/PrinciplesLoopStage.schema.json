@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesLoopStage.schema.json",
+  "title": "PrinciplesLoopStage",
+  "$ref": "#/$defs/principles.PrinciplesLoopStage",
+  "$defs": {
+    "principles.PrinciplesLoopStage": {
+      "oneOf": [
+        {
+          "const": "current_set"
+        },
+        {
+          "const": "service_run"
+        },
+        {
+          "const": "gap_analysis"
+        },
+        {
+          "const": "new_version"
+        },
+        {
+          "const": "regression"
+        }
+      ]
+    }
+  }
+}

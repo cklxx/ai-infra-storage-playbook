@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckOutput.schema.json",
+  "title": "CheckOutput",
+  "$ref": "#/$defs/checks.CheckOutput",
+  "$defs": {
+    "checks.CheckOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "json_line": {
+              "$ref": "#/$defs/checks.CheckJsonLine"
+            }
+          },
+          "required": [
+            "json_line"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "readable": {
+              "$ref": "#/$defs/checks.CheckReadableOutput"
+            }
+          },
+          "required": [
+            "readable"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checks.CheckJsonLine": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        }
+      },
+      "required": [
+        "check",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "checks.CheckReadableOutput": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "items",
+        "errors"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PerformanceStorageId.schema.json",
+  "title": "PerformanceStorageId",
+  "$ref": "#/$defs/performance.PerformanceStorageId",
+  "$defs": {
+    "performance.PerformanceStorageId": {
+      "type": "string"
+    }
+  }
+}

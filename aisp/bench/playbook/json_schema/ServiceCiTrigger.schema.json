@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ServiceCiTrigger.schema.json",
+  "title": "ServiceCiTrigger",
+  "$ref": "#/$defs/service.ServiceCiTrigger",
+  "$defs": {
+    "service.ServiceCiTrigger": {
+      "oneOf": [
+        {
+          "const": "recipe_change"
+        },
+        {
+          "const": "framework_upgrade"
+        },
+        {
+          "const": "storage_change"
+        },
+        {
+          "const": "regression"
+        },
+        {
+          "const": "exploration"
+        }
+      ]
+    }
+  }
+}

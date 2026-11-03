@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionPairingKind.schema.json",
+  "title": "CollectionPairingKind",
+  "$ref": "#/$defs/collection.CollectionPairingKind",
+  "$defs": {
+    "collection.CollectionPairingKind": {
+      "oneOf": [
+        {
+          "const": "same_org"
+        },
+        {
+          "const": "same_architecture"
+        },
+        {
+          "const": "external_link"
+        },
+        {
+          "const": "unpaired"
+        }
+      ]
+    }
+  }
+}

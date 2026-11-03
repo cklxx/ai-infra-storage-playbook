@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionCoverageDimension.schema.json",
+  "title": "CollectionCoverageDimension",
+  "$ref": "#/$defs/collection.CollectionCoverageDimension",
+  "$defs": {
+    "collection.CollectionCoverageDimension": {
+      "oneOf": [
+        {
+          "const": "architecture_family"
+        },
+        {
+          "const": "scale"
+        },
+        {
+          "const": "framework_version"
+        }
+      ]
+    }
+  }
+}

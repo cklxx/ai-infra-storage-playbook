@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesHumanInLoop.schema.json",
+  "title": "PrinciplesHumanInLoop",
+  "$ref": "#/$defs/principles.PrinciplesHumanInLoop",
+  "$defs": {
+    "principles.PrinciplesHumanInLoop": {
+      "type": "object",
+      "properties": {
+        "automatic": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesAutomatedStep"
+          }
+        },
+        "reviewed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesReviewSubject"
+          }
+        }
+      },
+      "required": [
+        "automatic",
+        "reviewed"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesAutomatedStep": {
+      "oneOf": [
+        {
+          "const": "find_gaps"
+        },
+        {
+          "const": "generate_candidates"
+        },
+        {
+          "const": "regress"
+        }
+      ]
+    },
+    "principles.PrinciplesReviewSubject": {
+      "oneOf": [
+        {
+          "const": "metric_change"
+        },
+        {
+          "const": "threshold_change"
+        },
+        {
+          "const": "incomparable_change"
+        }
+      ]
+    }
+  }
+}

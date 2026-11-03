@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyJudgement.schema.json",
+  "title": "ScalingConsistencyJudgement",
+  "$ref": "#/$defs/scaling_consistency.ScalingConsistencyJudgement",
+  "$defs": {
+    "scaling_consistency.ScalingConsistencyJudgement": {
+      "type": "object",
+      "properties": {
+        "verdict": {
+          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyVerdict"
+        },
+        "drift": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyDrift"
+          }
+        },
+        "failed_invariants": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "verdict",
+        "drift",
+        "failed_invariants"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyVerdict": {
+      "oneOf": [
+        {
+          "const": "consistent"
+        },
+        {
+          "const": "conditionally_consistent"
+        },
+        {
+          "const": "inconsistent"
+        },
+        {
+          "const": "wrong_invariant"
+        },
+        {
+          "const": "incomparable"
+        }
+      ]
+    },
+    "scaling_consistency.ScalingConsistencyDrift": {
+      "type": "object",
+      "properties": {
+        "invariant": {
+          "type": "string"
+        },
+        "directions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyDirection"
+          }
+        },
+        "monotonic": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "invariant",
+        "directions",
+        "monotonic"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyDirection": {
+      "oneOf": [
+        {
+          "const": "up"
+        },
+        {
+          "const": "down"
+        },
+        {
+          "const": "flat"
+        }
+      ]
+    }
+  }
+}

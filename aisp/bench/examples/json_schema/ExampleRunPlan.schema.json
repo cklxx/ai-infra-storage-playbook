@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleRunPlan.schema.json",
+  "title": "ExampleRunPlan",
+  "$ref": "#/$defs/examples.ExampleRunPlan",
+  "$defs": {
+    "examples.ExampleRunPlan": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "all": {
+              "$ref": "#/$defs/examples.ExampleAllRun"
+            }
+          },
+          "required": [
+            "all"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "single": {
+              "$ref": "#/$defs/examples.ExampleSingleRun"
+            }
+          },
+          "required": [
+            "single"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "examples.ExampleAllRun": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "examples.ExampleSingleRun": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "real": {
+          "type": "string"
+        },
+        "bypassed": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "check",
+        "real",
+        "bypassed",
+        "metrics"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

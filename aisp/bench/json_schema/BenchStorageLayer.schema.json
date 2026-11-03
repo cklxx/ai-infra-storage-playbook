@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchStorageLayer.schema.json",
+  "title": "BenchStorageLayer",
+  "$ref": "#/$defs/bench.BenchStorageLayer",
+  "$defs": {
+    "bench.BenchStorageLayer": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/bench.BenchStorageLayerKind"
+        },
+        "component": {
+          "$ref": "#/$defs/types.Component"
+        },
+        "env": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "component",
+        "env"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchStorageLayerKind": {
+      "oneOf": [
+        {
+          "const": "backend"
+        },
+        {
+          "const": "adapter"
+        }
+      ]
+    },
+    "types.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

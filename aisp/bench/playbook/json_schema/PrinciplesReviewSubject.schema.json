@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesReviewSubject.schema.json",
+  "title": "PrinciplesReviewSubject",
+  "$ref": "#/$defs/principles.PrinciplesReviewSubject",
+  "$defs": {
+    "principles.PrinciplesReviewSubject": {
+      "oneOf": [
+        {
+          "const": "metric_change"
+        },
+        {
+          "const": "threshold_change"
+        },
+        {
+          "const": "incomparable_change"
+        }
+      ]
+    }
+  }
+}

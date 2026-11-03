@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CheckpointWriteFeature.schema.json",
+  "title": "CheckpointWriteFeature",
+  "$ref": "#/$defs/checkpoint.CheckpointWriteFeature",
+  "$defs": {
+    "checkpoint.CheckpointWriteFeature": {
+      "oneOf": [
+        {
+          "const": "total_bytes"
+        },
+        {
+          "const": "shard_count_and_size"
+        },
+        {
+          "const": "write_concurrency"
+        },
+        {
+          "const": "sync_or_async"
+        },
+        {
+          "const": "compression"
+        },
+        {
+          "const": "metadata_commit"
+        },
+        {
+          "const": "write_period"
+        }
+      ]
+    }
+  }
+}

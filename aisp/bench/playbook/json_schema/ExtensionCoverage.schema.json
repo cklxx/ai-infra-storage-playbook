@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ExtensionCoverage.schema.json",
+  "title": "ExtensionCoverage",
+  "$ref": "#/$defs/extension.ExtensionCoverage",
+  "$defs": {
+    "extension.ExtensionCoverage": {
+      "type": "object",
+      "properties": {
+        "axes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/extension.ExtensionAxis"
+          }
+        },
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/extension.ExtensionCell"
+          }
+        }
+      },
+      "required": [
+        "axes",
+        "cells"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionAxis": {
+      "oneOf": [
+        {
+          "const": "arch_family"
+        },
+        {
+          "const": "model_scale"
+        },
+        {
+          "const": "attention"
+        },
+        {
+          "const": "framework"
+        },
+        {
+          "const": "parallel"
+        },
+        {
+          "const": "cluster"
+        },
+        {
+          "const": "io_feature"
+        },
+        {
+          "const": "storage_backend"
+        },
+        {
+          "const": "storage_adapter"
+        }
+      ]
+    },
+    "extension.ExtensionCell": {
+      "type": "object",
+      "properties": {
+        "axes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "cases": {
+          "type": "integer"
+        },
+        "last_passed_at": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_failed_at": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "empty": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/extension.ExtensionEmptyKind"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "axes",
+        "cases",
+        "last_passed_at",
+        "last_failed_at",
+        "empty"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionEmptyKind": {
+      "oneOf": [
+        {
+          "const": "should_exist"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "not_needed": {
+              "$ref": "#/$defs/extension.ExtensionExemption"
+            }
+          },
+          "required": [
+            "not_needed"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "extension.ExtensionExemption": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_date": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason",
+        "review_date"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateSpec.schema.json",
+  "title": "CheckTemplateSpec",
+  "$ref": "#/$defs/check_template.CheckTemplateSpec",
+  "$defs": {
+    "check_template.CheckTemplateSpec": {
+      "type": "object",
+      "properties": {
+        "placement": {
+          "$ref": "#/$defs/check_template.CheckTemplatePlacement"
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check_template.CheckTemplateExampleCheck"
+          }
+        },
+        "contract": {
+          "$ref": "#/$defs/check_template.CheckTemplateContract"
+        }
+      },
+      "required": [
+        "placement",
+        "examples",
+        "contract"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplatePlacement": {
+      "oneOf": [
+        {
+          "const": "recipe"
+        },
+        {
+          "const": "bench"
+        }
+      ]
+    },
+    "check_template.CheckTemplateExampleCheck": {
+      "oneOf": [
+        {
+          "const": "shard_key_structure"
+        },
+        {
+          "const": "per_token_kv_bytes"
+        },
+        {
+          "const": "prefix_hit_rate"
+        }
+      ]
+    },
+    "check_template.CheckTemplateContract": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/check_template.CheckTemplateRunDir"
+        },
+        "output": {
+          "$ref": "#/$defs/check_template.CheckTemplateReport"
+        },
+        "exit_code": {
+          "$ref": "#/$defs/check_template.CheckTemplateExitCode"
+        }
+      },
+      "required": [
+        "input",
+        "output",
+        "exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateRunDir": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check_template.CheckTemplateCaseFile"
+          }
+        }
+      },
+      "required": [
+        "path",
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateCaseFile": {
+      "oneOf": [
+        {
+          "const": "metrics.json"
+        },
+        {
+          "const": "manifest.json"
+        }
+      ]
+    },
+    "check_template.CheckTemplateReport": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/check_template.CheckTemplateStatus"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "check",
+        "status",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "check_template.CheckTemplateExitCode": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": 1
+        },
+        {
+          "const": 2
+        }
+      ]
+    }
+  }
+}

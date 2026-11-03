@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternConcurrency.schema.json",
+  "title": "IoPatternConcurrency",
+  "$ref": "#/$defs/io_pattern.IoPatternConcurrency",
+  "$defs": {
+    "io_pattern.IoPatternConcurrency": {
+      "type": "object",
+      "properties": {
+        "p50": {
+          "type": "number"
+        },
+        "p95": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "p50",
+        "p95",
+        "max"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

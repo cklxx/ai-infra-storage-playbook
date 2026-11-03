@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryProblemKind.schema.json",
+  "title": "MetricsRegistryProblemKind",
+  "$ref": "#/$defs/metrics_registry.MetricsRegistryProblemKind",
+  "$defs": {
+    "metrics_registry.MetricsRegistryProblemKind": {
+      "oneOf": [
+        {
+          "const": "not_registered"
+        },
+        {
+          "const": "version_not_supported"
+        },
+        {
+          "const": "gate_not_declared"
+        },
+        {
+          "const": "gate_not_in_acceptance"
+        },
+        {
+          "const": "not_compatible"
+        },
+        {
+          "const": "version_not_published"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckReadableOutput.schema.json",
+  "title": "CheckReadableOutput",
+  "$ref": "#/$defs/checks.CheckReadableOutput",
+  "$defs": {
+    "checks.CheckReadableOutput": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "items",
+        "errors"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

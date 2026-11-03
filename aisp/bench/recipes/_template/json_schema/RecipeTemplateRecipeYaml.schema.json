@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateRecipeYaml.schema.json",
+  "title": "RecipeTemplateRecipeYaml",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateRecipeYaml",
+  "$defs": {
+    "recipe_template.RecipeTemplateRecipeYaml": {
+      "type": "object",
+      "properties": {
+        "meta": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "bypass_scope": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fidelity_boundary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fidelity.FidelityBoundary"
+          }
+        },
+        "io_pattern_invariants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateInvariant"
+          }
+        },
+        "scaling_plan": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateScalingPlan"
+        },
+        "compatible_metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "latest_run": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "meta",
+        "bypass_scope",
+        "fidelity_boundary",
+        "io_pattern_invariants",
+        "scaling_plan",
+        "compatible_metrics",
+        "latest_run"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.FidelityBoundary": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "bypassed": {
+          "$ref": "#/$defs/fidelity.Bypassed"
+        },
+        "method": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bypass.BypassMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fidelity": {
+          "$ref": "#/$defs/bypass.FidelityLevel"
+        },
+        "kept": {
+          "type": "string"
+        },
+        "known_bias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bypassed",
+        "method",
+        "fidelity",
+        "kept",
+        "known_bias"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.Bypassed": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    },
+    "bypass.BypassMethod": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "cpu_offload"
+        },
+        {
+          "const": "real_small_scale"
+        }
+      ]
+    },
+    "bypass.FidelityLevel": {
+      "oneOf": [
+        {
+          "const": "L0"
+        },
+        {
+          "const": "L1"
+        },
+        {
+          "const": "L2"
+        },
+        {
+          "const": "L3"
+        }
+      ]
+    },
+    "recipe_template.RecipeTemplateInvariant": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "type": "string"
+        },
+        "tolerance": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateScalingPlan": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fixed_dimensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "varied_dimension": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "levels",
+        "fixed_dimensions",
+        "varied_dimension"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

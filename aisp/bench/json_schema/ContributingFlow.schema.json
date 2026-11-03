@@ -1,0 +1,410 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingFlow.schema.json",
+  "title": "ContributingFlow",
+  "$ref": "#/$defs/contributing_flow.ContributingFlow",
+  "$defs": {
+    "contributing_flow.ContributingFlow": {
+      "type": "object",
+      "properties": {
+        "review": {
+          "$ref": "#/$defs/contributing.ContributingReview"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing_flow.ContributingStep"
+          }
+        }
+      },
+      "required": [
+        "review",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingReview": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/contributing.ContributingChangeKind"
+        },
+        "metric_feasibility_confirmed": {
+          "type": "boolean"
+        },
+        "threshold_calibration_confirmed": {
+          "type": "boolean"
+        },
+        "affected_recipes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "invalidated_conclusions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "metric_feasibility_confirmed",
+        "threshold_calibration_confirmed",
+        "affected_recipes",
+        "invalidated_conclusions"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingChangeKind": {
+      "oneOf": [
+        {
+          "const": "small_change"
+        },
+        {
+          "const": "must_review"
+        }
+      ]
+    },
+    "contributing_flow.ContributingStep": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "create_recipe": {
+              "$ref": "#/$defs/contributing.ContributingRecipe"
+            }
+          },
+          "required": [
+            "create_recipe"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "register_metric": {
+              "$ref": "#/$defs/contributing.ContributingMetricRegistration"
+            }
+          },
+          "required": [
+            "register_metric"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "write_decision": {
+              "$ref": "#/$defs/contributing.ContributingDecision"
+            }
+          },
+          "required": [
+            "write_decision"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "run_checks": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/contributing.ContributingCheckResult"
+              }
+            }
+          },
+          "required": [
+            "run_checks"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "contributing.ContributingRecipe": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingRecipeFile"
+          }
+        },
+        "required_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingRecipeRequiredField"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "changelog": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "files",
+        "required_fields",
+        "notes",
+        "changelog"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingRecipeFile": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/contributing.ContributingRecipeFileKind"
+        },
+        "path": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingRecipeFileKind": {
+      "oneOf": [
+        {
+          "const": "recipe_yaml"
+        },
+        {
+          "const": "metrics_yaml"
+        },
+        {
+          "const": "readme"
+        },
+        {
+          "const": "checks"
+        }
+      ]
+    },
+    "contributing.ContributingRecipeRequiredField": {
+      "oneOf": [
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "fidelity_boundary"
+        },
+        {
+          "const": "io_pattern_invariants"
+        },
+        {
+          "const": "scaling_plan"
+        }
+      ]
+    },
+    "contributing.ContributingMetricRegistration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "doc": {
+          "type": "string"
+        },
+        "version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        },
+        "deprecation": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/contributing.ContributingMetricDeprecation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tolerance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingTolerance"
+          }
+        },
+        "compatible_metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "doc",
+        "version",
+        "deprecation",
+        "tolerance",
+        "compatible_metrics"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingMetricVersion": {
+      "type": "string"
+    },
+    "contributing.ContributingMetricDeprecation": {
+      "type": "object",
+      "properties": {
+        "deprecated_version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "replacement_version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        }
+      },
+      "required": [
+        "deprecated_version",
+        "reason",
+        "replacement_version"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingTolerance": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "file": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "file"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingDecision": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/contributing.ContributingDecisionKind"
+        },
+        "background": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decision": {
+          "type": "string"
+        },
+        "consequences": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "number",
+        "slug",
+        "kind",
+        "background",
+        "candidates",
+        "decision",
+        "consequences"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingDecisionKind": {
+      "oneOf": [
+        {
+          "const": "bypass_choice"
+        },
+        {
+          "const": "scaling_invariant"
+        },
+        {
+          "const": "version_binding"
+        },
+        {
+          "const": "incomparable_change"
+        }
+      ]
+    },
+    "contributing.ContributingCheckResult": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/contributing.ContributingCheckItem"
+        },
+        "scope": {
+          "$ref": "#/$defs/contributing.ContributingCheckScope"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "item",
+        "scope",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingCheckItem": {
+      "oneOf": [
+        {
+          "const": "required_fields_not_empty"
+        },
+        {
+          "const": "metric_registered"
+        },
+        {
+          "const": "tolerance_supported_key"
+        },
+        {
+          "const": "tolerance_single_copy"
+        },
+        {
+          "const": "examples_expectation"
+        },
+        {
+          "const": "two_reviewers"
+        },
+        {
+          "const": "no_internal_details"
+        }
+      ]
+    },
+    "contributing.ContributingCheckScope": {
+      "oneOf": [
+        {
+          "const": "general"
+        },
+        {
+          "const": "recipe"
+        }
+      ]
+    }
+  }
+}

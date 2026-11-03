@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricRegistration.schema.json",
+  "title": "ContributingMetricRegistration",
+  "$ref": "#/$defs/contributing.ContributingMetricRegistration",
+  "$defs": {
+    "contributing.ContributingMetricRegistration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "doc": {
+          "type": "string"
+        },
+        "version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        },
+        "deprecation": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/contributing.ContributingMetricDeprecation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tolerance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingTolerance"
+          }
+        },
+        "compatible_metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "doc",
+        "version",
+        "deprecation",
+        "tolerance",
+        "compatible_metrics"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingMetricVersion": {
+      "type": "string"
+    },
+    "contributing.ContributingMetricDeprecation": {
+      "type": "object",
+      "properties": {
+        "deprecated_version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "replacement_version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        }
+      },
+      "required": [
+        "deprecated_version",
+        "reason",
+        "replacement_version"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingTolerance": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "number"
+        },
+        "file": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "file"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

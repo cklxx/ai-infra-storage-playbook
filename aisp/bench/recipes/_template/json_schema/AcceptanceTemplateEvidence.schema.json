@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplateEvidence.schema.json",
+  "title": "AcceptanceTemplateEvidence",
+  "$ref": "#/$defs/acceptance_template.AcceptanceTemplateEvidence",
+  "$defs": {
+    "acceptance_template.AcceptanceTemplateEvidence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "backlink": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "backlink"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "evidence_location": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "evidence_location"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

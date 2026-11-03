@@ -1,0 +1,405 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternSpec.schema.json",
+  "title": "IoPatternSpec",
+  "$ref": "#/$defs/io_pattern.IoPatternSpec",
+  "$defs": {
+    "io_pattern.IoPatternSpec": {
+      "type": "object",
+      "properties": {
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternRunRole"
+          }
+        },
+        "record": {
+          "$ref": "#/$defs/io_pattern.IoPatternRecord"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternMetricItem"
+          }
+        },
+        "tolerance": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternTolerance"
+          }
+        },
+        "verdict": {
+          "$ref": "#/$defs/io_pattern.IoPatternVerdict"
+        }
+      },
+      "required": [
+        "runs",
+        "record",
+        "items",
+        "tolerance",
+        "verdict"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternRunRole": {
+      "oneOf": [
+        {
+          "const": "real"
+        },
+        {
+          "const": "bypass"
+        }
+      ]
+    },
+    "io_pattern.IoPatternRecord": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "recipe": {
+          "type": "string"
+        },
+        "window": {
+          "$ref": "#/$defs/io_pattern.IoPatternWindow"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        },
+        "totals": {
+          "$ref": "#/$defs/io_pattern.IoPatternTotals"
+        },
+        "request_size_histogram": {
+          "$ref": "#/$defs/io_pattern.IoPatternHistogram"
+        },
+        "concurrency": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternConcurrency"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequentiality_ratio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hotness": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternHotness"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observation_overhead_ratio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tokens_generated": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timing": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternTiming"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "run_id",
+        "recipe",
+        "window",
+        "sources",
+        "totals",
+        "request_size_histogram",
+        "concurrency",
+        "sequentiality_ratio",
+        "hotness",
+        "observation_overhead_ratio",
+        "tokens_generated",
+        "timing"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternWindow": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    },
+    "io_pattern.IoPatternTotals": {
+      "type": "object",
+      "properties": {
+        "read_bytes": {
+          "type": "integer"
+        },
+        "write_bytes": {
+          "type": "integer"
+        },
+        "read_ops": {
+          "type": "integer"
+        },
+        "write_ops": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "read_bytes",
+        "write_bytes",
+        "read_ops",
+        "write_ops"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternHistogram": {
+      "type": "object",
+      "properties": {
+        "bucket_edges": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "bucket_edges",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternConcurrency": {
+      "type": "object",
+      "properties": {
+        "p50": {
+          "type": "number"
+        },
+        "p95": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "p50",
+        "p95",
+        "max"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternHotness": {
+      "type": "object",
+      "properties": {
+        "top_k": {
+          "type": "integer"
+        },
+        "top_k_share": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "top_k",
+        "top_k_share"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternTiming": {
+      "type": "object",
+      "properties": {
+        "peak_bytes_per_second": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "peak_bytes_per_second"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternMetricItem": {
+      "oneOf": [
+        {
+          "const": "request_size_distribution"
+        },
+        {
+          "const": "read_write_ratio_bytes"
+        },
+        {
+          "const": "read_write_ratio_ops"
+        },
+        {
+          "const": "concurrency_p50"
+        },
+        {
+          "const": "concurrency_p95"
+        },
+        {
+          "const": "concurrency_max"
+        },
+        {
+          "const": "sequentiality"
+        },
+        {
+          "const": "hotness"
+        },
+        {
+          "const": "per_token_kv_bytes"
+        },
+        {
+          "const": "timing_peak"
+        }
+      ]
+    },
+    "io_pattern.IoPatternTolerance": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/io_pattern.IoPatternMetricItem"
+        },
+        "reference": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "limit": {
+          "type": "number"
+        },
+        "source": {
+          "$ref": "#/$defs/io_pattern.IoPatternToleranceSource"
+        },
+        "calibration": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternCalibration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "item",
+        "reference",
+        "limit",
+        "source",
+        "calibration"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternToleranceSource": {
+      "oneOf": [
+        {
+          "const": "reference"
+        },
+        {
+          "const": "calibrated"
+        }
+      ]
+    },
+    "io_pattern.IoPatternCalibration": {
+      "type": "object",
+      "properties": {
+        "repeats": {
+          "type": "integer"
+        },
+        "max_pairwise_difference": {
+          "type": "number"
+        },
+        "date": {
+          "type": "string"
+        },
+        "baseline_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repeats",
+        "max_pairwise_difference",
+        "date",
+        "baseline_ref"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternVerdict": {
+      "oneOf": [
+        {
+          "const": "对齐通过"
+        },
+        {
+          "const": "有条件通过"
+        },
+        {
+          "const": "不通过"
+        },
+        {
+          "const": "不可比"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,307 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchSpec.schema.json",
+  "title": "BenchSpec",
+  "$ref": "#/$defs/bench.BenchSpec",
+  "$defs": {
+    "bench.BenchSpec": {
+      "type": "object",
+      "properties": {
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchSubject"
+          }
+        },
+        "storage": {
+          "$ref": "#/$defs/bench.BenchStorageVersion"
+        },
+        "eval_sets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchEvalSet"
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchMetricSet"
+          }
+        },
+        "layout": {
+          "$ref": "#/$defs/bench.BenchLayout"
+        }
+      },
+      "required": [
+        "subjects",
+        "storage",
+        "eval_sets",
+        "metrics",
+        "layout"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchSubject": {
+      "oneOf": [
+        {
+          "const": "model_code_collection"
+        },
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "bench.BenchStorageVersion": {
+      "type": "object",
+      "properties": {
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchStorageLayer"
+          }
+        },
+        "manifest": {
+          "type": "string"
+        },
+        "changed_layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchStorageLayerKind"
+          }
+        }
+      },
+      "required": [
+        "layers",
+        "manifest",
+        "changed_layers"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchStorageLayer": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/bench.BenchStorageLayerKind"
+        },
+        "component": {
+          "$ref": "#/$defs/types.Component"
+        },
+        "env": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "component",
+        "env"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchStorageLayerKind": {
+      "oneOf": [
+        {
+          "const": "backend"
+        },
+        {
+          "const": "adapter"
+        }
+      ]
+    },
+    "types.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchEvalSet": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/bench.BenchSubject"
+        },
+        "entry": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bench.BenchEvalSetEntry"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "subject",
+        "entry"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchEvalSetEntry": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "measures": {
+          "type": "string"
+        },
+        "cases_from": {
+          "type": "string"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipe_dir": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "measures",
+        "cases_from",
+        "outputs",
+        "recipe_dir"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchMetricSet": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/bench.BenchSubject"
+        },
+        "tier": {
+          "$ref": "#/$defs/bench.BenchMetricTier"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "subject",
+        "tier",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchMetricTier": {
+      "oneOf": [
+        {
+          "const": "sli"
+        },
+        {
+          "const": "slo"
+        }
+      ]
+    },
+    "bench.BenchLayout": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "type": "string"
+        },
+        "areas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchRepoArea"
+          }
+        },
+        "method_docs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipe_dirs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "root",
+        "areas",
+        "method_docs",
+        "recipe_dirs"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchRepoArea": {
+      "oneOf": [
+        {
+          "const": "playbook"
+        },
+        {
+          "const": "playbook/json_schema"
+        },
+        {
+          "const": "recipes"
+        },
+        {
+          "const": "metrics"
+        },
+        {
+          "const": "checks"
+        },
+        {
+          "const": "schemas"
+        },
+        {
+          "const": "scripts"
+        },
+        {
+          "const": "meta-evaluation"
+        },
+        {
+          "const": "decisions"
+        },
+        {
+          "const": "examples"
+        },
+        {
+          "const": "requirements.txt"
+        },
+        {
+          "const": "CONTRIBUTING.md"
+        },
+        {
+          "const": "CHANGELOG.md"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckScalingArgs.schema.json",
+  "title": "CheckScalingArgs",
+  "$ref": "#/$defs/checks.CheckScalingArgs",
+  "$defs": {
+    "checks.CheckScalingArgs": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "input",
+        "metrics"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MethodologyToleranceCalibration.schema.json",
+  "title": "MethodologyToleranceCalibration",
+  "$ref": "#/$defs/methodology.MethodologyToleranceCalibration",
+  "$defs": {
+    "methodology.MethodologyToleranceCalibration": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "baseline": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "recipe",
+        "date",
+        "baseline"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

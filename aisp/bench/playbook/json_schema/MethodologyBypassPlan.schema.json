@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MethodologyBypassPlan.schema.json",
+  "title": "MethodologyBypassPlan",
+  "$ref": "#/$defs/methodology.MethodologyBypassPlan",
+  "$defs": {
+    "methodology.MethodologyBypassPlan": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "$ref": "#/$defs/bypass.BypassMethod"
+        },
+        "fidelity": {
+          "$ref": "#/$defs/bypass.FidelityLevel"
+        },
+        "premise": {
+          "$ref": "#/$defs/methodology.MethodologyBypassPremise"
+        }
+      },
+      "required": [
+        "method",
+        "fidelity",
+        "premise"
+      ],
+      "additionalProperties": false
+    },
+    "bypass.BypassMethod": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "cpu_offload"
+        },
+        {
+          "const": "real_small_scale"
+        }
+      ]
+    },
+    "bypass.FidelityLevel": {
+      "oneOf": [
+        {
+          "const": "L0"
+        },
+        {
+          "const": "L1"
+        },
+        {
+          "const": "L2"
+        },
+        {
+          "const": "L3"
+        }
+      ]
+    },
+    "methodology.MethodologyBypassPremise": {
+      "type": "object",
+      "properties": {
+        "io_path_unchanged": {
+          "type": "boolean"
+        },
+        "timing_bias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "io_path_unchanged",
+        "timing_bias"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

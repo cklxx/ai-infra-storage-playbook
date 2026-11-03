@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingReview.schema.json",
+  "title": "ContributingReview",
+  "$ref": "#/$defs/contributing.ContributingReview",
+  "$defs": {
+    "contributing.ContributingReview": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/contributing.ContributingChangeKind"
+        },
+        "metric_feasibility_confirmed": {
+          "type": "boolean"
+        },
+        "threshold_calibration_confirmed": {
+          "type": "boolean"
+        },
+        "affected_recipes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "invalidated_conclusions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "kind",
+        "metric_feasibility_confirmed",
+        "threshold_calibration_confirmed",
+        "affected_recipes",
+        "invalidated_conclusions"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingChangeKind": {
+      "oneOf": [
+        {
+          "const": "small_change"
+        },
+        {
+          "const": "must_review"
+        }
+      ]
+    }
+  }
+}

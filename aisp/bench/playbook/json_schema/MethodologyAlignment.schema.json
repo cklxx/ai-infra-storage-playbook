@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MethodologyAlignment.schema.json",
+  "title": "MethodologyAlignment",
+  "$ref": "#/$defs/methodology.MethodologyAlignment",
+  "$defs": {
+    "methodology.MethodologyAlignment": {
+      "type": "object",
+      "properties": {
+        "within_tolerance": {
+          "type": "boolean"
+        },
+        "attribution": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyAttributionCause"
+          }
+        }
+      },
+      "required": [
+        "within_tolerance",
+        "attribution"
+      ],
+      "additionalProperties": false
+    },
+    "methodology.MethodologyAttributionCause": {
+      "oneOf": [
+        {
+          "const": "observation_overhead"
+        },
+        {
+          "const": "local_buffer_or_merge"
+        },
+        {
+          "const": "bypass_timing"
+        },
+        {
+          "const": "allocator"
+        },
+        {
+          "const": "cache_warmup"
+        },
+        {
+          "const": "communication_mock"
+        }
+      ]
+    }
+  }
+}

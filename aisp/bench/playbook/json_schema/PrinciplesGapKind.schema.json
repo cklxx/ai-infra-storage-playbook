@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesGapKind.schema.json",
+  "title": "PrinciplesGapKind",
+  "$ref": "#/$defs/principles.PrinciplesGapKind",
+  "$defs": {
+    "principles.PrinciplesGapKind": {
+      "oneOf": [
+        {
+          "const": "new_architecture"
+        },
+        {
+          "const": "new_framework"
+        },
+        {
+          "const": "new_parallel_strategy"
+        },
+        {
+          "const": "uncovered_io_feature"
+        }
+      ]
+    }
+  }
+}

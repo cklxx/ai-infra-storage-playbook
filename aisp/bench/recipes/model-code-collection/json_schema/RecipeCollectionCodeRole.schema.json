@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model-code-collection/json_schema/RecipeCollectionCodeRole.schema.json",
+  "title": "RecipeCollectionCodeRole",
+  "$ref": "#/$defs/recipe_collection.RecipeCollectionCodeRole",
+  "$defs": {
+    "recipe_collection.RecipeCollectionCodeRole": {
+      "oneOf": [
+        {
+          "const": "inference"
+        },
+        {
+          "const": "pretrain"
+        },
+        {
+          "const": "both"
+        },
+        {
+          "const": "unknown"
+        }
+      ]
+    }
+  }
+}

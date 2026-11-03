@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageVerdict.schema.json",
+  "title": "CoverageVerdict",
+  "$ref": "#/$defs/coverage.CoverageVerdict",
+  "$defs": {
+    "coverage.CoverageVerdict": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "incomparable"
+        }
+      ]
+    }
+  }
+}

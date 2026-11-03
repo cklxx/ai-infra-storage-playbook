@@ -1,196 +1,197 @@
 # playbook 与 bench 评估集
 
-本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序。
+## 背景
 
-它的产物是 **bench**：两类带版本的静态评估集——模型代码收集、checkpoint 存储评估。dataset 与 kvcache 待做，见下文 TODO。评估集本身不会变化；让它变化的是这里的配方、指标与扩展流程。
+本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序；它的产物是 **bench**，即两类带版本的静态评估集——模型代码收集与 checkpoint 存储评估。评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为；评估集本身不会变化，让它变化的是这里的配方、指标与扩展流程。dataset 与 kvcache 待做（TODO）；完整指标表、SLO 的配置结构与版本比较方法见 [`playbook/storage-performance.md`](playbook/storage-performance.md)。
 
-评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为。
+## 问题
 
-## 它评什么
+```viba bench
+import types
 
-现有的评估集覆盖两个评估对象：模型代码（原料）、checkpoint；dataset、kvcache 待做。指标分两层：
+BenchSpec =
+  Object
+  * $subjects (list[BenchSubject] * Hint[{ 评估对象：模型代码（原料）与 checkpoint；dataset 与 kvcache 是 TODO }])
+  * $storage (BenchStorageVersion * Hint[{ 存储两层：backend 与 adapter，每个样本同时声明 }])
+  * $eval_sets (list[BenchEvalSet] * Hint[{ 评估集：两类带版本的静态评估集；dataset 与 kvcache 是 TODO }])
+  * $metrics (list[BenchMetricSet] * Hint[{ 指标两层：SLI 与 SLO；每个评估对象分别有这两层 }])
+  * $layout (BenchLayout * Hint[{ 目录结构：根目录下的目录与文件 }])
 
-- **SLI**：每个样本每次运行都记录，全量留存，用来比较两个存储版本。
-- **SLO**：只对重保子集判定，阈值由使用方在部署评估集时指定，仓库不提供数字。
+BenchSubject =
+  Oneof
+  | "model_code_collection" * Hint[{ 模型代码（原料）：语料够不够多、够不够全、能不能跑；它不产出 IO 数据，是 checkpoint 评估的原料 }]
+  | "checkpoint" * Hint[{ checkpoint：训练侧 checkpoint 写入与读取两条真实路径；回答一次写多久、训练被停多久 }]
+  | "dataset" * Hint[{ TODO：尚未定义 }]
+  | "kvcache" * Hint[{ TODO：尚未定义 }]
 
-| 评估对象 | 回答的问题 | 每次运行记录的 SLI |
-|---|---|---|
-| checkpoint 写入 | 一次写多久？训练被停多久？ | `checkpoint_duration_s`、`training_stall_s`、`restore_duration_s`、`metadata_commit_ms` |
-| dataset / kvcache | TODO | TODO |
-| 模型代码收集（原料） | 语料够不够多、够不够全、能不能跑？ | 可跑率、架构族覆盖、训练代码配对率 |
+BenchStorageLayerKind =
+  Oneof
+  | "backend" * Hint[{ 纯存储系统：GPFS、HDFS、Alluxio、Ceph、JuiceFS；运行时由服务注入 AI_INFRA_STORAGE_BACKEND }]
+  | "adapter" * Hint[{ AI Infra 存储传输适配层：mooncake、torchstore、bytecheckpoint；运行时由服务注入 AI_INFRA_STORAGE_ADAPTER }]
 
-完整指标表、SLO 的配置结构与版本比较方法见 [`playbook/storage-performance.md`](playbook/storage-performance.md)。
+BenchStorageLayer =
+  Object
+  * $kind (BenchStorageLayerKind * Hint[{ 这一层是 backend 还是 adapter }])
+  * $component (types.Component * Hint[{ 这一层的组件名、版本与源码 commit }])
+  * $env (str * Hint[{ 运行时注入的环境变量名：backend 是 AI_INFRA_STORAGE_BACKEND，adapter 是 AI_INFRA_STORAGE_ADAPTER }])
 
-## 存储版本：backend 与 adapter
+BenchStorageVersion =
+  Object
+  * $layers (list[BenchStorageLayer] * Hint[{ 每个样本同时声明 backend 与 adapter 两层；未设置对应的环境变量时样本必须报错退出，不允许默认值 }])
+  * $manifest (str * Hint[{ 运行清单的位置：两层的版本与配置都写在这份清单里 }])
+  * $changed_layers (list[BenchStorageLayerKind] * Hint[{ 比较两个存储版本时只允许一层不同；两层都变则按层分别归因 }])
 
-存储系统拆成两层，每个样本同时声明，运行时由服务注入环境变量：
+BenchEvalSetEntry =
+  Object
+  * $version (str * Hint[{ 评估集的版本；构建完成后不变，扩展时由 playbook 生成新版本 }])
+  * $measures (str * Hint[{ 测什么：模型代码收集测语料是否够多、够全、能跑；checkpoint 测训练侧 checkpoint 写读的 IO }])
+  * $cases_from (str * Hint[{ 用例从哪来：模型代码收集取 HuggingFace 等平台的 model id；checkpoint 取模型代码收集产出的训练代码与训练框架 }])
+  * $outputs (list[str] * Hint[{ 产出：模型代码收集是清单（manifest）与覆盖矩阵；checkpoint 是 IO pattern 记录、SLI 记录、对齐结果与 scaling 结果 }])
+  * $recipe_dir (str * Hint[{ 配方目录：模型代码收集是 recipes/model-code-collection/，checkpoint 是 recipes/checkpoint/ }])
 
-| 层 | 是什么 | 例子 | 环境变量 |
-|---|---|---|---|
-| backend | 纯存储系统 | GPFS、HDFS、Alluxio、Ceph、JuiceFS | `AI_INFRA_STORAGE_BACKEND` |
-| adapter | AI Infra 存储传输适配层 | mooncake、torchstore、bytecheckpoint | `AI_INFRA_STORAGE_ADAPTER` |
+BenchEvalSet =
+  Object
+  * $subject (BenchSubject * Hint[{ 这个评估集评哪个对象：模型代码（原料）或 checkpoint；dataset 与 kvcache 是 TODO }])
+  * $entry ((BenchEvalSetEntry | nil) * Hint[{ 已有评估集的版本、测什么、用例来源、产出与配方目录；dataset 与 kvcache 尚未定义，给 nil }])
 
-未设置时样本必须报错退出，不允许默认值。版本与配置记在运行清单里；比较两个存储版本时只允许一层不同，两层都变则按层分别归因。
+BenchMetricTier =
+  Oneof
+  | "sli" * Hint[{ 每个样本每次运行都记录，全量留存，用来比较两个存储版本；没有阈值 }]
+  | "slo" * Hint[{ 只对重保子集判定；阈值由使用方在部署评估集时指定，仓库不提供数字 }]
 
-## playbook 产出的评估集
+BenchMetricSet =
+  Object
+  * $subject (BenchSubject * Hint[{ 这组指标评哪个评估对象 }])
+  * $tier (BenchMetricTier * Hint[{ 这一组是 SLI 还是 SLO }])
+  * $metrics (list[str] * Hint[{ 这组指标的指标名；SLI 记 checkpoint_duration_s、training_stall_s、restore_duration_s、metadata_commit_ms，或可跑率、架构族覆盖、训练代码配对率；SLO 只对重保子集判定，阈值由使用方在部署评估集时指定，仓库不提供数字；dataset 与 kvcache 为 TODO }])
 
-| 评估集 | 测什么 | 用例从哪来 | 产出 | 配方目录 |
-|---|---|---|---|---|
-| 模型代码收集 | 语料是否够多、够全、能跑 | HuggingFace 等平台的 model id | 清单（manifest）、覆盖矩阵 | `recipes/model-code-collection/` |
-| checkpoint | 训练侧 checkpoint 写读的 IO | 模型代码收集产出的训练代码 + 训练框架 | IO pattern 记录、SLI 记录、对齐结果、scaling 结果 | `recipes/checkpoint/` |
-| dataset / kvcache | TODO | TODO | TODO | TODO |
+BenchRepoArea =
+  Oneof
+  | "playbook" * Hint[{ 跨评估集的方法论与评估集的方法 }]
+  | "playbook/json_schema" * Hint[{ 文档里 viba 类型的 JSON Schema，每个类型一份，由 scripts/export_json_schema.py 生成 }]
+  | "recipes" * Hint[{ 评估集的可执行配方，一个评估集一个目录；_template 是新配方的脚手架 }]
+  | "metrics" * Hint[{ 指标定义与登记表 }]
+  | "checks" * Hint[{ 校验脚本：指标与仓库规范的可执行实现 }]
+  | "schemas" * Hint[{ recipe、metrics、io-pattern、run-spec、sli、slo 的 JSON Schema }]
+  | "scripts" * Hint[{ 维护脚本：新建配方、批量校验 }]
+  | "meta-evaluation" * Hint[{ 评估这套 playbook 自身：指标、方法、问卷 }]
+  | "decisions" * Hint[{ 关键取舍的决策记录（ADR） }]
+  | "examples" * Hint[{ 最小可跑样例与负例 }]
+  | "requirements.txt" * Hint[{ 校验脚本的依赖 }]
+  | "CONTRIBUTING.md" * Hint[{ 新增配方、修改指标、记录决策的流程 }]
+  | "CHANGELOG.md" * Hint[{ 手册自身的版本变更 }]
 
-### 模型代码收集
+BenchLayout =
+  Object
+  * $root (str * Hint[{ 根目录 aisp/bench/，playbook 与 bench 评估集都在这一个目录下 }])
+  * $areas (list[BenchRepoArea] * Hint[{ 根目录下的目录与文件；requirements.txt、CONTRIBUTING.md、CHANGELOG.md 是文件，其余是目录 }])
+  * $method_docs (list[str] * Hint[{ playbook/ 下的文档：principles.md、methodology.md、model-code-collection.md、checkpoint.md、ckpt-sample-interface.md、scaling.md、evaluation-service.md、extension.md、pitfalls.md、storage-performance.md、appendix-glossary.md }])
+  * $recipe_dirs (list[str] * Hint[{ recipes/ 下的目录：_template/、model-code-collection/、checkpoint/ }])
 
-- 输入：从 HuggingFace 等平台抓 model id，下载代码与配置，不下载权重。
-- 处理：按结构指纹去重；mock 分布式进程组，分时占用单卡把每个 rank 跑一次前向。
-- 产出：每个模型一条清单记录（model id、commit、结构指纹、可跑性结论、训练代码配对结论），外加架构族 × 规模 × 注意力变体 × 框架的覆盖矩阵。
-- 验收（初始目标）：推理模型 1000+，可跑率 85%，架构族 20+，6 个参数量级每级至少 10 个样本，训练代码配对率 40%。
-- 它不产出 IO 数据。它是 checkpoint 评估的原料；dataset 与 kvcache 待做。
+BenchRunArtifacts =
+  Object
+  * $manifest (str * Hint[{ 运行清单的位置：本次运行的全部输入、版本、拓扑、存储两层版本 }])
+  * $sli (str * Hint[{ 本次运行的 SLI 文件位置；全量留存，跨存储版本比较用 }])
+  * $metrics (str * Hint[{ 本次运行的度量值文件位置 }])
+  * $alignment (str * Hint[{ 与真实运行的对齐结果文件位置 }])
+  * $report (str * Hint[{ 人读报告的位置 }])
 
-### checkpoint 存储评估
+BenchBacklink =
+  Object
+  * $uri (str * Hint[{ 产物在对象存储里的位置 }])
+  * $sha256 (str * Hint[{ 产物的校验和 }])
+  * $state (str * Hint[{ 回链里记录的状态；仓库里只留 URI、sha256、状态三要素 }])
+  * Hint[{ 回链写进配方的 latest_run，仓库里只留 URI、sha256、状态三要素；产物本身在对象存储 }]
 
-- 评估对象：checkpoint 写入、checkpoint 读取两条真实路径。
-- 做法：meta device 旁路 forward / backward / optimizer；checkpoint 保持真实。每个 rank 的分片、字节数、并发、时序照实记录。
-- 产出：一次运行的 IO pattern 记录（请求大小直方图、读写比、并发度、时序），SLI 记录（`checkpoint_duration_s`、`training_stall_s`、`restore_duration_s`），与真实运行的对齐结果，以及逐级 scaling 结果。
-- 规模阶梯：S0 单机 8 卡 → S1 双机 → S2 64–128 卡 → S3 千卡 → S4 万卡 → S5 十万卡。
-- 验收：对齐分项在阈值内；每参数字节数误差 ≤ 2%；每一级的不变量保持。
+BenchRun =
+  Object
+  * $run_id (str * Hint[{ 服务分配的运行标识，查状态、取产物都用它 }])
+  * $state (types.State * Hint[{ 这次运行现在在哪一步 }])
+  * $artifacts (BenchRunArtifacts * Hint[{ runs/<run-id>/ 下的五份产物 }])
+  * $backlink (BenchBacklink * Hint[{ 写进配方 latest_run 的回链 }])
 
-### dataset 与 kvcache
+BenchCheckScope =
+  Oneof
+  | "repo" * Hint[{ 只跑 scripts/validate_repo.py：检查配方、指标登记表与 schema 的一致性 }]
+  | "full" * Hint[{ 跑 scripts/run_checks.py：在上面那项之外，加上 selftest 与 examples/ 样例 }]
 
-TODO：尚未定义。
+BenchCheckReport =
+  Object
+  * $exit_code (int * Hint[{ 0 通过、1 不通过、2 缺依赖；缺依赖不算通过 }])
+  * $failed (list[str] * Hint[{ 没有通过的检查项，写清是哪一项、为什么 }])
+  * $missing_dependencies (list[str] * Hint[{ 缺的依赖；这时退出码是 2 }])
 
-以上数字是配方的验收目标；SLO 阈值不在本项目，由部署方在部署评估集时提供。改动以 `recipes/<name>/recipe.yaml` 与 `metrics.yaml` 为准。
-
-## 一次运行是什么样
-
-输入是一份运行请求（结构见 [`playbook/json_schema/RunRequest.schema.json`](playbook/json_schema/RunRequest.schema.json)）：
-
-```yaml
-recipe: checkpoint
-recipe_version: 0.1.0
-model: {id: example/tiny-64, commit: "0123456789abcdef0123456789abcdef01234567"}
-framework: {name: vllm, version: 0.0.0-example}
-level: S1
-storage: {backend: {name: gpfs, version: "5.1"}, adapter: {name: mooncake, version: "0.3"}}
-topology: {nodes: 2, gpus_per_node: 8, network: rdma, mount: local-nvme}
-load: {concurrency: 8, input_len: 128, output_len: 64, duration_s: 60}
-observe: {enabled: true, sample_rate: 0.1, layers: [app, sys]}
-seed: 20261030
+BenchGapKind =
+  Oneof
+  | "new_model" * Hint[{ 新模型出现，当前评估集没有覆盖 }]
+  | "new_framework" * Hint[{ 新框架出现，当前评估集没有覆盖 }]
+  | "new_parallel_strategy" * Hint[{ 新并行策略出现，当前评估集没有覆盖 }]
 ```
 
-评估服务按配方执行，产出：
+## 基本操作
 
-```text
-runs/<run-id>/
-  manifest.json     本次运行的全部输入、版本、拓扑、存储两层版本
-  sli.json          本次运行的 SLI，全量留存，跨存储版本比较用
-  metrics.json      度量值
-  alignment.json    与真实运行的对齐结果
-  report.html       人读报告
+跑一次评估：准备一份运行请求，定下跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子，交给评估服务按配方执行。产物写在对象存储的 `runs/<run-id>/` 下，包括运行清单、SLI、度量值、对齐结果与人读报告；仓库里只在配方的 `latest_run` 留回链，写 URI、sha256 与状态三要素。校验仓库：在 `aisp/bench` 下安装 `requirements.txt` 的依赖，先跑 `scripts/validate_repo.py` 检查配方、指标登记表与 schema 的一致性，再跑 `scripts/run_checks.py` 在同一套检查之外加上 selftest 与 `examples/` 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过，阈值只从 `recipes/*/metrics.yaml` 读。扩展评估集：评估集是静态产物，不会自己变化；新模型、新框架或新并行策略出现后，由 playbook 发现覆盖缺口并生成新版本，流程见 [`playbook/extension.md`](playbook/extension.md)，新增或修改配方前先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+
+## 接口
+
+```viba bench_api
+import bench
+import types
+
+RunBench =
+     bench.BenchRun
+  <- $spec (types.RunSpec * Hint[{ 一份运行请求：跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子 }])
+  <- Hint[{ 跑一次评估：把请求交给评估服务，按配方执行；产出 runs/<run-id>/ 下的运行清单、SLI、度量值、对齐结果与人读报告；仓库里只在配方的 latest_run 留回链。返回运行标识与状态、五份产物与回链 }]
+
+CheckRepo =
+     bench.BenchCheckReport
+  <- $scope (bench.BenchCheckScope * Hint[{ 校验范围：repo 只检查配方、指标登记表与 schema 的一致性；full 在这之外加 selftest 与 examples/ 样例 }])
+  <- Hint[{ 校验仓库：scope 为 repo 时跑 scripts/validate_repo.py，检查配方、指标登记表与 schema 的一致性；scope 为 full 时跑 scripts/run_checks.py，在前面那项之外加上 selftest 与 examples/ 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过；阈值只从 recipes/*/metrics.yaml 读。返回退出码、没有通过的检查项与缺的依赖 }]
+
+ExtendBench =
+     bench.BenchEvalSet
+  <- $current (bench.BenchEvalSet * Hint[{ 当前版本的评估集 }])
+  <- $gaps (list[bench.BenchGapKind] * Hint[{ 这次发现的覆盖缺口：新模型、新框架、新并行策略 }])
+  <- Hint[{ 扩展评估集：评估集是静态产物，不会自己变化；由 playbook 发现覆盖缺口并生成新版本。返回新版本的评估集 }]
 ```
 
-回链写进配方的 `latest_run`，仓库里只留 URI、sha256、状态。产物本身在对象存储。
+## 组织
 
-## 为什么要做这件事
+三个操作串成一条闭环：跑一次评估产出五份产物与回链，校验仓库确认配方、指标与 schema 一致，发现覆盖缺口后扩展评估集、生成新版本；新版本回到评估集，产物留在对象存储，仓库里只留回链。
 
-计算侧已经有成体系的 benchmark 与自动回归：模型能力有持续的评测集，代码优化有自动的搜索与回归，训练与推理性能有固定的套件。存储传输侧没有对应的东西：
+```viba bench_flow
+import bench
+import bench_api
 
-- 评估对象是**真实模型代码产生的 IO**，不是合成负载。合成负载可以随便调参，测不出真实场景的破坏点。
-- 评估要能**从一张卡外推到十万卡**，否则单机结论回答不了集群规模的问题。
-- 扩展要由 **playbook** 完成：评估集是静态产物，不会自己变化；新模型、新框架、新并行策略出现时，由 playbook 发现覆盖缺口并生成新版本。
+BenchRunDuty =
+  Object
+  * $run (bench_api.RunBench * Hint[{ 跑一次评估：一份运行请求进，一份运行结果出；产物写对象存储 }])
+  * $artifacts (bench.BenchRunArtifacts * Hint[{ 五份产物：运行清单、SLI、度量值、对齐结果、人读报告 }])
+  * $backlink (bench.BenchBacklink * Hint[{ 仓库里只留回链：URI、sha256、状态 }])
 
-这三件事合起来，才构成存储传输侧的 RSI 闭环。
+BenchCheckDuty =
+  Object
+  * $scope (bench.BenchCheckScope * Hint[{ 校验范围：只查仓库一致性，或连 selftest 与 examples/ 样例一起跑 }])
+  * $report (bench_api.CheckRepo * Hint[{ 校验仓库：退出码 0 通过、1 不通过、2 缺依赖；缺依赖不算通过 }])
 
-## 本项目是什么，不是什么
+BenchExtendDuty =
+  Object
+  * $gaps (list[bench.BenchGapKind] * Hint[{ 这次发现的覆盖缺口：新模型、新框架、新并行策略 }])
+  * $next (bench_api.ExtendBench * Hint[{ 扩展评估集：由 playbook 生成新版本，返回新版本的评估集 }])
 
-| 是 | 不是 |
-|---|---|
-| 三类评估集的配方与运行规范（`playbook/`、`recipes/`） | 评估报告的归档处 |
-| 指标口径与可执行校验（`metrics/`、`checks/`） | 原始数据、模型权重、checkpoint 的存放处 |
-| 运行请求、产物与回链的 schema（`schemas/`） | 运行日志、trace 文件、大产物的存放处 |
-| 最小可跑样例与负例（`examples/`） | 生产集群的运维手册 |
-| 结果回链规范（URI + sha256 + 状态） | 一次性的调优记录 |
+BenchStep =
+  Oneof
+  | $run (BenchRunDuty * Hint[{ 第一个操作：跑一次评估 }])
+  | $check (BenchCheckDuty * Hint[{ 第二个操作：校验仓库 }])
+  | $extend (BenchExtendDuty * Hint[{ 第三个操作：扩展评估集 }])
 
-边界判断只有一条：**依赖手册运行产生的东西，不等于属于手册。** 运行结果放对象存储或 CI artifact，仓库里只留回链。
-
-## 结构
-
-```text
-aisp/bench/                   playbook 与 bench 评估集
-├── playbook/                 跨评估集的方法论与三类评估集的方法
-│   ├── principles.md         定位、目标、边界、为什么做这套 benchmark
-│   ├── methodology.md        唯一的方法出处：旁路、保真、IO pattern、对齐、阶段门
-│   ├── model-code-collection.md   模型代码收集
-│   ├── checkpoint.md              训练侧 checkpoint 评估
-│   ├── ckpt-sample-interface.md  checkpoint 样本接口：public / apis / types / configs 四个 viba 模块
-│   ├── json_schema/               文档里 viba 类型的 JSON Schema，每个类型一份，由 scripts/export_json_schema.py 生成
-│   ├── scaling.md                 不变量、外推规则、逐级验证
-│   ├── evaluation-service.md      评估服务
-│   ├── extension.md               扩展：从缺口到新版本
-│   ├── pitfalls.md                已知坑与开放问题
-│   ├── storage-performance.md    存储表现：checkpoint 的 SLI、SLO 与判定
-│   └── appendix-glossary.md       基础术语：并行策略、模型结构、存储与 IO
-├── recipes/                  三类评估集的可执行配方，一个评估集一个目录
-│   ├── _template/            新配方的脚手架
-│   ├── model-code-collection/
-│   └── checkpoint/
-├── metrics/                  指标定义与登记表
-├── checks/                   校验脚本：指标与仓库规范的可执行实现
-├── schemas/                  recipe / metrics / io-pattern / run-spec / sli / slo 的 JSON Schema
-├── scripts/                  维护脚本：新建配方、批量校验
-├── meta-evaluation/          评估这套 playbook 自身：指标、方法、问卷
-├── decisions/                关键取舍的决策记录（ADR）
-├── examples/                 最小可跑样例与负例
-├── requirements.txt          校验脚本的依赖
-├── CONTRIBUTING.md           新增配方、修改指标、记录决策的流程
-└── CHANGELOG.md              手册自身的版本变更
+BenchFlow =
+  Object
+  * $spec (bench.BenchSpec * Hint[{ 问题定义：评估对象、存储两层、评估集、指标两层、目录结构 }])
+  * $steps (list[BenchStep] * Hint[{ 三个操作，按跑一次评估、校验仓库、扩展评估集的顺序 }])
+  * $backlink (bench.BenchBacklink * Hint[{ 每次运行结束后，仓库里只留回链；产物本身在对象存储 }])
 ```
 
-## 怎么跑校验
+评估方法见 [`playbook/methodology.md`](playbook/methodology.md)，评估服务见 [`playbook/evaluation-service.md`](playbook/evaluation-service.md)，扩展流程见 [`playbook/extension.md`](playbook/extension.md)。判断这套 bench 能不能用见 [`playbook/principles.md`](playbook/principles.md) 与 [`metrics/coverage.md`](metrics/coverage.md)，验收结论的口径与实现见 [`metrics/`](metrics/README.md) 与 [`checks/README.md`](checks/README.md)，评估这套 playbook 自身见 [`meta-evaluation/method.md`](meta-evaluation/method.md)，领域词见 [`playbook/appendix-glossary.md`](playbook/appendix-glossary.md)。
 
-```text
-cd aisp/bench
-python3 -m pip install -r requirements.txt
-python3 scripts/validate_repo.py     # 配方、指标登记表、schema 的一致性
-python3 scripts/run_checks.py        # 上面这项 + selftest + examples/ 样例
-```
-
-退出码：0 通过，1 不通过，2 缺依赖。缺依赖不算通过。校验脚本的阈值来自 `recipes/*/metrics.yaml`，不在代码里留默认值。
-
-## 先读哪几篇
-
-| 你要做的事 | 先读 |
-|---|---|
-| 判断这套 bench 能不能用 | [`playbook/principles.md`](playbook/principles.md)、[`metrics/coverage.md`](metrics/coverage.md) |
-| 搭某个评估集 | [`playbook/methodology.md`](playbook/methodology.md) → 对应的 `recipes/<name>/README.md` |
-| 验收别人的结论 | [`playbook/storage-performance.md`](playbook/storage-performance.md) + [`metrics/`](metrics/README.md) 三篇 + [`checks/README.md`](checks/README.md) |
-| 评估这套 playbook 自身 | [`meta-evaluation/method.md`](meta-evaluation/method.md) |
-| 把评估跑成服务 | [`playbook/evaluation-service.md`](playbook/evaluation-service.md) |
-| 扩展评估集 | [`playbook/extension.md`](playbook/extension.md) |
-| 查不认识的领域词 | [`playbook/appendix-glossary.md`](playbook/appendix-glossary.md) |
-
-## 术语
-
-- **bench（评估集套件）**：本项目维护的整套设施，由 playbook、当前版本的评估集与回链规范组成，与"一次性测跑"相对。
-- **playbook**：生成与维护评估集的方法与可执行配方，包括旁路方法、指标、评估服务与扩展流程。它是评估集的生成程序，文档在 `playbook/`。
-- **评估集**：playbook 的产物，一个带版本的静态用例清单，每个用例包含模型代码、配置、运行参数与验收口径。构建完成后不变，扩展即由 playbook 生成新版本。
-- **配方（recipe）**：构建与运行某个评估集的完整说明加可执行入口，一个评估集一份。
-- **旁路**：把计算替换成不产生真实计算的实现（meta device、模块 mock），同时保留其余代码路径。
-- **保真**：旁路之后，存储与传输代码产生的 IO 请求序列仍能代表真实运行；保真的程度用「保真边界表」逐项登记。
-- **IO pattern**：一次运行产生的 IO 请求的可度量特征集合，见 [`playbook/methodology.md`](playbook/methodology.md) 的「IO pattern 的度量项」。
-- **scaling 不变量**：从较小规模外推到较大规模时，必须保持稳定的那部分 IO 特征。
-- **SLI**：每个样本每次运行都记录的指标，没有阈值，全量留存，用于比较两个存储版本。
-- **SLO**：只对重保子集生效的阈值判定；阈值由使用方在部署时给出，仓库不提供数字。
-- **重保子集**：评估集里业务上不能退化的那部分样本，由部署方的选择器指定。
-- **backend / adapter**：存储系统的两层。backend 是纯存储系统（GPFS、Ceph 等），adapter 是 AI Infra 存储传输适配层（mooncake、torchstore 等）。
-- **回链**：仓库里指向外部运行产物的引用，包含 URI、sha256、状态三要素。
-
-存储与推理领域的基础词（分片、聚合带宽、元数据操作、尾延迟、读放大、基线、DP/TP/PP/EP、MoE、GQA/MQA/MLA）见 [`playbook/appendix-glossary.md`](playbook/appendix-glossary.md)。
-
-## 约定
-
-- 文档用中文写；代码、配置字段、文件名用英文。
-- 新增或修改配方前先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
-- 任何一篇文档都不收藏运行结果；需要引用结果时只写回链。
-- 不写具体内部规模与内部系统名；需要描述规模时用档位（千卡、万卡、十万卡），不写当期真实数量。
+这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/BypassTerm.schema.json",
+  "title": "BypassTerm",
+  "$ref": "#/$defs/glossary.BypassTerm",
+  "$defs": {
+    "glossary.BypassTerm": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "process_group"
+        },
+        {
+          "const": "activation_checkpoint"
+        }
+      ]
+    }
+  }
+}

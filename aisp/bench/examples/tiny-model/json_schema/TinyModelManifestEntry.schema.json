@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/tiny-model/json_schema/TinyModelManifestEntry.schema.json",
+  "title": "TinyModelManifestEntry",
+  "$ref": "#/$defs/tiny_model.TinyModelManifestEntry",
+  "$defs": {
+    "tiny_model.TinyModelManifestEntry": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "schema"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateExampleCheck.schema.json",
+  "title": "CheckTemplateExampleCheck",
+  "$ref": "#/$defs/check_template.CheckTemplateExampleCheck",
+  "$defs": {
+    "check_template.CheckTemplateExampleCheck": {
+      "oneOf": [
+        {
+          "const": "shard_key_structure"
+        },
+        {
+          "const": "per_token_kv_bytes"
+        },
+        {
+          "const": "prefix_hit_rate"
+        }
+      ]
+    }
+  }
+}

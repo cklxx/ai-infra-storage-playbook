@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingDecision.schema.json",
+  "title": "ContributingDecision",
+  "$ref": "#/$defs/contributing.ContributingDecision",
+  "$defs": {
+    "contributing.ContributingDecision": {
+      "type": "object",
+      "properties": {
+        "number": {
+          "type": "integer"
+        },
+        "slug": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/contributing.ContributingDecisionKind"
+        },
+        "background": {
+          "type": "string"
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "decision": {
+          "type": "string"
+        },
+        "consequences": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "number",
+        "slug",
+        "kind",
+        "background",
+        "candidates",
+        "decision",
+        "consequences"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingDecisionKind": {
+      "oneOf": [
+        {
+          "const": "bypass_choice"
+        },
+        {
+          "const": "scaling_invariant"
+        },
+        {
+          "const": "version_binding"
+        },
+        {
+          "const": "incomparable_change"
+        }
+      ]
+    }
+  }
+}

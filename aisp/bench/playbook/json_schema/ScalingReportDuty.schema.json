@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ScalingReportDuty.schema.json",
+  "title": "ScalingReportDuty",
+  "$ref": "#/$defs/scaling_flow.ScalingReportDuty",
+  "$defs": {
+    "scaling_flow.ScalingReportDuty": {
+      "type": "object",
+      "properties": {
+        "report": {
+          "$ref": "#/$defs/scaling.ScalingLevelReport"
+        }
+      },
+      "required": [
+        "report"
+      ],
+      "additionalProperties": false
+    },
+    "scaling.ScalingLevelReport": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "config": {
+          "type": "string"
+        },
+        "invariants": {
+          "type": "string"
+        },
+        "variables": {
+          "type": "string"
+        },
+        "attribution": {
+          "type": "string"
+        },
+        "next_prediction": {
+          "type": "string"
+        },
+        "backlink": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "config",
+        "invariants",
+        "variables",
+        "attribution",
+        "next_prediction",
+        "backlink"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    }
+  }
+}

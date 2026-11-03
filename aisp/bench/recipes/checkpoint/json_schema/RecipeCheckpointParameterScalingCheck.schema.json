@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointParameterScalingCheck.schema.json",
+  "title": "RecipeCheckpointParameterScalingCheck",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParameterScalingCheck",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointParameterScalingCheck": {
+      "oneOf": [
+        {
+          "const": "per_rank_request_size_distribution"
+        },
+        {
+          "const": "per_parameter_bytes"
+        },
+        {
+          "const": "shard_count_and_size"
+        }
+      ]
+    }
+  }
+}

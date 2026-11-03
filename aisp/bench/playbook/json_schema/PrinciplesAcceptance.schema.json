@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesAcceptance.schema.json",
+  "title": "PrinciplesAcceptance",
+  "$ref": "#/$defs/principles.PrinciplesAcceptance",
+  "$defs": {
+    "principles.PrinciplesAcceptance": {
+      "type": "object",
+      "properties": {
+        "eval_set": {
+          "$ref": "#/$defs/principles.PrinciplesEvalSet"
+        },
+        "verdict": {
+          "$ref": "#/$defs/principles.PrinciplesAcceptVerdict"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesSuccessCriterion"
+          }
+        }
+      },
+      "required": [
+        "eval_set",
+        "verdict",
+        "missing"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesEvalSet": {
+      "oneOf": [
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "principles.PrinciplesAcceptVerdict": {
+      "oneOf": [
+        {
+          "const": "built"
+        },
+        {
+          "const": "not_built"
+        }
+      ]
+    },
+    "principles.PrinciplesSuccessCriterion": {
+      "oneOf": [
+        {
+          "const": "reproducible"
+        },
+        {
+          "const": "aligned"
+        },
+        {
+          "const": "scaling_validated"
+        },
+        {
+          "const": "gaps_registered"
+        },
+        {
+          "const": "loop_proven"
+        }
+      ]
+    }
+  }
+}

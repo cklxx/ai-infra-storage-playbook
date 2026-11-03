@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionPairingTarget.schema.json",
+  "title": "CollectionPairingTarget",
+  "$ref": "#/$defs/collection.CollectionPairingTarget",
+  "$defs": {
+    "collection.CollectionPairingTarget": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "commit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "repo",
+        "commit"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

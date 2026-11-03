@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckDocLink.schema.json",
+  "title": "CheckDocLink",
+  "$ref": "#/$defs/checks.CheckDocLink",
+  "$defs": {
+    "checks.CheckDocLink": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "$ref": "#/$defs/checks.CheckScript"
+        },
+        "doc": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "script",
+        "doc"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckScript": {
+      "oneOf": [
+        {
+          "const": "validate_repo"
+        },
+        {
+          "const": "selftest"
+        },
+        {
+          "const": "check_io_pattern"
+        },
+        {
+          "const": "check_coverage"
+        },
+        {
+          "const": "check_scaling_consistency"
+        }
+      ]
+    }
+  }
+}

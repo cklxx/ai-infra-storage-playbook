@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionDownload.schema.json",
+  "title": "CollectionDownload",
+  "$ref": "#/$defs/collection.CollectionDownload",
+  "$defs": {
+    "collection.CollectionDownload": {
+      "type": "object",
+      "properties": {
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionCodeFile"
+          }
+        },
+        "oversized": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/collection.CollectionFetchFailure"
+          }
+        },
+        "resumed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "files",
+        "oversized",
+        "failures",
+        "resumed"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionCodeFile": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "kind": {
+          "$ref": "#/$defs/collection.CollectionFileKind"
+        },
+        "sha256": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "kind",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionFileKind": {
+      "oneOf": [
+        {
+          "const": "config"
+        },
+        {
+          "const": "configuration"
+        },
+        {
+          "const": "modeling"
+        },
+        {
+          "const": "referenced_module"
+        },
+        {
+          "const": "tokenizer_config"
+        },
+        {
+          "const": "generation_config"
+        }
+      ]
+    },
+    "collection.CollectionFetchFailure": {
+      "oneOf": [
+        {
+          "const": "network"
+        },
+        {
+          "const": "permission"
+        },
+        {
+          "const": "not_found"
+        },
+        {
+          "const": "license_not_accepted"
+        }
+      ]
+    }
+  }
+}

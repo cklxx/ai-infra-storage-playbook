@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/StorageIoTerm.schema.json",
+  "title": "StorageIoTerm",
+  "$ref": "#/$defs/glossary.StorageIoTerm",
+  "$defs": {
+    "glossary.StorageIoTerm": {
+      "oneOf": [
+        {
+          "const": "shard"
+        },
+        {
+          "const": "aggregate_bandwidth"
+        },
+        {
+          "const": "metadata_op"
+        },
+        {
+          "const": "read_amplification"
+        },
+        {
+          "const": "tail_latency"
+        },
+        {
+          "const": "baseline"
+        },
+        {
+          "const": "inconclusive"
+        }
+      ]
+    }
+  }
+}

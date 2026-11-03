@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleSampleSet.schema.json",
+  "title": "ExampleSampleSet",
+  "$ref": "#/$defs/examples.ExampleSampleSet",
+  "$defs": {
+    "examples.ExampleSampleSet": {
+      "type": "object",
+      "properties": {
+        "positive": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/examples.ExamplePositiveSample"
+          }
+        },
+        "negative": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/examples.ExampleNegativeSample"
+          }
+        }
+      },
+      "required": [
+        "positive",
+        "negative"
+      ],
+      "additionalProperties": false
+    },
+    "examples.ExamplePositiveSample": {
+      "oneOf": [
+        {
+          "const": "tiny-model/"
+        },
+        {
+          "const": "io-pattern-real.json"
+        },
+        {
+          "const": "io-pattern-bypassed.json"
+        },
+        {
+          "const": "coverage.json"
+        },
+        {
+          "const": "scaling-levels.json"
+        },
+        {
+          "const": "run-spec.json"
+        },
+        {
+          "const": "sli.json"
+        }
+      ]
+    },
+    "examples.ExampleNegativeSample": {
+      "oneOf": [
+        {
+          "const": "invalid/io-pattern-bad-sources.json"
+        },
+        {
+          "const": "invalid/metrics-unknown-tolerance.yaml"
+        },
+        {
+          "const": "invalid/coverage-missing-axis.json"
+        },
+        {
+          "const": "invalid/scaling-bad-lengths.json"
+        },
+        {
+          "const": "invalid/run-spec-bad-level.json"
+        },
+        {
+          "const": "invalid/sli-missing-storage.json"
+        },
+        {
+          "const": "invalid/recipe-missing-field.yaml"
+        }
+      ]
+    }
+  }
+}

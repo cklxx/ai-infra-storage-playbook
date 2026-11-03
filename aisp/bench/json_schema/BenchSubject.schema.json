@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchSubject.schema.json",
+  "title": "BenchSubject",
+  "$ref": "#/$defs/bench.BenchSubject",
+  "$defs": {
+    "bench.BenchSubject": {
+      "oneOf": [
+        {
+          "const": "model_code_collection"
+        },
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    }
+  }
+}

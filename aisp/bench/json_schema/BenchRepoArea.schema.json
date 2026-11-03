@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchRepoArea.schema.json",
+  "title": "BenchRepoArea",
+  "$ref": "#/$defs/bench.BenchRepoArea",
+  "$defs": {
+    "bench.BenchRepoArea": {
+      "oneOf": [
+        {
+          "const": "playbook"
+        },
+        {
+          "const": "playbook/json_schema"
+        },
+        {
+          "const": "recipes"
+        },
+        {
+          "const": "metrics"
+        },
+        {
+          "const": "checks"
+        },
+        {
+          "const": "schemas"
+        },
+        {
+          "const": "scripts"
+        },
+        {
+          "const": "meta-evaluation"
+        },
+        {
+          "const": "decisions"
+        },
+        {
+          "const": "examples"
+        },
+        {
+          "const": "requirements.txt"
+        },
+        {
+          "const": "CONTRIBUTING.md"
+        },
+        {
+          "const": "CHANGELOG.md"
+        }
+      ]
+    }
+  }
+}

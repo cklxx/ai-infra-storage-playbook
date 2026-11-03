@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternJudgement.schema.json",
+  "title": "IoPatternJudgement",
+  "$ref": "#/$defs/io_pattern.IoPatternJudgement",
+  "$defs": {
+    "io_pattern.IoPatternJudgement": {
+      "type": "object",
+      "properties": {
+        "verdict": {
+          "$ref": "#/$defs/io_pattern.IoPatternVerdict"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternToleranceCheck"
+          }
+        },
+        "explanation": {
+          "$ref": "#/$defs/io_pattern.IoPatternExplanation"
+        }
+      },
+      "required": [
+        "verdict",
+        "checks",
+        "explanation"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternVerdict": {
+      "oneOf": [
+        {
+          "const": "对齐通过"
+        },
+        {
+          "const": "有条件通过"
+        },
+        {
+          "const": "不通过"
+        },
+        {
+          "const": "不可比"
+        }
+      ]
+    },
+    "io_pattern.IoPatternToleranceCheck": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/io_pattern.IoPatternMetricItem"
+        },
+        "value": {
+          "type": "number"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "within": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item",
+        "value",
+        "limit",
+        "within"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternMetricItem": {
+      "oneOf": [
+        {
+          "const": "request_size_distribution"
+        },
+        {
+          "const": "read_write_ratio_bytes"
+        },
+        {
+          "const": "read_write_ratio_ops"
+        },
+        {
+          "const": "concurrency_p50"
+        },
+        {
+          "const": "concurrency_p95"
+        },
+        {
+          "const": "concurrency_max"
+        },
+        {
+          "const": "sequentiality"
+        },
+        {
+          "const": "hotness"
+        },
+        {
+          "const": "per_token_kv_bytes"
+        },
+        {
+          "const": "timing_peak"
+        }
+      ]
+    },
+    "io_pattern.IoPatternExplanation": {
+      "type": "object",
+      "properties": {
+        "attributions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternAttribution"
+          }
+        },
+        "timing_valid": {
+          "type": "boolean"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternLimitation"
+          }
+        }
+      },
+      "required": [
+        "attributions",
+        "timing_valid",
+        "limitations"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternAttribution": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/io_pattern.IoPatternMetricItem"
+        },
+        "explained": {
+          "type": "boolean"
+        },
+        "direction": {
+          "$ref": "#/$defs/io_pattern.IoPatternDeviationDirection"
+        },
+        "controllable": {
+          "type": "boolean"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "item",
+        "explained",
+        "direction",
+        "controllable",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternDeviationDirection": {
+      "oneOf": [
+        {
+          "const": "above"
+        },
+        {
+          "const": "below"
+        },
+        {
+          "const": "unknown"
+        }
+      ]
+    },
+    "io_pattern.IoPatternLimitation": {
+      "oneOf": [
+        {
+          "const": "looks_like_only"
+        },
+        {
+          "const": "timing_observation_sensitive"
+        },
+        {
+          "const": "scale_up_not_guaranteed"
+        }
+      ]
+    }
+  }
+}

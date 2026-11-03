@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageThreshold.schema.json",
+  "title": "CoverageThreshold",
+  "$ref": "#/$defs/coverage.CoverageThreshold",
+  "$defs": {
+    "coverage.CoverageThreshold": {
+      "type": "object",
+      "properties": {
+        "coverage_ratio_min": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "coverage_ratio_min"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

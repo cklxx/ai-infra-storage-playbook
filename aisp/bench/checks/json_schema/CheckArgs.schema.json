@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckArgs.schema.json",
+  "title": "CheckArgs",
+  "$ref": "#/$defs/checks.CheckArgs",
+  "$defs": {
+    "checks.CheckArgs": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "validate_repo": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "validate_repo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "selftest": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "selftest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "check_io_pattern": {
+              "$ref": "#/$defs/checks.CheckIoPatternArgs"
+            }
+          },
+          "required": [
+            "check_io_pattern"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "check_coverage": {
+              "$ref": "#/$defs/checks.CheckCoverageArgs"
+            }
+          },
+          "required": [
+            "check_coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "check_scaling_consistency": {
+              "$ref": "#/$defs/checks.CheckScalingArgs"
+            }
+          },
+          "required": [
+            "check_scaling_consistency"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checks.CheckIoPatternArgs": {
+      "type": "object",
+      "properties": {
+        "real": {
+          "type": "string"
+        },
+        "bypassed": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "tolerance": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "real",
+        "bypassed",
+        "metrics",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckCoverageArgs": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "min_coverage": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "manifest",
+        "metrics",
+        "min_coverage"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckScalingArgs": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "input",
+        "metrics"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,22 +1,10 @@
 # 评估服务
 
-评估集不能只是一堆配方。配方解决"怎么测"，服务解决"谁来跑、跑完放哪、结论怎么回到配方上"。
+## 背景
 
-## 1. 服务边界
+评估集不能只是一堆配方：配方解决"怎么测"，服务解决"谁来跑、跑完放哪、结论怎么回到配方上"。这份文档定义评估服务受理运行请求、执行与调度、出产物与回链所需的类型与操作，让评估集能被持续运行。
 
-| 服务负责 | 服务不负责 |
-|---|---|
-| 接收运行请求，校验参数 | 决定评估集该覆盖什么 |
-| 按配方准备环境、调度资源、执行 | 修改配方里的口径与阈值 |
-| 采集、校验、聚合结果 | 解释结论的业务含义 |
-| 把产物写入对象存储并生成清单 | 长期保存原始 trace（按保留期清理） |
-| 把回链写回配方的 `latest_run` | 自动合并任何口径变更 |
-
-判断标准：服务可以做任何"按配方执行"的事，不能做任何"改变配方语义"的事。
-
-## 2. 接口
-
-### 2.1 运行请求
+## 问题
 
 ```viba service
 import configs
@@ -49,176 +37,233 @@ Load =
   * $output_len ((int | nil) * Hint[{ 输出序列长度；训练侧或不适用时给 nil }])
   * $arrival_interval_ms ((float | nil) * Hint[{ 请求到达间隔，毫秒；不按固定间隔发时给 nil }])
   * $batch_size ((int | nil) * Hint[{ batch 大小；不适用时给 nil }])
+
+ServiceResponsibility =
+  Oneof
+  | "accept_and_validate" * Hint[{ 接收运行请求，校验参数 }]
+  | "prepare_and_execute" * Hint[{ 按配方准备环境、调度资源、执行 }]
+  | "collect_and_aggregate" * Hint[{ 采集、校验、聚合结果 }]
+  | "write_artifacts_and_manifest" * Hint[{ 把产物写入对象存储并生成清单 }]
+  | "write_back_latest_run" * Hint[{ 把回链写回配方的 latest_run }]
+
+ServiceOutOfScope =
+  Oneof
+  | "decide_coverage" * Hint[{ 决定评估集该覆盖什么 }]
+  | "change_recipe_semantics" * Hint[{ 修改配方里的口径与阈值 }]
+  | "explain_business_result" * Hint[{ 解释结论的业务含义 }]
+  | "retain_raw_trace" * Hint[{ 长期保存原始 trace；原始 trace 按保留期清理 }]
+  | "merge_metric_change" * Hint[{ 自动合并任何口径变更 }]
+
+ServiceBoundary =
+  Object
+  * $does (list[ServiceResponsibility] * Hint[{ 服务负责的五件事 }])
+  * $does_not (list[ServiceOutOfScope] * Hint[{ 服务不负责的五件事 }])
+  * $rule (str * Hint[{ 判断标准：服务可以做任何按配方执行的事，不能做任何改变配方语义的事 }])
+
+ServiceFailureKind =
+  Oneof
+  | "environment" * Hint[{ 环境失败；自动重试 2 次，仍失败则标记为环境问题并通知维护者 }]
+  | "dependency" * Hint[{ 依赖失败；依赖缺失或版本不满足，与其它失败分类分开记录，供缺口分析使用 }]
+  | "code_unrunnable" * Hint[{ 代码不可跑；不重试，记录到模型清单的缺口 }]
+  | "insufficient_resource" * Hint[{ 资源不足；重新排队，不消耗重试次数 }]
+  | "timeout" * Hint[{ 超时；记录超时点，保留已采集的度量 }]
+  | "observation" * Hint[{ 观测失败；重跑一次，仍失败则标记该次运行无效，不进入对齐统计 }]
+  | "assertion" * Hint[{ 断言失败；保留现场，不重试，进入缺口分析 }]
+
+ServiceRunVerdict =
+  Oneof
+  | "passed" * Hint[{ 通过 }]
+  | "failed" * Hint[{ 失败 }]
+  | "invalid" * Hint[{ 无效运行：不能算通过，也不能算失败；它没有结论，只是没有数据，统计里必须与通过、失败分开 }]
+
+ServiceInternalStage =
+  Oneof
+  | "validate" * Hint[{ 校验：校验请求与配方版本，留下校验报告 }]
+  | "prepare" * Hint[{ 准备：拉代码、装依赖、准备数据、预热，留下环境清单 }]
+  | "collect" * Hint[{ 采集收尾：校验、聚合、写产物与回链，留下度量文件 }]
+
+ServicePriority =
+  Oneof
+  | "regression" * Hint[{ 回归，队列里优先级最高，不可被抢占 }]
+  | "new_case" * Hint[{ 新用例，优先级次之 }]
+  | "exploration" * Hint[{ 探索，优先级最低；抢占只针对这一类运行 }]
+
+ServiceScheduling =
+  Object
+  * $priority_order (list[ServicePriority] * Hint[{ 队列顺序：回归 > 新用例 > 探索；同一优先级内按提交时间排序 }])
+  * $time_slice_single_rank (bool * Hint[{ 单卡可被多个 rank 分时复用，同一时刻只允许一个 rank 占用，切换时清空显存 }])
+  * $isolation (str * Hint[{ 不同运行不共享工作目录；共享存储的写入路径按 run-id 隔离 }])
+  * $quota (str * Hint[{ 按团队配额限制并发与总卡时 }])
+  * $preemptible (list[ServicePriority] * Hint[{ 只允许抢占探索类运行，回归类不可抢占 }])
+  * $high_bandwidth_parallel (int * Hint[{ 同一存储后端上同时跑的高带宽运行数；硬约束是 1，两个并行跑测出来的是争用下的性能，不是评估结论 }])
+
+ServiceRunDir = str * Hint[{ 一次运行的目录：runs/<run-id>/，下面是 manifest.json（运行清单：全部输入、版本、拓扑、观测配置）、metrics.json（本次运行的度量值）、alignment.json（对齐结果与容差对比）、report.html（人读报告）、trace/（原始 trace，按保留期清理）、artifacts/（生成的配置、检查点片段、日志） }]
+
+ServiceArtifactFile =
+  Object
+  * $path (str * Hint[{ 产物文件在运行目录下的相对路径 }])
+  * $sha256 (str * Hint[{ 该文件的校验和 }])
+
+ServiceManifest =
+  Object
+  * $request (RunRequest * Hint[{ 这次运行的全部输入：配方、模型、框架、档位、拓扑、存储两层、负载、观测、种子 }])
+  * $service_version (str * Hint[{ 服务版本；执行方式变了它变 }])
+  * $started_at (str * Hint[{ 开始时间戳 }])
+  * $finished_at (str * Hint[{ 结束时间戳 }])
+  * $state (types.State * Hint[{ 结束时的状态；取值只用 ckpt-sample-interface.md 的 State }])
+  * $files (list[ServiceArtifactFile] * Hint[{ 产物文件与校验和；manifest.json 是回链的核心 }])
+
+ServiceBacklink =
+  Object
+  * $run_id (str * Hint[{ 运行标识 }])
+  * $report_uri (str * Hint[{ 人读报告的位置 }])
+  * $metrics_uri (str * Hint[{ 度量文件的位置 }])
+  * $sha256 (str * Hint[{ 度量文件的校验和 }])
+  * $status (ServiceRunVerdict * Hint[{ 这次运行的结论；无效运行不能算通过，也不能算失败 }])
+  * $finished_at (str * Hint[{ 结束时间戳 }])
+
+ServiceVersionSet =
+  Object
+  * $recipe (str * Hint[{ 配方版本，存在 recipe.yaml 的 version；流程或口径变了它变 }])
+  * $metrics (str * Hint[{ 指标版本，存在 metrics/*/version；度量定义变了它变 }])
+  * $service (str * Hint[{ 服务版本，存在 manifest.json 的 service_version；执行方式变了它变 }])
+  * $framework ((Framework | nil) * Hint[{ 被评估对象的框架版本，存进 manifest.json；训练侧给 nil }])
+  * $model (configs.Model * Hint[{ 被评估对象的模型版本，存进 manifest.json }])
+  * $storage (types.StorageLayer * Hint[{ 存储两层版本，存进 manifest.json 的 storage；backend 或 adapter 变了它变 }])
+  * $compatible_metrics (list[str] * Hint[{ 配方的 compatible_metrics：按指标名声明兼容的版本列表；服务在运行前校验配方、指标、服务三者兼容，不兼容直接拒绝，不允许先跑再说 }])
+
+ServiceCiTrigger =
+  Oneof
+  | "recipe_change" * Hint[{ 配方改动，提交时触发；跑该配方的最小用例（S0），验证配方可执行 }]
+  | "framework_upgrade" * Hint[{ 框架升级，每日触发；跑三个框架的适配用例 }]
+  | "storage_change" * Hint[{ 存储后端或适配层变更，变更时触发；跑受影响 backend / adapter 的对齐用例与 SLI 对比 }]
+  | "regression" * Hint[{ 回归，每周触发；跑全部 S0 + 抽样 S1，对比基线 }]
+  | "exploration" * Hint[{ 探索，持续触发；跑新发现的模型与场景 }]
+
+ServiceCiRun =
+  Object
+  * $trigger (ServiceCiTrigger * Hint[{ 这次 CI 由哪个场景触发 }])
+  * $records (list[types.RunRecord] * Hint[{ 这个场景跑出来的运行记录，每条都要回链 }])
+  * $small_scale_only (bool * Hint[{ CI 里只跑小规模；大规模运行走队列人工触发 }])
+  * $backlink_required (bool * Hint[{ CI 的结论也要回链，不允许 CI 里跑过但没留记录 }])
+
+ServiceMetric =
+  Oneof
+  | "success_rate" * Hint[{ 运行成功率 }]
+  | "queue_duration" * Hint[{ 平均排队时长 }]
+  | "run_duration" * Hint[{ 平均执行时长 }]
+  | "failure_count" * Hint[{ 每类失败的数量 }]
+  | "backlink_completeness" * Hint[{ 回链完整率 }]
+  | "observation_overhead" * Hint[{ 观测开销：开启与关闭观测的指标差异 }]
+  | "resource_utilization" * Hint[{ 资源利用率 }]
+
+ServiceOpenQuestion =
+  Oneof
+  | "gpu_memory_cleanup" * Hint[{ 分时复用单卡时，显存清理不彻底会导致后续 rank OOM，清理策略需要更严格的验证 }]
+  | "queue_wait_resource_pool" * Hint[{ 大规模运行的排队时长可能超过一天，是否需要预留资源池 }]
+  | "fixed_observation" * Hint[{ 观测配置不同会导致结果不可比，是否强制固定观测配置 }]
+  | "service_upgrade_rerun" * Hint[{ 服务版本升级时，历史结果是否需要重跑以保持可比 }]
 ```
 
-结构见 [`json_schema/RunRequest.schema.json`](json_schema/RunRequest.schema.json)。
+运行请求的结构见 [`json_schema/RunRequest.schema.json`](json_schema/RunRequest.schema.json)。请求不允许有"其它"字段；新增字段先改这里的类型，再改服务。
 
-请求不允许有"其它"字段。新增字段先改这里的类型，再改服务。
+## 基本操作
 
-### 2.2 命令行
+服务需要五个操作：提交、查询、取消、取产物、写回。提交校验请求与配方、指标、服务三者的版本兼容，不兼容直接拒绝，通过校验的请求按优先级入队，请求交出去就返回，不等样本跑完。查询答一次运行当前的状态、进度与产物位置，只读，完成与否只看状态不看进度。取消让服务停下这次运行，已经写完的产物保留。取产物交出运行清单与人读报告的位置，以及这次运行的度量值与判定。写回把回链写进对应配方的 `latest_run`，只写六个字段，且只能由服务执行。
 
-```text
-eval run --spec <path-to-run-spec.yaml>
-eval status <run-id>
-eval result <run-id> --format json
-eval cancel <run-id>
+## 接口
+
+```viba service_api
+import service
+import types
+
+Submit =
+     types.RunRecord
+  <- $request (service.RunRequest * Hint[{ 这次评估的运行请求：配方与版本、模型、框架、档位、拓扑、存储两层、负载、观测、种子 }])
+  <- Hint[{ 提交接口：校验请求与版本，配方、指标、服务三者不兼容直接拒绝，返回状态为 rejected 的记录；通过校验的请求按优先级入队，请求交出去就返回，不等样本跑完，返回的记录此时可能仍在排队或执行中 }]
+
+Query =
+     types.RunRecord
+  <- $run_id (str * Hint[{ 要查的那次运行 }])
+  <- Hint[{ 查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度 }]
+
+Collect =
+     types.Artifacts
+  <- $run_id (str * Hint[{ 要取产物的那次运行 }])
+  <- Hint[{ 取产物：交出运行清单与人读报告的位置，以及这次运行的 SLI 度量与 SLO 判定；原始 trace 按保留期清理 }]
+
+Cancel =
+     types.RunRecord
+  <- $run_id (str * Hint[{ 要停的那次运行 }])
+  <- Hint[{ 取消接口：让服务停下这次运行，已经写完的产物保留，返回的记录状态为 cancelled；已经结束的运行原样交回，不报错 }]
+
+Backlink =
+     service.ServiceBacklink
+  <- $record (types.RunRecord * Hint[{ 要写回的那次运行 }])
+  <- $request (service.RunRequest * Hint[{ 这次运行的请求；配方标识与版本来自这里 }])
+  <- $status (service.ServiceRunVerdict * Hint[{ 这次运行的结论；无效运行不能算通过，也不能算失败 }])
+  <- Hint[{ 写回配方：把回链写进对应配方的 latest_run，只写 run_id、report_uri、metrics_uri、sha256、status、finished_at 六个字段；写回只能由服务执行，配方里的口径、阈值、流程无权修改 }]
 ```
 
-命令行是薄封装，行为与 HTTP 接口一致。
+接口返回的记录是 [ckpt-sample-interface.md](ckpt-sample-interface.md) 的 `RunRecord`：运行标识、状态、进度、产物位置；状态只用那份文档 `State` 的六个取值，本篇不另立状态类型。
 
-### 2.3 HTTP
+命令行与 HTTP 是 Submit、Query、Collect、Cancel 四个操作的薄封装：命令行有 `eval run`、`eval status`、`eval result`、`eval cancel`，HTTP 有 `POST /v1/runs`、`GET /v1/runs/{run-id}`、`GET /v1/runs/{run-id}/artifacts`、`POST /v1/runs/{run-id}/cancel`，行为与接口一致；`Backlink` 由服务在运行结束后自己执行，不对外暴露。
 
-```text
-POST /v1/runs            提交运行，返回 run-id
-GET  /v1/runs/{run-id}   查询状态与摘要
-GET  /v1/runs/{run-id}/artifacts   列出产物
-POST /v1/runs/{run-id}/cancel      取消
+## 组织
+
+```viba service_flow
+import service
+import service_api
+import types
+
+ServiceAdmitDuty =
+  Object
+  * $step (service_api.Submit * Hint[{ 受理：提交运行请求，拿到 types.RunRecord }])
+  * $request (service.RunRequest * Hint[{ 这一步的输入：配方与版本、模型、框架、档位、拓扑、存储两层、负载、观测、种子 }])
+  * $record (types.RunRecord * Hint[{ 这一步的产物：运行标识、状态、进度与产物位置 }])
+
+ServiceExecuteDuty =
+  Object
+  * $query (service_api.Query * Hint[{ 执行中查一次：状态、进度与产物位置 }])
+  * $cancel (service_api.Cancel * Hint[{ 执行中取消：停下这次运行，已经写完的产物保留 }])
+  * $record (types.RunRecord * Hint[{ 同一条运行记录；状态取自 types.State 的六个取值 }])
+  * $stages (list[service.ServiceInternalStage] * Hint[{ 执行中的内部阶段：校验、准备、采集收尾，按顺序；它们不占对外状态 }])
+  * $scheduling (service.ServiceScheduling * Hint[{ 排队与资源约束：优先级、分时、隔离、配额、抢占、高带宽串行 }])
+  * $failure ((service.ServiceFailureKind | nil) * Hint[{ 失败时的分类；运行正常结束时给 nil }])
+
+ServiceDeliverDuty =
+  Object
+  * $collect (service_api.Collect * Hint[{ 取产物：运行清单与人读报告的位置，以及 SLI 度量与 SLO 判定 }])
+  * $artifacts (types.Artifacts * Hint[{ 这一步的产物：运行清单与人读报告的位置，以及 SLI 度量与 SLO 判定 }])
+  * $run_dir (service.ServiceRunDir * Hint[{ 产物目录：runs/<run-id>/；原始 trace 按保留期清理 }])
+  * $manifest (service.ServiceManifest * Hint[{ 运行清单：全部输入、版本、拓扑、观测配置与产物校验和 }])
+  * $status (service.ServiceRunVerdict * Hint[{ 这次运行的结论：通过、失败或无效；无效运行不能算通过，也不能算失败，统计里必须单独分开 }])
+  * $backlink (service_api.Backlink * Hint[{ 写回：把回链写进配方的 latest_run，只写六个字段 }])
+
+ServiceRun =
+  Object
+  * $admit (ServiceAdmitDuty * Hint[{ 第一步，受理 }])
+  * $execute (ServiceExecuteDuty * Hint[{ 第二步，执行与调度 }])
+  * $deliver (ServiceDeliverDuty * Hint[{ 第三步，出产物与回链 }])
+
+ServiceCiDuty =
+  Object
+  * $ci (service.ServiceCiRun * Hint[{ CI 场景：触发条件、跑出来的运行记录、只跑小规模、结论也要回链 }])
+  * $deliver (ServiceDeliverDuty * Hint[{ CI 的运行同样要出产物与回链，不允许 CI 里跑过但没留记录 }])
+
+ServiceOperation =
+  Oneof
+  | $manual (ServiceRun * Hint[{ 人工或队列触发的一次运行：受理、执行、交付三步 }])
+  | $ci (ServiceCiDuty * Hint[{ CI 触发的一次运行：只跑小规模，大规模运行走队列人工触发 }])
+
+ServiceOverview =
+  Object
+  * $boundary (service.ServiceBoundary * Hint[{ 服务负责什么、不负责什么；判据是不能改变配方语义 }])
+  * $versions (service.ServiceVersionSet * Hint[{ 必须同时记录的版本：配方、指标、服务、框架与模型、存储两层；缺一条历史结果就不可比 }])
+  * $scheduling (service.ServiceScheduling * Hint[{ 排队与资源约束 }])
+  * $operations (list[ServiceOperation] * Hint[{ 每次运行要么由人工或队列触发，要么由 CI 触发 }])
+  * $metrics (list[service.ServiceMetric] * Hint[{ 服务自身的观测：成功率、排队与执行时长、每类失败数量、回链完整率、观测开销、资源利用率 }])
+  * $open_questions (list[service.ServiceOpenQuestion] * Hint[{ 尚未解决的问题：显存清理、排队时长与资源池、观测配置是否固定、服务升级是否重跑 }])
 ```
 
-接口返回的就是 [ckpt-sample-interface.md](ckpt-sample-interface.md) 的 `RunRecord`：运行标识、状态、进度、产物位置。
-
-## 3. 运行的生命周期
-
-对外状态只有 `RunRecord` 里 `State` 的六个取值，含义写在那个枚举的 `Hint` 里，这里不重复：
-
-```text
-提交 ─校验─┬─> 排队 ─> 执行中 ─> 正常结束
-           │            ├─ 失败
-           └─ 被拒       └─ 被取消
-```
-
-校验、准备、采集收尾是执行中的内部阶段，不占对外状态：
-
-| 内部阶段 | 做什么 | 留下的东西 |
-|---|---|---|
-| 校验 | 校验请求与配方版本 | 校验报告 |
-| 准备 | 拉代码、装依赖、准备数据、预热 | 环境清单 |
-| 采集收尾 | 校验、聚合、写产物与回链 | 度量文件 |
-
-失败必须分类：环境失败、依赖失败、代码不可跑、资源不足、超时、观测失败、断言失败。笼统的"失败"无法用于缺口分析。
-
-## 4. 失败处理
-
-| 失败类型 | 处理 |
-|---|---|
-| 环境失败 | 自动重试 2 次；仍失败则标记为环境问题并通知维护者 |
-| 代码不可跑 | 不重试，记录到模型清单的缺口 |
-| 资源不足 | 重新排队，不消耗重试次数 |
-| 超时 | 记录超时点，保留已采集的度量 |
-| 观测失败 | 重跑一次；仍失败则标记该次运行无效，不进入对齐统计 |
-| 断言失败 | 保留现场，不重试，进入缺口分析 |
-
-**无效运行不能算通过，也不能算失败。** 它没有结论，只是没有数据。这一点在统计里必须分开。
-
-## 5. 调度
-
-资源是 GPU 与存储带宽，两者都要调度。
-
-| 策略 | 规则 |
-|---|---|
-| 队列 | 按优先级（回归 > 新用例 > 探索）+ 提交时间排序 |
-| 分时 | 单卡可以被多个 rank 分时复用，同一时刻只允许一个 rank 占用，切换时清空显存 |
-| 隔离 | 不同运行不共享工作目录；共享存储的写入路径按 run-id 隔离 |
-| 配额 | 按团队配额限制并发与总卡时 |
-| 抢占 | 只允许抢占探索类运行，回归类不可抢占 |
-| 并发上限 | 同一存储后端上的高带宽运行串行执行，避免互相干扰导致测量失真 |
-
-最后一条容易被忽略：两个高带宽评估并行跑，测出来的都是"争用下的性能"，不是评估结论。**同一时刻在同一存储后端上只跑一个高带宽用例**，是硬约束。
-
-## 6. 产物与回链
-
-### 5.1 目录布局
-
-```text
-s3://example-bucket/
-  runs/<run-id>/
-    manifest.json         运行清单：全部输入、版本、拓扑、观测配置
-    metrics.json          本次运行的度量值
-    alignment.json        对齐结果与容差对比
-    report.html           人读的报告
-    trace/                原始 trace（按保留期清理）
-    artifacts/            产物：生成的配置、检查点片段、日志
-```
-
-### 5.2 清单
-
-`manifest.json` 是回链的核心，至少包含：
-
-```json
-{
-  "run_id": "...",
-  "recipe": "checkpoint",
-  "recipe_version": "0.1.0",
-  "service_version": "0.1.0",
-  "model": {"id": "...", "commit": "..."},
-  "framework": null,
-  "level": "S2",
-  "topology": {"nodes": 8, "gpus_per_node": 8, "network": "...", "mount": "..."},
-  "storage": {"backend": {"name": "gpfs", "version": "5.1"}, "adapter": {"name": "torchstore", "version": "0.2"}},
-  "observe": {"enabled": true, "sample_rate": 0.1, "layers": ["app", "sys"]},
-  "started_at": "...",
-  "finished_at": "...",
-  "state": "completed",
-  "artifacts": [{"path": "metrics.json", "sha256": "..."}]
-}
-```
-
-### 5.3 写回配方
-
-运行完成后，服务把回链写进对应配方的 `latest_run`：
-
-```yaml
-latest_run:
-  run_id: "..."
-  report_uri: "s3://example-bucket/runs/<run-id>/report.html"
-  metrics_uri: "s3://example-bucket/runs/<run-id>/metrics.json"
-  sha256: "..."
-  status: passed
-  finished_at: "..."
-```
-
-写回只能由服务执行，且只能写 `latest_run` 的六个字段；配方里的口径、阈值、流程，服务无权修改。
-
-## 7. 版本
-
-四条版本必须同时记录，缺一条历史结果就不可比：
-
-| 版本 | 存在哪 | 变了会怎样 |
-|---|---|---|
-| 配方版本 | `recipe.yaml` 的 `version` | 流程或口径变了 |
-| 指标版本 | `metrics/*/version` | 度量定义变了 |
-| 服务版本 | `manifest.json` 的 `service_version` | 执行方式变了 |
-| 框架与模型版本 | `manifest.json` | 被评估对象变了 |
-| 存储两层版本 | `manifest.json` 的 `storage` | backend 或 adapter 变了 |
-
-配方的 `compatible_metrics` 按指标名声明兼容的版本列表。服务在运行前校验三者兼容，不兼容直接拒绝，不允许"先跑再说"。
-
-## 8. CI 集成
-
-| 场景 | 触发 | 运行内容 |
-|---|---|---|
-| 配方改动 | 提交时 | 该配方的最小用例（S0），验证配方可执行 |
-| 框架升级 | 每日 | 三个框架的适配用例 |
-| 存储后端或适配层变更 | 变更时 | 受影响 backend / adapter 的对齐用例与 SLI 对比 |
-| 回归 | 每周 | 全部 S0 + 抽样 S1，对比基线 |
-| 探索 | 持续 | 新发现的模型与场景 |
-
-CI 里只跑小规模，大规模运行走队列人工触发。CI 的结论也要回链，不允许"CI 里跑过但没留记录"。
-
-## 9. 服务自身的观测
-
-服务要能被观察，否则无法判断"评估结果变了"是系统变了还是服务坏了：
-
-- 运行成功率、平均排队时长、平均执行时长；
-- 每类失败的数量；
-- 回链完整率；
-- 观测开销（开启与关闭的指标差异）；
-- 资源利用率。
-
-## 10. 开放问题
-
-- 分时复用单卡时，显存清理不彻底会导致后续 rank OOM，清理策略需要更严格的验证。
-- 大规模运行的排队时长可能超过一天，是否需要预留资源池。
-- 观测配置不同会导致结果不可比，是否强制固定观测配置。
-- 服务版本升级时，历史结果是否需要重跑以保持可比。
-
+这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

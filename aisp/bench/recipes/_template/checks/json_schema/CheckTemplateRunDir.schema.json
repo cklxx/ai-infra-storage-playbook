@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateRunDir.schema.json",
+  "title": "CheckTemplateRunDir",
+  "$ref": "#/$defs/check_template.CheckTemplateRunDir",
+  "$defs": {
+    "check_template.CheckTemplateRunDir": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check_template.CheckTemplateCaseFile"
+          }
+        }
+      },
+      "required": [
+        "path",
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateCaseFile": {
+      "oneOf": [
+        {
+          "const": "metrics.json"
+        },
+        {
+          "const": "manifest.json"
+        }
+      ]
+    }
+  }
+}

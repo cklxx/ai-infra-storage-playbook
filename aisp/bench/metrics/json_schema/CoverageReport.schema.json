@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageReport.schema.json",
+  "title": "CoverageReport",
+  "$ref": "#/$defs/coverage.CoverageReport",
+  "$defs": {
+    "coverage.CoverageReport": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "computed": {
+              "$ref": "#/$defs/coverage.CoverageStats"
+            }
+          },
+          "required": [
+            "computed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "invalid": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "invalid"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "coverage.CoverageStats": {
+      "type": "object",
+      "properties": {
+        "denominator": {
+          "type": "integer"
+        },
+        "covered": {
+          "type": "integer"
+        },
+        "ratio": {
+          "type": "number"
+        },
+        "gap_ratio": {
+          "type": "number"
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/coverage.CoverageGap"
+          }
+        }
+      },
+      "required": [
+        "denominator",
+        "covered",
+        "ratio",
+        "gap_ratio",
+        "gaps"
+      ],
+      "additionalProperties": false
+    },
+    "coverage.CoverageGap": {
+      "$ref": "#/$defs/coverage.CoverageCellKey"
+    },
+    "coverage.CoverageCellKey": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/coverage.CoverageAxisValue"
+      }
+    },
+    "coverage.CoverageAxisValue": {
+      "type": "object",
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/coverage.CoverageAxis"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "axis",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "coverage.CoverageAxis": {
+      "oneOf": [
+        {
+          "const": "arch_family"
+        },
+        {
+          "const": "model_scale"
+        },
+        {
+          "const": "attention"
+        },
+        {
+          "const": "framework"
+        },
+        {
+          "const": "parallel"
+        },
+        {
+          "const": "cluster"
+        },
+        {
+          "const": "io_feature"
+        },
+        {
+          "const": "storage_backend"
+        },
+        {
+          "const": "storage_adapter"
+        }
+      ]
+    }
+  }
+}

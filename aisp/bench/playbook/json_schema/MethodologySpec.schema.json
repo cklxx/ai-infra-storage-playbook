@@ -1,0 +1,378 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MethodologySpec.schema.json",
+  "title": "MethodologySpec",
+  "$ref": "#/$defs/methodology.MethodologySpec",
+  "$defs": {
+    "methodology.MethodologySpec": {
+      "type": "object",
+      "properties": {
+        "gates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/gates.Gate"
+          }
+        },
+        "bypass_methods": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bypass.BypassMethod"
+          }
+        },
+        "fidelity_boundaries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fidelity.FidelityBoundary"
+          }
+        },
+        "observation_layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyMetric"
+          }
+        },
+        "tolerances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyTolerance"
+          }
+        },
+        "scale_rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyScaleRule"
+          }
+        },
+        "reproduction": {
+          "$ref": "#/$defs/methodology.MethodologyReproduction"
+        },
+        "failure_modes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyFailureMode"
+          }
+        }
+      },
+      "required": [
+        "gates",
+        "bypass_methods",
+        "fidelity_boundaries",
+        "observation_layers",
+        "metrics",
+        "tolerances",
+        "scale_rules",
+        "reproduction",
+        "failure_modes"
+      ],
+      "additionalProperties": false
+    },
+    "gates.Gate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    },
+    "bypass.BypassMethod": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "cpu_offload"
+        },
+        {
+          "const": "real_small_scale"
+        }
+      ]
+    },
+    "fidelity.FidelityBoundary": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "bypassed": {
+          "$ref": "#/$defs/fidelity.Bypassed"
+        },
+        "method": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bypass.BypassMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fidelity": {
+          "$ref": "#/$defs/bypass.FidelityLevel"
+        },
+        "kept": {
+          "type": "string"
+        },
+        "known_bias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bypassed",
+        "method",
+        "fidelity",
+        "kept",
+        "known_bias"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.Bypassed": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    },
+    "bypass.FidelityLevel": {
+      "oneOf": [
+        {
+          "const": "L0"
+        },
+        {
+          "const": "L1"
+        },
+        {
+          "const": "L2"
+        },
+        {
+          "const": "L3"
+        }
+      ]
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    },
+    "methodology.MethodologyMetric": {
+      "oneOf": [
+        {
+          "const": "request_size_distribution"
+        },
+        {
+          "const": "read_write_ratio"
+        },
+        {
+          "const": "sequentiality"
+        },
+        {
+          "const": "concurrency"
+        },
+        {
+          "const": "queue_depth"
+        },
+        {
+          "const": "timing"
+        },
+        {
+          "const": "hotness"
+        },
+        {
+          "const": "lifetime"
+        },
+        {
+          "const": "cross_node_traffic"
+        }
+      ]
+    },
+    "methodology.MethodologyTolerance": {
+      "type": "object",
+      "properties": {
+        "metric": {
+          "$ref": "#/$defs/methodology.MethodologyMetric"
+        },
+        "statistic": {
+          "$ref": "#/$defs/methodology.MethodologyToleranceStatistic"
+        },
+        "initial": {
+          "type": "number"
+        },
+        "calibration": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/methodology.MethodologyToleranceCalibration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "metric",
+        "statistic",
+        "initial",
+        "calibration"
+      ],
+      "additionalProperties": false
+    },
+    "methodology.MethodologyToleranceStatistic": {
+      "oneOf": [
+        {
+          "const": "bucket_frequency_l1"
+        },
+        {
+          "const": "byte_ratio_relative_error"
+        },
+        {
+          "const": "concurrency_median_relative_error"
+        },
+        {
+          "const": "concurrency_p95_relative_error"
+        },
+        {
+          "const": "peak_window_bytes_relative_error"
+        },
+        {
+          "const": "top_k_share_absolute_difference"
+        },
+        {
+          "const": "sequential_request_share_absolute_difference"
+        }
+      ]
+    },
+    "methodology.MethodologyToleranceCalibration": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "baseline": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "recipe",
+        "date",
+        "baseline"
+      ],
+      "additionalProperties": false
+    },
+    "methodology.MethodologyScaleRule": {
+      "oneOf": [
+        {
+          "const": "alignment_first"
+        },
+        {
+          "const": "revalidate_each_level"
+        }
+      ]
+    },
+    "methodology.MethodologyReproduction": {
+      "type": "object",
+      "properties": {
+        "fixed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyReproducibilityItem"
+          }
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/methodology.MethodologyReproducibilityItem"
+          }
+        }
+      },
+      "required": [
+        "fixed",
+        "missing"
+      ],
+      "additionalProperties": false
+    },
+    "methodology.MethodologyReproducibilityItem": {
+      "oneOf": [
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "config"
+        },
+        {
+          "const": "dependencies"
+        },
+        {
+          "const": "topology"
+        },
+        {
+          "const": "warmup"
+        },
+        {
+          "const": "observation"
+        },
+        {
+          "const": "randomness"
+        }
+      ]
+    },
+    "methodology.MethodologyFailureMode": {
+      "oneOf": [
+        {
+          "const": "observation_overhead"
+        },
+        {
+          "const": "buffer_merge"
+        },
+        {
+          "const": "timing_compression"
+        },
+        {
+          "const": "single_device_serial"
+        },
+        {
+          "const": "cache_difference"
+        },
+        {
+          "const": "communication_mock"
+        }
+      ]
+    }
+  }
+}

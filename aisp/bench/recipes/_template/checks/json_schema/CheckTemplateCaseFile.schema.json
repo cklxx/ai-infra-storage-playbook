@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateCaseFile.schema.json",
+  "title": "CheckTemplateCaseFile",
+  "$ref": "#/$defs/check_template.CheckTemplateCaseFile",
+  "$defs": {
+    "check_template.CheckTemplateCaseFile": {
+      "oneOf": [
+        {
+          "const": "metrics.json"
+        },
+        {
+          "const": "manifest.json"
+        }
+      ]
+    }
+  }
+}

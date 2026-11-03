@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ServiceVersionSet.schema.json",
+  "title": "ServiceVersionSet",
+  "$ref": "#/$defs/service.ServiceVersionSet",
+  "$defs": {
+    "service.ServiceVersionSet": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "service": {
+          "type": "string"
+        },
+        "framework": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/service.Framework"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "model": {
+          "$ref": "#/$defs/configs.Model"
+        },
+        "storage": {
+          "$ref": "#/$defs/types.StorageLayer"
+        },
+        "compatible_metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "recipe",
+        "metrics",
+        "service",
+        "framework",
+        "model",
+        "storage",
+        "compatible_metrics"
+      ],
+      "additionalProperties": false
+    },
+    "service.Framework": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "configs.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    },
+    "types.StorageLayer": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "$ref": "#/$defs/types.Component"
+        },
+        "adapter": {
+          "$ref": "#/$defs/types.Component"
+        }
+      },
+      "required": [
+        "backend",
+        "adapter"
+      ],
+      "additionalProperties": false
+    },
+    "types.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

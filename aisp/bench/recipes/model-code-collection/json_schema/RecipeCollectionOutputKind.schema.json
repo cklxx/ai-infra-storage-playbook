@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model-code-collection/json_schema/RecipeCollectionOutputKind.schema.json",
+  "title": "RecipeCollectionOutputKind",
+  "$ref": "#/$defs/recipe_collection.RecipeCollectionOutputKind",
+  "$defs": {
+    "recipe_collection.RecipeCollectionOutputKind": {
+      "oneOf": [
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "manifest"
+        },
+        {
+          "const": "coverage_manifest"
+        },
+        {
+          "const": "latest_run"
+        }
+      ]
+    }
+  }
+}

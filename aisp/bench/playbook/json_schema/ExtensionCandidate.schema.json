@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ExtensionCandidate.schema.json",
+  "title": "ExtensionCandidate",
+  "$ref": "#/$defs/extension.ExtensionCandidate",
+  "$defs": {
+    "extension.ExtensionCandidate": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/extension.ExtensionCandidateSource"
+        },
+        "model": {
+          "$ref": "#/$defs/configs.Model"
+        },
+        "config": {
+          "type": "string"
+        },
+        "load": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "model",
+        "config",
+        "load"
+      ],
+      "additionalProperties": false
+    },
+    "extension.ExtensionCandidateSource": {
+      "oneOf": [
+        {
+          "const": "model_list_new_item"
+        },
+        {
+          "const": "architecture_family_gap"
+        },
+        {
+          "const": "framework_capability_gap"
+        },
+        {
+          "const": "failure_reproduction"
+        },
+        {
+          "const": "load_gap"
+        }
+      ]
+    },
+    "configs.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

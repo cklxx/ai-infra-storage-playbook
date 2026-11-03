@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PitfallOpenQuestion.schema.json",
+  "title": "PitfallOpenQuestion",
+  "$ref": "#/$defs/pitfalls.PitfallOpenQuestion",
+  "$defs": {
+    "pitfalls.PitfallOpenQuestion": {
+      "oneOf": [
+        {
+          "const": "observation_overhead_per_run"
+        },
+        {
+          "const": "fingerprint_threshold"
+        },
+        {
+          "const": "code_feature_extraction"
+        },
+        {
+          "const": "hundred_thousand_gpu_cost"
+        },
+        {
+          "const": "intermediate_scale_points"
+        },
+        {
+          "const": "async_timing_factor"
+        },
+        {
+          "const": "unified_framework_semantics"
+        },
+        {
+          "const": "exemption_review_cycle"
+        },
+        {
+          "const": "case_retirement_rule"
+        },
+        {
+          "const": "auto_candidate_equivalence"
+        }
+      ]
+    }
+  }
+}

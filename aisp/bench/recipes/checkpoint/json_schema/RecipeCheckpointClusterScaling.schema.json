@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointClusterScaling.schema.json",
+  "title": "RecipeCheckpointClusterScaling",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointClusterScaling",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointClusterScaling": {
+      "type": "object",
+      "properties": {
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointClusterScalingCheck"
+          }
+        },
+        "attribution": {
+          "type": "string"
+        },
+        "gate": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate"
+        }
+      },
+      "required": [
+        "checks",
+        "attribution",
+        "gate"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointClusterScalingCheck": {
+      "oneOf": [
+        {
+          "const": "single_rank_request_size_and_concurrency"
+        },
+        {
+          "const": "aggregate_bandwidth_knee"
+        },
+        {
+          "const": "metadata_saturation"
+        },
+        {
+          "const": "tail_latency"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointGate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3-a"
+        },
+        {
+          "const": "G3-b"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    }
+  }
+}

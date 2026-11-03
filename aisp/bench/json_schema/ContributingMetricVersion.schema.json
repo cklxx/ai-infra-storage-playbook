@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricVersion.schema.json",
+  "title": "ContributingMetricVersion",
+  "$ref": "#/$defs/contributing.ContributingMetricVersion",
+  "$defs": {
+    "contributing.ContributingMetricVersion": {
+      "type": "string"
+    }
+  }
+}

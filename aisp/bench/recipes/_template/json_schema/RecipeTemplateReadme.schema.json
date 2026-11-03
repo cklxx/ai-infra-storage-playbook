@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateReadme.schema.json",
+  "title": "RecipeTemplateReadme",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateReadme",
+  "$defs": {
+    "recipe_template.RecipeTemplateReadme": {
+      "type": "object",
+      "properties": {
+        "objective": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "string"
+        },
+        "outputs": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "string"
+        },
+        "acceptance": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "objective",
+        "inputs",
+        "outputs",
+        "steps",
+        "acceptance",
+        "owner"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

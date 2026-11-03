@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricDeprecation.schema.json",
+  "title": "ContributingMetricDeprecation",
+  "$ref": "#/$defs/contributing.ContributingMetricDeprecation",
+  "$defs": {
+    "contributing.ContributingMetricDeprecation": {
+      "type": "object",
+      "properties": {
+        "deprecated_version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "replacement_version": {
+          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+        }
+      },
+      "required": [
+        "deprecated_version",
+        "reason",
+        "replacement_version"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingMetricVersion": {
+      "type": "string"
+    }
+  }
+}

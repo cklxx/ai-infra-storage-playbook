@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionTrainingPairing.schema.json",
+  "title": "CollectionTrainingPairing",
+  "$ref": "#/$defs/collection.CollectionTrainingPairing",
+  "$defs": {
+    "collection.CollectionTrainingPairing": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/collection.CollectionPairingKind"
+        },
+        "target": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/collection.CollectionPairingTarget"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "target"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionPairingKind": {
+      "oneOf": [
+        {
+          "const": "same_org"
+        },
+        {
+          "const": "same_architecture"
+        },
+        {
+          "const": "external_link"
+        },
+        {
+          "const": "unpaired"
+        }
+      ]
+    },
+    "collection.CollectionPairingTarget": {
+      "type": "object",
+      "properties": {
+        "repo": {
+          "type": "string"
+        },
+        "commit": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "repo",
+        "commit"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

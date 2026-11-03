@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointGate.schema.json",
+  "title": "RecipeCheckpointGate",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointGate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3-a"
+        },
+        {
+          "const": "G3-b"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/AcceptanceCheckpointChecklist.schema.json",
+  "title": "AcceptanceCheckpointChecklist",
+  "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointChecklist",
+  "$defs": {
+    "acceptance_checkpoint.AcceptanceCheckpointChecklist": {
+      "type": "object",
+      "properties": {
+        "sections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointSection"
+          }
+        },
+        "ladder": {
+          "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointLadder"
+        }
+      },
+      "required": [
+        "sections",
+        "ladder"
+      ],
+      "additionalProperties": false
+    },
+    "acceptance_checkpoint.AcceptanceCheckpointSection": {
+      "type": "object",
+      "properties": {
+        "gate": {
+          "$ref": "#/$defs/gates.Gate"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointItem"
+          }
+        }
+      },
+      "required": [
+        "gate",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "gates.Gate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    },
+    "acceptance_checkpoint.AcceptanceCheckpointItem": {
+      "oneOf": [
+        {
+          "const": "g0_real_run"
+        },
+        {
+          "const": "g0_checkpoint_implementation_recorded"
+        },
+        {
+          "const": "g0_run_config_recorded"
+        },
+        {
+          "const": "g1_meta_device_same_flow"
+        },
+        {
+          "const": "g1_param_grad_present"
+        },
+        {
+          "const": "g1_state_dict_keys_match"
+        },
+        {
+          "const": "g1_fidelity_boundary_filled"
+        },
+        {
+          "const": "g1_async_timing_conversion_written"
+        },
+        {
+          "const": "g2_real_and_bypass_same_observation"
+        },
+        {
+          "const": "g2_byte_count_deviation_within_one_percent"
+        },
+        {
+          "const": "g2_observation_overhead_within_three_percent"
+        },
+        {
+          "const": "g2_all_items_within_tolerance_or_reviewed"
+        },
+        {
+          "const": "g2_alignment_report_uploaded_and_linked"
+        },
+        {
+          "const": "g3_levels_executed_in_order"
+        },
+        {
+          "const": "g3_complete_metrics_per_level"
+        },
+        {
+          "const": "g3_invariant_deviation_within_tolerance"
+        },
+        {
+          "const": "g3_metadata_and_bytes_reported_separately"
+        },
+        {
+          "const": "g3_aggregate_bandwidth_saturation_marked"
+        },
+        {
+          "const": "g3_async_timing_conversion_applied"
+        },
+        {
+          "const": "g3_tail_latency_split_by_node"
+        },
+        {
+          "const": "g4_latest_run_written_with_backlink"
+        },
+        {
+          "const": "g4_coverage_matrix_updated"
+        },
+        {
+          "const": "g4_unresolved_deviations_registered"
+        },
+        {
+          "const": "g4_versions_queryable"
+        }
+      ]
+    },
+    "acceptance_checkpoint.AcceptanceCheckpointLadder": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/levels.Level"
+      }
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    }
+  }
+}

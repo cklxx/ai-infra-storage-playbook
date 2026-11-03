@@ -1,0 +1,437 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateScaffold.schema.json",
+  "title": "RecipeTemplateScaffold",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateScaffold",
+  "$defs": {
+    "recipe_template.RecipeTemplateScaffold": {
+      "type": "object",
+      "properties": {
+        "directory": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateDirectory"
+        },
+        "report": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateCheckReport"
+        }
+      },
+      "required": [
+        "directory",
+        "report"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateDirectory": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "recipe": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateRecipeYaml"
+        },
+        "metrics": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateMetricsYaml"
+        },
+        "readme": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateReadme"
+        },
+        "acceptance_checklist": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateAcceptanceChecklist"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "build": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateBuildStage"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "recipe",
+        "metrics",
+        "readme",
+        "acceptance_checklist",
+        "checks",
+        "build"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateRecipeYaml": {
+      "type": "object",
+      "properties": {
+        "meta": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "bypass_scope": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fidelity_boundary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fidelity.FidelityBoundary"
+          }
+        },
+        "io_pattern_invariants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateInvariant"
+          }
+        },
+        "scaling_plan": {
+          "$ref": "#/$defs/recipe_template.RecipeTemplateScalingPlan"
+        },
+        "compatible_metrics": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "latest_run": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "meta",
+        "bypass_scope",
+        "fidelity_boundary",
+        "io_pattern_invariants",
+        "scaling_plan",
+        "compatible_metrics",
+        "latest_run"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.FidelityBoundary": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "bypassed": {
+          "$ref": "#/$defs/fidelity.Bypassed"
+        },
+        "method": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bypass.BypassMethod"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fidelity": {
+          "$ref": "#/$defs/bypass.FidelityLevel"
+        },
+        "kept": {
+          "type": "string"
+        },
+        "known_bias": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "bypassed",
+        "method",
+        "fidelity",
+        "kept",
+        "known_bias"
+      ],
+      "additionalProperties": false
+    },
+    "fidelity.Bypassed": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    },
+    "bypass.BypassMethod": {
+      "oneOf": [
+        {
+          "const": "meta_device"
+        },
+        {
+          "const": "module_mock"
+        },
+        {
+          "const": "cpu_offload"
+        },
+        {
+          "const": "real_small_scale"
+        }
+      ]
+    },
+    "bypass.FidelityLevel": {
+      "oneOf": [
+        {
+          "const": "L0"
+        },
+        {
+          "const": "L1"
+        },
+        {
+          "const": "L2"
+        },
+        {
+          "const": "L3"
+        }
+      ]
+    },
+    "recipe_template.RecipeTemplateInvariant": {
+      "type": "object",
+      "properties": {
+        "definition": {
+          "type": "string"
+        },
+        "tolerance": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateScalingPlan": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fixed_dimensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "varied_dimension": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "levels",
+        "fixed_dimensions",
+        "varied_dimension"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateMetricsYaml": {
+      "type": "object",
+      "properties": {
+        "metrics": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateMetric"
+          }
+        }
+      },
+      "required": [
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateMetric": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tolerance": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          }
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "params",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateReadme": {
+      "type": "object",
+      "properties": {
+        "objective": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "string"
+        },
+        "outputs": {
+          "type": "string"
+        },
+        "steps": {
+          "type": "string"
+        },
+        "acceptance": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "objective",
+        "inputs",
+        "outputs",
+        "steps",
+        "acceptance",
+        "owner"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateAcceptanceChecklist": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateChecklistItem"
+          }
+        }
+      },
+      "required": [
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateChecklistItem": {
+      "type": "object",
+      "properties": {
+        "gate": {
+          "$ref": "#/$defs/gates.Gate"
+        },
+        "checked": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "gate",
+        "checked"
+      ],
+      "additionalProperties": false
+    },
+    "gates.Gate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    },
+    "recipe_template.RecipeTemplateBuildStage": {
+      "oneOf": [
+        {
+          "const": "prepare"
+        },
+        {
+          "const": "run"
+        },
+        {
+          "const": "collect"
+        }
+      ]
+    },
+    "recipe_template.RecipeTemplateCheckReport": {
+      "type": "object",
+      "properties": {
+        "passed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+          }
+        },
+        "failed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+          }
+        }
+      },
+      "required": [
+        "passed",
+        "failed"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateRequirement": {
+      "oneOf": [
+        {
+          "const": "fidelity_boundary_no_l0"
+        },
+        {
+          "const": "io_pattern_invariants_3_to_6"
+        },
+        {
+          "const": "scaling_plan_at_least_two_levels"
+        },
+        {
+          "const": "compatible_metrics_cover_used_versions"
+        },
+        {
+          "const": "tolerance_only_in_metrics"
+        },
+        {
+          "const": "latest_run_null_until_first_run"
+        }
+      ]
+    }
+  }
+}

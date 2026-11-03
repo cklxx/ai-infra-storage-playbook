@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CheckpointBypassStep.schema.json",
+  "title": "CheckpointBypassStep",
+  "$ref": "#/$defs/checkpoint.CheckpointBypassStep",
+  "$defs": {
+    "checkpoint.CheckpointBypassStep": {
+      "oneOf": [
+        {
+          "const": "meta_model"
+        },
+        {
+          "const": "meta_forward"
+        },
+        {
+          "const": "placeholder_backward"
+        },
+        {
+          "const": "mock_optimizer"
+        },
+        {
+          "const": "unchanged_checkpoint_write"
+        }
+      ]
+    }
+  }
+}

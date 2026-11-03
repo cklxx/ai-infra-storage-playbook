@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchRunArtifacts.schema.json",
+  "title": "BenchRunArtifacts",
+  "$ref": "#/$defs/bench.BenchRunArtifacts",
+  "$defs": {
+    "bench.BenchRunArtifacts": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "sli": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "alignment": {
+          "type": "string"
+        },
+        "report": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "manifest",
+        "sli",
+        "metrics",
+        "alignment",
+        "report"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

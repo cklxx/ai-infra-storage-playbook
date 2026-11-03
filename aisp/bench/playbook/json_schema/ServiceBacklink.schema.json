@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ServiceBacklink.schema.json",
+  "title": "ServiceBacklink",
+  "$ref": "#/$defs/service.ServiceBacklink",
+  "$defs": {
+    "service.ServiceBacklink": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "report_uri": {
+          "type": "string"
+        },
+        "metrics_uri": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/service.ServiceRunVerdict"
+        },
+        "finished_at": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "run_id",
+        "report_uri",
+        "metrics_uri",
+        "sha256",
+        "status",
+        "finished_at"
+      ],
+      "additionalProperties": false
+    },
+    "service.ServiceRunVerdict": {
+      "oneOf": [
+        {
+          "const": "passed"
+        },
+        {
+          "const": "failed"
+        },
+        {
+          "const": "invalid"
+        }
+      ]
+    }
+  }
+}

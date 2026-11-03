@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchCheckScope.schema.json",
+  "title": "BenchCheckScope",
+  "$ref": "#/$defs/bench.BenchCheckScope",
+  "$defs": {
+    "bench.BenchCheckScope": {
+      "oneOf": [
+        {
+          "const": "repo"
+        },
+        {
+          "const": "full"
+        }
+      ]
+    }
+  }
+}

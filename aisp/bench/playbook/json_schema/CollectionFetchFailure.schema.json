@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionFetchFailure.schema.json",
+  "title": "CollectionFetchFailure",
+  "$ref": "#/$defs/collection.CollectionFetchFailure",
+  "$defs": {
+    "collection.CollectionFetchFailure": {
+      "oneOf": [
+        {
+          "const": "network"
+        },
+        {
+          "const": "permission"
+        },
+        {
+          "const": "not_found"
+        },
+        {
+          "const": "license_not_accepted"
+        }
+      ]
+    }
+  }
+}

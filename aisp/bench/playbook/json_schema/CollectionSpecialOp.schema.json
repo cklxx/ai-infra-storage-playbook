@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionSpecialOp.schema.json",
+  "title": "CollectionSpecialOp",
+  "$ref": "#/$defs/collection.CollectionSpecialOp",
+  "$defs": {
+    "collection.CollectionSpecialOp": {
+      "oneOf": [
+        {
+          "const": "custom_kernel"
+        },
+        {
+          "const": "fused_op"
+        },
+        {
+          "const": "quantization_branch"
+        }
+      ]
+    }
+  }
+}

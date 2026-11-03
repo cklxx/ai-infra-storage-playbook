@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternToleranceCheck.schema.json",
+  "title": "IoPatternToleranceCheck",
+  "$ref": "#/$defs/io_pattern.IoPatternToleranceCheck",
+  "$defs": {
+    "io_pattern.IoPatternToleranceCheck": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/io_pattern.IoPatternMetricItem"
+        },
+        "value": {
+          "type": "number"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "within": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "item",
+        "value",
+        "limit",
+        "within"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternMetricItem": {
+      "oneOf": [
+        {
+          "const": "request_size_distribution"
+        },
+        {
+          "const": "read_write_ratio_bytes"
+        },
+        {
+          "const": "read_write_ratio_ops"
+        },
+        {
+          "const": "concurrency_p50"
+        },
+        {
+          "const": "concurrency_p95"
+        },
+        {
+          "const": "concurrency_max"
+        },
+        {
+          "const": "sequentiality"
+        },
+        {
+          "const": "hotness"
+        },
+        {
+          "const": "per_token_kv_bytes"
+        },
+        {
+          "const": "timing_peak"
+        }
+      ]
+    }
+  }
+}

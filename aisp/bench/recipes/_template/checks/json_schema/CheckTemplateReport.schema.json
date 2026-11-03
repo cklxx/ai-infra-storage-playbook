@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateReport.schema.json",
+  "title": "CheckTemplateReport",
+  "$ref": "#/$defs/check_template.CheckTemplateReport",
+  "$defs": {
+    "check_template.CheckTemplateReport": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/check_template.CheckTemplateStatus"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "check",
+        "status",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    }
+  }
+}

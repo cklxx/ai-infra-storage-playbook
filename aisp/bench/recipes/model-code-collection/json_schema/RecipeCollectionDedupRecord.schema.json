@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model-code-collection/json_schema/RecipeCollectionDedupRecord.schema.json",
+  "title": "RecipeCollectionDedupRecord",
+  "$ref": "#/$defs/recipe_collection.RecipeCollectionDedupRecord",
+  "$defs": {
+    "recipe_collection.RecipeCollectionDedupRecord": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/recipe_collection.RecipeCollectionDedupDecision"
+        },
+        "dropped_by": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "group",
+        "decision",
+        "dropped_by"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_collection.RecipeCollectionDedupDecision": {
+      "oneOf": [
+        {
+          "const": "kept"
+        },
+        {
+          "const": "dropped"
+        }
+      ]
+    }
+  }
+}

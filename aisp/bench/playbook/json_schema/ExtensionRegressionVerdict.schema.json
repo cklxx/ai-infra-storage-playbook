@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ExtensionRegressionVerdict.schema.json",
+  "title": "ExtensionRegressionVerdict",
+  "$ref": "#/$defs/extension.ExtensionRegressionVerdict",
+  "$defs": {
+    "extension.ExtensionRegressionVerdict": {
+      "oneOf": [
+        {
+          "const": "passed"
+        },
+        {
+          "const": "not_comparable"
+        },
+        {
+          "const": "failed"
+        },
+        {
+          "const": "no_conclusion"
+        }
+      ]
+    }
+  }
+}

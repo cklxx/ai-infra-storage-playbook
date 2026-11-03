@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryDirection.schema.json",
+  "title": "MetricsRegistryDirection",
+  "$ref": "#/$defs/metrics_registry.MetricsRegistryDirection",
+  "$defs": {
+    "metrics_registry.MetricsRegistryDirection": {
+      "type": "string"
+    }
+  }
+}

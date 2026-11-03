@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesPositioning.schema.json",
+  "title": "PrinciplesPositioning",
+  "$ref": "#/$defs/principles.PrinciplesPositioning",
+  "$defs": {
+    "principles.PrinciplesPositioning": {
+      "type": "object",
+      "properties": {
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesPart"
+          }
+        },
+        "output": {
+          "$ref": "#/$defs/principles.PrinciplesEvalSet"
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesQuestion"
+          }
+        }
+      },
+      "required": [
+        "parts",
+        "output",
+        "questions"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesPart": {
+      "oneOf": [
+        {
+          "const": "recipes"
+        },
+        {
+          "const": "metrics"
+        },
+        {
+          "const": "process"
+        }
+      ]
+    },
+    "principles.PrinciplesEvalSet": {
+      "oneOf": [
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "principles.PrinciplesQuestion": {
+      "oneOf": [
+        {
+          "const": "what"
+        },
+        {
+          "const": "how"
+        },
+        {
+          "const": "next"
+        }
+      ]
+    }
+  }
+}

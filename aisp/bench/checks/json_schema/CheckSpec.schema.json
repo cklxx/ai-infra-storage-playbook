@@ -1,0 +1,457 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckSpec.schema.json",
+  "title": "CheckSpec",
+  "$ref": "#/$defs/checks.CheckSpec",
+  "$defs": {
+    "checks.CheckSpec": {
+      "type": "object",
+      "properties": {
+        "scripts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checks.CheckScriptSpec"
+          }
+        },
+        "threshold": {
+          "$ref": "#/$defs/checks.CheckThreshold"
+        },
+        "directories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checks.CheckDirectoryRule"
+          }
+        },
+        "doc_links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checks.CheckDocLink"
+          }
+        }
+      },
+      "required": [
+        "scripts",
+        "threshold",
+        "directories",
+        "doc_links"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckScriptSpec": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "$ref": "#/$defs/checks.CheckScript"
+        },
+        "args": {
+          "$ref": "#/$defs/checks.CheckArgs"
+        },
+        "output": {
+          "$ref": "#/$defs/checks.CheckOutput"
+        },
+        "outcomes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/checks.CheckOutcome"
+          }
+        },
+        "dependency": {
+          "$ref": "#/$defs/checks.CheckDependency"
+        }
+      },
+      "required": [
+        "script",
+        "args",
+        "output",
+        "outcomes",
+        "dependency"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckScript": {
+      "oneOf": [
+        {
+          "const": "validate_repo"
+        },
+        {
+          "const": "selftest"
+        },
+        {
+          "const": "check_io_pattern"
+        },
+        {
+          "const": "check_coverage"
+        },
+        {
+          "const": "check_scaling_consistency"
+        }
+      ]
+    },
+    "checks.CheckArgs": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "validate_repo": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "validate_repo"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "selftest": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "selftest"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "check_io_pattern": {
+              "$ref": "#/$defs/checks.CheckIoPatternArgs"
+            }
+          },
+          "required": [
+            "check_io_pattern"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "check_coverage": {
+              "$ref": "#/$defs/checks.CheckCoverageArgs"
+            }
+          },
+          "required": [
+            "check_coverage"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "check_scaling_consistency": {
+              "$ref": "#/$defs/checks.CheckScalingArgs"
+            }
+          },
+          "required": [
+            "check_scaling_consistency"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checks.CheckIoPatternArgs": {
+      "type": "object",
+      "properties": {
+        "real": {
+          "type": "string"
+        },
+        "bypassed": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "tolerance": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "real",
+        "bypassed",
+        "metrics",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckCoverageArgs": {
+      "type": "object",
+      "properties": {
+        "manifest": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "min_coverage": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "manifest",
+        "metrics",
+        "min_coverage"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckScalingArgs": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "input",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckOutput": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "json_line": {
+              "$ref": "#/$defs/checks.CheckJsonLine"
+            }
+          },
+          "required": [
+            "json_line"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "readable": {
+              "$ref": "#/$defs/checks.CheckReadableOutput"
+            }
+          },
+          "required": [
+            "readable"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checks.CheckJsonLine": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        }
+      },
+      "required": [
+        "check",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "checks.CheckReadableOutput": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "items",
+        "errors"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckOutcome": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        },
+        "exit_code": {
+          "$ref": "#/$defs/checks.CheckExitCode"
+        }
+      },
+      "required": [
+        "status",
+        "exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckExitCode": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": 1
+        },
+        {
+          "const": 2
+        }
+      ]
+    },
+    "checks.CheckDependency": {
+      "type": "object",
+      "properties": {
+        "install": {
+          "type": "string"
+        },
+        "missing_status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        },
+        "missing_exit_code": {
+          "$ref": "#/$defs/checks.CheckExitCode"
+        }
+      },
+      "required": [
+        "install",
+        "missing_status",
+        "missing_exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckThreshold": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/checks.CheckThresholdSource"
+        },
+        "tolerance": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/checks.CheckToleranceValue"
+          }
+        },
+        "items": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "tolerance",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckThresholdSource": {
+      "oneOf": [
+        {
+          "const": "metrics_yaml"
+        },
+        {
+          "const": "command_line"
+        }
+      ]
+    },
+    "checks.CheckToleranceValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "number"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "percent": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "percent"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "checks.CheckDirectoryRule": {
+      "oneOf": [
+        {
+          "const": "template"
+        },
+        {
+          "const": "negative_case"
+        },
+        {
+          "const": "case_pair"
+        }
+      ]
+    },
+    "checks.CheckDocLink": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "$ref": "#/$defs/checks.CheckScript"
+        },
+        "doc": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "script",
+        "doc"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

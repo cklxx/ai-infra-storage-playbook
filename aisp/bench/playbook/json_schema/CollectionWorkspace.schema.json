@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionWorkspace.schema.json",
+  "title": "CollectionWorkspace",
+  "$ref": "#/$defs/collection.CollectionWorkspace",
+  "$defs": {
+    "collection.CollectionWorkspace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "env": {
+          "type": "string"
+        },
+        "framework_major": {
+          "type": "string"
+        },
+        "disk_policy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "env",
+        "framework_major",
+        "disk_policy"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

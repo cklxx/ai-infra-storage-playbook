@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointInput.schema.json",
+  "title": "RecipeCheckpointInput",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointInput",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointInput": {
+      "type": "object",
+      "properties": {
+        "model_code": {
+          "type": "string"
+        },
+        "framework": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        },
+        "parallel": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallel"
+        },
+        "dataset_layout": {
+          "type": "string"
+        },
+        "storage_backend": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        },
+        "storage_adapter": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+        }
+      },
+      "required": [
+        "model_code",
+        "framework",
+        "parallel",
+        "dataset_layout",
+        "storage_backend",
+        "storage_adapter"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointVersionedName": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "version"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointParallel": {
+      "type": "object",
+      "properties": {
+        "dp": {
+          "type": "integer"
+        },
+        "tp": {
+          "type": "integer"
+        },
+        "pp": {
+          "type": "integer"
+        },
+        "ep": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dp",
+        "tp",
+        "pp",
+        "ep"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

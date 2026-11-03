@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchLayout.schema.json",
+  "title": "BenchLayout",
+  "$ref": "#/$defs/bench.BenchLayout",
+  "$defs": {
+    "bench.BenchLayout": {
+      "type": "object",
+      "properties": {
+        "root": {
+          "type": "string"
+        },
+        "areas": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bench.BenchRepoArea"
+          }
+        },
+        "method_docs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipe_dirs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "root",
+        "areas",
+        "method_docs",
+        "recipe_dirs"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchRepoArea": {
+      "oneOf": [
+        {
+          "const": "playbook"
+        },
+        {
+          "const": "playbook/json_schema"
+        },
+        {
+          "const": "recipes"
+        },
+        {
+          "const": "metrics"
+        },
+        {
+          "const": "checks"
+        },
+        {
+          "const": "schemas"
+        },
+        {
+          "const": "scripts"
+        },
+        {
+          "const": "meta-evaluation"
+        },
+        {
+          "const": "decisions"
+        },
+        {
+          "const": "examples"
+        },
+        {
+          "const": "requirements.txt"
+        },
+        {
+          "const": "CONTRIBUTING.md"
+        },
+        {
+          "const": "CHANGELOG.md"
+        }
+      ]
+    }
+  }
+}

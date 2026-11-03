@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesRole.schema.json",
+  "title": "PrinciplesRole",
+  "$ref": "#/$defs/principles.PrinciplesRole",
+  "$defs": {
+    "principles.PrinciplesRole": {
+      "oneOf": [
+        {
+          "const": "recipe_maintainer"
+        },
+        {
+          "const": "metric_maintainer"
+        },
+        {
+          "const": "service_maintainer"
+        },
+        {
+          "const": "reviewer"
+        }
+      ]
+    }
+  }
+}

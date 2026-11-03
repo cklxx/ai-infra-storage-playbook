@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PerformanceWorkload.schema.json",
+  "title": "PerformanceWorkload",
+  "$ref": "#/$defs/performance.PerformanceWorkload",
+  "$defs": {
+    "performance.PerformanceWorkload": {
+      "oneOf": [
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateCheckReport.schema.json",
+  "title": "RecipeTemplateCheckReport",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateCheckReport",
+  "$defs": {
+    "recipe_template.RecipeTemplateCheckReport": {
+      "type": "object",
+      "properties": {
+        "passed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+          }
+        },
+        "failed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+          }
+        }
+      },
+      "required": [
+        "passed",
+        "failed"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_template.RecipeTemplateRequirement": {
+      "oneOf": [
+        {
+          "const": "fidelity_boundary_no_l0"
+        },
+        {
+          "const": "io_pattern_invariants_3_to_6"
+        },
+        {
+          "const": "scaling_plan_at_least_two_levels"
+        },
+        {
+          "const": "compatible_metrics_cover_used_versions"
+        },
+        {
+          "const": "tolerance_only_in_metrics"
+        },
+        {
+          "const": "latest_run_null_until_first_run"
+        }
+      ]
+    }
+  }
+}

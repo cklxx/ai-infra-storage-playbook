@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipe.schema.json",
+  "title": "ContributingRecipe",
+  "$ref": "#/$defs/contributing.ContributingRecipe",
+  "$defs": {
+    "contributing.ContributingRecipe": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingRecipeFile"
+          }
+        },
+        "required_fields": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contributing.ContributingRecipeRequiredField"
+          }
+        },
+        "notes": {
+          "type": "string"
+        },
+        "changelog": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "files",
+        "required_fields",
+        "notes",
+        "changelog"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingRecipeFile": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/contributing.ContributingRecipeFileKind"
+        },
+        "path": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "content"
+      ],
+      "additionalProperties": false
+    },
+    "contributing.ContributingRecipeFileKind": {
+      "oneOf": [
+        {
+          "const": "recipe_yaml"
+        },
+        {
+          "const": "metrics_yaml"
+        },
+        {
+          "const": "readme"
+        },
+        {
+          "const": "checks"
+        }
+      ]
+    },
+    "contributing.ContributingRecipeRequiredField": {
+      "oneOf": [
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "fidelity_boundary"
+        },
+        {
+          "const": "io_pattern_invariants"
+        },
+        {
+          "const": "scaling_plan"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplateCheckState.schema.json",
+  "title": "AcceptanceTemplateCheckState",
+  "$ref": "#/$defs/acceptance_template.AcceptanceTemplateCheckState",
+  "$defs": {
+    "acceptance_template.AcceptanceTemplateCheckState": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "unchecked": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "unchecked"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "checked": {
+              "$ref": "#/$defs/acceptance_template.AcceptanceTemplateEvidence"
+            }
+          },
+          "required": [
+            "checked"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "acceptance_template.AcceptanceTemplateEvidence": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "backlink": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "backlink"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "evidence_location": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "evidence_location"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

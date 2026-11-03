@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckDirectoryRule.schema.json",
+  "title": "CheckDirectoryRule",
+  "$ref": "#/$defs/checks.CheckDirectoryRule",
+  "$defs": {
+    "checks.CheckDirectoryRule": {
+      "oneOf": [
+        {
+          "const": "template"
+        },
+        {
+          "const": "negative_case"
+        },
+        {
+          "const": "case_pair"
+        }
+      ]
+    }
+  }
+}

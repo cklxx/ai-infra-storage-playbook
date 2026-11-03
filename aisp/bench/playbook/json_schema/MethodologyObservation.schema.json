@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MethodologyObservation.schema.json",
+  "title": "MethodologyObservation",
+  "$ref": "#/$defs/methodology.MethodologyObservation",
+  "$defs": {
+    "methodology.MethodologyObservation": {
+      "type": "object",
+      "properties": {
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        },
+        "byte_skew": {
+          "type": "number"
+        },
+        "explanation": {
+          "type": "string"
+        },
+        "overhead": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "layers",
+        "byte_skew",
+        "explanation",
+        "overhead"
+      ],
+      "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    }
+  }
+}

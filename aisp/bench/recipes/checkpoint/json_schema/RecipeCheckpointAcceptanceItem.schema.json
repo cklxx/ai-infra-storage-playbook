@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointAcceptanceItem.schema.json",
+  "title": "RecipeCheckpointAcceptanceItem",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointAcceptanceItem",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointAcceptanceItem": {
+      "oneOf": [
+        {
+          "const": "alignment"
+        },
+        {
+          "const": "per_parameter_bytes"
+        },
+        {
+          "const": "scaling_consistency"
+        },
+        {
+          "const": "coverage"
+        },
+        {
+          "const": "reproducibility"
+        }
+      ]
+    }
+  }
+}

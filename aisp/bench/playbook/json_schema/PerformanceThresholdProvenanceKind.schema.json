@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PerformanceThresholdProvenanceKind.schema.json",
+  "title": "PerformanceThresholdProvenanceKind",
+  "$ref": "#/$defs/performance.PerformanceThresholdProvenanceKind",
+  "$defs": {
+    "performance.PerformanceThresholdProvenanceKind": {
+      "oneOf": [
+        {
+          "const": "requirement"
+        },
+        {
+          "const": "baseline"
+        },
+        {
+          "const": "ceiling"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyComparisonSet.schema.json",
+  "title": "ScalingConsistencyComparisonSet",
+  "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparisonSet",
+  "$defs": {
+    "scaling_consistency.ScalingConsistencyComparisonSet": {
+      "type": "object",
+      "properties": {
+        "adjacent": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+          }
+        },
+        "first_last": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+          }
+        },
+        "max_adjacent": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "comparable": {
+          "type": "boolean"
+        },
+        "incomparable_reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "adjacent",
+        "first_last",
+        "max_adjacent",
+        "comparable",
+        "incomparable_reason"
+      ],
+      "additionalProperties": false
+    },
+    "scaling_consistency.ScalingConsistencyComparison": {
+      "type": "object",
+      "properties": {
+        "invariant": {
+          "type": "string"
+        },
+        "from": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "to": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "deviation": {
+          "type": "number"
+        },
+        "tolerance": {
+          "type": "number"
+        },
+        "within": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "invariant",
+        "from",
+        "to",
+        "deviation",
+        "tolerance",
+        "within"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    }
+  }
+}

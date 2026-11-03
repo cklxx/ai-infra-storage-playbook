@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateScalingPlan.schema.json",
+  "title": "RecipeTemplateScalingPlan",
+  "$ref": "#/$defs/recipe_template.RecipeTemplateScalingPlan",
+  "$defs": {
+    "recipe_template.RecipeTemplateScalingPlan": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "fixed_dimensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "varied_dimension": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "levels",
+        "fixed_dimensions",
+        "varied_dimension"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

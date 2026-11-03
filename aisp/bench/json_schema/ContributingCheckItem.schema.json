@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingCheckItem.schema.json",
+  "title": "ContributingCheckItem",
+  "$ref": "#/$defs/contributing.ContributingCheckItem",
+  "$defs": {
+    "contributing.ContributingCheckItem": {
+      "oneOf": [
+        {
+          "const": "required_fields_not_empty"
+        },
+        {
+          "const": "metric_registered"
+        },
+        {
+          "const": "tolerance_supported_key"
+        },
+        {
+          "const": "tolerance_single_copy"
+        },
+        {
+          "const": "examples_expectation"
+        },
+        {
+          "const": "two_reviewers"
+        },
+        {
+          "const": "no_internal_details"
+        }
+      ]
+    }
+  }
+}

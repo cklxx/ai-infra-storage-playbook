@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipeFileKind.schema.json",
+  "title": "ContributingRecipeFileKind",
+  "$ref": "#/$defs/contributing.ContributingRecipeFileKind",
+  "$defs": {
+    "contributing.ContributingRecipeFileKind": {
+      "oneOf": [
+        {
+          "const": "recipe_yaml"
+        },
+        {
+          "const": "metrics_yaml"
+        },
+        {
+          "const": "readme"
+        },
+        {
+          "const": "checks"
+        }
+      ]
+    }
+  }
+}

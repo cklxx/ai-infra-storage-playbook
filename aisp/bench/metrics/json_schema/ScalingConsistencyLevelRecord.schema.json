@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyLevelRecord.schema.json",
+  "title": "ScalingConsistencyLevelRecord",
+  "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLevelRecord",
+  "$defs": {
+    "scaling_consistency.ScalingConsistencyLevelRecord": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "$ref": "#/$defs/levels.Level"
+        },
+        "values": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyMeasurement"
+          }
+        }
+      },
+      "required": [
+        "level",
+        "values"
+      ],
+      "additionalProperties": false
+    },
+    "levels.Level": {
+      "oneOf": [
+        {
+          "const": "S0"
+        },
+        {
+          "const": "S1"
+        },
+        {
+          "const": "S2"
+        },
+        {
+          "const": "S3"
+        },
+        {
+          "const": "S4"
+        },
+        {
+          "const": "S5"
+        }
+      ]
+    },
+    "scaling_consistency.ScalingConsistencyMeasurement": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "scalar": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "scalar"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "distribution": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          "required": [
+            "distribution"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

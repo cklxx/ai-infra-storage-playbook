@@ -1,126 +1,235 @@
 # Checkpoint 存储评估
 
-训练侧的存储评估。评估对象是 checkpoint 的写入与读取。本篇只写这两条路径的特殊之处，旁路与保真的总则见 [`methodology.md`](methodology.md)。
+## 背景
 
-## 1. 目标
+训练侧的存储评估，评估对象是 checkpoint 的写入与读取。目标是在真实存储与传输路径上测出训练任务产生的 IO 行为，并把结论从单卡、小参数规模外推到十万卡。本篇只写这两条路径的特殊之处，旁路与保真的总则见 [`methodology.md`](methodology.md)。
 
-在真实存储与传输路径上，测出训练任务产生的 IO 行为，并把结论从单卡、小参数规模外推到十万卡。
+## 问题
 
-三个必须回答的问题：
+```viba checkpoint
+import fidelity
+import levels
+import types
 
-1. 一个训练任务在 checkpoint 写入时，对存储提出什么要求：写入总字节、分片数、并发度、持续时长、周期性。
-3. 上述要求随参数量与集群规模怎么变，哪一部分是不变量。
+CheckpointSpec =
+  Object
+  * $subject (CheckpointSubject * Hint[{ 评估对象：训练框架的 checkpoint 写入与读取两条路径，以及必须记录的写入侧与读取侧特征 }])
+  * $bypass (CheckpointBypassPlan * Hint[{ 旁路 forward / backward / optimizer 的五步做法与四条约束；checkpoint 写入完全不改 }])
+  * $fidelity (CheckpointFidelity * Hint[{ 保真边界表：本评估集的五条必填行；完整实例见 recipes/checkpoint/recipe.yaml }])
+  * $gates (list[CheckpointGate] * Hint[{ 六个步骤的阶段门，按原顺序：G0、G1、G2、G3-a、G3-b、G4 }])
+  * $alignment (list[CheckpointAlignmentStep] * Hint[{ 小规模对齐的四个步骤；基准是不做旁路的同规模真实运行 }])
+  * $scaling (list[CheckpointScalingDimension] * Hint[{ scaling 的五个维度，每个维度带应保持的不变量与预期变化的变量 }])
+  * $extrapolation (list[CheckpointExtrapolationRule] * Hint[{ 三条外推规则：聚合带宽、元数据操作、每参数字节数 }])
+  * $acceptance (list[CheckpointAcceptanceItem] * Hint[{ 五项验收：IO pattern 对齐度、scaling 一致性、保真度、可复现、覆盖 }])
 
-## 2. 评估对象
+CheckpointSubject =
+  Object
+  * $implementation (types.Component * Hint[{ 训练框架的分布式检查点实现，记录名字与版本；checkpoint 的 IO 由它决定，不由模型代码决定，换一个实现结论就变了 }])
+  * $sharding (str * Hint[{ 分片方案：按 DP 切、按 TP 切、按 PP 切、ZeRO 分片、参数与优化器状态分开存；它直接决定每个 rank 写多少、写几次、写多大块 }])
+  * $write_features (list[CheckpointWriteFeature] * Hint[{ 写入侧必须记录的特征，每项一条 }])
+  * $read_features (list[CheckpointReadFeature] * Hint[{ 读取侧（恢复训练）单独记录的特征，每项一条 }])
 
-### 2.1 checkpoint 写入与读取
+CheckpointWriteFeature =
+  Oneof
+  | "total_bytes" * Hint[{ 写入总字节；决定单次 checkpoint 的带宽需求 }]
+  | "shard_count_and_size" * Hint[{ 分片数与每片大小；决定并发度与请求大小分布 }]
+  | "write_concurrency" * Hint[{ 写入并发度；决定存储侧的峰值压力 }]
+  | "sync_or_async" * Hint[{ 同步写入还是异步写入；异步写入会把 IO 与计算重叠，时序完全不同 }]
+  | "compression" * Hint[{ 是否压缩、压缩算法与分段；改变请求大小与 CPU 开销 }]
+  | "metadata_commit" * Hint[{ 元数据提交方式；大量小文件与少量大文件的压力点完全不同 }]
+  | "write_period" * Hint[{ 写入周期；checkpoint 间隔决定平均带宽与突发占比 }]
 
-checkpoint 的 IO 由训练框架的分布式检查点实现决定，不由模型代码决定。这意味着两件事：
+CheckpointReadFeature =
+  Oneof
+  | "overlap_with_training_start" * Hint[{ 读取是否与训练启动重叠 }]
+  | "per_rank_parallel_read" * Hint[{ 读取是否按 rank 并发读 }]
+  | "hash_verification" * Hint[{ 读取是否校验哈希 }]
 
-- 评估对象是**训练框架的写入路径**，不是模型的前向实现。换一个检查点实现，结论就变了，所以配方必须记录用的是哪个实现、哪个版本。
-- 分片方案（按 DP 切、按 TP 切、按 PP 切、ZeRO 分片、参数与优化器状态分开存）直接决定每个 rank 写多少、写几次、写多大块。
+CheckpointParallel =
+  Object
+  * $dp (int * Hint[{ 数据并行的度数，按真实配置设置 }])
+  * $tp (int * Hint[{ 张量并行的度数，按真实配置设置 }])
+  * $pp (int * Hint[{ 流水并行的度数，按真实配置设置 }])
+  * $ep (int * Hint[{ 专家并行的度数，按真实配置设置 }])
 
-必须记录的写入侧特征：
+CheckpointBypassStep =
+  Oneof
+  | "meta_model" * Hint[{ 用 torch.device("meta") 构建模型：参数与缓冲区只保留 dtype 与逻辑尺寸，不分配真实内存 }]
+  | "meta_forward" * Hint[{ 前向：输入也放在 meta device 上，前向照常执行；计算不发生，但控制流、模块调用顺序、张量的逻辑尺寸全部真实 }]
+  | "placeholder_backward" * Hint[{ 反向：直接对 meta 张量调 backward() 会因为没有真实存储而失败；按训练框架的用法构造梯度的占位实现，保证 param.grad 存在且尺寸正确 }]
+  | "mock_optimizer" * Hint[{ optimizer：替换为只更新占位张量的 mock，保留 state_dict() 的键结构与分片逻辑；检查点写入依赖 state_dict() 的键与分片，不能简化成空实现 }]
+  | "unchanged_checkpoint_write" * Hint[{ 检查点写入：完全不改，走框架原有实现 }]
 
-| 特征 | 为什么重要 |
-|---|---|
-| 写入总字节 | 决定单次 checkpoint 的带宽需求 |
-| 分片数与每片大小 | 决定并发度与请求大小分布 |
-| 写入并发度 | 决定存储侧的峰值压力 |
-| 同步写入还是异步写入 | 异步写入会把 IO 与计算重叠，时序完全不同 |
-| 是否压缩、压缩算法与分段 | 改变请求大小与 CPU 开销 |
-| 元数据提交方式 | 大量小文件与少量大文件的压力点完全不同 |
-| 写入周期 | checkpoint 间隔决定平均带宽与突发占比 |
+CheckpointBypassConstraint =
+  Oneof
+  | "model_code_source" * Hint[{ 模型代码必须来自 recipes/model-code-collection，且是训练侧可用的实现；推理代码不能直接拿来跑预训练 }]
+  | "parallel_strategy" * Hint[{ 并行策略（DP/TP/PP/EP）必须按真实配置设置；旁路只去掉计算，不去掉并行切分 }]
+  | "parameter_init" * Hint[{ 参数初始化：meta device 不需要真实初始化，但若框架在初始化阶段就写盘（例如初始化检查点），该路径必须保留 }]
+  | "mixed_precision" * Hint[{ 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 }]
 
-读取侧（恢复训练）单独记录：读取是否与训练启动重叠、是否按 rank 并发读、是否校验哈希。
+CheckpointBypassPlan =
+  Object
+  * $steps (list[CheckpointBypassStep] * Hint[{ 旁路的五步做法，按原顺序执行 }])
+  * $constraints (list[CheckpointBypassConstraint] * Hint[{ 旁路必须满足的四条约束 }])
 
-## 3. 旁路 forward / backward / optimizer
+CheckpointFidelity =
+  Object
+  * $forward_backward (fidelity.FidelityBoundary * Hint[{ 必填行：path=forward / backward；bypassed=yes；method=meta_device；fidelity=L2；kept=模块调用顺序、张量逻辑尺寸、梯度键结构；known_bias=计算耗时为 0，写入时序可能被压缩 }])
+  * $optimizer_step (fidelity.FidelityBoundary * Hint[{ 必填行：path=optimizer.step；bypassed=yes；method 记作占位更新；fidelity=L1；kept=state_dict() 的键结构与分片；known_bias=优化器状态不真实变化 }])
+  * $parallel_split (fidelity.FidelityBoundary * Hint[{ 必填行：path=并行切分与通信分组；bypassed=no；method=nil；fidelity=L2；kept=DP/TP/PP/EP 的分组与分片；known_bias=通信内容被 mock 时同步丢失 }])
+  * $checkpoint_write (fidelity.FidelityBoundary * Hint[{ 必填行：path=checkpoint 写入与元数据提交；bypassed=no；method=nil；fidelity=L2；kept=真实写入调用、真实文件系统或对象存储；known_bias=无 }])
+  * $checkpoint_read (fidelity.FidelityBoundary * Hint[{ 必填行：path=checkpoint 读取与恢复；bypassed=no；method=nil；fidelity=L2；kept=真实读取调用、真实校验；known_bias=无 }])
 
-### 3.1 做法
+CheckpointGate =
+  Oneof
+  | "G0" * Hint[{ 第 1 步的通过条件：能跑；选模型、选训练框架与并行配置，跑通一次不旁路的训练若干步 }]
+  | "G1" * Hint[{ 第 2 步的通过条件：旁路可跑，保真边界表填完；接入 meta device 与占位 optimizer，保持 IO 路径不变 }]
+  | "G2" * Hint[{ 第 3 步的通过条件：选定度量项在容差内；小集群小参数规模运行，与真实小规模运行对比 IO pattern }]
+  | "G3-a" * Hint[{ 第 4 步的通过条件：不变量保持，偏差有归因；固定并行策略，放大参数量 }]
+  | "G3-b" * Hint[{ 第 5 步的通过条件：不变量保持，偏差有归因；固定参数量，先到万卡（S4），再外推到十万卡（S5） }]
+  | "G4" * Hint[{ 第 6 步的通过条件：回链三要素齐全；登记结论与回链，更新覆盖矩阵 }]
 
-1. 用 `torch.device("meta")` 构建模型：参数与缓冲区只保留 dtype 与逻辑尺寸，不分配真实内存。
-2. 前向：输入也放在 meta device 上，前向照常执行。计算不发生，但控制流、模块调用顺序、张量的逻辑尺寸全部真实。
-3. 反向：直接对 meta 张量调 `backward()` 会因为没有真实存储而失败。需要按训练框架的用法构造梯度的占位实现，保证 `param.grad` 存在且尺寸正确。
-4. optimizer：替换为只更新占位张量的 mock，保留 `state_dict()` 的键结构与分片逻辑。检查点写入依赖 `state_dict()` 的键与分片，所以这一步不能简化成空实现。
-5. 检查点写入：**完全不改**，走框架原有实现。
+CheckpointAlignmentStep =
+  Oneof
+  | "minimal_config" * Hint[{ 取最小可用配置：单机 8 卡或更小，参数量最小的一档 }]
+  | "real_and_bypass_runs" * Hint[{ 一次真实运行，一次旁路运行，两次都开观测 }]
+  | "compare_metrics" * Hint[{ 对比 methodology.md 列出的度量项，按配方 metrics.yaml 里标定的容差判定 }]
+  | "attribute_deviations" * Hint[{ 差异超过容差时按 methodology.md 的归因顺序排查 }]
 
-### 3.2 关键约束
+CheckpointAlignment =
+  Object
+  * $steps (list[CheckpointAlignmentStep] * Hint[{ 对齐的四个步骤，按原顺序 }])
+  * $within_tolerance (bool * Hint[{ 选定度量项是否全部落在配方 metrics.yaml 标定的容差内；超出容差时按 methodology.md 的归因顺序排查 }])
 
-- 模型代码必须来自 `recipes/model-code-collection`，且是训练侧可用的实现。推理代码不能直接拿来跑预训练。
-- 并行策略（DP/TP/PP/EP）必须按真实配置设置。旁路只去掉计算，不去掉并行切分。
-- 参数初始化：meta device 不需要真实初始化，但若框架在初始化阶段就写盘（例如初始化检查点），该路径必须保留。
-- 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错。
+CheckpointScalingDimension =
+  Oneof
+  | "parameter_count" * Hint[{ 参数量上升；不变量：每 rank 的写入请求大小分布、读写比；变量：写入总字节、分片数 }]
+  | "cluster_size" * Hint[{ 集群规模上升；不变量：单 rank 的请求大小与并发度；变量：聚合带宽、元数据操作总数、峰值持续时间 }]
+  | "data_parallel" * Hint[{ DP 上升；不变量：每片大小、单 rank 写入顺序；变量：分片数、元数据请求数 }]
+  | "tensor_pipeline_parallel" * Hint[{ TP/PP 上升；不变量：计算与写入的时间重叠关系；变量：每片大小、片内偏移 }]
+  | "expert_parallel" * Hint[{ EP 上升；不变量：单专家分片的写入模式；变量：专家分片数与分布 }]
 
-## 4. 保真边界表
+CheckpointExtrapolationRule =
+  Oneof
+  | "aggregate_bandwidth" * Hint[{ 聚合带宽 ≈ 单 rank 带宽 × 并发 rank 数，只在存储侧未饱和时成立；超过存储侧上限后，外推必须改用排队模型，并用中间规模实测校正 }]
+  | "metadata_operations" * Hint[{ 元数据操作数随分片数线性增长，不随总字节增长；分片数放大到数万卡量级时，元数据可能先饱和 }]
+  | "parameter_bytes" * Hint[{ 写入总字节随参数量线性增长，但优化器状态与梯度的比例固定，所以每参数字节数是不变量 }]
 
-本评估集的必填行：
+CheckpointScalingRun =
+  Object
+  * $dimension (CheckpointScalingDimension * Hint[{ 这一次放大的维度，取值见 CheckpointScalingDimension；第 4 步放大参数量，第 5 步放大集群规模 }])
+  * $target ((levels.Level | nil) * Hint[{ 放大集群规模时的目标档位，先到万卡（S4），再外推到十万卡（S5）；只放大参数量时给 nil }])
+  * $invariants_kept (bool * Hint[{ 选定的不变量是否都在容差内保持 }])
+  * $attribution (str * Hint[{ 偏差归因；没有偏差写 none，不留空 }])
 
-| path | bypassed | method | fidelity | kept | known_bias |
-|---|---|---|---|---|---|
-| forward / backward | yes | `meta_device` | L2 | 模块调用顺序、张量逻辑尺寸、梯度键结构 | 计算耗时为 0，写入时序可能被压缩 |
-| optimizer.step | yes | 占位更新 | L1 | `state_dict()` 的键结构与分片 | 优化器状态不真实变化 |
-| 并行切分与通信分组 | no | — | L2 | DP/TP/PP/EP 的分组与分片 | 通信内容被 mock 时同步丢失 |
-| checkpoint 写入与元数据提交 | no | — | L2 | 真实写入调用、真实文件系统或对象存储 | 无 |
-| checkpoint 读取与恢复 | no | — | L2 | 真实读取调用、真实校验 | 无 |
+CheckpointAcceptanceItem =
+  Oneof
+  | "io_pattern_alignment" * Hint[{ 口径见 metrics/io-pattern-alignment.md；它是 G2 的门槛 }]
+  | "scaling_consistency" * Hint[{ 口径见 metrics/scaling-consistency.md；每一级都要算 }]
+  | "fidelity" * Hint[{ 保真边界表中 IO 路径不得出现 L0；人工评审 }]
+  | "reproducibility" * Hint[{ 配置、commit、拓扑、预热、观测全部登记；人工评审 }]
+  | "coverage" * Hint[{ 参数量分桶 × 集群规模 × 并行策略 的已覆盖格子数；自动统计 }]
 
-完整实例见 `recipes/checkpoint/recipe.yaml`。
+CheckpointConclusion =
+  Object
+  * $alignment (CheckpointAlignment * Hint[{ 小规模对齐的结果；这一步的成本高于其它步骤，但它是外推结论的唯一依据，不能跳过 }])
+  * $scaling (list[CheckpointScalingRun] * Hint[{ 逐级 scaling 的结果，每一级一条；参数规模放大会改变分片与每片大小，集群规模放大会改变并发与聚合带宽，两者的失效方式不同，不能合并 }])
+  * $acceptance (list[CheckpointAcceptanceItem] * Hint[{ 这份结论覆盖的五项验收 }])
+  * $backlink (str * Hint[{ 结论的回链；回链三要素齐全才允许登记 }])
 
-## 5. 流程与阶段门
+CheckpointRegistration =
+  Object
+  * $conclusion (CheckpointConclusion * Hint[{ 已登记的结论 }])
+  * $coverage_updated (bool * Hint[{ 覆盖矩阵是否已更新 }])
+```
 
-| 步骤 | 内容 | 通过条件（门） |
-|---|---|---|
-| 1 | 选模型、选训练框架与并行配置，跑通一次不旁路的训练若干步 | G0：能跑 |
-| 2 | 接入 meta device 与占位 optimizer，保持 IO 路径不变 | G1：旁路可跑，保真边界表填完 |
-| 3 | 小集群小参数规模运行，与真实小规模运行对比 IO pattern | G2：选定度量项在容差内 |
-| 4 | 固定并行策略，放大参数量 | G3-a：不变量保持，偏差有归因 |
-| 5 | 固定参数量，先到万卡（S4），再外推到十万卡（S5） | G3-b：不变量保持，偏差有归因 |
-| 6 | 登记结论与回链，更新覆盖矩阵 | G4：回链三要素齐全 |
+## 基本操作
 
-第 4 步与第 5 步不能合并：参数规模放大会改变分片与每片大小，集群规模放大会改变并发与聚合带宽，两者的失效方式不同。
+先跑通一次不旁路的训练若干步，再准备旁路：用 meta device 构建模型，前向照常执行，反向与 optimizer 换成占位实现，checkpoint 写入完全不改。旁路跑通后记录保真边界表，五条必填行一条不能少，IO 路径的保真等级不得是 L0。再取最小可用配置做一次真实运行和一次旁路运行，两次都开观测，对比 `methodology.md` 列出的度量项，按配方 `metrics.yaml` 里标定的容差判定是否对齐。对齐通过后逐级放大：先固定并行策略放大参数量，再固定参数量放大集群规模，每一级都要验证不变量并给偏差归因。最后登记结论与回链，更新覆盖矩阵。
 
-## 6. 小规模对齐
+## 接口
 
-对齐基准是**不做旁路的同规模真实运行**。做法：
+```viba checkpoint_api
+import checkpoint
+import fidelity
+import levels
+import types
 
-1. 取最小可用配置（单机 8 卡或更小，参数量最小的一档）。
-2. 一次真实运行，一次旁路运行，两次都开观测。
-3. 对比 `methodology.md` 列出的度量项，按配方 `metrics.yaml` 里标定的容差判定。
-4. 差异超过容差时按 `methodology.md` 的归因顺序排查。
+PrepareBypass =
+     checkpoint.CheckpointBypassPlan
+  <- $model (types.Component * Hint[{ 模型代码；必须来自 recipes/model-code-collection，且是训练侧可用的实现 }])
+  <- $implementation (types.Component * Hint[{ 训练框架的分布式检查点实现，记录名字与版本 }])
+  <- $parallel (checkpoint.CheckpointParallel * Hint[{ 并行策略 DP/TP/PP/EP 的度数，按真实配置设置；旁路只去掉计算，不去掉并行切分 }])
+  <- $dtype (str * Hint[{ 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 }])
+  <- Hint[{ 准备旁路：先跑通一次不旁路的训练若干步（门 G0），再用 meta device 构建模型，前向照常执行，反向与 optimizer 换成占位实现，checkpoint 写入完全不改；返回五步做法与四条约束 }]
 
-这一步的成本高于其它步骤，但它是外推结论的唯一依据，不能跳过。
+RecordBoundary =
+     checkpoint.CheckpointFidelity
+  <- $forward_backward (fidelity.FidelityBoundary * Hint[{ 必填行 forward / backward：旁路手段、保真等级、保留项与已知偏差 }])
+  <- $optimizer_step (fidelity.FidelityBoundary * Hint[{ 必填行 optimizer.step：占位更新保留了 state_dict() 的键结构与分片 }])
+  <- $parallel_split (fidelity.FidelityBoundary * Hint[{ 必填行并行切分与通信分组：分组与分片保持真实，通信被 mock 时登记同步丢失 }])
+  <- $checkpoint_write (fidelity.FidelityBoundary * Hint[{ 必填行 checkpoint 写入与元数据提交：真实写入调用、真实文件系统或对象存储 }])
+  <- $checkpoint_read (fidelity.FidelityBoundary * Hint[{ 必填行 checkpoint 读取与恢复：真实读取调用、真实校验 }])
+  <- Hint[{ 记录保真边界表：五条必填行一条不能少；IO 路径的保真等级不得是 L0，否则该路径的结论无效；返回填好的表 }]
 
-## 7. Scaling
+Align =
+     checkpoint.CheckpointAlignment
+  <- $real (types.RunRecord * Hint[{ 不做旁路的同规模真实运行；用最小可用配置，开观测 }])
+  <- $bypass (types.RunRecord * Hint[{ 与真实运行同规模的旁路运行，也开观测 }])
+  <- Hint[{ 小规模对齐：对比 methodology.md 列出的度量项，按配方 metrics.yaml 标定的容差判定；差异超过容差时按 methodology.md 的归因顺序排查；返回四个步骤与判定 }]
 
-### 7.1 维度与不变量
+ScaleUp =
+     checkpoint.CheckpointScalingRun
+  <- $dimension (checkpoint.CheckpointScalingDimension * Hint[{ 这一次放大的维度，取值见 CheckpointScalingDimension；一次只沿一个维度放大 }])
+  <- $target ((levels.Level | nil) * Hint[{ 放大集群规模时的目标档位，先到万卡（S4），再外推到十万卡（S5）；只放大参数量时给 nil }])
+  <- Hint[{ 放大一级：先固定并行策略放大参数量，再固定参数量放大集群规模，两步不能合并；每一级都要验证不变量，偏差要有归因；返回这一级的结果 }]
 
-| 维度 | 不变量（应保持） | 变量（预期变化） |
-|---|---|---|
-| 参数量 ↑ | 每 rank 的写入请求大小分布、读写比 | 写入总字节、分片数 |
-| 集群规模 ↑ | 单 rank 的请求大小与并发度 | 聚合带宽、元数据操作总数、峰值持续时间 |
-| DP ↑ | 每片大小、单 rank 写入顺序 | 分片数、元数据请求数 |
-| TP/PP ↑ | 计算与写入的时间重叠关系 | 每片大小、片内偏移 |
-| EP ↑ | 单专家分片的写入模式 | 专家分片数与分布 |
+Register =
+     checkpoint.CheckpointRegistration
+  <- $conclusion (checkpoint.CheckpointConclusion * Hint[{ 要登记的结论：小规模对齐与逐级 scaling 的结果，按验收项判定，回链三要素齐全 }])
+  <- Hint[{ 登记结论与回链，更新覆盖矩阵；返回登记后的结论与覆盖矩阵的更新状态 }]
+```
 
-### 7.2 外推规则
+## 组织
 
-- 聚合带宽 ≈ 单 rank 带宽 × 并发 rank 数**只在存储侧未饱和时成立**。超过存储侧上限后，外推必须改用排队模型，并用中间规模实测校正。
-- 元数据操作数随分片数线性增长，不随总字节增长。分片数放大到数万卡量级时，元数据可能先饱和。
-- 写入总字节随参数量线性增长，但优化器状态与梯度的比例固定，所以每参数字节数是不变量。
+```viba checkpoint_flow
+import checkpoint
+import checkpoint_api
 
-## 8. 验收
+CheckpointPrepareDuty =
+  Object
+  * $step (checkpoint_api.PrepareBypass * Hint[{ 旁路准备：对应第 1、2 步；先跑通不旁路的训练若干步，再接入 meta device 与占位 optimizer，保持 IO 路径不变 }])
+  * $subject (checkpoint.CheckpointSubject * Hint[{ 这一步的输入：检查点实现、分片方案与要记录的读写特征 }])
+  * $plan (checkpoint.CheckpointBypassPlan * Hint[{ 这一步的产物：五步做法与四条约束 }])
 
-| 指标 | 口径 | 说明 |
-|---|---|---|
-| IO pattern 对齐度 | 见 `metrics/io-pattern-alignment.md` | G2 的门槛 |
-| scaling 一致性 | 见 `metrics/scaling-consistency.md` | 每一级都要算 |
-| 保真度 | 保真边界表中 IO 路径不得出现 L0 | 人工评审 |
-| 可复现 | 配置、commit、拓扑、预热、观测全部登记 | 人工评审 |
-| 覆盖 | 参数量分桶 × 集群规模 × 并行策略 的已覆盖格子数 | 自动统计 |
+CheckpointBoundaryDuty =
+  Object
+  * $step (checkpoint_api.RecordBoundary * Hint[{ 记录保真边界：五条必填行齐全；对应第 2 步的门 G1 }])
+  * $boundary (checkpoint.CheckpointFidelity * Hint[{ 这一步的产物：五条必填的保真边界行 }])
 
-## 9. 开放问题
+CheckpointAlignDuty =
+  Object
+  * $step (checkpoint_api.Align * Hint[{ 小规模对齐：与同规模真实运行对比 IO pattern；对应第 3 步的门 G2 }])
+  * $alignment (checkpoint.CheckpointAlignment * Hint[{ 这一步的产物：四个对齐步骤与容差判定 }])
 
-- meta device 与 FSDP 的兼容性随版本变化，参数切分与 `state_dict` 的键在不同版本上不一致，需要按版本维护适配说明。
-- 异步 checkpoint 的时序在旁路后失真最严重：计算耗时为 0，异步写入没有可重叠的窗口。
-- 分片写入的元数据提交在不同文件系统上代价差异很大，单条结论不能覆盖多种后端。
-- 十万卡规模的实测成本极高，中间规模（百卡、千卡）的采样点如何选，目前没有依据。
-- 故障恢复时的 IO（重启后重新读取检查点、重新拉取数据）是否纳入评估集，尚未决定。
+CheckpointScaleDuty =
+  Object
+  * $step (checkpoint_api.ScaleUp * Hint[{ 逐级放大：先放大参数量，再放大集群规模；对应第 4、5 步的门 G3-a 与 G3-b }])
+  * $scaling (list[checkpoint.CheckpointScalingRun] * Hint[{ 这一步的产物：逐级 scaling 的结果，每一级一条 }])
+
+CheckpointRegisterDuty =
+  Object
+  * $step (checkpoint_api.Register * Hint[{ 登记结论与回链，更新覆盖矩阵；对应第 6 步的门 G4 }])
+  * $registration (checkpoint.CheckpointRegistration * Hint[{ 这一步的产物：登记后的结论与覆盖矩阵的更新状态 }])
+
+CheckpointFlow =
+  Object
+  * $spec (checkpoint.CheckpointSpec * Hint[{ 问题定义：评估对象、旁路、保真、阶段门、对齐、scaling、验收 }])
+  * $prepare (CheckpointPrepareDuty * Hint[{ 第一步：准备旁路 }])
+  * $boundary (CheckpointBoundaryDuty * Hint[{ 第二步：记录保真边界 }])
+  * $align (CheckpointAlignDuty * Hint[{ 第三步：小规模对齐 }])
+  * $scale (CheckpointScaleDuty * Hint[{ 第四、五步：逐级放大 }])
+  * $register (CheckpointRegisterDuty * Hint[{ 第六步：登记结论 }])
+```
+
+这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

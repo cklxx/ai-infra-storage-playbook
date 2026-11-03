@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/ServiceMetric.schema.json",
+  "title": "ServiceMetric",
+  "$ref": "#/$defs/service.ServiceMetric",
+  "$defs": {
+    "service.ServiceMetric": {
+      "oneOf": [
+        {
+          "const": "success_rate"
+        },
+        {
+          "const": "queue_duration"
+        },
+        {
+          "const": "run_duration"
+        },
+        {
+          "const": "failure_count"
+        },
+        {
+          "const": "backlink_completeness"
+        },
+        {
+          "const": "observation_overhead"
+        },
+        {
+          "const": "resource_utilization"
+        }
+      ]
+    }
+  }
+}

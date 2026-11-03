@@ -1,60 +1,206 @@
 # 校验脚本
 
-本目录放通用校验。只对这个评估集成立的校验放 `recipes/<name>/checks/`。
+## 背景
 
-## 脚本
+这份文档说明本目录的通用校验脚本怎么用：本目录放通用校验，只对这个评估集成立的校验放 `recipes/<name>/checks/`。文档逐个说明五个脚本的作用、入参、退出码，以及阈值来源、输出约定、目录约定与依赖安装。
 
-| 脚本 | 作用 | 入参 | 退出码 |
-|---|---|---|---|
-| `validate_repo.py` | 校验配方与 schema、指标登记表、阈值引用的一致性 | 无 | 0 通过，1 不通过，2 缺依赖 |
-| `selftest.py` | 用 `examples/` 与 `examples/invalid/` 证明检查会通过、也会拒绝 | 无 | 0 符合预期，1 不符合，2 缺依赖 |
-| `check_io_pattern.py` | 比较真实运行与旁路运行的 IO pattern | `--real`、`--bypassed`，阈值来自 `--metrics`，可用 `--tolerance` 逐项覆盖 | 0 通过，1 不通过，2 输入非法或缺阈值 |
-| `check_coverage.py` | 从覆盖度清单计算覆盖度与缺口 | `--manifest`，阈值来自 `--metrics` 的 `coverage_ratio_min`，可用 `--min-coverage` 覆盖 | 0 达标，1 未达标，2 输入非法或缺阈值 |
-| `check_scaling_consistency.py` | 计算逐级偏差与单调漂移 | `--input`，默认容差来自 `--metrics` 的 `per_level` 与 `first_last` | 0 一致，1 不一致，2 输入非法或缺阈值 |
+## 问题
 
-## 阈值只有一个来源
+问题形式化为一个模块：`checks` 定义五个脚本、每个脚本的输入、输出、退出码与依赖，以及阈值来源、目录约定与指标文档的对应关系。
 
-阈值写在 `recipes/<name>/metrics.yaml` 的 `tolerance` 里，由评审把关。脚本通过 `--metrics` 读取同一份文件，不在代码里保留默认值。
+```viba checks
+import levels
 
-- 值可以是小数（`0.08` 表示 8%）或百分号字符串（`"8%"`）。
-- `tolerance` 的键必须是该 check 支持的度量项名，未知键直接报错退出 2。
-- `items` 声明本配方判定哪些项，必须与 `tolerance` 的键完全一致；没有 `items` 时以 `tolerance` 的键为准。
-- `--tolerance` 与 `--min-coverage` 只用于临时排查，不能作为结论依据。
+CheckScript =
+  Oneof
+  | "validate_repo" * Hint[{ 校验配方与 schema、指标登记表、阈值引用的一致性 }]
+  | "selftest" * Hint[{ 用 examples/ 与 examples/invalid/ 证明检查会通过、也会拒绝 }]
+  | "check_io_pattern" * Hint[{ 比较真实运行与旁路运行的 IO pattern }]
+  | "check_coverage" * Hint[{ 从覆盖度清单计算覆盖度与缺口 }]
+  | "check_scaling_consistency" * Hint[{ 计算逐级偏差与单调漂移 }]
 
-`check_io_pattern.py` 支持的度量项：`request_size_distribution`、`read_write_ratio_bytes`、`read_write_ratio_ops`、`concurrency_p50`、`concurrency_p95`、`concurrency_max`、`sequentiality`、`hotness`、`per_token_kv_bytes`、`timing_peak`。
+CheckArgs =
+  Oneof
+  | $validate_repo (nil * Hint[{ 这个脚本不收参数 }])
+  | $selftest (nil * Hint[{ 这个脚本不收参数；用例来自 examples/ 与 examples/invalid/ }])
+  | $check_io_pattern (CheckIoPatternArgs * Hint[{ check_io_pattern.py 的输入：--real、--bypassed、--metrics 与 --tolerance }])
+  | $check_coverage (CheckCoverageArgs * Hint[{ check_coverage.py 的输入：--manifest、--metrics 与 --min-coverage }])
+  | $check_scaling_consistency (CheckScalingArgs * Hint[{ check_scaling_consistency.py 的输入：--input 与 --metrics }])
 
-## 输入结构
+CheckIoPatternArgs =
+  Object
+  * $real (str * Hint[{ --real 的取值：要比对的真实运行 }])
+  * $bypassed (str * Hint[{ --bypassed 的取值：要比对的旁路运行 }])
+  * $metrics (str * Hint[{ --metrics 的取值：recipes/<name>/metrics.yaml；阈值唯一来源，脚本读同一份文件，不在代码里保留默认值 }])
+  * $tolerance ((str | nil) * Hint[{ --tolerance 的取值：逐项覆盖阈值的文件，一个 JSON 对象，键是指标项名，值是数字或百分号字符串，例如键 concurrency_p95、值 20%；只用于临时排查，不能作为结论依据 }])
 
-- `--tolerance` 文件：一个 JSON 对象，键是指标项名，值是数字或百分号字符串，例如 `{"concurrency_p95": "20%"}`。
-- `--input` 文件（scaling）：`{"levels": ["S0", ...], "invariants": {"<name>": {"values": [...], "tolerance": 0.1}}}`。`tolerance` 可省略，省略时用 `metrics.yaml` 的 `per_level`。
-- `--manifest` 文件（coverage）：结构见 `schemas/coverage.schema.json`。
+CheckCoverageArgs =
+  Object
+  * $manifest (str * Hint[{ --manifest 的取值：覆盖度清单；JSON 结构见 schemas/coverage.schema.json }])
+  * $metrics (str * Hint[{ --metrics 的取值：阈值来源 recipes/<name>/metrics.yaml，coverage_ratio_min 从这里读 }])
+  * $min_coverage ((float | nil) * Hint[{ --min-coverage 的取值：临时覆盖 coverage_ratio_min；只用于临时排查，不能作为结论依据 }])
 
-## 输出约定
+CheckScalingArgs =
+  Object
+  * $input (str * Hint[{ --input 的取值：一个文件，内容是 CheckScalingInput }])
+  * $metrics (str * Hint[{ --metrics 的取值：默认容差来源 recipes/<name>/metrics.yaml，per_level 与 first_last 从这里读 }])
 
-`check_*.py` 与 `selftest.py` 在标准输出打印**一行** JSON，至少包含 `check` 与 `status`：
+CheckScalingInput =
+  Object
+  * $levels (list[levels.Level] * Hint[{ 逐级比较的级别，按 S0 起的顺序；级别定义见 scaling.md }])
+  * $invariants (dict[str, CheckScalingInvariant] * Hint[{ 不变量名到这一条不变量的逐级数据 }])
 
-```json
-{"check": "io-pattern-alignment", "status": "pass"}
+CheckScalingInvariant =
+  Object
+  * $values (list[float] * Hint[{ 这条不变量逐级的实测值 }])
+  * $tolerance ((float | nil) * Hint[{ 这条不变量的容差，可省略；省略时用 metrics.yaml 的 per_level }])
+
+CheckStatus =
+  Oneof
+  | "pass" * Hint[{ 通过 }]
+  | "fail" * Hint[{ 不通过 }]
+  | "skip" * Hint[{ 跳过：缺依赖、输入缺失或阈值缺失都算跳过；跳过不等于通过 }]
+
+CheckExitCode =
+  Oneof
+  | 0 * Hint[{ 通过、符合预期、达标或一致 }]
+  | 1 * Hint[{ 不通过、不符合、未达标或不一致 }]
+  | 2 * Hint[{ 缺依赖、输入非法或缺阈值 }]
+
+CheckOutcome =
+  Object
+  * $status (CheckStatus * Hint[{ 这个脚本给出的状态 }])
+  * $exit_code (CheckExitCode * Hint[{ 状态对应的退出码：pass 对 0，fail 对 1，skip 对 2 }])
+
+CheckJsonLine =
+  Object
+  * $check (str * Hint[{ 写进输出字段 check 的脚本名 }])
+  * $status (CheckStatus * Hint[{ 写进输出字段 status 的状态；通过、失败、跳过三态必须区分；输出至少包含 check 与 status 两个字段，可有其它字段 }])
+
+CheckReadableOutput =
+  Object
+  * $items (list[str] * Hint[{ 逐项结果 }])
+  * $errors (list[str] * Hint[{ 错误清单 }])
+
+CheckOutput =
+  Oneof
+  | $json_line (CheckJsonLine * Hint[{ check_*.py 与 selftest.py：在标准输出打印一行 JSON，至少包含 check 与 status }])
+  | $readable (CheckReadableOutput * Hint[{ validate_repo.py：打印人读的逐项结果与错误清单，不使用单行 JSON }])
+
+CheckDependency =
+  Object
+  * $install (str * Hint[{ 安装依赖的命令：pip install -r ../requirements.txt }])
+  * $missing_status (CheckStatus * Hint[{ 缺依赖时的状态：skip，不假装通过 }])
+  * $missing_exit_code (CheckExitCode * Hint[{ 缺依赖时的退出码：2 }])
+
+CheckScriptSpec =
+  Object
+  * $script (CheckScript * Hint[{ 这个脚本是哪一个 }])
+  * $args (CheckArgs * Hint[{ 这个脚本收什么输入；变体与 script 一一对应 }])
+  * $output (CheckOutput * Hint[{ 这个脚本往标准输出写什么 }])
+  * $outcomes (list[CheckOutcome] * Hint[{ 这个脚本可能给出的状态与退出码：0 通过、符合预期、达标或一致；1 不通过、不符合、未达标或不一致；2 缺依赖、输入非法或缺阈值 }])
+  * $dependency (CheckDependency * Hint[{ 这个脚本的依赖与缺依赖时的行为；依赖用 pip install -r ../requirements.txt 安装 }])
+
+CheckToleranceValue =
+  Oneof
+  | $number (float * Hint[{ 小数值，例如 0.08 表示 8% }])
+  | $percent (str * Hint[{ 百分号字符串，例如 "8%" }])
+
+CheckMetricItem =
+  Oneof
+  | "request_size_distribution" * Hint[{ check_io_pattern.py 支持的度量项：请求大小分布 }]
+  | "read_write_ratio_bytes" * Hint[{ check_io_pattern.py 支持的度量项：按字节数的读写比 }]
+  | "read_write_ratio_ops" * Hint[{ check_io_pattern.py 支持的度量项：按请求数的读写比 }]
+  | "concurrency_p50" * Hint[{ check_io_pattern.py 支持的度量项：并发度 P50 }]
+  | "concurrency_p95" * Hint[{ check_io_pattern.py 支持的度量项：并发度 P95 }]
+  | "concurrency_max" * Hint[{ check_io_pattern.py 支持的度量项：并发度峰值 }]
+  | "sequentiality" * Hint[{ check_io_pattern.py 支持的度量项：顺序性 }]
+  | "hotness" * Hint[{ check_io_pattern.py 支持的度量项：热度 }]
+  | "per_token_kv_bytes" * Hint[{ check_io_pattern.py 支持的度量项：每 token 的 KV 字节数 }]
+  | "timing_peak" * Hint[{ check_io_pattern.py 支持的度量项：时序峰值 }]
+
+CheckThresholdSource =
+  Oneof
+  | "metrics_yaml" * Hint[{ 唯一来源：recipes/<name>/metrics.yaml 的 tolerance，由评审把关；脚本通过 --metrics 读同一份文件，不在代码里保留默认值 }]
+  | "command_line" * Hint[{ --tolerance 与 --min-coverage 临时覆盖；只用于临时排查，不能作为结论依据 }]
+
+CheckThreshold =
+  Object
+  * $source (CheckThresholdSource * Hint[{ 阈值从哪里来；结论只能依据 metrics_yaml 的阈值 }])
+  * $tolerance (dict[str, CheckToleranceValue] * Hint[{ 阈值表；键必须是该 check 支持的度量项名，未知键直接报错退出 2；值可以是小数或百分号字符串；check_io_pattern.py 支持的十项见 CheckMetricItem }])
+  * $items ((list[str] | nil) * Hint[{ 本配方判定哪些项；必须与 tolerance 的键完全一致；没有 items 时以 tolerance 的键为准 }])
+
+CheckDirectoryRule =
+  Oneof
+  | "template" * Hint[{ recipes/ 下以 _ 开头的目录是模板，validate_repo.py 跳过它们 }]
+  | "negative_case" * Hint[{ 负例放在 examples/invalid/，由 selftest.py 使用；不作为正向样例 }]
+  | "case_pair" * Hint[{ 新增检查时同时补一条正向与一条负向用例，否则 selftest 覆盖不到 }]
+
+CheckDocLink =
+  Object
+  * $script (CheckScript * Hint[{ 哪个脚本 }])
+  * $doc (str * Hint[{ metrics/ 下对应的那篇文档；每个脚本对应一篇，公式必须一致；改公式时两边一起改，并在指标文档的变更记录里写一行 }])
+
+CheckRun =
+  Object
+  * $script (CheckScript * Hint[{ 这次跑的是哪个脚本 }])
+  * $output (CheckOutput * Hint[{ 这个脚本往标准输出写了什么 }])
+  * $outcome (CheckOutcome * Hint[{ 这次运行的状态与退出码 }])
+
+CheckBatch =
+  Object
+  * $runs (list[CheckRun] * Hint[{ 五个脚本各自的一次运行：输出、状态与退出码 }])
+
+CheckSpec =
+  Object
+  * $scripts (list[CheckScriptSpec] * Hint[{ 五个脚本逐个说明输入、输出、退出码与依赖 }])
+  * $threshold (CheckThreshold * Hint[{ 阈值只有一个来源：配方的 metrics.yaml；--tolerance 与 --min-coverage 只用于临时排查 }])
+  * $directories (list[CheckDirectoryRule] * Hint[{ 目录约定：模板目录、负例目录与新增检查的用例要求 }])
+  * $doc_links (list[CheckDocLink] * Hint[{ 每个脚本对应 metrics/ 的一篇文档，公式必须一致 }])
 ```
 
-通过、失败、跳过三态必须区分。**跳过不等于通过**：缺依赖、输入缺失、阈值缺失都算跳过，退出码 2。
+## 基本操作
 
-`validate_repo.py` 打印人读的逐项结果与错误清单，不使用单行 JSON。
+解决这个问题需要两个操作。跑一个检查：需要阈值时只从配方的 `metrics.yaml` 读，脚本通过 `--metrics` 读同一份文件，不在代码里保留默认值；`validate_repo.py` 与 `selftest.py` 不收参数；`check_io_pattern.py` 收 `--real` 与 `--bypassed`，可用 `--tolerance` 逐项覆盖；`check_coverage.py` 收 `--manifest`，可用 `--min-coverage` 覆盖；`check_scaling_consistency.py` 收 `--input`，默认容差来自 `per_level` 与 `first_last`。输出按脚本分两种：`check_*.py` 与 `selftest.py` 往标准输出打印一行 JSON，至少含 `check` 与 `status`；`validate_repo.py` 打印人读的逐项结果与错误清单，不使用单行 JSON。退出码统一为 0 通过、1 不通过、2 缺依赖或输入非法或缺阈值；跳过不等于通过。依赖用 `pip install -r ../requirements.txt` 安装，缺依赖时按跳过处理，不假装通过。跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码，每个脚本按自己的约定判定。
 
-## 目录约定
+## 接口
 
-- `recipes/` 下以 `_` 开头的目录是模板，`validate_repo.py` 跳过它们。
-- 负例放在 `examples/invalid/`，由 `selftest.py` 使用；不作为正向样例。
-- 新增检查时同时补一条正向与一条负向用例，否则 `selftest` 覆盖不到。
+```viba checks_api
+import checks
 
-## 依赖
+RunCheck =
+     checks.CheckRun
+  <- $script (checks.CheckScript * Hint[{ 要跑哪一个脚本；五个脚本里选一个 }])
+  <- $args (checks.CheckArgs * Hint[{ 这个脚本的输入；变体与 script 一一对应 }])
+  <- Hint[{ 跑一个检查：按脚本执行，标准输出按脚本的约定写，check_*.py 与 selftest.py 写一行 JSON，validate_repo.py 写人读结果；交回输出、状态与退出码。缺依赖、输入非法或缺阈值时状态为 skip、退出码 2，不假装通过 }]
 
-```text
-pip install -r ../requirements.txt
+RunAllChecks =
+     checks.CheckBatch
+  <- $spec (checks.CheckSpec * Hint[{ 问题定义：五个脚本、阈值来源、目录约定与指标文档对应关系 }])
+  <- Hint[{ 跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码；每个脚本按自己的约定判定 }]
 ```
 
-缺依赖时脚本以退出码 2 结束，不假装通过。
+## 组织
 
-## 与指标文档的关系
+```viba checks_flow
+import checks
+import checks_api
 
-每个脚本对应 `metrics/` 的一篇文档，公式必须一致。改公式时两边一起改，并在指标文档的变更记录里写一行。
+CheckRunDuty =
+  Object
+  * $run (checks_api.RunCheck * Hint[{ 操作：跑一个检查 }])
+  * $result (checks.CheckRun * Hint[{ 交回：这个脚本的输出、状态与退出码 }])
+
+CheckAllDuty =
+  Object
+  * $run_all (checks_api.RunAllChecks * Hint[{ 操作：跑全部五个脚本 }])
+  * $batch (checks.CheckBatch * Hint[{ 交回：五个脚本各自的一次运行 }])
+
+CheckFlow =
+  Object
+  * $spec (checks.CheckSpec * Hint[{ 问题定义：五个脚本的输入、输出、退出码与依赖，阈值来源，目录约定，指标文档对应关系 }])
+  * $single (CheckRunDuty * Hint[{ 只跑一个检查 }])
+  * $all (CheckAllDuty * Hint[{ 跑全部检查 }])
+```
+
+这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

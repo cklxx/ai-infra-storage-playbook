@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model-code-collection/json_schema/RecipeCollectionRunnableState.schema.json",
+  "title": "RecipeCollectionRunnableState",
+  "$ref": "#/$defs/recipe_collection.RecipeCollectionRunnableState",
+  "$defs": {
+    "recipe_collection.RecipeCollectionRunnableState": {
+      "oneOf": [
+        {
+          "const": "yes"
+        },
+        {
+          "const": "no"
+        },
+        {
+          "const": "partial"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchBacklink.schema.json",
+  "title": "BenchBacklink",
+  "$ref": "#/$defs/bench.BenchBacklink",
+  "$defs": {
+    "bench.BenchBacklink": {
+      "type": "object",
+      "properties": {
+        "uri": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "sha256",
+        "state"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

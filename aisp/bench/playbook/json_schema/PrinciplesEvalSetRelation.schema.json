@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesEvalSetRelation.schema.json",
+  "title": "PrinciplesEvalSetRelation",
+  "$ref": "#/$defs/principles.PrinciplesEvalSetRelation",
+  "$defs": {
+    "principles.PrinciplesEvalSetRelation": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/principles.PrinciplesModelCodeLibrary"
+        },
+        "derived": {
+          "$ref": "#/$defs/principles.PrinciplesEvalSet"
+        },
+        "recipe": {
+          "type": "string"
+        },
+        "dependency": {
+          "type": "string"
+        },
+        "pending": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesEvalSet"
+          }
+        }
+      },
+      "required": [
+        "source",
+        "derived",
+        "recipe",
+        "dependency",
+        "pending"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesModelCodeLibrary": {
+      "type": "object",
+      "properties": {
+        "inference_models": {
+          "type": "string"
+        },
+        "diversity": {
+          "type": "string"
+        },
+        "mock_group": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "inference_models",
+        "diversity",
+        "mock_group"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesEvalSet": {
+      "oneOf": [
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    }
+  }
+}

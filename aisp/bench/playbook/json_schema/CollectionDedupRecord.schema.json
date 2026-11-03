@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/CollectionDedupRecord.schema.json",
+  "title": "CollectionDedupRecord",
+  "$ref": "#/$defs/collection.CollectionDedupRecord",
+  "$defs": {
+    "collection.CollectionDedupRecord": {
+      "type": "object",
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "decision": {
+          "$ref": "#/$defs/collection.CollectionDedupDecision"
+        },
+        "dropped_by": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/configs.Model"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "group",
+        "decision",
+        "dropped_by"
+      ],
+      "additionalProperties": false
+    },
+    "collection.CollectionDedupDecision": {
+      "oneOf": [
+        {
+          "const": "kept"
+        },
+        {
+          "const": "dropped"
+        }
+      ]
+    },
+    "configs.Model": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

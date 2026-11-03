@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PerformanceLayer.schema.json",
+  "title": "PerformanceLayer",
+  "$ref": "#/$defs/performance.PerformanceLayer",
+  "$defs": {
+    "performance.PerformanceLayer": {
+      "oneOf": [
+        {
+          "const": "backend"
+        },
+        {
+          "const": "adapter"
+        }
+      ]
+    }
+  }
+}

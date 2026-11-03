@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/PrinciplesClosedLoop.schema.json",
+  "title": "PrinciplesClosedLoop",
+  "$ref": "#/$defs/principles.PrinciplesClosedLoop",
+  "$defs": {
+    "principles.PrinciplesClosedLoop": {
+      "type": "object",
+      "properties": {
+        "parts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesLoopPart"
+          }
+        },
+        "stages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesLoopStage"
+          }
+        },
+        "human": {
+          "$ref": "#/$defs/principles.PrinciplesHumanInLoop"
+        }
+      },
+      "required": [
+        "parts",
+        "stages",
+        "human"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesLoopPart": {
+      "oneOf": [
+        {
+          "const": "eval_set"
+        },
+        {
+          "const": "eval_service"
+        },
+        {
+          "const": "extension"
+        }
+      ]
+    },
+    "principles.PrinciplesLoopStage": {
+      "oneOf": [
+        {
+          "const": "current_set"
+        },
+        {
+          "const": "service_run"
+        },
+        {
+          "const": "gap_analysis"
+        },
+        {
+          "const": "new_version"
+        },
+        {
+          "const": "regression"
+        }
+      ]
+    },
+    "principles.PrinciplesHumanInLoop": {
+      "type": "object",
+      "properties": {
+        "automatic": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesAutomatedStep"
+          }
+        },
+        "reviewed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/principles.PrinciplesReviewSubject"
+          }
+        }
+      },
+      "required": [
+        "automatic",
+        "reviewed"
+      ],
+      "additionalProperties": false
+    },
+    "principles.PrinciplesAutomatedStep": {
+      "oneOf": [
+        {
+          "const": "find_gaps"
+        },
+        {
+          "const": "generate_candidates"
+        },
+        {
+          "const": "regress"
+        }
+      ]
+    },
+    "principles.PrinciplesReviewSubject": {
+      "oneOf": [
+        {
+          "const": "metric_change"
+        },
+        {
+          "const": "threshold_change"
+        },
+        {
+          "const": "incomparable_change"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExamplePositiveSample.schema.json",
+  "title": "ExamplePositiveSample",
+  "$ref": "#/$defs/examples.ExamplePositiveSample",
+  "$defs": {
+    "examples.ExamplePositiveSample": {
+      "oneOf": [
+        {
+          "const": "tiny-model/"
+        },
+        {
+          "const": "io-pattern-real.json"
+        },
+        {
+          "const": "io-pattern-bypassed.json"
+        },
+        {
+          "const": "coverage.json"
+        },
+        {
+          "const": "scaling-levels.json"
+        },
+        {
+          "const": "run-spec.json"
+        },
+        {
+          "const": "sli.json"
+        }
+      ]
+    }
+  }
+}

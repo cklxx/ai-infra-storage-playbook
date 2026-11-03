@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipeRequiredField.schema.json",
+  "title": "ContributingRecipeRequiredField",
+  "$ref": "#/$defs/contributing.ContributingRecipeRequiredField",
+  "$defs": {
+    "contributing.ContributingRecipeRequiredField": {
+      "oneOf": [
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "fidelity_boundary"
+        },
+        {
+          "const": "io_pattern_invariants"
+        },
+        {
+          "const": "scaling_plan"
+        }
+      ]
+    }
+  }
+}

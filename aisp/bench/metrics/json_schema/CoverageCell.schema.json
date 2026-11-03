@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageCell.schema.json",
+  "title": "CoverageCell",
+  "$ref": "#/$defs/coverage.CoverageCell",
+  "$defs": {
+    "coverage.CoverageCell": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/coverage.CoverageCellKey"
+        },
+        "state": {
+          "$ref": "#/$defs/coverage.CoverageCellState"
+        },
+        "exemption": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/coverage.CoverageExemption"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "key",
+        "state",
+        "exemption"
+      ],
+      "additionalProperties": false
+    },
+    "coverage.CoverageCellKey": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/coverage.CoverageAxisValue"
+      }
+    },
+    "coverage.CoverageAxisValue": {
+      "type": "object",
+      "properties": {
+        "axis": {
+          "$ref": "#/$defs/coverage.CoverageAxis"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "axis",
+        "value"
+      ],
+      "additionalProperties": false
+    },
+    "coverage.CoverageAxis": {
+      "oneOf": [
+        {
+          "const": "arch_family"
+        },
+        {
+          "const": "model_scale"
+        },
+        {
+          "const": "attention"
+        },
+        {
+          "const": "framework"
+        },
+        {
+          "const": "parallel"
+        },
+        {
+          "const": "cluster"
+        },
+        {
+          "const": "io_feature"
+        },
+        {
+          "const": "storage_backend"
+        },
+        {
+          "const": "storage_adapter"
+        }
+      ]
+    },
+    "coverage.CoverageCellState": {
+      "oneOf": [
+        {
+          "const": "covered"
+        },
+        {
+          "const": "failed"
+        },
+        {
+          "const": "stale"
+        },
+        {
+          "const": "gap"
+        },
+        {
+          "const": "exempt"
+        }
+      ]
+    },
+    "coverage.CoverageExemption": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        },
+        "review_due": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason",
+        "review_due"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

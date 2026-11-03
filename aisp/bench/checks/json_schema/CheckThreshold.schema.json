@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckThreshold.schema.json",
+  "title": "CheckThreshold",
+  "$ref": "#/$defs/checks.CheckThreshold",
+  "$defs": {
+    "checks.CheckThreshold": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "$ref": "#/$defs/checks.CheckThresholdSource"
+        },
+        "tolerance": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/checks.CheckToleranceValue"
+          }
+        },
+        "items": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "source",
+        "tolerance",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckThresholdSource": {
+      "oneOf": [
+        {
+          "const": "metrics_yaml"
+        },
+        {
+          "const": "command_line"
+        }
+      ]
+    },
+    "checks.CheckToleranceValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "number": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "number"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "percent": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "percent"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

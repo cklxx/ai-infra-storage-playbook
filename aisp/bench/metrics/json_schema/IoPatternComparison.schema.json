@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/IoPatternComparison.schema.json",
+  "title": "IoPatternComparison",
+  "$ref": "#/$defs/io_pattern.IoPatternComparison",
+  "$defs": {
+    "io_pattern.IoPatternComparison": {
+      "type": "object",
+      "properties": {
+        "real": {
+          "$ref": "#/$defs/io_pattern.IoPatternRecord"
+        },
+        "bypass": {
+          "$ref": "#/$defs/io_pattern.IoPatternRecord"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/io_pattern.IoPatternMetricResult"
+          }
+        },
+        "comparable": {
+          "type": "boolean"
+        },
+        "incomparable_reason": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "real",
+        "bypass",
+        "items",
+        "comparable",
+        "incomparable_reason"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternRecord": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "recipe": {
+          "type": "string"
+        },
+        "window": {
+          "$ref": "#/$defs/io_pattern.IoPatternWindow"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation.ObservationLayer"
+          }
+        },
+        "totals": {
+          "$ref": "#/$defs/io_pattern.IoPatternTotals"
+        },
+        "request_size_histogram": {
+          "$ref": "#/$defs/io_pattern.IoPatternHistogram"
+        },
+        "concurrency": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternConcurrency"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sequentiality_ratio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hotness": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternHotness"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observation_overhead_ratio": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tokens_generated": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timing": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/io_pattern.IoPatternTiming"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "run_id",
+        "recipe",
+        "window",
+        "sources",
+        "totals",
+        "request_size_histogram",
+        "concurrency",
+        "sequentiality_ratio",
+        "hotness",
+        "observation_overhead_ratio",
+        "tokens_generated",
+        "timing"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternWindow": {
+      "type": "object",
+      "properties": {
+        "start": {
+          "type": "string"
+        },
+        "end": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
+    },
+    "io_pattern.IoPatternTotals": {
+      "type": "object",
+      "properties": {
+        "read_bytes": {
+          "type": "integer"
+        },
+        "write_bytes": {
+          "type": "integer"
+        },
+        "read_ops": {
+          "type": "integer"
+        },
+        "write_ops": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "read_bytes",
+        "write_bytes",
+        "read_ops",
+        "write_ops"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternHistogram": {
+      "type": "object",
+      "properties": {
+        "bucket_edges": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "required": [
+        "bucket_edges",
+        "counts"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternConcurrency": {
+      "type": "object",
+      "properties": {
+        "p50": {
+          "type": "number"
+        },
+        "p95": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "p50",
+        "p95",
+        "max"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternHotness": {
+      "type": "object",
+      "properties": {
+        "top_k": {
+          "type": "integer"
+        },
+        "top_k_share": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "top_k",
+        "top_k_share"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternTiming": {
+      "type": "object",
+      "properties": {
+        "peak_bytes_per_second": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "peak_bytes_per_second"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternMetricResult": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/$defs/io_pattern.IoPatternMetricItem"
+        },
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "$ref": "#/$defs/io_pattern.IoPatternUnit"
+        }
+      },
+      "required": [
+        "item",
+        "value",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "io_pattern.IoPatternMetricItem": {
+      "oneOf": [
+        {
+          "const": "request_size_distribution"
+        },
+        {
+          "const": "read_write_ratio_bytes"
+        },
+        {
+          "const": "read_write_ratio_ops"
+        },
+        {
+          "const": "concurrency_p50"
+        },
+        {
+          "const": "concurrency_p95"
+        },
+        {
+          "const": "concurrency_max"
+        },
+        {
+          "const": "sequentiality"
+        },
+        {
+          "const": "hotness"
+        },
+        {
+          "const": "per_token_kv_bytes"
+        },
+        {
+          "const": "timing_peak"
+        }
+      ]
+    },
+    "io_pattern.IoPatternUnit": {
+      "oneOf": [
+        {
+          "const": "distance"
+        },
+        {
+          "const": "ratio"
+        },
+        {
+          "const": "absolute"
+        }
+      ]
+    }
+  }
+}

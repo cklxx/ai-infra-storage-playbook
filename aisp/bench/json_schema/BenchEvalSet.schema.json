@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchEvalSet.schema.json",
+  "title": "BenchEvalSet",
+  "$ref": "#/$defs/bench.BenchEvalSet",
+  "$defs": {
+    "bench.BenchEvalSet": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/bench.BenchSubject"
+        },
+        "entry": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/bench.BenchEvalSetEntry"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "subject",
+        "entry"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchSubject": {
+      "oneOf": [
+        {
+          "const": "model_code_collection"
+        },
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "bench.BenchEvalSetEntry": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "measures": {
+          "type": "string"
+        },
+        "cases_from": {
+          "type": "string"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "recipe_dir": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "measures",
+        "cases_from",
+        "outputs",
+        "recipe_dir"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

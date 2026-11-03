@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckDependency.schema.json",
+  "title": "CheckDependency",
+  "$ref": "#/$defs/checks.CheckDependency",
+  "$defs": {
+    "checks.CheckDependency": {
+      "type": "object",
+      "properties": {
+        "install": {
+          "type": "string"
+        },
+        "missing_status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        },
+        "missing_exit_code": {
+          "$ref": "#/$defs/checks.CheckExitCode"
+        }
+      },
+      "required": [
+        "install",
+        "missing_status",
+        "missing_exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "checks.CheckExitCode": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": 1
+        },
+        {
+          "const": 2
+        }
+      ]
+    }
+  }
+}

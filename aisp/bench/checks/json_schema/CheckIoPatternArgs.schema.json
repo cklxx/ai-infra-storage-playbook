@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckIoPatternArgs.schema.json",
+  "title": "CheckIoPatternArgs",
+  "$ref": "#/$defs/checks.CheckIoPatternArgs",
+  "$defs": {
+    "checks.CheckIoPatternArgs": {
+      "type": "object",
+      "properties": {
+        "real": {
+          "type": "string"
+        },
+        "bypassed": {
+          "type": "string"
+        },
+        "metrics": {
+          "type": "string"
+        },
+        "tolerance": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "real",
+        "bypassed",
+        "metrics",
+        "tolerance"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

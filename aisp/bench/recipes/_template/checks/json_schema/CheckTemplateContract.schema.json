@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateContract.schema.json",
+  "title": "CheckTemplateContract",
+  "$ref": "#/$defs/check_template.CheckTemplateContract",
+  "$defs": {
+    "check_template.CheckTemplateContract": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "$ref": "#/$defs/check_template.CheckTemplateRunDir"
+        },
+        "output": {
+          "$ref": "#/$defs/check_template.CheckTemplateReport"
+        },
+        "exit_code": {
+          "$ref": "#/$defs/check_template.CheckTemplateExitCode"
+        }
+      },
+      "required": [
+        "input",
+        "output",
+        "exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateRunDir": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check_template.CheckTemplateCaseFile"
+          }
+        }
+      },
+      "required": [
+        "path",
+        "files"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateCaseFile": {
+      "oneOf": [
+        {
+          "const": "metrics.json"
+        },
+        {
+          "const": "manifest.json"
+        }
+      ]
+    },
+    "check_template.CheckTemplateReport": {
+      "type": "object",
+      "properties": {
+        "check": {
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/check_template.CheckTemplateStatus"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "check",
+        "status",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "check_template.CheckTemplateStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "check_template.CheckTemplateExitCode": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": 1
+        },
+        {
+          "const": 2
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchMetricSet.schema.json",
+  "title": "BenchMetricSet",
+  "$ref": "#/$defs/bench.BenchMetricSet",
+  "$defs": {
+    "bench.BenchMetricSet": {
+      "type": "object",
+      "properties": {
+        "subject": {
+          "$ref": "#/$defs/bench.BenchSubject"
+        },
+        "tier": {
+          "$ref": "#/$defs/bench.BenchMetricTier"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "subject",
+        "tier",
+        "metrics"
+      ],
+      "additionalProperties": false
+    },
+    "bench.BenchSubject": {
+      "oneOf": [
+        {
+          "const": "model_code_collection"
+        },
+        {
+          "const": "checkpoint"
+        },
+        {
+          "const": "dataset"
+        },
+        {
+          "const": "kvcache"
+        }
+      ]
+    },
+    "bench.BenchMetricTier": {
+      "oneOf": [
+        {
+          "const": "sli"
+        },
+        {
+          "const": "slo"
+        }
+      ]
+    }
+  }
+}

@@ -1,171 +1,234 @@
 # 存储表现：SLI、SLO 与存储版本对比
 
-## 1. SLI 与 SLO 是两件事
+## 背景
 
-| | SLI | SLO |
-|---|---|---|
-| 范围 | 全部样本 | 重保子集 |
-| 有没有阈值 | 没有 | 有，部署时由使用方指定 |
-| 每次运行做什么 | 测量并留存 | 用 SLI 值对照阈值判定 |
-| 回答的问题 | 这次存储表现如何 | 这批重保负载是否达标 |
-| 谁定义 | 本项目（指标口径） | 使用方（阈值） |
+同一份负载换一个存储版本之后，要能说清差多少、往哪个方向差，并且把差异归到 backend 还是 adapter 这一层。重保子集（评估集里选定要达标的那部分负载）还要能说清是否达标，阈值由使用方在部署评估集时给出。这份文档定义存储版本比较与重保判定各自需要的记录、窗口、阈值与判定结果，以及跨存储版本比较时使用的噪声带。
 
-混用会同时坏两件事：把 SLI 当 SLO，就等于没有标准也要判通过；把 SLO 当 SLI，就只测重保子集，丢掉全集随时间变化的趋势。
+## 问题
 
-## 2. 存储版本：backend 与 adapter 两层
+```viba performance
+import levels
+import types
 
-存储系统拆成两层，分别独立记录版本：
+PerformanceSampleKey = str * Hint[{ 负载身份：hash(recipe, model id + commit, framework, load, topology, level)；同一份负载换存储版本时它不变 }]
 
-| 层 | 是什么 | 例子 | 环境变量 |
-|---|---|---|---|
-| backend | 纯存储系统 | GPFS、HDFS、Alluxio、Ceph、JuiceFS | `AI_INFRA_STORAGE_BACKEND` |
-| adapter | AI Infra 存储传输适配层组件 | mooncake、torchstore、bytecheckpoint | `AI_INFRA_STORAGE_ADAPTER` |
+PerformanceSliUri = str * Hint[{ 一份 sli.json 的位置：sli/<sample_key>/<storage_id>/<run-id>.json }]
 
-规则：
+PerformanceStorageId = str * Hint[{ 存储版本身份：backend.name@version+config_hash / adapter.name@version+config_hash；换存储版本时它变，同一份负载的 sample_key 不变 }]
 
-1. **每个样本必须同时声明两者。** 运行请求的 `storage.backend` 与 `storage.adapter` 都要填。
-2. **服务在样本进程里注入这两个环境变量**，值是组件名。样本代码必须读取它们；未设置时直接报错退出，不允许默认值——默认值会让"测的是哪个后端"变成隐式信息。
-3. **版本与配置单独记录**：`name`、`version`、`config_ref` 写进运行清单。环境变量只传名字，不传版本。
-4. **比较两个存储版本时，只允许一层不同**，或者两层都不同但结论按层分别归因。两层一起变却只报一个总账，等于没测。
+PerformanceStorageLayer =
+  Object
+  * $component (types.Component * Hint[{ 这一层组件的名字、版本与源码 commit；环境变量只传名字，不传版本 }])
+  * $config_ref (str * Hint[{ 这一层组件配置的引用；name、version、config_ref 一起写进运行清单，配置哈希由这份配置算出 }])
 
-组合维度进入覆盖矩阵：`storage_backend` × `storage_adapter` 是评估集的两根轴。
+PerformanceStorageVersion =
+  Object
+  * $backend (PerformanceStorageLayer * Hint[{ 纯存储系统这一层：GPFS、HDFS、Alluxio、Ceph、JuiceFS；服务在样本进程里注入 AI_INFRA_STORAGE_BACKEND，值是组件名，样本必须读取它，未设置直接报错退出，不允许默认值 }])
+  * $adapter (PerformanceStorageLayer * Hint[{ AI Infra 存储传输适配层这一层：mooncake、torchstore、bytecheckpoint；服务注入 AI_INFRA_STORAGE_ADAPTER；每个样本必须同时声明 backend 与 adapter 两者，运行请求的 storage.backend 与 storage.adapter 都要填 }])
 
-## 3. SLI：每个样本都测
+PerformanceWorkload =
+  Oneof
+  | "checkpoint" * Hint[{ 目前只有这一类负载能跑 }]
+  | "dataset" * Hint[{ 待做，还没有实现 }]
+  | "kvcache" * Hint[{ 待做，还没有实现 }]
 
-SLI 只有指标与测量值，没有阈值。
+PerformanceWarmup =
+  Oneof
+  | $fraction (float * Hint[{ 按比例丢弃，例如前 10%，比例写进配方 }])
+  | $rounds (int * Hint[{ 按轮数丢弃，例如前 N 轮，轮数写进配方 }])
 
-### 3.1 checkpoint
+PerformanceWindow =
+  Object
+  * $warmup (PerformanceWarmup * Hint[{ 预热丢掉的规则 }])
+  * $steady_start (str * Hint[{ 稳态窗口起点，时间戳；起点与终点按应用层的打点算 }])
+  * $steady_end (str * Hint[{ 稳态窗口终点，时间戳 }])
+  * $cv (float * Hint[{ 窗口内吞吐变异系数；大于 10% 判不稳 }])
 
-| SLI | 定义 | 单位 |
-|---|---|---|
-| `checkpoint_duration_s` | 开始写到元数据可见的总时长 | s |
-| `training_stall_s` | 训练实际被阻塞的时长；异步写入扣除重叠部分 | s |
-| `restore_duration_s` | 从 checkpoint 恢复到可继续训练的时间 | s |
-| `write_throughput_bytes_s` | 写入期间聚合与每 rank 吞吐 | B/s |
-| `metadata_commit_ms` | 分片元数据提交到可见的时长 | ms |
-| `write_latency_p99_ms` | 单个写请求的 P99 | ms |
+PerformanceAttributionKind =
+  Oneof
+  | "throughput" * Hint[{ 吞吐：写入或读取期间的字节速率 }]
+  | "iops" * Hint[{ IOPS：每秒 IO 操作数 }]
+  | "latency_percentile" * Hint[{ 延迟分位；P99 至少 10⁴ 次请求、P999 至少 10⁵ 次，样本不足时只报区间 }]
+  | "queue_depth" * Hint[{ 排队深度：设备或客户端队列里积压的请求数 }]
+  | "saturation" * Hint[{ 饱和度：资源离上限还有多远 }]
+  | "rank_fairness" * Hint[{ rank 间公平性：各 rank 分到的份额是否相当 }]
+  | "error_and_retry" * Hint[{ 错误与重试：失败请求与重试的次数 }]
+  | "metadata_op_rate" * Hint[{ 元数据 op rate：每秒元数据操作数 }]
+  | "window_stability" * Hint[{ 窗口稳定性：窗口内的指标是否平稳 }]
+  | "ceiling_efficiency" * Hint[{ 相对上限的效率：实测值达到上限的多少 }]
 
-### 3.2 归因用的底层 SLI
+PerformanceAttribution =
+  Object
+  * $kind (PerformanceAttributionKind * Hint[{ 哪一种底层 SLI }])
+  * $value (float * Hint[{ 这项底层 SLI 的测量值 }])
 
-吞吐、IOPS、延迟分位、排队深度、饱和度、rank 间公平性、错误与重试、元数据 op rate、窗口稳定性、相对上限的效率。它们解释"为什么这个 SLI 是这个值"，不参与 SLO 判定，也不单独作为结论。
+PerformanceEvidence =
+  Object
+  * $manifest (str * Hint[{ 运行清单的位置：输入、版本、拓扑、观测配置 }])
+  * $io_pattern (str * Hint[{ IO pattern 记录的位置 }])
+  * $raw_data (str * Hint[{ 原始数据的位置 }])
+  * $sha256 (str * Hint[{ 原始数据的校验和 }])
 
-## 4. SLI 的留存与版本对比
+PerformanceSliRecord =
+  Object
+  * $sample_key (PerformanceSampleKey * Hint[{ 负载身份，跨存储版本稳定 }])
+  * $run_id (str * Hint[{ 运行标识；留存时写入 PerformanceSliUri 对应的路径，全部保留、不覆盖 }])
+  * $workload (PerformanceWorkload * Hint[{ 跑的哪类负载 }])
+  * $storage (PerformanceStorageVersion * Hint[{ backend 与 adapter 两层的 name、version、config_ref；storage_id 由这两层拼成 }])
+  * $window (PerformanceWindow * Hint[{ 预热、稳态起止、变异系数 }])
+  * $metrics (list[types.CkptSli] * Hint[{ 每个样本每次运行都测的 SLI 值，每项一条，没有阈值；SLI 覆盖全部样本 }])
+  * $attribution (list[PerformanceAttribution] * Hint[{ 底层 SLI，解释 metrics 里的值为什么是这个值；不参与 SLO 判定，也不单独作为结论 }])
+  * $evidence (PerformanceEvidence * Hint[{ manifest、io-pattern、原始数据位置与 sha256；报告只引用，不入库 }])
 
-### 4.1 留存
+PerformanceNoiseBand =
+  Object
+  * $k (float * Hint[{ 倍数 k：带宽度等于 k 乘以重复运行的变异系数 }])
+  * $cv (float * Hint[{ 同一存储版本重复运行算出的变异系数 }])
+  * $repeats (int * Hint[{ 重复运行次数；同一配置至少 3 次，报告 min / median / max，极差大于 10% 判不可比 }])
+  * $calibration_ref (str * Hint[{ 标定记录的位置；k 与次数写在这里，噪声带不是固定百分比 }])
 
-每次运行都写一份 `sli.json`，**全部保留**，不覆盖。存放：
+PerformanceComparisonVerdict =
+  Oneof
+  | "提升" * Hint[{ 差值落在噪声带外，改动后更好 }]
+  | "退化" * Hint[{ 差值落在噪声带外，改动后更差 }]
+  | "不可比" * Hint[{ 差值落在噪声带内，或者任一侧运行不稳 }]
 
-```text
-sli/<sample_key>/<storage_id>/<run-id>.json
+PerformanceMetricDelta =
+  Object
+  * $before (types.CkptSli * Hint[{ 改动前那一次的这项 SLI }])
+  * $after (types.CkptSli * Hint[{ 改动后那一次的同一项 SLI }])
+  * $absolute (float * Hint[{ 绝对差，按指标自己的单位 }])
+  * $relative (float * Hint[{ 相对差 }])
+  * $noise_band (PerformanceNoiseBand * Hint[{ 这一项指标自己的噪声带；差值落在带内就判不可比 }])
+  * $verdict (PerformanceComparisonVerdict * Hint[{ 这一项指标的结论；比较报告只说哪边好、差多少，不做通过或不通过 }])
+
+PerformanceLayer =
+  Oneof
+  | "backend" * Hint[{ 纯存储系统这一层；storage.backend 变了就归这一层 }]
+  | "adapter" * Hint[{ AI Infra 存储传输适配层这一层；storage.adapter 变了就归这一层 }]
+
+PerformanceStorageComparison =
+  Object
+  * $sample_key (PerformanceSampleKey * Hint[{ 两次运行必须是同一个负载身份，才谈得上比 }])
+  * $before (PerformanceStorageId * Hint[{ 改动前的存储版本，对应一份 sli.json }])
+  * $after (PerformanceStorageId * Hint[{ 改动后的存储版本，对应另一份 sli.json；与 before 的 storage_id 不同 }])
+  * $deltas (list[PerformanceMetricDelta] * Hint[{ 逐指标算出的绝对差与相对差 }])
+  * $changed_layers (list[PerformanceLayer] * Hint[{ 哪几层变了：只允许一层不同，或者两层都不同但结论按层分别归因；两层一起变却只报一个总账，等于没测 }])
+
+PerformanceThresholdProvenanceKind =
+  Oneof
+  | "requirement" * Hint[{ 需求文档 }]
+  | "baseline" * Hint[{ 基线测量 }]
+  | "ceiling" * Hint[{ 上限与效率目标 }]
+
+PerformanceThresholdProvenance =
+  Object
+  * $kind (PerformanceThresholdProvenanceKind * Hint[{ 阈值来源属于哪一种；只能是需求文档、基线测量、上限与效率目标三者之一 }])
+  * $ref (str * Hint[{ 来源的编号，例如需求编号 }])
+  * $date (str * Hint[{ 来源的日期，例如 2026-10-30 }])
+
+PerformanceThresholdScope =
+  Object
+  * $backend (list[str] * Hint[{ 对哪些 backend 组件名成立，例如 gpfs }])
+  * $adapter (list[str] * Hint[{ 对哪些 adapter 组件名成立，例如 torchstore }])
+  * $topology (list[levels.Level] * Hint[{ 对哪些规模档位成立，例如 S0 到 S2 }])
+
+PerformanceComparator =
+  Oneof
+  | "<=" * Hint[{ 不超过阈值 }]
+  | ">=" * Hint[{ 不低于阈值 }]
+
+PerformanceSloThreshold =
+  Object
+  * $version (str * Hint[{ 阈值版本；阈值带版本，改动走评审，判定结果引用这个版本 }])
+  * $metric (str * Hint[{ 判哪个指标，例如 ttft_p99_ms }])
+  * $comparator (PerformanceComparator * Hint[{ 往哪个方向比 }])
+  * $target (float * Hint[{ 阈值；部署方填写，仓库不提供数字 }])
+  * $unit (str * Hint[{ 阈值单位，例如 ms }])
+  * $provenance (PerformanceThresholdProvenance * Hint[{ 阈值从哪来；没有来源的阈值不允许用于判定 }])
+  * $valid_for (PerformanceThresholdScope * Hint[{ 阈值在哪些存储与规模档上成立；超出这个范围判不可比 }])
+  * $review_due (str * Hint[{ 复审日期，例如 2027-01-30；过期判不可比 }])
+
+PerformanceSloVerdict =
+  Oneof
+  | "pass" * Hint[{ 达标：实测值满足 comparator 与 target，且置信区间没有跨过阈值 }]
+  | "fail" * Hint[{ 不达标：实测值不满足 comparator 与 target，且置信区间没有跨过阈值 }]
+  | "inconclusive" * Hint[{ 不可比：置信区间跨过阈值，或者阈值过期、超出 valid_for 范围、存储版本变更未重标 }]
+
+PerformanceSloResult =
+  Object
+  * $sample_key (PerformanceSampleKey * Hint[{ 被选择器选中的样本 }])
+  * $slo_ref (str * Hint[{ 所用的阈值版本与条目；判定结果写进 slo-result.json }])
+  * $metric (str * Hint[{ 判定的指标 }])
+  * $target (float * Hint[{ 阈值 }])
+  * $observed (float * Hint[{ 实测的 SLI 值 }])
+  * $verdict (PerformanceSloVerdict * Hint[{ 判定结果 }])
+  * $sli_uri (PerformanceSliUri * Hint[{ 对应 sli.json 的回链 }])
 ```
 
-- `sample_key` = hash(recipe, model id + commit, framework, load, topology, level)。同一份负载换存储版本时，它不变。
-- `storage_id` = `backend.name@version+config_hash` / `adapter.name@version+config_hash`。
+## 基本操作
 
-保留期至少覆盖比较窗口（默认一年）。只留最新一份，就无法回答"换后端前后差多少"。
+解决这个问题需要四个操作。测一次 SLI：在这份负载与这个存储版本上跑一次，丢弃预热、在稳态窗口内测量，得到各项 SLI 值、底层归因与证据，写成一条记录。留存：把这条记录写到按负载与存储版本分出的位置，全部保留、不覆盖。比较两个版本：取同一份负载、两个不同存储版本的两条记录，逐指标算绝对差与相对差，对照噪声带得出结论，并指出哪几层变了。按阈值判定：只对重保子集里被选中的样本，用 SLI 值对照部署方给的阈值，得出达标、不达标或不可比。
 
-### 4.2 比较两个存储版本
+## 接口
 
-同一 `sample_key`、两份 `sli.json`、不同 `storage_id`：
+```viba performance_api
+import performance
 
-1. 逐指标算差值：绝对差与相对差。
-2. 与噪声带比较：噪声带由同一存储版本的重复运行导出（k × 变异系数，k 与次数写进标定记录），不是固定百分比。
-3. 结论三选一：提升、退化、不可比（差值落在噪声带内，或任一侧运行不稳）。
-4. 按层归因：`storage.backend` 变了归 backend，`storage.adapter` 变了归 adapter，两层同时变则分别报告。
+Measure =
+     performance.PerformanceSliRecord
+  <- $sample_key (performance.PerformanceSampleKey * Hint[{ 要测的那份负载的身份；同一份负载换存储版本时它不变 }])
+  <- $storage (performance.PerformanceStorageVersion * Hint[{ 这次要测的存储版本：backend 与 adapter 两层都要声明 }])
+  <- Hint[{ 测一次 SLI：在这份负载与这个存储版本上跑一次，丢弃预热，在至少 60 秒或固定字节数的稳态窗口内测量；同一后端同一时刻只跑一个高带宽样本，开关观测各跑一次且关键指标变化不超过 3%。返回一条 SLI 记录，里面是各项 SLI 值、底层归因与证据，没有阈值 }]
 
-比较报告只做"哪边好、差多少"，不做通过/不通过——那是 SLO 的事。
+Retain =
+     performance.PerformanceSliUri
+  <- $record (performance.PerformanceSliRecord * Hint[{ 要留存的那条 SLI 记录 }])
+  <- Hint[{ 留存：把记录写成一份 sli.json，全部保留、不覆盖，保留期至少覆盖比较窗口，默认一年；只留最新一份就无法回答换后端前后差多少。返回写入的位置 }]
 
-## 5. SLO：重保子集，阈值由使用方给
+Compare =
+     performance.PerformanceStorageComparison
+  <- $before (performance.PerformanceSliRecord * Hint[{ 改动前那一次的 SLI 记录 }])
+  <- $after (performance.PerformanceSliRecord * Hint[{ 改动后那一次的 SLI 记录；与 before 必须是同一个 sample_key、不同的 storage_id }])
+  <- $calibration (str * Hint[{ 噪声带标定记录的位置；同一存储版本重复运行导出的 k 与次数写在这里 }])
+  <- Hint[{ 比较两个存储版本：逐指标算绝对差与相对差，与噪声带比较，结论三选一（提升、退化、不可比），并指出哪几层变了。只回答哪边好、差多少，不做通过或不通过 }]
 
-### 5.1 选择子集
-
-重保负载是评估集的一个子集，例如某几个模型族的推理、某类训练任务。选择器写在部署的 `slo.yaml` 里：
-
-```yaml
-selector:
-  recipe: checkpoint
-  model_family: [llama-like]
-  scale: ["7B", "70B"]
-  storage_backend: [gpfs]
+Judge =
+     performance.PerformanceSloResult
+  <- $record (performance.PerformanceSliRecord * Hint[{ 被选择器选中的那次运行的 SLI 记录 }])
+  <- $threshold (performance.PerformanceSloThreshold * Hint[{ 部署方给的阈值条目：方向、目标值、来源、适用范围、复审日期 }])
+  <- Hint[{ 按阈值判定：判定只走 SLO，用 SLI 值对照阈值，置信区间跨过阈值判不可比；阈值过期、超出 valid_for 范围、存储版本变更未重标一律判不可比。返回一条 slo-result，引用所用的阈值版本与 SLI 回链 }]
 ```
 
-### 5.2 阈值不由本项目提供
+## 组织
 
-SLO 阈值由使用方在部署评估集时指定，来源必须是三者之一：需求文档、基线测量、上限与效率目标。仓库只定义记录阈值的字段结构：
+```viba performance_flow
+import performance
+import performance_api
 
-```yaml
-slos:
-  - metric: ttft_p99_ms
-    comparator: "<="
-    target: TBD            # 部署方填写，仓库不提供数字
-    unit: ms
-    provenance: {kind: requirement, ref: "<需求编号>", date: 2026-10-30}
-    valid_for: {backend: [gpfs], adapter: [torchstore], topology: "S0–S2"}
-    review_due: 2027-01-30
+PerformanceSampleDuty =
+  Object
+  * $measure (performance_api.Measure * Hint[{ 测一次 SLI：拿到一条 performance.PerformanceSliRecord }])
+  * $retain (performance_api.Retain * Hint[{ 留存：把这条记录写成一份 sli.json，全部保留、不覆盖 }])
+
+PerformanceVersionDuty =
+  Object
+  * $before (performance_api.Measure * Hint[{ 改动前那一次运行 }])
+  * $after (performance_api.Measure * Hint[{ 改动后那一次运行；与 before 是同一个 sample_key }])
+  * $compare (performance_api.Compare * Hint[{ 比较两个存储版本：拿到 performance.PerformanceStorageComparison }])
+
+PerformanceSubsetDuty =
+  Object
+  * $measure (performance_api.Measure * Hint[{ 判定前先测出被选中样本的 SLI }])
+  * $judge (performance_api.Judge * Hint[{ 按阈值判定：拿到 performance.PerformanceSloResult }])
+
+PerformanceDuty =
+  Oneof
+  | $every_sample (PerformanceSampleDuty * Hint[{ 每个样本每次运行都做：测 SLI、留存；SLI 覆盖全部样本 }])
+  | $two_versions (PerformanceVersionDuty * Hint[{ 换存储版本时做：同一份负载的两个版本各测一次，再比较；报告只说哪边好、差多少 }])
+  | $protected_subset (PerformanceSubsetDuty * Hint[{ 重保子集：只有选择器选中的样本判定，其余样本只产 SLI }])
 ```
 
-没有 `provenance` 或 `valid_for` 的阈值不允许用于判定。
+IO pattern 的度量项定义在 [`methodology.md`](methodology.md)，本篇消费它的输出；放大到多级规模时的不变量与外推规则由 [`scaling.md`](scaling.md) 处理。判定阈值属于部署配置，不在本项目；选择器写在部署的 `slo.yaml` 里，配方本身不存阈值。评估集自身是否可信（对齐、覆盖、scaling 一致性）由 `metrics/` 定义。
 
-### 5.3 判定
-
-- 只对选择器选中的样本判定，其余样本只产 SLI。
-- 用 SLI 值对照阈值；置信区间跨过阈值时判"不可比"，不判通过。
-- 阈值过期、超出 `valid_for` 范围、存储版本变更未重标，一律判"不可比"。
-- 判定结果写 `slo-result.json`，并且必须引用所用的阈值版本与 SLI 回链。
-
-## 6. 采集与统计要求
-
-1. **预热**：丢弃前 10% 或前 N 轮，规则写进配方。
-2. **窗口**：至少 60 秒或固定字节数，取较长者；窗口内吞吐变异系数 > 10% 判不稳。
-3. **重复**：同一配置至少 3 次，报告 min / median / max；极差 > 10% 判不可比。
-4. **尾延迟样本量**：P99 至少 10⁴ 次请求，P999 至少 10⁵ 次；不足时只报区间。
-5. **独占**：同一后端同一时刻只跑一个高带宽样本。
-6. **观测开销**：开关观测各跑一次，关键指标变化 ≤ 3%。
-7. **打点**：SLI 的起止点在应用层定义（checkpoint 开始写与元数据可见；step 等数据与 batch 就绪；请求到达、首 token、末 token），写进配方。
-8. **环境变量**：样本启动时校验 `AI_INFRA_STORAGE_BACKEND` 与 `AI_INFRA_STORAGE_ADAPTER` 均非空。
-
-## 7. 报告
-
-### 7.1 `sli.json`（每个样本每次运行）
-
-| 字段 | 内容 |
-|---|---|
-| `sample_key` | 负载身份，跨存储版本稳定 |
-| `run_id` | 运行标识 |
-| `workload` | 目前只有 `checkpoint`；dataset、kvcache 待做 |
-| `storage` | backend 与 adapter 的 name、version、config_ref |
-| `window` | 预热、稳态起止、变异系数 |
-| `metrics` | 第 3 节的 SLI 值 |
-| `attribution` | 底层 SLI，解释用 |
-| `evidence` | manifest、io-pattern、原始数据位置与 sha256 |
-
-### 7.2 `slo-result.json`（只对重保子集）
-
-| 字段 | 内容 |
-|---|---|
-| `sample_key` | 被选中的样本 |
-| `slo_ref` | 阈值文件版本与条目 |
-| `metric` / `target` / `observed` | 对照结果 |
-| `verdict` | `pass` / `fail` / `inconclusive` |
-| `sli_uri` | 对应 `sli.json` 的回链 |
-
-两份报告都只引用，不入库。
-
-## 8. 常见错误
-
-| 错误 | 后果 | 处置 |
-|---|---|---|
-| 用 SLI 判通过 | 没有标准，永远算过 | 判定只走 SLO |
-| 只测重保子集 | 丢掉全集趋势 | SLI 覆盖全部样本 |
-| 只存最新 SLI | 无法跨版本比较 | 全量留存 |
-| backend 与 adapter 同时换只报一个总账 | 无法归因 | 按层分别报告 |
-| 样本用默认后端 | 测的存储说不清 | 环境变量缺失即报错 |
-| 阈值事后调整 | 结论不可比 | 阈值带版本，改动走评审 |
-| 固定百分比当噪声带 | 换环境就不成立 | 用重复运行导出噪声带 |
-
-## 9. 与其它文档的关系
-
-- IO pattern 定义在 [`methodology.md`](methodology.md)，本篇消费它的输出。
-- 单级内的 SLI/SLO 与版本比较在本篇；放大到多级规模时由 [`scaling.md`](scaling.md) 处理。
-- 判定阈值属于部署配置，不在本项目；`slo.yaml` 用选择器绑定到样本，配方本身不存阈值。
-- 评估集自身是否可信（对齐、覆盖、scaling 一致性）由 `metrics/` 定义。
+这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

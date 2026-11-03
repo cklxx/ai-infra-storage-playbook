@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointStage.schema.json",
+  "title": "RecipeCheckpointStage",
+  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStage",
+  "$defs": {
+    "recipe_checkpoint.RecipeCheckpointStage": {
+      "type": "object",
+      "properties": {
+        "step": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStep"
+        },
+        "gate": {
+          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate"
+        }
+      },
+      "required": [
+        "step",
+        "gate"
+      ],
+      "additionalProperties": false
+    },
+    "recipe_checkpoint.RecipeCheckpointStep": {
+      "oneOf": [
+        {
+          "const": "select_and_run"
+        },
+        {
+          "const": "bypass"
+        },
+        {
+          "const": "alignment"
+        },
+        {
+          "const": "scale_parameters"
+        },
+        {
+          "const": "scale_cluster"
+        },
+        {
+          "const": "register"
+        }
+      ]
+    },
+    "recipe_checkpoint.RecipeCheckpointGate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3-a"
+        },
+        {
+          "const": "G3-b"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    }
+  }
+}

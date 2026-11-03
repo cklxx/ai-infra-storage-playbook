@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckOutcome.schema.json",
+  "title": "CheckOutcome",
+  "$ref": "#/$defs/checks.CheckOutcome",
+  "$defs": {
+    "checks.CheckOutcome": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/checks.CheckStatus"
+        },
+        "exit_code": {
+          "$ref": "#/$defs/checks.CheckExitCode"
+        }
+      },
+      "required": [
+        "status",
+        "exit_code"
+      ],
+      "additionalProperties": false
+    },
+    "checks.CheckStatus": {
+      "oneOf": [
+        {
+          "const": "pass"
+        },
+        {
+          "const": "fail"
+        },
+        {
+          "const": "skip"
+        }
+      ]
+    },
+    "checks.CheckExitCode": {
+      "oneOf": [
+        {
+          "const": 0
+        },
+        {
+          "const": 1
+        },
+        {
+          "const": 2
+        }
+      ]
+    }
+  }
+}
