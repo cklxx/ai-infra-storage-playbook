@@ -44,7 +44,7 @@
 | `arch_family` | 按 `playbook/model-code-collection.md` 的架构族划分 |
 | `model_scale` | 参数量分桶，至少 6 个量级 |
 | `attention` | MHA / GQA / MQA / MLA / 线性注意力 / 滑动窗口 |
-| `framework` | vllm / sglang / deepinfer（仅 kvcache） |
+| `framework` | vllm / sglang / deepinfer |
 | `parallel` | DP / TP / PP / EP 的代表组合 |
 | `cluster` | S0–S5 |
 | `io_feature` | 小请求密集 / 大块顺序 / 高并发 / 热点访问 / 突发 |

@@ -1,5 +1,5 @@
-# checkpoint/dataset 配方选用的指标与阈值。阈值以本文件为准，check 脚本读取这里。
-recipe: checkpoint-dataset
+# checkpoint 配方选用的指标与阈值。阈值以本文件为准，check 脚本读取这里。
+recipe: checkpoint
 
 metrics:
   - name: io-pattern-alignment
@@ -21,7 +21,7 @@ metrics:
       concurrency_p50: "10%"
       concurrency_p95: "20%"
       timing_peak: "10%"
-    notes: checkpoint 写入的请求大小由分片策略决定，容差比 kvcache 紧。
+    notes: checkpoint 写入的请求大小由分片策略决定，容差按分片策略标定。
 
   - name: scaling-consistency
     version: "1.0.0"

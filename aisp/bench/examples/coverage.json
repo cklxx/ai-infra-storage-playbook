@@ -14,7 +14,7 @@
       },
       "status": "covered",
       "cases": [
-        "kvcache/llama-7b-gqa-tp4"
+        "checkpoint/llama-7b-gqa-tp4"
       ],
       "last_run": {
         "run_id": "example-run-0001",
@@ -47,7 +47,7 @@
       },
       "status": "failed",
       "cases": [
-        "kvcache/moe-mla-ep8"
+        "checkpoint/moe-mla-ep8"
       ],
       "last_run": {
         "run_id": "example-run-0003",
@@ -82,7 +82,7 @@
       },
       "status": "covered",
       "cases": [
-        "kvcache/moe-8x7b-gqa-ep4"
+        "checkpoint/moe-8x7b-gqa-ep4"
       ],
       "last_run": {
         "run_id": "example-run-0004",
@@ -102,7 +102,7 @@
       },
       "status": "covered",
       "cases": [
-        "kvcache/llama-13b-mha-tp2"
+        "checkpoint/llama-13b-mha-tp2"
       ],
       "last_run": {
         "run_id": "example-run-0005",

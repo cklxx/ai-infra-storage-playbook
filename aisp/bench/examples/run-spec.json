@@ -1,9 +1,9 @@
 {
-  "recipe": "kvcache",
+  "recipe": "checkpoint",
   "recipe_version": "0.1.0",
   "model": {
     "id": "example/tiny-64",
-    "commit": "0123456789abcdef0123456789abcdef01234567"
+    "git_commit_id": "0123456789abcdef0123456789abcdef01234567"
   },
   "framework": {
     "name": "vllm",
@@ -17,10 +17,11 @@
   },
   "load": {
     "concurrency": 8,
+    "duration_s": 60,
     "input_len": 128,
     "output_len": 64,
     "arrival_interval_ms": 20,
-    "duration_s": 60
+    "batch_size": null
   },
   "observe": {
     "enabled": true,
@@ -35,11 +36,13 @@
   "storage": {
     "backend": {
       "name": "gpfs",
-      "version": "5.1"
+      "version": "5.1",
+      "git_commit_id": null
     },
     "adapter": {
       "name": "mooncake",
-      "version": "0.3"
+      "version": "0.3",
+      "git_commit_id": null
     }
   }
 }

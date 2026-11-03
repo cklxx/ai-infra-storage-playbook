@@ -1,10 +1,9 @@
-# checkpoint / dataset：验收清单
+# checkpoint：验收清单
 
 ## G0 能跑
 
 - [ ] 真实运行跑通前向、反向、optimizer.step 与一次 checkpoint 写入
 - [ ] checkpoint 实现名与版本已记录
-- [ ] dataset 布局与真实训练一致（文件切分与格式未改）
 - [ ] 运行配置已记录：模型 commit、框架版本、依赖 lock、拓扑、存储挂载
 
 ## G1 旁路可跑

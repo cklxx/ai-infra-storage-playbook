@@ -54,7 +54,7 @@ def build_commands(skip_examples: bool) -> list[tuple[str, list[str]]]:
                     "--bypassed",
                     str(EXAMPLES / "io-pattern-bypassed.json"),
                     "--metrics",
-                    str(ROOT / "recipes" / "kvcache" / "metrics.yaml"),
+                    str(ROOT / "recipes" / "checkpoint" / "metrics.yaml"),
                 ],
             ),
             (
@@ -65,7 +65,7 @@ def build_commands(skip_examples: bool) -> list[tuple[str, list[str]]]:
                     "--input",
                     str(EXAMPLES / "scaling-levels.json"),
                     "--metrics",
-                    str(ROOT / "recipes" / "kvcache" / "metrics.yaml"),
+                    str(ROOT / "recipes" / "checkpoint" / "metrics.yaml"),
                 ],
             ),
         ]

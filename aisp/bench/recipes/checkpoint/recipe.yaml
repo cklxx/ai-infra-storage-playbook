@@ -1,8 +1,8 @@
-name: checkpoint-dataset
+name: checkpoint
 version: 0.1.0
 status: draft
 owner: storage-eval
-type: checkpoint-dataset
+type: checkpoint
 
 depends_on:
   - recipes/model-code-collection
@@ -16,7 +16,6 @@ bypass:
   kept:
     - checkpoint 写入与元数据提交
     - checkpoint 读取与恢复
-    - dataset 读取与解码
     - 并行切分
 
 fidelity_boundary:
@@ -50,12 +49,6 @@ fidelity_boundary:
     fidelity: L2
     kept: 真实读取与真实校验
     known_bias: none
-  - path: "torch.utils.data.DataLoader 及其采样器"
-    bypassed: "no"
-    method: none
-    fidelity: L2
-    kept: 真实读取、真实 shuffle、真实预取
-    known_bias: 数据集变小后缓存命中率偏高
   - path: "torch.distributed.all_gather / reduce_scatter"
     bypassed: partial
     method: mock process group

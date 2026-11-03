@@ -4,7 +4,10 @@
 
 ## Unreleased
 
-- 新增 `scripts/export_json_schema.py` 与 [`playbook/json_schema/`](playbook/json_schema/)：把 `playbook/ckpt-sample-interface.md` 里 public 导出的每个类型转成一份 JSON Schema，文件名就是导出名；函数导出跳过。文档末尾只留一段说明文件在哪。
+- 去掉 kvcache 与 dataset：`playbook/kvcache.md`、`recipes/kvcache/` 删除，`checkpoint-dataset` 改名为 `checkpoint` 并只留 checkpoint 内容；总体介绍里这两类只留 TODO。
+- 文档里的结构改成 viba 类型 + `Hint`：methodology 的阶段门、旁路手段、保真等级、采集层，scaling 的规模档位，evaluation-service 的运行请求，都是类型定义；字段说明写在字段上，不再用「字段 | 含义」表格。
+- `schemas/run-spec.schema.json` 删除，运行请求的 schema 改由 viba 生成（`playbook/json_schema/RunRequest.schema.json`）；校验脚本同时认 `schemas/` 与生成目录。
+- 新增 `scripts/export_json_schema.py` 与 [`playbook/json_schema/`](playbook/json_schema/)：文档里的 viba 代码块，每个类型生成一份 JSON Schema，文件名就是类型名；函数跳过。文档只留一段说明文件在哪。
 - 新增 [`playbook/ckpt-sample-interface.md`](playbook/ckpt-sample-interface.md)：checkpoint 样本的接口用 viba 写成 public / apis / types / configs 四个模块，`public` 只做转发；每个 SLI 指标是具名类型，SLO 判定用 `MetricLE` / `MetricGE` 泛型。
 - 仓库改为多项目结构：playbook 与 bench 的整体移入 `aisp/bench/`，以后 `aisp/tla/` 等与 `aisp/bench/` 并列；`aisp` 同时作为 Python 包名。仓库更名 `ai-infra-storage-playbook`。文档内的相对链接不变，schema 的 `$id` 改为 `.../ai-infra-storage-playbook/aisp/bench/schemas/`。
 - README 开头新增「它评什么」：用一张表列出 checkpoint / dataset / kvcache 每次运行记录的 SLI 指标。

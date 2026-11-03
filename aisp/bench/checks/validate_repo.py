@@ -11,7 +11,7 @@ Checks performed:
   7. every metric and version appears in the recipe's compatible_metrics
   8. declared items are backed by a tolerance entry
   9. depends_on entries point at existing recipe directories
- 10. examples/run-spec.json validates against schemas/run-spec.schema.json
+ 10. examples/run-spec.json validates against playbook/json_schema/RunRequest.schema.json
 
 Exit codes: 0 all checks pass, 1 validation failed, 2 dependencies missing.
 """
@@ -40,6 +40,7 @@ except ImportError as exc:  # pragma: no cover - depends on environment
 ROOT = Path(__file__).resolve().parents[1]
 RECIPES = ROOT / "recipes"
 SCHEMAS = ROOT / "schemas"
+GENERATED_SCHEMAS = ROOT / "playbook" / "json_schema"
 REGISTRY = ROOT / "metrics" / "registry.yaml"
 REQUIRED_FILES = ("README.md", "recipe.yaml", "metrics.yaml", "acceptance-checklist.md")
 
@@ -50,8 +51,12 @@ def load_yaml(path: Path) -> object:
 
 
 def load_schema(name: str) -> dict:
-    with (SCHEMAS / name).open(encoding="utf-8") as handle:
-        return json.load(handle)
+    for directory in (SCHEMAS, GENERATED_SCHEMAS):
+        path = directory / name
+        if path.is_file():
+            with path.open(encoding="utf-8") as handle:
+                return json.load(handle)
+    raise FileNotFoundError(f"no schema named {name}")
 
 
 def schema_errors(instance: object, schema: dict) -> list[str]:
@@ -193,7 +198,7 @@ def check_recipe(name: str, registry: dict[str, dict], errors: list[str]) -> Non
 
 
 EXAMPLE_FILES = (
-    ("run-spec.json", "run-spec.schema.json"),
+    ("run-spec.json", "RunRequest.schema.json"),
     ("sli.json", "sli.schema.json"),
 )
 

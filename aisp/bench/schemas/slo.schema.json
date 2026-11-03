@@ -32,9 +32,7 @@
         "workload": {
           "type": "string",
           "enum": [
-            "checkpoint",
-            "dataset",
-            "kvcache"
+            "checkpoint"
           ]
         },
         "model_family": {

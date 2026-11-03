@@ -1,12 +1,12 @@
-# Checkpoint / Dataset 存储评估配方
+# Checkpoint 存储评估配方
 
-训练侧存储评估。评估对象是训练框架的 checkpoint 写入、checkpoint 读取与 dataset 读取三条路径，计算部分被旁路。
+训练侧存储评估。评估对象是训练框架的 checkpoint 写入与读取两条路径，计算部分被旁路。
 
-方法说明见 [`playbook/checkpoint-dataset.md`](../../playbook/checkpoint-dataset.md)。
+方法说明见 [`playbook/checkpoint.md`](../../playbook/checkpoint.md)。
 
 ## 目标
 
-- 测出训练任务在 checkpoint 与 dataset 两条路径上的 IO 特征。
+- 测出训练任务在 checkpoint 写入与读取上的 IO 特征。
 - 在真实存储与传输路径上测，不在合成负载上测。
 - 把结论从单机小参数外推到十万卡。
 
@@ -45,7 +45,7 @@
 - 模型用 `torch.device("meta")` 构建。
 - 前向用 meta 输入执行；反向用占位梯度，保证 `param.grad` 存在且尺寸正确。
 - optimizer 换成占位更新，保留 `state_dict()` 的键结构与分片。
-- checkpoint 写入、读取、dataset 读取不改。
+- checkpoint 写入与读取不改。
 
 通过条件：G1，旁路后跑完与步骤 1 相同的流程，保真边界表填完。
 
@@ -112,4 +112,4 @@ SLO 指标与判定顺序见 [`playbook/storage-performance.md`](../../playbook/
 
 ## 开放问题
 
-见 [`playbook/checkpoint-dataset.md`](../../playbook/checkpoint-dataset.md) 的「开放问题」。
+见 [`playbook/checkpoint.md`](../../playbook/checkpoint.md) 的「开放问题」。

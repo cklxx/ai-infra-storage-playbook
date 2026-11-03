@@ -1,5 +1,5 @@
 {
-  "recipe": "kvcache",
+  "recipe": "checkpoint",
   "recipe_version": "0.1.0",
   "model": {
     "id": "example/tiny-64",

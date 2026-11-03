@@ -45,17 +45,17 @@
    ├── 结构去重后的多样性覆盖
    └── mock process group 可跑性验证
           │
-          ├── checkpoint / dataset 存储评估集（训练侧）
-          └── kvcache 存储评估集（推理侧）
+          └── checkpoint 存储评估集（训练侧）
+
+dataset 与 kvcache 评估集待做（TODO）。
 ```
 
-模型代码收集是**前置原料库**，另外两类评估集从库里取样构建。这条依赖要在配方里显式声明：checkpoint/dataset 与 kvcache 的 `recipe.yaml` 都必须写 `depends_on: recipes/model-code-collection`。
+模型代码收集是**前置原料库**，checkpoint 评估集从库里取样构建。这条依赖要在配方里显式声明：`recipes/checkpoint/recipe.yaml` 必须写 `depends_on: recipes/model-code-collection`。
 
 ## 本项目管什么
 
 - 模型代码的收集、去重、可跑性验证方法。
-- 训练侧 checkpoint 与 dataset 的存储评估方法。
-- 推理侧 kvcache 的存储评估方法。
+- 训练侧 checkpoint 的存储评估方法；dataset 与 kvcache 待做（TODO）。
 - 旁路计算、保留 IO 的通用方法，以及保真程度的登记方式。
 - 小规模对齐与 scaling 外推的方法。
 - 评估服务的接口、调度、结果回链规范。
@@ -77,7 +77,7 @@
 
 ### 1. 计算可以假，IO 必须真
 
-评估的目的是存储传输侧。计算部分（forward、backward、optimizer、prefill、decode）对 IO 的贡献只有"什么时候发起"和"发起多少"，不贡献请求本身的特征。所以计算可以被旁路，但**发起 IO 的那条代码路径必须保持原样**：真实的数据加载、真实的 checkpoint 写入、真实的 kvcache 分配与搬运、真实的通信原语调用。
+评估的目的是存储传输侧。计算部分（forward、backward、optimizer、prefill、decode）对 IO 的贡献只有"什么时候发起"和"发起多少"，不贡献请求本身的特征。所以计算可以被旁路，但**发起 IO 的那条代码路径必须保持原样**：真实的数据加载、真实的 checkpoint 写入、真实的通信原语调用。
 
 旁路了哪些、保留了什么、带来了什么偏差，逐项登记在配方的「保真边界表」里。没有登记表的配方视为未完成。
 

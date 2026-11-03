@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/RestoreDurationMetric.schema.json",
+  "title": "RestoreDurationMetric",
+  "$ref": "#/$defs/types.RestoreDurationMetric",
+  "$defs": {
+    "types.RestoreDurationMetric": {
+      "type": "number"
+    }
+  }
+}

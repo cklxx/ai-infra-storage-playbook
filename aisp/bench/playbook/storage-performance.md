@@ -32,7 +32,7 @@
 
 ## 3. SLI：每个样本都测
 
-SLI 只有指标与测量值，没有阈值。三类负载各自一组：
+SLI 只有指标与测量值，没有阈值。
 
 ### 3.1 checkpoint
 
@@ -45,34 +45,7 @@ SLI 只有指标与测量值，没有阈值。三类负载各自一组：
 | `metadata_commit_ms` | 分片元数据提交到可见的时长 | ms |
 | `write_latency_p99_ms` | 单个写请求的 P99 | ms |
 
-### 3.2 dataset
-
-| SLI | 定义 | 单位 |
-|---|---|---|
-| `data_stall_ratio` | 训练 step 因等数据空转的时间 / 总 step 时间 | 比例 |
-| `time_to_first_batch_s` | 启动到拿到第一个 batch 的时长 | s |
-| `batch_latency_p99_ms` | 取一个 batch 的 P99 | ms |
-| `sample_latency_p99_ms` | 单个样本读取与解码的 P99 | ms |
-| `read_throughput_bytes_s` | 聚合与每 rank 读取吞吐 | B/s |
-| `metadata_ops_rate` | 小文件与列目录的 op rate | 次/s |
-| `read_amplification` | 实际读取字节 / 逻辑需要字节 | 比值 |
-| `cache_hit_ratio` | 页缓存、本地盘、分布式缓存的分层命中率 | 比例 |
-
-### 3.3 kvcache
-
-| SLI | 定义 | 单位 |
-|---|---|---|
-| `ttft_p99_ms` | 首 token 延迟的 P99 | ms |
-| `tpot_p99_ms` | 相邻 token 间隔的 P99 | ms |
-| `request_success_rate` | 成功完成的请求比例 | 比例 |
-| `kv_read_bytes_s` / `kv_write_bytes_s` | KV 读写吞吐 | B/s |
-| `prefix_hit_ratio` | 前缀复用命中的块占比 | 比例 |
-| `eviction_rate` | 单位时间驱逐的块数 | 次/s |
-| `offload_bytes_s` | 换出到下一层缓存的字节速率 | B/s |
-| `cross_node_transfer_latency_p99_ms` | 跨节点 KV 搬运的 P99 | ms |
-| `block_alloc_latency_p99_us` | 块分配与释放的 P99 | µs |
-
-### 3.4 归因用的底层 SLI
+### 3.2 归因用的底层 SLI
 
 吞吐、IOPS、延迟分位、排队深度、饱和度、rank 间公平性、错误与重试、元数据 op rate、窗口稳定性、相对上限的效率。它们解释"为什么这个 SLI 是这个值"，不参与 SLO 判定，也不单独作为结论。
 
@@ -110,7 +83,7 @@ sli/<sample_key>/<storage_id>/<run-id>.json
 
 ```yaml
 selector:
-  recipe: kvcache
+  recipe: checkpoint
   model_family: [llama-like]
   scale: ["7B", "70B"]
   storage_backend: [gpfs]
@@ -159,7 +132,7 @@ slos:
 |---|---|
 | `sample_key` | 负载身份，跨存储版本稳定 |
 | `run_id` | 运行标识 |
-| `workload` | `checkpoint` / `dataset` / `kvcache` |
+| `workload` | 目前只有 `checkpoint`；dataset、kvcache 待做 |
 | `storage` | backend 与 adapter 的 name、version、config_ref |
 | `window` | 预热、稳态起止、变异系数 |
 | `metrics` | 第 3 节的 SLI 值 |

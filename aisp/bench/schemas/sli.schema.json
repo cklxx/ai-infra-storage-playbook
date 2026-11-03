@@ -25,9 +25,7 @@
     "workload": {
       "type": "string",
       "enum": [
-        "checkpoint",
-        "dataset",
-        "kvcache"
+        "checkpoint"
       ]
     },
     "storage": {

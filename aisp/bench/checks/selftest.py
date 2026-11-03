@@ -28,7 +28,7 @@ EXAMPLES = ROOT / "examples"
 INVALID = EXAMPLES / "invalid"
 SCHEMAS = ROOT / "schemas"
 
-KVCACHE_METRICS = ROOT / "recipes" / "kvcache" / "metrics.yaml"
+CHECKPOINT_METRICS = ROOT / "recipes" / "checkpoint" / "metrics.yaml"
 COLLECTION_METRICS = ROOT / "recipes" / "model-code-collection" / "metrics.yaml"
 
 
@@ -41,9 +41,17 @@ def run_check(script: str, *args: str) -> int:
     return process.returncode
 
 
+def load_schema(schema_name: str) -> dict:
+    for directory in (SCHEMAS, ROOT / "playbook" / "json_schema"):
+        path = directory / schema_name
+        if path.is_file():
+            with path.open(encoding="utf-8") as handle:
+                return json.load(handle)
+    raise FileNotFoundError(f"no schema named {schema_name}")
+
+
 def schema_rejects(schema_name: str, instance_path: Path) -> bool:
-    with (SCHEMAS / schema_name).open(encoding="utf-8") as handle:
-        schema = json.load(handle)
+    schema = load_schema(schema_name)
     with instance_path.open(encoding="utf-8") as handle:
         instance = json.load(handle)
     try:
@@ -56,8 +64,7 @@ def schema_rejects(schema_name: str, instance_path: Path) -> bool:
 def schema_rejects_yaml(schema_name: str, instance_path: Path) -> bool:
     import yaml
 
-    with (SCHEMAS / schema_name).open(encoding="utf-8") as handle:
-        schema = json.load(handle)
+    schema = load_schema(schema_name)
     with instance_path.open(encoding="utf-8") as handle:
         instance = yaml.safe_load(handle)
     try:
@@ -73,7 +80,7 @@ def positive_cases() -> list[tuple[str, int, int]]:
             "check_io_pattern.py",
             "--real", str(EXAMPLES / "io-pattern-real.json"),
             "--bypassed", str(EXAMPLES / "io-pattern-bypassed.json"),
-            "--metrics", str(KVCACHE_METRICS),
+            "--metrics", str(CHECKPOINT_METRICS),
         ), 0),
         ("accept coverage", run_check(
             "check_coverage.py",
@@ -83,7 +90,7 @@ def positive_cases() -> list[tuple[str, int, int]]:
         ("accept scaling", run_check(
             "check_scaling_consistency.py",
             "--input", str(EXAMPLES / "scaling-levels.json"),
-            "--metrics", str(KVCACHE_METRICS),
+            "--metrics", str(CHECKPOINT_METRICS),
         ), 0),
     ]
 
@@ -94,7 +101,7 @@ def negative_cases() -> list[tuple[str, int, int]]:
             "check_io_pattern.py",
             "--real", str(INVALID / "io-pattern-bad-sources.json"),
             "--bypassed", str(EXAMPLES / "io-pattern-bypassed.json"),
-            "--metrics", str(KVCACHE_METRICS),
+            "--metrics", str(CHECKPOINT_METRICS),
         ), 2),
         ("reject unknown tolerance key", run_check(
             "check_io_pattern.py",
@@ -110,7 +117,7 @@ def negative_cases() -> list[tuple[str, int, int]]:
         ("reject scaling with wrong value count", run_check(
             "check_scaling_consistency.py",
             "--input", str(INVALID / "scaling-bad-lengths.json"),
-            "--metrics", str(KVCACHE_METRICS),
+            "--metrics", str(CHECKPOINT_METRICS),
         ), 2),
     ]
 
@@ -120,7 +127,7 @@ def schema_cases() -> list[tuple[str, int, int]]:
         ("reject recipe without metrics_ref", schema_rejects_yaml(
             "recipe.schema.json", INVALID / "recipe-missing-field.yaml")),
         ("reject run spec with unknown level", schema_rejects(
-            "run-spec.schema.json", INVALID / "run-spec-bad-level.json")),
+            "RunRequest.schema.json", INVALID / "run-spec-bad-level.json")),
         ("reject SLI without storage identity", schema_rejects(
             "sli.schema.json", INVALID / "sli-missing-storage.json")),
     ]

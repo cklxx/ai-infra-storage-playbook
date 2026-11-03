@@ -43,7 +43,7 @@
     "type": {
       "type": "string",
       "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
-      "description": "评估集类别。当前为 model-code-collection / checkpoint-dataset / kvcache，允许扩展。"
+      "description": "评估集类别。当前为 model-code-collection / checkpoint，允许扩展。"
     },
     "depends_on": {
       "type": "array",

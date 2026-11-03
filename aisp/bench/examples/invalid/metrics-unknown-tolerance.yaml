@@ -1,4 +1,4 @@
-recipe: kvcache
+recipe: checkpoint
 metrics:
   - name: io-pattern-alignment
     version: "1.0.0"

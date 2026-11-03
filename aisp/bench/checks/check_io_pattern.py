@@ -3,7 +3,7 @@
 
 Usage:
     python3 checks/check_io_pattern.py --real real.json --bypassed bypassed.json \
-        --metrics recipes/kvcache/metrics.yaml
+        --metrics recipes/checkpoint/metrics.yaml
 
 The real record is the baseline; the bypassed record is what the bypass
 implementation produced. Tolerances come from the recipe's metrics.yaml (the

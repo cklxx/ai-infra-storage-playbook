@@ -24,7 +24,7 @@
 | prefill | 预填充。一次处理整个输入序列，KV 按 token 成批写入 |
 | decode | 解码。逐 token 生成，每步只写一个 token 的 KV，读历史 KV |
 
-KV 头数、层数与 head_dim 共同决定每 token 的 KV 字节数，这是 kvcache 评估里最容易核对的一项。
+KV 头数、层数与 head_dim 共同决定每 token 的 KV 字节数。
 
 ## A.3 存储与 IO
 

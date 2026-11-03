@@ -3,7 +3,7 @@
 
 Usage:
     python3 checks/check_scaling_consistency.py --input levels.json \
-        --metrics recipes/kvcache/metrics.yaml
+        --metrics recipes/checkpoint/metrics.yaml
 
 Input structure (one entry per invariant, one value per level):
 

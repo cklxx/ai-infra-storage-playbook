@@ -18,22 +18,42 @@
 
 ### 2.1 运行请求
 
-一份运行请求包含：
+```viba service
+import configs
+import levels
+import types
 
-| 字段 | 含义 |
-|---|---|
-| `recipe` | 配方标识，形如 `kvcache`，对应 `recipes/kvcache/` |
-| `recipe_version` | 配方版本，必须与仓库里的版本一致 |
-| `model` | 模型标识 + commit |
-| `framework` | 框架名 + 版本（仅 kvcache 需要） |
-| `level` | 规模档位，对应 `scaling.md` 的 S0–S5 |
-| `topology` | 节点数、每节点卡数、网络与存储挂载方式 |
-| `storage` | backend（纯存储系统）与 adapter（存储传输适配层）的名称与版本；服务据此注入 `AI_INFRA_STORAGE_BACKEND` 与 `AI_INFRA_STORAGE_ADAPTER` |
-| `load` | 负载配置：并发、序列长度、到达间隔、持续时长 |
-| `observe` | 观测配置：开关、采样率、采集层 |
-| `seed` | 随机种子 |
+RunRequest =
+  Object
+  * $recipe (str * Hint[{ 配方标识，对应 recipes/<name>/ }])
+  * $recipe_version (str * Hint[{ 配方版本，必须与仓库里的一致 }])
+  * $model (configs.Model * Hint[{ 被评估的模型 }])
+  * $framework ((Framework | nil) * Hint[{ 推理框架；训练侧评估给 nil }])
+  * $level (levels.Level * Hint[{ 规模档位 }])
+  * $topology (configs.Topology * Hint[{ 节点数、每节点卡数、网络与存储挂载方式 }])
+  * $storage (types.StorageLayer * Hint[{ backend 与 adapter 两层；服务据此注入 AI_INFRA_STORAGE_BACKEND 与 AI_INFRA_STORAGE_ADAPTER }])
+  * $load (Load * Hint[{ 负载配置 }])
+  * $observe (configs.ObservationConfig * Hint[{ 观测配置 }])
+  * $seed (int * Hint[{ 随机种子 }])
 
-请求不允许有"其它"字段。新增字段先改 schema，再改服务。
+Framework =
+  Object
+  * $name (str * Hint[{ 推理框架名：vllm、sglang、deepinfer 等 }])
+  * $version (str * Hint[{ 框架版本 }])
+
+Load =
+  Object
+  * $concurrency (int * Hint[{ 并发请求数 }])
+  * $duration_s (int * Hint[{ 持续时长，秒 }])
+  * $input_len ((int | nil) * Hint[{ 输入序列长度；训练侧或不适用时给 nil }])
+  * $output_len ((int | nil) * Hint[{ 输出序列长度；训练侧或不适用时给 nil }])
+  * $arrival_interval_ms ((float | nil) * Hint[{ 请求到达间隔，毫秒；不按固定间隔发时给 nil }])
+  * $batch_size ((int | nil) * Hint[{ batch 大小；不适用时给 nil }])
+```
+
+结构见 [`json_schema/RunRequest.schema.json`](json_schema/RunRequest.schema.json)。
+
+请求不允许有"其它"字段。新增字段先改这里的类型，再改服务。
 
 ### 2.2 命令行
 
@@ -55,28 +75,25 @@ GET  /v1/runs/{run-id}/artifacts   列出产物
 POST /v1/runs/{run-id}/cancel      取消
 ```
 
-接口返回结构固定：`run_id`、`state`、`started_at`、`finished_at`、`error`、`artifacts`。
+接口返回的就是 [ckpt-sample-interface.md](ckpt-sample-interface.md) 的 `RunRecord`：运行标识、状态、进度、产物位置。
 
 ## 3. 运行的生命周期
 
+对外状态只有 `RunRecord` 里 `State` 的六个取值，含义写在那个枚举的 `Hint` 里，这里不重复：
+
 ```text
-submitted → validating → queued → preparing → running → collecting → completed
-                 │           │                     │
-                 └─ rejected └─ cancelled           └─ failed
+提交 ─校验─┬─> 排队 ─> 执行中 ─> 正常结束
+           │            ├─ 失败
+           └─ 被拒       └─ 被取消
 ```
 
-| 状态 | 含义 | 可观察的产出 |
+校验、准备、采集收尾是执行中的内部阶段，不占对外状态：
+
+| 内部阶段 | 做什么 | 留下的东西 |
 |---|---|---|
-| `submitted` | 已接收 | run-id |
-| `validating` | 校验请求与配方版本 | 校验报告 |
-| `queued` | 等待资源 | 排队位置与预计开始时间 |
-| `preparing` | 拉代码、装依赖、准备数据、预热 | 环境清单 |
-| `running` | 执行负载 | 运行中指标 |
-| `collecting` | 采集收尾、校验、聚合 | 度量文件 |
-| `completed` | 成功 | 产物清单与回链 |
-| `failed` | 失败 | 错误分类与日志回链 |
-| `rejected` | 请求不合法 | 拒绝原因 |
-| `cancelled` | 用户取消 | 已产生的部分产物 |
+| 校验 | 校验请求与配方版本 | 校验报告 |
+| 准备 | 拉代码、装依赖、准备数据、预热 | 环境清单 |
+| 采集收尾 | 校验、聚合、写产物与回链 | 度量文件 |
 
 失败必须分类：环境失败、依赖失败、代码不可跑、资源不足、超时、观测失败、断言失败。笼统的"失败"无法用于缺口分析。
 
@@ -130,7 +147,7 @@ s3://example-bucket/
 ```json
 {
   "run_id": "...",
-  "recipe": "checkpoint-dataset",
+  "recipe": "checkpoint",
   "recipe_version": "0.1.0",
   "service_version": "0.1.0",
   "model": {"id": "...", "commit": "..."},

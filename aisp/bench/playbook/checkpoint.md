@@ -1,6 +1,6 @@
-# Checkpoint / Dataset 存储评估
+# Checkpoint 存储评估
 
-训练侧的存储评估。评估对象是两条 IO 路径：checkpoint 的写入与读取、dataset 的读取。本篇只写这两条路径的特殊之处，旁路与保真的总则见 [`methodology.md`](methodology.md)。
+训练侧的存储评估。评估对象是 checkpoint 的写入与读取。本篇只写这两条路径的特殊之处，旁路与保真的总则见 [`methodology.md`](methodology.md)。
 
 ## 1. 目标
 
@@ -9,7 +9,6 @@
 三个必须回答的问题：
 
 1. 一个训练任务在 checkpoint 写入时，对存储提出什么要求：写入总字节、分片数、并发度、持续时长、周期性。
-2. dataset 读取在 shuffle、预取、解码时的 IO 请求特征是什么，小文件与元数据操作占多少。
 3. 上述要求随参数量与集群规模怎么变，哪一部分是不变量。
 
 ## 2. 评估对象
@@ -35,16 +34,6 @@ checkpoint 的 IO 由训练框架的分布式检查点实现决定，不由模�
 
 读取侧（恢复训练）单独记录：读取是否与训练启动重叠、是否按 rank 并发读、是否校验哈希。
 
-### 2.2 dataset 读取
-
-| 特征 | 为什么重要 |
-|---|---|
-| 文件组织：大文件 / 小文件 / tar 分片 / parquet | 决定元数据操作占比 |
-| shuffle 方式：全局 shuffle / 分片内 shuffle / 缓冲区 shuffle | 决定访问顺序性 |
-| 预取深度与 worker 数 | 决定并发度 |
-| 解码位置：在线解码还是离线预处理 | 决定读放大 |
-| 缓存层：页缓存、本地盘、分布式缓存 | 决定实际打到远端存储的请求量 |
-
 ## 3. 旁路 forward / backward / optimizer
 
 ### 3.1 做法
@@ -53,7 +42,7 @@ checkpoint 的 IO 由训练框架的分布式检查点实现决定，不由模�
 2. 前向：输入也放在 meta device 上，前向照常执行。计算不发生，但控制流、模块调用顺序、张量的逻辑尺寸全部真实。
 3. 反向：直接对 meta 张量调 `backward()` 会因为没有真实存储而失败。需要按训练框架的用法构造梯度的占位实现，保证 `param.grad` 存在且尺寸正确。
 4. optimizer：替换为只更新占位张量的 mock，保留 `state_dict()` 的键结构与分片逻辑。检查点写入依赖 `state_dict()` 的键与分片，所以这一步不能简化成空实现。
-5. 检查点写入与 dataset 读取：**完全不改**，走框架原有实现。
+5. 检查点写入：**完全不改**，走框架原有实现。
 
 ### 3.2 关键约束
 
@@ -68,14 +57,13 @@ checkpoint 的 IO 由训练框架的分布式检查点实现决定，不由模�
 
 | path | bypassed | method | fidelity | kept | known_bias |
 |---|---|---|---|---|---|
-| forward / backward | yes | meta device | — | 模块调用顺序、张量逻辑尺寸、梯度键结构 | 计算耗时为 0 |
+| forward / backward | yes | `meta_device` | L2 | 模块调用顺序、张量逻辑尺寸、梯度键结构 | 计算耗时为 0，写入时序可能被压缩 |
 | optimizer.step | yes | 占位更新 | L1 | `state_dict()` 的键结构与分片 | 优化器状态不真实变化 |
 | 并行切分与通信分组 | no | — | L2 | DP/TP/PP/EP 的分组与分片 | 通信内容被 mock 时同步丢失 |
 | checkpoint 写入与元数据提交 | no | — | L2 | 真实写入调用、真实文件系统或对象存储 | 无 |
 | checkpoint 读取与恢复 | no | — | L2 | 真实读取调用、真实校验 | 无 |
-| dataset 读取与解码 | no | — | L2 | 真实数据管线、真实采样器 | 数据量小时缓存命中率偏高 |
 
-完整实例见 `recipes/checkpoint-dataset/recipe.yaml`。
+完整实例见 `recipes/checkpoint/recipe.yaml`。
 
 ## 5. 流程与阶段门
 

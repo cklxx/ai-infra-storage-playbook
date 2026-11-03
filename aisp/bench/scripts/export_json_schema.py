@@ -1,25 +1,21 @@
 #!/usr/bin/env python3
-"""Regenerate the JSON Schema files of the checkpoint sample interface.
+"""Generate the JSON Schema files of every type the markdown docs define.
 
-The doc playbook/ckpt-sample-interface.md carries four viba modules (public,
-apis, types, configs). This script writes them to a temporary directory,
-converts every type the public module exports with viba's
-convert_to_json_schema, and writes one file per export to
-playbook/json_schema/<export>.schema.json. Function exports are skipped: a
-function is not a JSON value.
-
-The doc's last section, "## json schema", only says where the files are; this
-script rewrites that section too, so the paragraph never goes stale.
+A doc carries its structures as fenced ```viba blocks; the fence's info string
+names the module. This script collects those blocks from every doc under
+aisp/bench, converts each type with viba's convert_to_json_schema, and writes
+one <Type>.schema.json per type to the json_schema/ directory beside the doc.
+Function definitions and generic types are skipped: neither is a JSON value on
+its own.
 
 Usage:
-    PYTHONPATH=<viba checkout> python3 scripts/export_json_schema.py [--doc PATH]
+    PYTHONPATH=<viba checkout> python3 scripts/export_json_schema.py
 
 Exit codes: 0 written, 1 a type cannot be converted, 2 the viba package is missing.
 """
 
 from __future__ import annotations
 
-import argparse
 import json
 import re
 import sys
@@ -35,110 +31,85 @@ except ImportError:  # pragma: no cover - depends on the environment
     sys.exit(2)
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_DOC = ROOT / "playbook" / "ckpt-sample-interface.md"
+REPO = ROOT.parents[1]
 SCHEMA_DIR = "json_schema"
-SECTION = "## json schema"
-MODULES = ("public", "apis", "types", "configs")
-ID_PREFIX = "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema"
+FENCE = re.compile(r"^```viba[ \t]*(\w*)[ \t]*\n(.*?)^```[ \t]*$", re.M | re.S)
+DEFINITION = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*) *=(?!=)", re.M)
+SKIPPED = ("a function is no JSON value", "has no argument")
 
 
-def read_modules(text: str) -> dict[str, str]:
-    found = {}
-    for match in re.finditer(r"## (\w+)\n\n(?:.*?)?```bash\n(.*?)```", text, re.S):
-        found[match.group(1)] = match.group(2)
-    missing = [name for name in MODULES if name not in found]
-    if missing:
-        raise SystemExit(f"{DEFAULT_DOC.name}: missing viba section(s): {', '.join(missing)}")
+def modules_by_doc() -> dict[Path, dict[str, str]]:
+    """{doc: {module name: source}} for every doc that carries a viba block."""
+    found: dict[Path, dict[str, str]] = {}
+    names: dict[str, Path] = {}
+    for doc in sorted(ROOT.rglob("*.md")):
+        blocks: dict[str, str] = {}
+        for match in FENCE.finditer(doc.read_text(encoding="utf-8")):
+            module = match.group(1) or doc.stem.replace("-", "_")
+            if module in names or module in blocks:
+                raise SystemExit(f"{doc}: module {module!r} is used twice")
+            names[module] = doc
+            blocks[module] = match.group(2)
+        if blocks:
+            found[doc] = blocks
     return found
 
 
-def public_exports(source: str) -> list[tuple[str, str, str]]:
-    """(export name, module, definition) for every `Name = module.Definition` line."""
-    exports = []
-    for match in re.finditer(r"(?m)^([A-Za-z_][A-Za-z0-9_]*) = (\w+)\.([A-Za-z_][A-Za-z0-9_]*)$", source):
-        exports.append((match.group(1), match.group(2), match.group(3)))
-    if not exports:
-        raise SystemExit("public exports no names")
-    return exports
-
-
-def write_modules(directory: Path, modules: dict[str, str]) -> None:
-    """Write the doc's modules as viba files, annotations and all.
-
-    A `Hint[{ ... }]` annotation is a unit of the type layer: it carries no
-    value, so the converter reads past it and the schema is the same with or
-    without it. The document keeps them, so the files do too.
-    """
-    for name, source in modules.items():
-        (directory / f"{name}.viba").write_text(source, encoding="utf-8")
-
-
-def write_schemas(directory: Path, schemas: list[tuple[str, str]]) -> None:
-    """One `<export>.schema.json` per export, and no file for a type gone.
-
-    The files are self-contained: each one repeats the `$defs` its type
-    reaches, so a reader can take one file and validate against it alone.
-    """
-    directory.mkdir(parents=True, exist_ok=True)
-    current = {f"{name}.schema.json" for name, _ in schemas}
-    for stale in directory.glob("*.schema.json"):
-        if stale.name not in current:
-            stale.unlink()
-    for name, text in schemas:
-        (directory / f"{name}.schema.json").write_text(text + "\n", encoding="utf-8")
-
-
-def render(doc: str) -> str:
-    """The doc with its last section cut down to where the files are."""
-    body = [
-        SECTION,
-        "",
-        "接口的每个导出类型各有一份 JSON Schema，放在 [`json_schema/`](json_schema/) 下，"
-        "文件名是导出名加 `.schema.json`。函数导出没有对应的 JSON 值，不生成文件。",
-        "",
-        "这些文件由 `scripts/export_json_schema.py` 从本文档的四个模块生成，不要手改。",
-        "",
-    ]
-    head = doc.split(SECTION)[0].rstrip()
-    return head + "\n\n" + "\n".join(body)
+def definitions(source: str) -> list[str]:
+    return DEFINITION.findall(source)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--doc", type=Path, default=DEFAULT_DOC)
-    args = parser.parse_args()
+    docs = modules_by_doc()
+    if not docs:
+        print("no viba block under the bench", file=sys.stderr)
+        return 1
 
-    doc = args.doc.read_text(encoding="utf-8")
-    modules = read_modules(doc)
-    exports = public_exports(modules["public"])
-
-    schemas: list[tuple[str, str]] = []
+    written: dict[Path, set[str]] = {}
+    failures = 0
     with tempfile.TemporaryDirectory() as temporary:
         repo = Path(temporary)
-        write_modules(repo, modules)
-        for export, module, definition in exports:
-            answer = convert_to_json_schema([str(repo)], ("type_names", [f"{module}.{definition}"]))
-            if not isinstance(answer, Ok):
-                message = str(answer.msg)
-                if "a function is no JSON value" in message:
-                    continue
-                print(f"{export}: {message}", file=sys.stderr)
-                return 1
-            schema = json.loads(answer.ok_value, object_pairs_hook=OrderedDict)
-            document = OrderedDict()
-            document["$schema"] = schema.pop("$schema")
-            document["$id"] = f"{ID_PREFIX}/{export}.schema.json"
-            document["title"] = export
-            document.update(schema)
-            schemas.append((export, json.dumps(document, ensure_ascii=False, indent=2)))
+        for doc, modules in docs.items():
+            for module, source in modules.items():
+                (repo / f"{module}.viba").write_text(source, encoding="utf-8")
 
-    if not schemas:
-        print("no type exports to convert", file=sys.stderr)
+        for doc, modules in docs.items():
+            directory = doc.parent / SCHEMA_DIR
+            for module, source in modules.items():
+                for name in definitions(source):
+                    answer = convert_to_json_schema(
+                        [str(repo)], ("type_names", [f"{module}.{name}"]))
+                    if not isinstance(answer, Ok):
+                        message = str(answer.msg)
+                        if any(marker in message for marker in SKIPPED):
+                            continue
+                        print(f"{doc.name}: {module}.{name}: {message}", file=sys.stderr)
+                        failures += 1
+                        continue
+                    schema = json.loads(answer.ok_value, object_pairs_hook=OrderedDict)
+                    document = OrderedDict()
+                    document["$schema"] = schema.pop("$schema")
+                    document["$id"] = (
+                        f"https://example.com/{REPO.name}/"
+                        f"{(directory / f'{name}.schema.json').relative_to(REPO).as_posix()}")
+                    document["title"] = name
+                    document.update(schema)
+                    written.setdefault(directory, set()).add(f"{name}.schema.json")
+                    target = directory / f"{name}.schema.json"
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    target.write_text(
+                        json.dumps(document, ensure_ascii=False, indent=2) + "\n",
+                        encoding="utf-8")
+
+    if failures:
         return 1
-    directory = args.doc.parent / SCHEMA_DIR
-    write_schemas(directory, schemas)
-    args.doc.write_text(render(doc), encoding="utf-8")
-    print(f"{directory.name}/: wrote {len(schemas)} schema(s): {', '.join(name for name, _ in schemas)}")
+    for directory, names in sorted(written.items()):
+        directory.mkdir(parents=True, exist_ok=True)
+        for stale in directory.glob("*.schema.json"):
+            if stale.name not in names:
+                stale.unlink()
+        listing = ", ".join(sorted(name.removesuffix(".schema.json") for name in names))
+        print(f"{directory.relative_to(ROOT)}/: {len(names)} schema(s): {listing}")
     return 0
 
 

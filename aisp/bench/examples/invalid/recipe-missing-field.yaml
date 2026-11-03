@@ -2,7 +2,7 @@ name: broken-recipe
 version: 0.1.0
 status: draft
 owner: nobody
-type: kvcache
+type: checkpoint
 bypass:
   what: [prefill]
   method: mixed

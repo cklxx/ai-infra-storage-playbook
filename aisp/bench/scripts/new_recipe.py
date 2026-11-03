@@ -2,7 +2,7 @@
 """Create a new recipe directory from recipes/_template.
 
 Usage:
-    python3 scripts/new_recipe.py kvcache-layered-cache
+    python3 scripts/new_recipe.py checkpoint-layered-cache
 
 The script copies the template, replaces the recipe name, and rewrites remaining
 placeholders as TODO markers. It does not invent values: every TODO has to be

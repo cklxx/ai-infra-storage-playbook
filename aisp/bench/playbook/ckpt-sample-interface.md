@@ -6,7 +6,7 @@
 
 只做转发：从 apis、configs、types 里 import，再把要发布的名字重新绑定一次。具体定义在下面三章各自的文件里。
 
-```bash
+```viba public
 import apis
 import configs
 import types
@@ -26,39 +26,40 @@ SampleConfigBase = configs.SampleConfigBase
 
 ## apis
 
-```bash
+```viba apis
 import configs
+import levels
 import types
 
 Start =
      types.RunRecord
   <- $spec (types.RunSpec * Hint[{ 这次评估的运行请求 }])
-  <- { 提交接口：请求交出去就返回，不等样本跑完。校验请求，按配置起一个样本进程，把运行标识与当前状态交回来；此时状态可能仍在排队或执行中，产物位置可能还缺 }
+  <- Hint[{ 提交接口：请求交出去就返回，不等样本跑完。校验请求，按配置起一个样本进程，把运行标识与当前状态交回来；此时状态可能仍在排队或执行中，产物位置可能还缺 }]
 
 Stop =
      types.RunRecord
   <- $run_id (str * Hint[{ 要停的那次运行 }])
-  <- { 取消接口：让服务停下这次运行，已经写完的产物保留。返回的记录状态为 cancelled；已经结束的运行原样交回，不报错 }
+  <- Hint[{ 取消接口：让服务停下这次运行，已经写完的产物保留。返回的记录状态为 cancelled；已经结束的运行原样交回，不报错 }]
 
 Query =
      types.RunRecord
   <- $run_id (str * Hint[{ 要查的那次运行 }])
-  <- { 查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度 }
+  <- Hint[{ 查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度 }]
 
 Execute =
      types.Artifacts
   <- $spec (types.RunSpec * Hint[{ 同一份运行请求 }])
-  <- { 执行接口：同一份请求同步跑到结束，返回时四份产物已经写完。它由 Start 在后台触发；Start 只拿到标识与状态，拿不到产物本身 }
+  <- Hint[{ 执行接口：同一份请求同步跑到结束，返回时四份产物已经写完。它由 Start 在后台触发；Start 只拿到标识与状态，拿不到产物本身 }]
 
 GetLevel =
-     types.Level
+     levels.Level
   <- $config (configs.SampleConfigBase * Hint[{ 样本配置 }])
-  <- { 导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给 }
+  <- Hint[{ 导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给 }]
 ```
 
 ## types
 
-```bash
+```viba types
 RunRecord =
   Object
   * $run_id (str * Hint[{ 服务分配的运行标识，查状态、取产物都用它 }])
@@ -150,15 +151,6 @@ MetadataCommitMetric = float * Hint[{ 分片元数据提交到可见的时长，
 
 WriteLatencyP99Metric = float * Hint[{ 单个写请求的 P99，毫秒 }]
 
-Level =
-  Oneof
-  | "S0" * Hint[{ 单机，最小参数规模；对齐基准 }]
-  | "S1" * Hint[{ 单机多卡或双机；引入并行切分与多 rank 并发 }]
-  | "S2" * Hint[{ 数十至百卡；引入网络与共享存储的争用 }]
-  | "S3" * Hint[{ 千卡；引入调度与故障恢复 }]
-  | "S4" * Hint[{ 万卡；实测上限 }]
-  | "S5" * Hint[{ 十万卡；外推目标 }]
-
 Failure =
   Object
   * $kind (str * Hint[{ 失败分类：environment、dependency、timeout、observation、assertion 等 }])
@@ -167,7 +159,9 @@ Failure =
 
 ## configs
 
-```bash
+```viba configs
+import observation
+
 SampleConfigBase =
   Object
   * $model (Model * Hint[{ 被评估的模型 }])
@@ -190,11 +184,11 @@ ObservationConfig =
   Object
   * $enabled (bool * Hint[{ 是否开观测 }])
   * $sample_rate (float * Hint[{ 采样率，0 到 1 }])
-  * $layers (list[str] * Hint[{ 采集层：app、sys、storage }])
+  * $layers (list[observation.ObservationLayer] * Hint[{ 采集层；至少两层，其中必须含 sys }])
 ```
 
 ## json schema
 
-接口的每个导出类型各有一份 JSON Schema，放在 [`json_schema/`](json_schema/) 下，文件名是导出名加 `.schema.json`。函数导出没有对应的 JSON 值，不生成文件。
+接口里的每个类型各有一份 JSON Schema，放在 [`json_schema/`](json_schema/) 下，文件名是类型名加 `.schema.json`。函数没有对应的 JSON 值，不生成文件。
 
-这些文件由 `scripts/export_json_schema.py` 从本文档的四个模块生成，不要手改。
+这些文件由 `scripts/export_json_schema.py` 从文档里的 viba 代码块生成，不要手改。

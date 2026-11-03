@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/MetadataCommitMetric.schema.json",
+  "title": "MetadataCommitMetric",
+  "$ref": "#/$defs/types.MetadataCommitMetric",
+  "$defs": {
+    "types.MetadataCommitMetric": {
+      "type": "number"
+    }
+  }
+}

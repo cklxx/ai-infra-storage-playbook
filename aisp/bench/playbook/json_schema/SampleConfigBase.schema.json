@@ -76,7 +76,7 @@
         "layers": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/observation.ObservationLayer"
           }
         }
       },
@@ -86,6 +86,19 @@
         "layers"
       ],
       "additionalProperties": false
+    },
+    "observation.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
     }
   }
 }

@@ -174,7 +174,7 @@
       "type": "string"
     },
     "tokens_generated": {
-      "description": "本次运行生成的 token 数。只有在评估 kvcache 时填写，用于核对每 token KV 写入字节。",
+      "description": "本次运行生成的 token 数。",
       "type": "integer",
       "minimum": 0
     },

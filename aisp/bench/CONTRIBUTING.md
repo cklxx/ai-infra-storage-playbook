@@ -22,7 +22,7 @@
 
 ## 新增一个配方的流程
 
-1. 复制 `recipes/_template/` 为目标目录，目录名用小写连字符，例如 `recipes/kvcache/`。
+1. 复制 `recipes/_template/` 为目标目录，目录名用小写连字符，例如 `recipes/checkpoint/`。
 2. 填 `recipe.yaml`。`bypass`、`fidelity_boundary`、`io_pattern_invariants`、`scaling_plan` 四项不允许留空，理由写在 `notes` 里。
 3. 填 `metrics.yaml`，只选 `metrics/registry.yaml` 已登记的指标；阈值写在 `tolerance`，键必须是 check 支持的度量项名。需要新指标时先加文档与登记表，再走评审。
 4. 填 `README.md`：目标、输入、输出、步骤、验收标准、负责人。步骤要能照着做，不写"参考某某实现"。

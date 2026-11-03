@@ -1,6 +1,6 @@
 {
   "run_id": "example-run-0001",
-  "recipe": "kvcache",
+  "recipe": "checkpoint",
   "window": {
     "start": "2026-10-30T10:00:00Z",
     "end": "2026-10-30T10:05:00Z"

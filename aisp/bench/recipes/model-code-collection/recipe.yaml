@@ -1,5 +1,5 @@
 # 模型代码收集。语料是本配方唯一的产物，因此这里的不变量描述的是语料的稳定性：
-# 下游 checkpoint/dataset 与 kvcache 的 IO 结论都建立在语料不变的前提上。
+# 下游 checkpoint 的 IO 结论都建立在语料不变的前提上。
 name: model-code-collection
 version: 0.1.0
 status: draft
