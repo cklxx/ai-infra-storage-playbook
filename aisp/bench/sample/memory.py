@@ -35,6 +35,9 @@ from .types import (
 ConfigLoader = Callable[[str], SampleConfigBase]
 ArtifactWriter = Callable[[str, RunSpec, SampleConfigBase, Artifacts], Artifacts]
 
+# 终态：到达后不再接受状态变更，stop() 也原样交回。
+_TERMINAL = ("completed", "failed", "cancelled", "rejected")
+
 
 def _default_artifact_writer(
     run_id: str, spec: RunSpec, config: SampleConfigBase, artifacts: Artifacts
@@ -110,18 +113,31 @@ class InMemorySampleService:
         return record
 
     def stop(self, run_id: str) -> RunRecord:
+        """取消一次尚未结束的运行；返回时状态已是 cancelled。
+
+        取消是请求，不是等待：在锁内立刻把状态翻成 cancelled 再返回，
+        不把「后台线程还没响应」暴露成 running。样本可能在下一个检查点才停，
+        但对外状态从这一刻起就是 cancelled。
+        """
+
         with self._lock:
             record = self._records.get(run_id)
             if record is None:
                 raise KeyError(run_id)
-            if record.state.tag in ("completed", "failed", "cancelled", "rejected"):
+            if record.state.tag in _TERMINAL:
                 return record
             event = self._cancel_events.get(run_id)
+            cancelled = RunRecord(
+                run_id=run_id,
+                state=Cancelled(),
+                progress=record.progress,
+                artifacts=record.artifacts,
+            )
+            self._records[run_id] = cancelled
 
         if event is not None:
             event.set()
-        # 后台线程会在下一个检查点把状态翻成 cancelled；调用方随后 Query 即可。
-        return self.query(run_id)
+        return cancelled
 
     def query(self, run_id: str) -> RunRecord:
         with self._lock:
@@ -136,8 +152,8 @@ class InMemorySampleService:
         runner = self._runners[spec.sample]
         metrics = list(runner(spec, config))
         artifacts = Artifacts(metrics=tuple(metrics), slo=())
-        # 落盘由 writer 完成；这里没有 run_id 概念，用 spec 的 sample 当占位。
-        return self._write_artifacts(f"sync-{spec.sample}", spec, config, artifacts)
+        # 同步执行没有对外运行标识；给 writer 一个不含 @ 与 . 的局部标识。
+        return self._write_artifacts(f"sync-{uuid.uuid4().hex}", spec, config, artifacts)
 
     # ------------------------------------------------------------------
     # 内部
@@ -154,8 +170,8 @@ class InMemorySampleService:
     def _run_background(
         self, run_id: str, spec: RunSpec, cancel_event: threading.Event
     ) -> None:
-        self._set_state(run_id, Running(), progress=WorkProgress(0, 0))
         try:
+            self._set_state(run_id, Running(), progress=WorkProgress(0, 0))
             if cancel_event.is_set():
                 self._set_state(run_id, Cancelled())
                 return
@@ -169,19 +185,24 @@ class InMemorySampleService:
                 self._set_state(run_id, Cancelled())
                 return
 
-            artifacts = Artifacts(metrics=tuple(metrics), slo=())
-            artifacts = self._write_artifacts(run_id, spec, config, artifacts)
+            artifacts = self._write_artifacts(run_id, spec, config, Artifacts(metrics=tuple(metrics)))
             self._set_state(
                 run_id,
                 Completed(),
                 progress=WorkProgress(len(metrics), max(1, len(metrics))),
                 artifacts=artifacts,
             )
-        except Exception as exc:  # noqa: BLE001 - 样本失败全部归类为 assertion
+        except TimeoutError as exc:
+            self._set_state(run_id, Failed(error=Failure(kind="timeout", detail=str(exc))))
+        except Exception as exc:  # noqa: BLE001 - 其余异常无法细分，归为 assertion
             self._set_state(
                 run_id,
                 Failed(error=Failure(kind="assertion", detail=f"{type(exc).__name__}: {exc}")),
             )
+        finally:
+            with self._lock:
+                self._threads.pop(run_id, None)
+                self._cancel_events.pop(run_id, None)
 
     def _set_state(
         self,
@@ -192,6 +213,9 @@ class InMemorySampleService:
     ) -> None:
         with self._lock:
             old = self._records[run_id]
+            # stop() 已把状态置为 cancelled；后台线程此时再上报 running 属于回退，丢弃。
+            if old.state.tag == "cancelled" and state.tag not in _TERMINAL:
+                return
             self._records[run_id] = RunRecord(
                 run_id=run_id,
                 state=state,

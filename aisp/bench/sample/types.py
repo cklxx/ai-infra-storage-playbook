@@ -10,7 +10,7 @@ oneof 在 JSON 里是单键对象：``{"queued": {...}}``、``{"running": null}`
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal, Optional, Union
+from typing import Any, ClassVar, Literal, Optional, Union
 
 # ---------------------------------------------------------------------------
 # 存储两层
@@ -97,16 +97,16 @@ class Failure:
 
 @dataclass(frozen=True)
 class Queued:
-    tag: Literal["queued"] = "queued"
-    queue: Optional[QueueProgress] = None
+    tag: ClassVar[str] = "queued"
+    queue: QueueProgress
 
     def to_json(self) -> dict[str, Any]:
-        return {"queued": self.queue.to_json() if self.queue else {"pos": 0, "len": 0}}
+        return {"queued": self.queue.to_json()}
 
 
 @dataclass(frozen=True)
 class Running:
-    tag: Literal["running"] = "running"
+    tag: ClassVar[str] = "running"
 
     def to_json(self) -> dict[str, Any]:
         return {"running": None}
@@ -114,7 +114,7 @@ class Running:
 
 @dataclass(frozen=True)
 class Completed:
-    tag: Literal["completed"] = "completed"
+    tag: ClassVar[str] = "completed"
 
     def to_json(self) -> dict[str, Any]:
         return {"completed": None}
@@ -122,7 +122,7 @@ class Completed:
 
 @dataclass(frozen=True)
 class Failed:
-    tag: Literal["failed"] = "failed"
+    tag: ClassVar[str] = "failed"
     error: Failure = field(default_factory=lambda: Failure(kind="assertion", detail=""))
 
     def to_json(self) -> dict[str, Any]:
@@ -131,7 +131,7 @@ class Failed:
 
 @dataclass(frozen=True)
 class Rejected:
-    tag: Literal["rejected"] = "rejected"
+    tag: ClassVar[str] = "rejected"
     error: Failure = field(default_factory=lambda: Failure(kind="assertion", detail=""))
 
     def to_json(self) -> dict[str, Any]:
@@ -140,7 +140,7 @@ class Rejected:
 
 @dataclass(frozen=True)
 class Cancelled:
-    tag: Literal["cancelled"] = "cancelled"
+    tag: ClassVar[str] = "cancelled"
 
     def to_json(self) -> dict[str, Any]:
         return {"cancelled": None}
@@ -150,21 +150,24 @@ State = Union[Queued, Running, Completed, Failed, Rejected, Cancelled]
 
 
 def state_from_json(raw: dict[str, Any]) -> State:
-    """按单键对象的键名还原 State。"""
+    """按单键对象的键名还原 State；多键与未知键都拒绝。"""
 
-    if "queued" in raw:
-        return Queued(queue=QueueProgress(**raw["queued"]))
-    if "running" in raw:
+    if len(raw) != 1:
+        raise ValueError(f"State 必须是单键对象，得到 {sorted(raw)}")
+    key, value = next(iter(raw.items()))
+    if key == "queued":
+        return Queued(queue=QueueProgress(**value))
+    if key == "running":
         return Running()
-    if "completed" in raw:
+    if key == "completed":
         return Completed()
-    if "failed" in raw:
-        return Failed(error=Failure.from_json(raw["failed"]))
-    if "rejected" in raw:
-        return Rejected(error=Failure.from_json(raw["rejected"]))
-    if "cancelled" in raw:
+    if key == "failed":
+        return Failed(error=Failure.from_json(value))
+    if key == "rejected":
+        return Rejected(error=Failure.from_json(value))
+    if key == "cancelled":
         return Cancelled()
-    raise ValueError(f"未知状态键: {sorted(raw)}")
+    raise ValueError(f"未知状态键: {key!r}")
 
 
 # ---------------------------------------------------------------------------
@@ -183,7 +186,7 @@ WriteLatencyP99Metric = float     # 单个写请求 P99，毫秒
 
 @dataclass(frozen=True)
 class CheckPointDuration:
-    tag: Literal["check_point_duration_sli"] = "check_point_duration_sli"
+    tag: ClassVar[str] = "check_point_duration_sli"
     value: CheckPointDurationMetric = 0.0
 
     def to_json(self) -> dict[str, Any]:
@@ -192,7 +195,7 @@ class CheckPointDuration:
 
 @dataclass(frozen=True)
 class TrainingStall:
-    tag: Literal["training_stall_sli"] = "training_stall_sli"
+    tag: ClassVar[str] = "training_stall_sli"
     value: TrainingStallMetric = 0.0
 
     def to_json(self) -> dict[str, Any]:
@@ -201,7 +204,7 @@ class TrainingStall:
 
 @dataclass(frozen=True)
 class RestoreDuration:
-    tag: Literal["restore_duration_sli"] = "restore_duration_sli"
+    tag: ClassVar[str] = "restore_duration_sli"
     value: RestoreDurationMetric = 0.0
 
     def to_json(self) -> dict[str, Any]:
@@ -210,7 +213,7 @@ class RestoreDuration:
 
 @dataclass(frozen=True)
 class WriteThroughput:
-    tag: Literal["write_throughput_sli"] = "write_throughput_sli"
+    tag: ClassVar[str] = "write_throughput_sli"
     value: WriteThroughputMetric = 0.0
 
     def to_json(self) -> dict[str, Any]:
@@ -219,7 +222,7 @@ class WriteThroughput:
 
 @dataclass(frozen=True)
 class MetadataCommit:
-    tag: Literal["metadata_commit_sli"] = "metadata_commit_sli"
+    tag: ClassVar[str] = "metadata_commit_sli"
     value: MetadataCommitMetric = 0.0
 
     def to_json(self) -> dict[str, Any]:
@@ -228,7 +231,7 @@ class MetadataCommit:
 
 @dataclass(frozen=True)
 class WriteLatencyP99:
-    tag: Literal["write_latency_p99_sli"] = "write_latency_p99_sli"
+    tag: ClassVar[str] = "write_latency_p99_sli"
     value: WriteLatencyP99Metric = 0.0
 
     def to_json(self) -> dict[str, Any]:
@@ -297,7 +300,7 @@ class MetricGE:
 # 每个 SLO 绑定一个 SLI 类型；键名带 _slo 后缀。
 @dataclass(frozen=True)
 class CkptSloCheckpointDuration:
-    tag: Literal["check_point_duration_slo"] = "check_point_duration_slo"
+    tag: ClassVar[str] = "check_point_duration_slo"
     verdict: MetricLE = field(default_factory=lambda: MetricLE(0.0, 0.0))
 
     def to_json(self) -> dict[str, Any]:
@@ -306,7 +309,7 @@ class CkptSloCheckpointDuration:
 
 @dataclass(frozen=True)
 class CkptSloTrainingStall:
-    tag: Literal["training_stall_slo"] = "training_stall_slo"
+    tag: ClassVar[str] = "training_stall_slo"
     verdict: MetricLE = field(default_factory=lambda: MetricLE(0.0, 0.0))
 
     def to_json(self) -> dict[str, Any]:
@@ -315,7 +318,7 @@ class CkptSloTrainingStall:
 
 @dataclass(frozen=True)
 class CkptSloRestoreDuration:
-    tag: Literal["restore_duration_slo"] = "restore_duration_slo"
+    tag: ClassVar[str] = "restore_duration_slo"
     verdict: MetricLE = field(default_factory=lambda: MetricLE(0.0, 0.0))
 
     def to_json(self) -> dict[str, Any]:
@@ -324,7 +327,7 @@ class CkptSloRestoreDuration:
 
 @dataclass(frozen=True)
 class CkptSloWriteThroughput:
-    tag: Literal["write_throughput_slo"] = "write_throughput_slo"
+    tag: ClassVar[str] = "write_throughput_slo"
     verdict: MetricGE = field(default_factory=lambda: MetricGE(0.0, 0.0))
 
     def to_json(self) -> dict[str, Any]:
@@ -333,7 +336,7 @@ class CkptSloWriteThroughput:
 
 @dataclass(frozen=True)
 class CkptSloMetadataCommit:
-    tag: Literal["metadata_commit_slo"] = "metadata_commit_slo"
+    tag: ClassVar[str] = "metadata_commit_slo"
     verdict: MetricLE = field(default_factory=lambda: MetricLE(0.0, 0.0))
 
     def to_json(self) -> dict[str, Any]:
@@ -342,7 +345,7 @@ class CkptSloMetadataCommit:
 
 @dataclass(frozen=True)
 class CkptSloWriteLatencyP99:
-    tag: Literal["write_latency_p99_slo"] = "write_latency_p99_slo"
+    tag: ClassVar[str] = "write_latency_p99_slo"
     verdict: MetricLE = field(default_factory=lambda: MetricLE(0.0, 0.0))
 
     def to_json(self) -> dict[str, Any]:

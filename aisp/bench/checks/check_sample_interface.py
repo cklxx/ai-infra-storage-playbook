@@ -168,17 +168,16 @@ def check_start_and_query() -> list[tuple[str, bool]]:
     return out
 
 
-def check_stop() -> list[tuple[str, bool]]:
-    import threading
-
-    release = threading.Event()
-
+def _slow_service(release: "object") -> InMemorySampleService:
     def slow_runner(spec, config):
-        release.wait(timeout=5.0)
+        release.wait(timeout=5.0)  # type: ignore[attr-defined]
         return []
 
-    svc = InMemorySampleService(runners={"slow@0.1.0": slow_runner}, config_loader=_loader)
-    record = svc.start(RunSpec(
+    return InMemorySampleService(runners={"slow@0.1.0": slow_runner}, config_loader=_loader)
+
+
+def _stop_spec() -> RunSpec:
+    return RunSpec(
         sample="slow@0.1.0",
         config="tiny-64-s0",
         storage=StorageLayer(
@@ -186,18 +185,57 @@ def check_stop() -> list[tuple[str, bool]]:
             adapter=Component(name="torchstore", version="0.2"),
         ),
         seed=1,
-    ))
-    time.sleep(0.1)
-    svc.stop(record.run_id)
+    )
+
+
+def check_stop() -> list[tuple[str, bool]]:
+    import threading
+
+    release = threading.Event()
+
+    # 1) 运行中取消：stop 返回时状态必须已经是 cancelled。
+    svc = _slow_service(release)
+    record = svc.start(_stop_spec())
+    time.sleep(0.1)  # 让后台线程进入 running
+    stopped = svc.stop(record.run_id)
     release.set()
+    out = [("stop during running returns cancelled", stopped.state.tag == "cancelled")]
 
+    # 2) 排队期立刻取消：旧实现会返回 running，这里必须直接 cancelled。
+    release2 = threading.Event()
+    svc2 = _slow_service(release2)
+    record2 = svc2.start(_stop_spec())
+    immediate = svc2.stop(record2.run_id)
+    release2.set()
+    out.append(("stop immediately after start returns cancelled", immediate.state.tag == "cancelled"))
+
+    # 3) 已结束的运行原样交回，不报错。
+    svc3 = _service()
+    done = svc3.start(_spec())
     deadline = time.time() + 3.0
-    final = svc.query(record.run_id)
-    while time.time() < deadline and final.state.tag == "running":
-        time.sleep(0.05)
-        final = svc.query(record.run_id)
+    while time.time() < deadline and svc3.query(done.run_id).state.tag != "completed":
+        time.sleep(0.02)
+    out.append(("stop on completed run returns it unchanged", svc3.stop(done.run_id).state.tag == "completed"))
+    return out
 
-    return [("stop flips state to cancelled", final.state.tag == "cancelled")]
+
+def check_strict_decoding() -> list[tuple[str, bool]]:
+    """反序列化必须拒绝多键与未知键，不能静默取第一个。"""
+
+    from sample.types import ckpt_sli_from_json, state_from_json
+
+    def rejects(fn, raw) -> bool:
+        try:
+            fn(raw)
+            return False
+        except (ValueError, TypeError):
+            return True
+
+    return [
+        ("state with two keys is rejected", rejects(state_from_json, {"running": None, "completed": None})),
+        ("state with unknown key is rejected", rejects(state_from_json, {"bogus": None})),
+        ("SLI with two keys is rejected", rejects(ckpt_sli_from_json, {"check_point_duration_sli": 1.0, "bogus": 2})),
+    ]
 
 
 def check_rejected() -> list[tuple[str, bool]]:
@@ -282,6 +320,7 @@ def main() -> int:
         check_execute(),
         check_start_and_query(),
         check_stop(),
+        check_strict_decoding(),
         check_rejected(),
         check_schema(),
     ]

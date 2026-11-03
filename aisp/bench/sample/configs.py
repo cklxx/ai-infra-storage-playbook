@@ -105,8 +105,8 @@ class SampleConfigBase:
 
 # 供 GetLevel 使用的默认 scaling 阶梯。配方可以在自己的 scaling_plan 里覆盖。
 # 边界按总卡数：S0 单机最小，S1 单机多卡或双机，S2 数十至百卡，S3 千卡，S4 万卡，S5 十万卡。
+# S0 由 resolve_level 的 nodes == 1 分支处理，不进这张表。
 DEFAULT_LEVEL_BOUNDARIES: tuple[tuple[int, str], ...] = (
-    (0, "S0"),     # 仅当 nodes == 1 时在此档，见 resolve_level
     (8, "S1"),     # 8..255 卡
     (256, "S2"),   # 256..1023
     (1024, "S3"),  # 1024..9999

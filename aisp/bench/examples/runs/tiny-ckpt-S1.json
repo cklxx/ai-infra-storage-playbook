@@ -1,28 +1,25 @@
 {
-  "level": "S1",
-  "artifacts": {
-    "manifest": "memory://runs/sync-tiny-ckpt@0.1.0/manifest.json",
-    "metrics": [
-      {
-        "check_point_duration_sli": 0.09105516411364079
-      },
-      {
-        "training_stall_sli": 0.09105516411364079
-      },
-      {
-        "restore_duration_sli": 0.015132378786802292
-      },
-      {
-        "write_throughput_sli": 737013267.2128868
-      },
-      {
-        "metadata_commit_sli": 1.5247892588377
-      },
-      {
-        "write_latency_p99_sli": 1.2646690011024475
-      }
-    ],
-    "slo": [],
-    "report": "memory://runs/sync-tiny-ckpt@0.1.0/report.html"
-  }
+  "manifest": "memory://runs/sync-c0beb363c0bd44ca960d0a5d51f19eb2/manifest.json",
+  "metrics": [
+    {
+      "check_point_duration_sli": 0.08367063850164413
+    },
+    {
+      "training_stall_sli": 0.08367063850164413
+    },
+    {
+      "restore_duration_sli": 0.2581245228648186
+    },
+    {
+      "write_throughput_sli": 802059900.602782
+    },
+    {
+      "metadata_commit_sli": 3.1701605767011642
+    },
+    {
+      "write_latency_p99_sli": 1.019144430756569
+    }
+  ],
+  "slo": [],
+  "report": "memory://runs/sync-c0beb363c0bd44ca960d0a5d51f19eb2/report.html"
 }

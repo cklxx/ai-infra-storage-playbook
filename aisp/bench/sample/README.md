@@ -63,9 +63,18 @@ python3 checks/check_sample_interface.py
 
 27 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled、非法样本 Rejected、MetricLE/GE 判定，以及六份 schema 的逐类型校验。
 
+## 测量口径
+
+- **恢复是冷读**：读每个分片前先 `POSIX_FADV_DONTNEED` 丢页缓存，否则测到的是页缓存而不是存储。热读与冷读在同一台 64 核机上差 17–26 倍。
+- **工作目录跟随 mount**：`nfs` / `fuse` 必须用 `TINY_CKPT_ROOT` 指向真实挂载点，不给就报错，不允许默默写本地盘。`local-nvme` 走临时目录。
+- **写入是同步模式**：`training_stall_sli` 因此等于 `check_point_duration_sli`。异步写入与计算重叠的场景不在本样本范围内。
+- **元数据提交**测的是「全部分片 fsync + 清单 fsync」，不是单个文件的 fsync。
+
 ## 边界
 
 - 这是**样本接口**的落地，不是评估服务的 HTTP 层。HTTP/CLI 适配在 `playbook/evaluation-service.md`，后续再做。
 - `InMemorySampleService` 只用于开发期自检：不做进程隔离，产物路径是 `memory://` 占位，生产实现要替换 `artifact_writer` 落对象存储。
 - S0–S5 阶梯的默认阈值在 `configs.py`；配方要覆盖时由 `get_level` 注入自己的阶梯，不在代码里写死。
 - `Topology` 的 `network` / `mount` 用 `Literal` 收窄，比 schema 的 `string` 更严；schema 只约束类型，取值约束来自文档 Hint。
+- `start()` 只登记请求就返回；`stop()` 是取消请求，返回时状态已是 `cancelled`，但样本本身可能还跑到下一个检查点。
+- `public` 层的 `Start` / `Stop` 等是 `SampleService` 的转发引用，使用时要带实例：`Start(svc, spec)`。

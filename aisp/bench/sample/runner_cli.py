@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """命令行入口：读 RunSpec JSON + SampleConfigBase JSON，跑一次并落盘 Artifacts。
 
+`--out` 写的是纯 Artifacts，可直接用 Artifacts.schema.json 校验。
+等级不写进产物（schema 里没有这个字段），打到 stderr。
+
 用法：
     python3 -m sample.runner_cli --spec spec.json --config config.json --out artifacts.json
 """
@@ -12,62 +15,16 @@ import json
 import sys
 from pathlib import Path
 
-from . import (
-    Component,
-    InMemorySampleService,
-    Model,
-    ObservationConfig,
-    RunSpec,
-    SampleConfigBase,
-    StorageLayer,
-    Topology,
-)
+from . import InMemorySampleService, RunSpec, SampleConfigBase
 from .samples import tiny_ckpt
 
 
 def load_spec(path: Path) -> RunSpec:
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    return RunSpec(
-        sample=raw["sample"],
-        config=raw["config"],
-        storage=StorageLayer(
-            backend=Component(
-                name=raw["storage"]["backend"]["name"],
-                version=raw["storage"]["backend"]["version"],
-                git_commit_id=raw["storage"]["backend"].get("git_commit_id"),
-            ),
-            adapter=Component(
-                name=raw["storage"]["adapter"]["name"],
-                version=raw["storage"]["adapter"]["version"],
-                git_commit_id=raw["storage"]["adapter"].get("git_commit_id"),
-            ),
-        ),
-        seed=raw["seed"],
-    )
+    return RunSpec.from_json(json.loads(path.read_text(encoding="utf-8")))
 
 
 def load_config(path: Path) -> SampleConfigBase:
-    raw = json.loads(path.read_text(encoding="utf-8"))
-    return SampleConfigBase(
-        model=Model(id=raw["model"]["id"], git_commit_id=raw["model"]["git_commit_id"]),
-        topology=Topology(
-            nodes=raw["topology"]["nodes"],
-            gpus_per_node=raw["topology"]["gpus_per_node"],
-            network=raw["topology"]["network"],
-            mount=raw["topology"]["mount"],
-        ),
-        observe=ObservationConfig(
-            enabled=raw["observe"]["enabled"],
-            sample_rate=raw["observe"]["sample_rate"],
-            layers=tuple(raw["observe"]["layers"]),
-        ),
-    )
-
-
-def artifacts_to_json(artifacts, level: str) -> dict:
-    """外层带 level 元信息；artifacts 子对象直接符合 Artifacts.schema.json。"""
-
-    return {"level": level, "artifacts": artifacts.to_json()}
+    return SampleConfigBase.from_json(json.loads(path.read_text(encoding="utf-8")))
 
 
 def main() -> int:
@@ -87,8 +44,10 @@ def main() -> int:
     level = svc.get_level(config)
     artifacts = svc.execute(spec)
 
-    payload = artifacts_to_json(artifacts, level)
-    args.out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    args.out.write_text(
+        json.dumps(artifacts.to_json(), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
     print(json.dumps({"ok": True, "level": level, "out": str(args.out)}, ensure_ascii=False))
     return 0
 
