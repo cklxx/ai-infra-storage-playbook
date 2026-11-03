@@ -54,26 +54,26 @@ def _workdir(config: SampleConfigBase) -> Path:
 def _write_one_rank(
     rank_id: int,
     directory: Path,
-    total_bytes: int,
+    buf: bytes,
     write_latencies_ms: list[float],
     latencies_lock: threading.Lock,
 ) -> int:
-    """一个 rank 写自己的分片；返回实际写入字节数。不做全局 sync。"""
+    """一个 rank 写自己的分片，复用调用方预生成的 buf。
+
+    buf 预生成后写路径上不再调 os.urandom，否则 write 延迟里会混入随机数生成。
+    """
 
     target = directory / f"rank-{rank_id:05d}.bin"
-    remaining = total_bytes
     written = 0
     with open(target, "wb", buffering=0) as handle:
-        while remaining > 0:
-            chunk = min(WRITE_CHUNK, remaining)
-            buf = os.urandom(chunk)
+        for off in range(0, len(buf), WRITE_CHUNK):
+            piece = buf[off:off + WRITE_CHUNK]
             t0 = time.perf_counter()
-            handle.write(buf)
+            handle.write(piece)
             t1 = time.perf_counter()
             with latencies_lock:
                 write_latencies_ms.append((t1 - t0) * 1000.0)
-            written += chunk
-            remaining -= chunk
+            written += len(piece)
         os.fsync(handle.fileno())
     return written
 
@@ -128,14 +128,16 @@ def runner(spec: RunSpec, config: SampleConfigBase) -> list:
     workdir = _workdir(config)
     latencies: list[float] = []
     lock = threading.Lock()
+    # 一次性预生成分片内容；写路径上不再调 os.urandom，p99 才是纯写延迟。
+    shard_buf = os.urandom(BYTES_PER_RANK)
 
     try:
-        # ---- 同步写入：所有 rank 并发写，主线程等全部完成 ----
+        # ---- 同步写入：每个 rank 一个线程，不做并发度封顶 ----
         t_write_start = time.perf_counter()
-        with ThreadPoolExecutor(max_workers=min(rank_count, 32)) as pool:
+        with ThreadPoolExecutor(max_workers=rank_count) as pool:
             list(
                 pool.map(
-                    lambda r: _write_one_rank(r, workdir, BYTES_PER_RANK, latencies, lock),
+                    lambda r: _write_one_rank(r, workdir, shard_buf, latencies, lock),
                     range(rank_count),
                 )
             )

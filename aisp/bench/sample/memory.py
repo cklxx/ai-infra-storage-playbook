@@ -6,7 +6,6 @@ Start 在后台线程里跑 Execute，Query/Stop 通过锁与事件同步状态�
 
 from __future__ import annotations
 
-import itertools
 import threading
 import time
 import uuid
@@ -73,7 +72,6 @@ class InMemorySampleService:
         self._records: Dict[str, RunRecord] = {}
         self._cancel_events: Dict[str, threading.Event] = {}
         self._threads: Dict[str, threading.Thread] = {}
-        self._queue_order = itertools.count(1)
 
     # ------------------------------------------------------------------
     # SampleService
@@ -95,10 +93,11 @@ class InMemorySampleService:
             return record
 
         with self._lock:
-            pos = next(self._queue_order)
             record = RunRecord(
                 run_id=run_id,
-                state=Queued(queue=QueueProgress(pos=pos, len=pos)),
+                # 内存实现没有等待队列：start 后立即起线程。pos/len 恒为 0，
+                # 表示「刚登记、不排队」，不是编造一个排队位置。
+                state=Queued(queue=QueueProgress(pos=0, len=0)),
                 progress=WorkProgress(0, 0),
             )
             self._records[run_id] = record
