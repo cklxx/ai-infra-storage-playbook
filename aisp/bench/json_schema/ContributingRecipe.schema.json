@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipe.schema.json",
   "title": "ContributingRecipe",
-  "$ref": "#/$defs/contributing.ContributingRecipe",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipe",
   "$defs": {
-    "contributing.ContributingRecipe": {
+    "aisp.bench.contributing.contributing.ContributingRecipe": {
       "type": "object",
       "properties": {
         "name": {
@@ -13,13 +13,13 @@
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingRecipeFile"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFile"
           }
         },
         "required_fields": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingRecipeRequiredField"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeRequiredField"
           }
         },
         "notes": {
@@ -38,11 +38,11 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingRecipeFile": {
+    "aisp.bench.contributing.contributing.ContributingRecipeFile": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/contributing.ContributingRecipeFileKind"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFileKind"
         },
         "path": {
           "type": "string"
@@ -58,7 +58,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingRecipeFileKind": {
+    "aisp.bench.contributing.contributing.ContributingRecipeFileKind": {
       "oneOf": [
         {
           "const": "recipe_yaml"
@@ -74,7 +74,7 @@
         }
       ]
     },
-    "contributing.ContributingRecipeRequiredField": {
+    "aisp.bench.contributing.contributing.ContributingRecipeRequiredField": {
       "oneOf": [
         {
           "const": "bypass"

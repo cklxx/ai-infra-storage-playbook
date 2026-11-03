@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionAcceptance.schema.json",
   "title": "CollectionAcceptance",
-  "$ref": "#/$defs/collection.CollectionAcceptance",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAcceptance",
   "$defs": {
-    "collection.CollectionAcceptance": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAcceptance": {
       "type": "object",
       "properties": {
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/collection.CollectionAcceptanceMetric"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAcceptanceMetric"
           }
         },
         "checker": {
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionAcceptanceMetric": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAcceptanceMetric": {
       "oneOf": [
         {
           "const": "inference_code_count"

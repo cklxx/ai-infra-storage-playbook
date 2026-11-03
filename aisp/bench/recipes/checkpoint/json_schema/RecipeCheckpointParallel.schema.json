@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointParallel.schema.json",
   "title": "RecipeCheckpointParallel",
-  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallel",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallel",
   "$defs": {
-    "recipe_checkpoint.RecipeCheckpointParallel": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallel": {
       "type": "object",
       "properties": {
         "dp": {

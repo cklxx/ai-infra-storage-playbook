@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesRoleRule.schema.json",
   "title": "PrinciplesRoleRule",
-  "$ref": "#/$defs/principles.PrinciplesRoleRule",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRoleRule",
   "$defs": {
-    "principles.PrinciplesRoleRule": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesRoleRule": {
       "oneOf": [
         {
           "const": "allow_concurrent"

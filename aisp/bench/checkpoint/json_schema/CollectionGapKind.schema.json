@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionGapKind.schema.json",
   "title": "CollectionGapKind",
-  "$ref": "#/$defs/collection.CollectionGapKind",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionGapKind",
   "$defs": {
-    "collection.CollectionGapKind": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionGapKind": {
       "oneOf": [
         {
           "const": "unknown_code_role"

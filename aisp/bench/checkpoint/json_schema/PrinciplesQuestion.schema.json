@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesQuestion.schema.json",
   "title": "PrinciplesQuestion",
-  "$ref": "#/$defs/principles.PrinciplesQuestion",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesQuestion",
   "$defs": {
-    "principles.PrinciplesQuestion": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesQuestion": {
       "oneOf": [
         {
           "const": "what"

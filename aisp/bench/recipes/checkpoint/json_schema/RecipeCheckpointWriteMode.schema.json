@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointWriteMode.schema.json",
   "title": "RecipeCheckpointWriteMode",
-  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointWriteMode",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointWriteMode",
   "$defs": {
-    "recipe_checkpoint.RecipeCheckpointWriteMode": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointWriteMode": {
       "oneOf": [
         {
           "const": "sync"

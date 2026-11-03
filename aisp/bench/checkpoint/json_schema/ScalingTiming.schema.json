@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingTiming.schema.json",
   "title": "ScalingTiming",
-  "$ref": "#/$defs/scaling.ScalingTiming",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingTiming",
   "$defs": {
-    "scaling.ScalingTiming": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingTiming": {
       "type": "object",
       "properties": {
         "mode": {
-          "$ref": "#/$defs/scaling.ScalingWriteMode"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingWriteMode"
         },
         "bandwidth_demand": {
           "type": "number"
@@ -28,7 +28,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling.ScalingWriteMode": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingWriteMode": {
       "oneOf": [
         {
           "const": "sync"

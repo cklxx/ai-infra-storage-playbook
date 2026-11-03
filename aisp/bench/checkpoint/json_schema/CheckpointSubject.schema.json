@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointSubject.schema.json",
   "title": "CheckpointSubject",
-  "$ref": "#/$defs/checkpoint.CheckpointSubject",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointSubject",
   "$defs": {
-    "checkpoint.CheckpointSubject": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointSubject": {
       "type": "object",
       "properties": {
         "implementation": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "sharding": {
           "type": "string"
@@ -16,13 +16,13 @@
         "write_features": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointWriteFeature"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointWriteFeature"
           }
         },
         "read_features": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointReadFeature"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointReadFeature"
           }
         }
       },
@@ -34,7 +34,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {
@@ -61,7 +61,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointWriteFeature": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointWriteFeature": {
       "oneOf": [
         {
           "const": "total_bytes"
@@ -86,7 +86,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointReadFeature": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointReadFeature": {
       "oneOf": [
         {
           "const": "overlap_with_training_start"

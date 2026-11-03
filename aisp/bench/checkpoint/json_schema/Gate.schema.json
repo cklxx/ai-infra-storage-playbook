@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Gate.schema.json",
   "title": "Gate",
-  "$ref": "#/$defs/gates.Gate",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate",
   "$defs": {
-    "gates.Gate": {
+    "aisp.bench.checkpoint.methodology.gates.Gate": {
       "oneOf": [
         {
           "const": "G0"

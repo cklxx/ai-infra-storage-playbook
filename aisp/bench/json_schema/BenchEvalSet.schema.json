@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchEvalSet.schema.json",
   "title": "BenchEvalSet",
-  "$ref": "#/$defs/bench.BenchEvalSet",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSet",
   "$defs": {
-    "bench.BenchEvalSet": {
+    "aisp.bench.readme.bench.BenchEvalSet": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/bench.BenchSubject"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
         },
         "entry": {
           "oneOf": [
             {
-              "$ref": "#/$defs/bench.BenchEvalSetEntry"
+              "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSetEntry"
             },
             {
               "type": "null"
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchSubject": {
+    "aisp.bench.readme.bench.BenchSubject": {
       "oneOf": [
         {
           "const": "model_code_collection"
@@ -43,7 +43,7 @@
         }
       ]
     },
-    "bench.BenchEvalSetEntry": {
+    "aisp.bench.readme.bench.BenchEvalSetEntry": {
       "type": "object",
       "properties": {
         "version": {

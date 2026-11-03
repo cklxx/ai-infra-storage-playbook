@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyReproducibilityItem.schema.json",
   "title": "MethodologyReproducibilityItem",
-  "$ref": "#/$defs/methodology.MethodologyReproducibilityItem",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyReproducibilityItem",
   "$defs": {
-    "methodology.MethodologyReproducibilityItem": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyReproducibilityItem": {
       "oneOf": [
         {
           "const": "model_code"

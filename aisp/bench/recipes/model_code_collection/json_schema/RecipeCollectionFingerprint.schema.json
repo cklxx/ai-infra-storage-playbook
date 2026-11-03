@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionFingerprint.schema.json",
+  "title": "RecipeCollectionFingerprint",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFingerprint",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFingerprint": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "code": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "config",
+        "code"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

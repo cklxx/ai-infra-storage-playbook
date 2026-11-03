@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/tiny_model/json_schema/TinyModelSample.schema.json",
+  "title": "TinyModelSample",
+  "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelSample",
+  "$defs": {
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelSample": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelPurpose"
+          }
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelFile"
+          }
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelCheck"
+          }
+        },
+        "manifest": {
+          "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelManifestEntry"
+        },
+        "evaluation_target": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "path",
+        "purpose",
+        "files",
+        "checks",
+        "manifest",
+        "evaluation_target"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelPurpose": {
+      "oneOf": [
+        {
+          "const": "manifest_fields_demo"
+        },
+        {
+          "const": "check_input"
+        },
+        {
+          "const": "onboarding"
+        }
+      ]
+    },
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelFile": {
+      "oneOf": [
+        {
+          "const": "config"
+        },
+        {
+          "const": "modeling"
+        },
+        {
+          "const": "manifest_entry"
+        }
+      ]
+    },
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelCheck": {
+      "oneOf": [
+        {
+          "const": "config_json"
+        },
+        {
+          "const": "manifest_entry_json"
+        },
+        {
+          "const": "modeling_forward"
+        }
+      ]
+    },
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelManifestEntry": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "path",
+        "schema"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

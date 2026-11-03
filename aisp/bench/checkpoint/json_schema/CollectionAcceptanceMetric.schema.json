@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionAcceptanceMetric.schema.json",
   "title": "CollectionAcceptanceMetric",
-  "$ref": "#/$defs/collection.CollectionAcceptanceMetric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAcceptanceMetric",
   "$defs": {
-    "collection.CollectionAcceptanceMetric": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAcceptanceMetric": {
       "oneOf": [
         {
           "const": "inference_code_count"

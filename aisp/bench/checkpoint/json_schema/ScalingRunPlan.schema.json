@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingRunPlan.schema.json",
   "title": "ScalingRunPlan",
-  "$ref": "#/$defs/scaling.ScalingRunPlan",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingRunPlan",
   "$defs": {
-    "scaling.ScalingRunPlan": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingRunPlan": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/scaling.ScalingDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingDimension"
         },
         "fixed": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling.ScalingFixedDimension"
+            "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingFixedDimension"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling.ScalingDimension": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingDimension": {
       "oneOf": [
         {
           "const": "model_scale"
@@ -42,11 +42,11 @@
         }
       ]
     },
-    "scaling.ScalingFixedDimension": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingFixedDimension": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/scaling.ScalingDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingDimension"
         },
         "value": {
           "type": "string"

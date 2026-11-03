@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionCoverage.schema.json",
   "title": "CollectionCoverage",
-  "$ref": "#/$defs/collection.CollectionCoverage",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverage",
   "$defs": {
-    "collection.CollectionCoverage": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverage": {
       "type": "object",
       "properties": {
         "cells": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/collection.CollectionCoverageCell"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageCell"
           }
         },
         "gaps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/collection.CollectionGap"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionGap"
           }
         }
       },
@@ -26,11 +26,11 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionCoverageCell": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageCell": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/collection.CollectionCoverageDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageDimension"
         },
         "bucket": {
           "type": "string"
@@ -46,7 +46,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionCoverageDimension": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"
@@ -59,11 +59,11 @@
         }
       ]
     },
-    "collection.CollectionGap": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionGap": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/collection.CollectionGapKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionGapKind"
         },
         "detail": {
           "type": "string"
@@ -75,7 +75,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionGapKind": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionGapKind": {
       "oneOf": [
         {
           "const": "unknown_code_role"

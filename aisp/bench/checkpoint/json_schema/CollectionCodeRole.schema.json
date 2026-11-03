@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionCodeRole.schema.json",
   "title": "CollectionCodeRole",
-  "$ref": "#/$defs/collection.CollectionCodeRole",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeRole",
   "$defs": {
-    "collection.CollectionCodeRole": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeRole": {
       "oneOf": [
         {
           "const": "inference"

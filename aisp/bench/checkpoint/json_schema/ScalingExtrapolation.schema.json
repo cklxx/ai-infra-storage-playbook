@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingExtrapolation.schema.json",
   "title": "ScalingExtrapolation",
-  "$ref": "#/$defs/scaling.ScalingExtrapolation",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingExtrapolation",
   "$defs": {
-    "scaling.ScalingExtrapolation": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingExtrapolation": {
       "type": "object",
       "properties": {
         "from_level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "to_level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "rules": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling.ScalingExtrapolationRule"
+            "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingExtrapolationRule"
           }
         },
         "saturated": {
@@ -26,7 +26,7 @@
           "type": "string"
         },
         "timing": {
-          "$ref": "#/$defs/scaling.ScalingTiming"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingTiming"
         },
         "tail_latency": {
           "type": "string"
@@ -34,7 +34,7 @@
         "nonlinear_sources": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling.ScalingNonlinearSource"
+            "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingNonlinearSource"
           }
         },
         "prediction": {
@@ -58,7 +58,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -80,7 +80,7 @@
         }
       ]
     },
-    "scaling.ScalingExtrapolationRule": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingExtrapolationRule": {
       "oneOf": [
         {
           "const": "aggregate_bandwidth"
@@ -99,11 +99,11 @@
         }
       ]
     },
-    "scaling.ScalingTiming": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingTiming": {
       "type": "object",
       "properties": {
         "mode": {
-          "$ref": "#/$defs/scaling.ScalingWriteMode"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingWriteMode"
         },
         "bandwidth_demand": {
           "type": "number"
@@ -123,7 +123,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling.ScalingWriteMode": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingWriteMode": {
       "oneOf": [
         {
           "const": "sync"
@@ -133,7 +133,7 @@
         }
       ]
     },
-    "scaling.ScalingNonlinearSource": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingNonlinearSource": {
       "oneOf": [
         {
           "const": "storage_saturation"

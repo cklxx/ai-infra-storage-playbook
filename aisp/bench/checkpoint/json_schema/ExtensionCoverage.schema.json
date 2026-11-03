@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionCoverage.schema.json",
   "title": "ExtensionCoverage",
-  "$ref": "#/$defs/extension.ExtensionCoverage",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCoverage",
   "$defs": {
-    "extension.ExtensionCoverage": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCoverage": {
       "type": "object",
       "properties": {
         "axes": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/extension.ExtensionAxis"
+            "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionAxis"
           }
         },
         "cells": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/extension.ExtensionCell"
+            "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCell"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionAxis": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionAxis": {
       "oneOf": [
         {
           "const": "arch_family"
@@ -57,7 +57,7 @@
         }
       ]
     },
-    "extension.ExtensionCell": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCell": {
       "type": "object",
       "properties": {
         "axes": {
@@ -92,7 +92,7 @@
         "empty": {
           "oneOf": [
             {
-              "$ref": "#/$defs/extension.ExtensionEmptyKind"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind"
             },
             {
               "type": "null"
@@ -109,7 +109,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionEmptyKind": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind": {
       "oneOf": [
         {
           "const": "should_exist"
@@ -118,7 +118,7 @@
           "type": "object",
           "properties": {
             "not_needed": {
-              "$ref": "#/$defs/extension.ExtensionExemption"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionExemption"
             }
           },
           "required": [
@@ -128,7 +128,7 @@
         }
       ]
     },
-    "extension.ExtensionExemption": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionExemption": {
       "type": "object",
       "properties": {
         "reason": {

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipeFile.schema.json",
   "title": "ContributingRecipeFile",
-  "$ref": "#/$defs/contributing.ContributingRecipeFile",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFile",
   "$defs": {
-    "contributing.ContributingRecipeFile": {
+    "aisp.bench.contributing.contributing.ContributingRecipeFile": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/contributing.ContributingRecipeFileKind"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFileKind"
         },
         "path": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingRecipeFileKind": {
+    "aisp.bench.contributing.contributing.ContributingRecipeFileKind": {
       "oneOf": [
         {
           "const": "recipe_yaml"

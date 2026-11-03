@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyToleranceCalibration.schema.json",
   "title": "MethodologyToleranceCalibration",
-  "$ref": "#/$defs/methodology.MethodologyToleranceCalibration",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceCalibration",
   "$defs": {
-    "methodology.MethodologyToleranceCalibration": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceCalibration": {
       "type": "object",
       "properties": {
         "recipe": {

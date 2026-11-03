@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionRegressionVerdict.schema.json",
   "title": "ExtensionRegressionVerdict",
-  "$ref": "#/$defs/extension.ExtensionRegressionVerdict",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionRegressionVerdict",
   "$defs": {
-    "extension.ExtensionRegressionVerdict": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionRegressionVerdict": {
       "oneOf": [
         {
           "const": "passed"

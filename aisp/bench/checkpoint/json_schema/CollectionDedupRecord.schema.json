@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionDedupRecord.schema.json",
   "title": "CollectionDedupRecord",
-  "$ref": "#/$defs/collection.CollectionDedupRecord",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupRecord",
   "$defs": {
-    "collection.CollectionDedupRecord": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupRecord": {
       "type": "object",
       "properties": {
         "group": {
           "type": "string"
         },
         "decision": {
-          "$ref": "#/$defs/collection.CollectionDedupDecision"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupDecision"
         },
         "dropped_by": {
           "oneOf": [
             {
-              "$ref": "#/$defs/ckpt_sample.Model"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
             },
             {
               "type": "null"
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionDedupDecision": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupDecision": {
       "oneOf": [
         {
           "const": "kept"
@@ -41,7 +41,7 @@
         }
       ]
     },
-    "ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
       "type": "object",
       "properties": {
         "id": {

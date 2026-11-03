@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleRunReport.schema.json",
   "title": "ExampleRunReport",
-  "$ref": "#/$defs/examples.ExampleRunReport",
+  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleRunReport",
   "$defs": {
-    "examples.ExampleRunReport": {
+    "aisp.bench.examples.readme.examples.ExampleRunReport": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/examples.ExampleRunResult"
+            "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleRunResult"
           }
         },
         "mismatches": {
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "examples.ExampleRunResult": {
+    "aisp.bench.examples.readme.examples.ExampleRunResult": {
       "type": "object",
       "properties": {
         "samples": {
@@ -36,10 +36,10 @@
           }
         },
         "expected": {
-          "$ref": "#/$defs/examples.ExamplePolarity"
+          "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExamplePolarity"
         },
         "outcome": {
-          "$ref": "#/$defs/examples.ExampleOutcome"
+          "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleOutcome"
         }
       },
       "required": [
@@ -49,7 +49,7 @@
       ],
       "additionalProperties": false
     },
-    "examples.ExamplePolarity": {
+    "aisp.bench.examples.readme.examples.ExamplePolarity": {
       "oneOf": [
         {
           "const": "positive"
@@ -59,7 +59,7 @@
         }
       ]
     },
-    "examples.ExampleOutcome": {
+    "aisp.bench.examples.readme.examples.ExampleOutcome": {
       "oneOf": [
         {
           "const": "accepted"

@@ -29,7 +29,7 @@ INVALID = EXAMPLES / "invalid"
 SCHEMAS = ROOT / "schemas"
 
 CHECKPOINT_METRICS = ROOT / "recipes" / "checkpoint" / "metrics.yaml"
-COLLECTION_METRICS = ROOT / "recipes" / "model-code-collection" / "metrics.yaml"
+COLLECTION_METRICS = ROOT / "recipes" / "model_code_collection" / "metrics.yaml"
 
 
 def run_check(script: str, *args: str) -> int:

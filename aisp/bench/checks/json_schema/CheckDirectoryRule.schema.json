@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckDirectoryRule.schema.json",
   "title": "CheckDirectoryRule",
-  "$ref": "#/$defs/checks.CheckDirectoryRule",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckDirectoryRule",
   "$defs": {
-    "checks.CheckDirectoryRule": {
+    "aisp.bench.checks.readme.checks.CheckDirectoryRule": {
       "oneOf": [
         {
           "const": "template"

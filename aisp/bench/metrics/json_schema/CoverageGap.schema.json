@@ -2,22 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageGap.schema.json",
   "title": "CoverageGap",
-  "$ref": "#/$defs/coverage.CoverageGap",
+  "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageGap",
   "$defs": {
-    "coverage.CoverageGap": {
-      "$ref": "#/$defs/coverage.CoverageCellKey"
+    "aisp.bench.metrics.coverage.coverage.CoverageGap": {
+      "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageCellKey"
     },
-    "coverage.CoverageCellKey": {
+    "aisp.bench.metrics.coverage.coverage.CoverageCellKey": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/coverage.CoverageAxisValue"
+        "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxisValue"
       }
     },
-    "coverage.CoverageAxisValue": {
+    "aisp.bench.metrics.coverage.coverage.CoverageAxisValue": {
       "type": "object",
       "properties": {
         "axis": {
-          "$ref": "#/$defs/coverage.CoverageAxis"
+          "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxis"
         },
         "value": {
           "type": "string"
@@ -29,7 +29,7 @@
       ],
       "additionalProperties": false
     },
-    "coverage.CoverageAxis": {
+    "aisp.bench.metrics.coverage.coverage.CoverageAxis": {
       "oneOf": [
         {
           "const": "arch_family"

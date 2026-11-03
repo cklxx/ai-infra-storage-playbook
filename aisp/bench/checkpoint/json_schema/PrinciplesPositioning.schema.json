@@ -2,24 +2,24 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesPositioning.schema.json",
   "title": "PrinciplesPositioning",
-  "$ref": "#/$defs/principles.PrinciplesPositioning",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesPositioning",
   "$defs": {
-    "principles.PrinciplesPositioning": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesPositioning": {
       "type": "object",
       "properties": {
         "parts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesPart"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesPart"
           }
         },
         "output": {
-          "$ref": "#/$defs/principles.PrinciplesEvalSet"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet"
         },
         "questions": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesQuestion"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesQuestion"
           }
         }
       },
@@ -30,7 +30,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesPart": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesPart": {
       "oneOf": [
         {
           "const": "recipes"
@@ -43,7 +43,7 @@
         }
       ]
     },
-    "principles.PrinciplesEvalSet": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet": {
       "oneOf": [
         {
           "const": "checkpoint"
@@ -56,7 +56,7 @@
         }
       ]
     },
-    "principles.PrinciplesQuestion": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesQuestion": {
       "oneOf": [
         {
           "const": "what"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingCheckScope.schema.json",
   "title": "ContributingCheckScope",
-  "$ref": "#/$defs/contributing.ContributingCheckScope",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingCheckScope",
   "$defs": {
-    "contributing.ContributingCheckScope": {
+    "aisp.bench.contributing.contributing.ContributingCheckScope": {
       "oneOf": [
         {
           "const": "general"

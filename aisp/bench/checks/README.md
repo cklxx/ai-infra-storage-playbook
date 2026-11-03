@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `checks` 模块与 `## 接口` 的 `checks_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `CheckScript`、`CheckArgs`、`CheckOutput`、`CheckStatus` 与 `CheckExitCode`，操作 `RunCheck` 与 `RunAllChecks`；先看 `CheckScript`、`CheckArgs` 与 `CheckOutput`，弄清一个脚本收什么输入、往标准输出写什么，再看 `CheckStatus` 与 `CheckExitCode` 怎么判定，最后按 `RunCheck`、`RunAllChecks` 的顺序读。
 
-```viba checks_public
-import checks
-import checks_api
+```bash checks_public
+import aisp.bench.checks.readme.checks as checks
+import aisp.bench.checks.readme.checks_api as checks_api
 
 CheckScript = checks.CheckScript
 CheckArgs = checks.CheckArgs
@@ -25,8 +25,8 @@ RunAllChecks = checks_api.RunAllChecks
 
 问题形式化为一个模块：`checks` 定义五个脚本、每个脚本的输入、输出、退出码与依赖，以及阈值来源、目录约定与指标文档的对应关系。
 
-```viba checks
-import levels
+```bash checks
+import aisp.bench.checkpoint.scaling.levels as levels
 
 CheckScript =
   Oneof
@@ -178,12 +178,16 @@ CheckSpec =
 
 ## 基本操作
 
-解决这个问题需要两个操作。跑一个检查：需要阈值时只从配方的 `metrics.yaml` 读，脚本通过 `--metrics` 读同一份文件，不在代码里保留默认值；`validate_repo.py` 与 `selftest.py` 不收参数；`check_io_pattern.py` 收 `--real` 与 `--bypassed`，可用 `--tolerance` 逐项覆盖；`check_coverage.py` 收 `--manifest`，可用 `--min-coverage` 覆盖；`check_scaling_consistency.py` 收 `--input`，默认容差来自 `per_level` 与 `first_last`。输出按脚本分两种：`check_*.py` 与 `selftest.py` 往标准输出打印一行 JSON，至少含 `check` 与 `status`；`validate_repo.py` 打印人读的逐项结果与错误清单，不使用单行 JSON。退出码统一为 0 通过、1 不通过、2 缺依赖或输入非法或缺阈值；跳过不等于通过。依赖用 `pip install -r ../requirements.txt` 安装，缺依赖时按跳过处理，不假装通过。跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码，每个脚本按自己的约定判定。
+解决这个问题需要两个操作。
+
+1. 跑一个检查：需要阈值时只从配方的 `metrics.yaml` 读，脚本通过 `--metrics` 读同一份文件，不在代码里保留默认值；`validate_repo.py` 与 `selftest.py` 不收参数；`check_io_pattern.py` 收 `--real` 与 `--bypassed`，可用 `--tolerance` 逐项覆盖；`check_coverage.py` 收 `--manifest`，可用 `--min-coverage` 覆盖；`check_scaling_consistency.py` 收 `--input`，默认容差来自 `per_level` 与 `first_last`。
+2. 输出按脚本分两种：`check_*.py` 与 `selftest.py` 往标准输出打印一行 JSON，至少含 `check` 与 `status`；`validate_repo.py` 打印人读的逐项结果与错误清单，不使用单行 JSON。
+3. 跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码，每个脚本按自己的约定判定。
 
 ## checks_api
 
-```viba checks_api
-import checks
+```bash checks_api
+import aisp.bench.checks.readme.checks as checks
 
 RunCheck =
      checks.CheckRun
@@ -199,9 +203,9 @@ RunAllChecks =
 
 ## checks_flow
 
-```viba checks_flow
-import checks
-import checks_api
+```bash checks_flow
+import aisp.bench.checks.readme.checks as checks
+import aisp.bench.checks.readme.checks_api as checks_api
 
 CheckRunDuty =
   Object

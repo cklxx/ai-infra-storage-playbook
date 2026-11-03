@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionVersion.schema.json",
   "title": "ExtensionVersion",
-  "$ref": "#/$defs/extension.ExtensionVersion",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionVersion",
   "$defs": {
-    "extension.ExtensionVersion": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionVersion": {
       "type": "object",
       "properties": {
         "recipe": {

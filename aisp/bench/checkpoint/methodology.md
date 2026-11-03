@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `methodology` 模块与 `## 接口` 的 `methodology_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `MethodologySpec`、`MethodologyBypassPlan`、`MethodologyBoundaryTable`、`MethodologyTolerance`，操作 `PlanBypass`、`RecordBoundary`、`Observe`、`Align`；先看 `MethodologySpec` 与 `PlanBypass`，再看 `RecordBoundary` 交回的 `MethodologyBoundaryTable` 与 `Observe`、`Align` 判定用的 `MethodologyTolerance`。
 
-```viba methodology_public
-import methodology
-import methodology_api
+```bash methodology_public
+import aisp.bench.checkpoint.methodology.methodology as methodology
+import aisp.bench.checkpoint.methodology.methodology_api as methodology_api
 
 MethodologySpec = methodology.MethodologySpec
 MethodologyBypassPlan = methodology.MethodologyBypassPlan
@@ -20,18 +20,18 @@ Align = methodology_api.Align
 
 ## 背景
 
-本文是整套方法的唯一出处：旁路、保真等级、保真边界表、IO pattern 度量项、对齐判定、阶段门只在这里定义一次；三类评估集的配方引用本文的章节，只写各自的差异。本文解决"评估集怎么建、怎么判它可信"。存储在一个样本上的表现（SLI）怎么测、重保子集怎么判（SLO）、两个存储版本怎么比，见 [`storage-performance.md`](storage-performance.md)，两篇的分工不要混。
+本文是整套方法的唯一出处：旁路、保真等级、保真边界表、IO pattern 度量项、对齐判定、阶段门只在这里定义一次；三类评估集的配方引用本文的章节，只写各自的差异。本文解决"评估集怎么建、怎么判它可信"。存储在一个样本上的表现（SLI）怎么测、重保子集怎么判（SLO）、两个存储版本怎么比，见 [`performance.md`](performance.md)，两篇的分工不要混。
 
 ## methodology
 
 问题形式化为五个模块：`methodology` 汇总整套方法；`gates`、`bypass`、`fidelity`、`observation` 分别定义阶段门、旁路手段与保真等级、保真边界表、观测层。对象类型 `MethodologySpec`、`MethodologyBypassPlan`、`MethodologyBypassPremise`、`MethodologyBoundaryTable`、`MethodologyObservation`、`MethodologyAlignment`、`MethodologyScaling`、`MethodologyReproduction`、`MethodologyTolerance` 与 `MethodologyToleranceCalibration` 分别表示整套方法的汇总、旁路方案、旁路前提、保真边界表、一次采集、一次对齐判定、一级放大、可复现条件、一项容差与这项容差的标定记录。取值只能落在有限集合里的概念写成 `Oneof` 枚举：`MethodologyMetric`、`MethodologyToleranceStatistic`、`MethodologyAttributionCause`、`MethodologyScaleRule`、`MethodologyReproducibilityItem` 与 `MethodologyFailureMode` 分别表示 IO pattern 度量项、对齐统计量、偏差归因、scaling 规则、可复现项与失效模式。`MethodologySpec` 的九个字段分别引用这些类型：`$gates`、`$bypass_methods`、`$fidelity_boundaries`、`$observation_layers` 分别是 `gates.Gate`、`bypass.BypassMethod`、`fidelity.FidelityBoundary`、`observation.ObservationLayer` 的列表，`$metrics`、`$tolerances`、`$scale_rules`、`$failure_modes` 分别是 `MethodologyMetric`、`MethodologyTolerance`、`MethodologyScaleRule`、`MethodologyFailureMode` 的列表，`$reproduction` 是 `MethodologyReproduction`；`MethodologyBypassPlan` 的 `$method` 与 `$fidelity` 分别取 `bypass.BypassMethod` 与 `bypass.FidelityLevel` 的一个取值，`MethodologyTolerance` 的 `$metric` 与 `$statistic` 分别取 `MethodologyMetric` 与 `MethodologyToleranceStatistic` 的一个取值。
 
-```viba methodology
-import bypass
-import fidelity
-import gates
-import levels
-import observation
+```bash methodology
+import aisp.bench.checkpoint.methodology.bypass as bypass
+import aisp.bench.checkpoint.methodology.fidelity as fidelity
+import aisp.bench.checkpoint.methodology.gates as gates
+import aisp.bench.checkpoint.scaling.levels as levels
+import aisp.bench.checkpoint.methodology.observation as observation
 
 MethodologySpec =
   Object
@@ -154,7 +154,7 @@ MethodologyFailureMode =
 
 对齐的判定是：在选定的度量项上，旁路运行与同等规模的真实运行，其统计量落在声明的容差内。实际判定用配方 `metrics.yaml` 里的 `tolerance`，类型里的初始容差只是标定起点；容差需要按评估集标定，checkpoint 写入的请求大小由分片策略决定，容差应更紧。
 
-```viba gates
+```bash gates
 Gate =
   Oneof
   | "G0" * { 能跑：目标代码在不旁路的情况下能跑完一次前向或一次预填充；产出可运行的最小配置 }
@@ -166,7 +166,7 @@ Gate =
 
 G1 到 G4 的判定记录写进 `recipe.yaml`，不写进文档正文。
 
-```viba bypass
+```bash bypass
 BypassMethod =
   Oneof
   | "meta_device" * { 张量只保留 dtype 与逻辑尺寸，不分配显存/内存。请求序列 L2；成本极低；用于需要真实控制流的全部计算 }
@@ -184,8 +184,8 @@ FidelityLevel =
 
 `BypassMethod` 写的是请求序列的保真等级，不含时序。旁路计算后时序一定被压缩：原本散布在整个训练步里的写入会挤到末尾。时序按 [`scaling.md`](scaling.md) 的「时序与重叠」折算，必要时在旁路实现里注入与真实计算等长的延迟；请求序列与时序必须分开评估。L2 是大多数场景的默认目标：它保证发了哪些请求，不保证什么时候发；L3 只用于对齐基准，不用于批量运行。
 
-```viba fidelity
-import bypass
+```bash fidelity
+import aisp.bench.checkpoint.methodology.bypass as bypass
 
 Bypassed =
   Oneof
@@ -205,7 +205,7 @@ FidelityBoundary =
 
 每个配方必须填写，没有这张表视为未完成。行结构见 [`json_schema/FidelityBoundary.schema.json`](json_schema/FidelityBoundary.schema.json)。
 
-```viba observation
+```bash observation
 ObservationLayer =
   Oneof
   | "app" * { 在数据加载器、写入器、block manager 外面包一层。拿得到请求的逻辑含义、偏移、大小、调用栈；看不到合并后的真实请求 }
@@ -217,16 +217,20 @@ ObservationLayer =
 
 ## 基本操作
 
-先准备旁路（`PlanBypass`）：从四种手段里选一种，确认发起 IO 的代码路径没有被替换，登记时序偏差，必要时在旁路实现里注入与真实计算等长的延迟。再记录保真边界表（`RecordBoundary`）：每个被旁路的路径一行，IO 路径的保真等级不得是 L0。采集（`Observe`）至少开两层观测并交叉核对：应用层与系统层的总字节偏差超过 1% 要先解释，观测开销超过 3% 要降低采样率或改用系统层。对齐（`Align`）取不做旁路的同规模真实运行与旁路运行，在选定度量项上比较统计量，判定是否落在配方 `metrics.yaml` 标定的容差内；超出容差按归因顺序逐项排除，结论写进配方的 `README.md`。对齐通过后逐级放大（`Scale`），每一级重新验证不变量，跳级得到的结论没有依据。最后固定可复现条件（`Reproduce`）：模型代码、配置、依赖、拓扑、预热、观测、随机性七项，缺任何一项，结论都只能算某次运行的观测。
+先准备旁路（`PlanBypass`）：从四种手段里选一种，确认发起 IO 的代码路径没有被替换，登记时序偏差，必要时在旁路实现里注入与真实计算等长的延迟。
+
+1. 再记录保真边界表（`RecordBoundary`）：每个被旁路的路径一行，IO 路径的保真等级不得是 L0。
+2. 采集（`Observe`）至少开两层观测并交叉核对：应用层与系统层的总字节偏差超过 1% 要先解释，观测开销超过 3% 要降低采样率或改用系统层。
+3. 最后固定可复现条件（`Reproduce`）：模型代码、配置、依赖、拓扑、预热、观测、随机性七项，缺任何一项，结论都只能算某次运行的观测。
 
 ## methodology_api
 
-```viba methodology_api
-import bypass
-import fidelity
-import levels
-import methodology
-import observation
+```bash methodology_api
+import aisp.bench.checkpoint.methodology.bypass as bypass
+import aisp.bench.checkpoint.methodology.fidelity as fidelity
+import aisp.bench.checkpoint.scaling.levels as levels
+import aisp.bench.checkpoint.methodology.methodology as methodology
+import aisp.bench.checkpoint.methodology.observation as observation
 
 PlanBypass =
      methodology.MethodologyBypassPlan
@@ -270,9 +274,9 @@ Reproduce =
 
 ## methodology_flow
 
-```viba methodology_flow
-import methodology
-import methodology_api
+```bash methodology_flow
+import aisp.bench.checkpoint.methodology.methodology as methodology
+import aisp.bench.checkpoint.methodology.methodology_api as methodology_api
 
 MethodologyPrepareDuty =
   Object
@@ -317,7 +321,7 @@ MethodologyFlow =
 
 Scaling 的总则见 [`scaling.md`](scaling.md)。
 
-配方只写差异：`recipes/model-code-collection` 只写语料不变量与可跑性验证，`recipes/checkpoint` 只写 meta device 旁路与并行配置；共性的步骤、判定规则引用本文的章节标题加路径，不复制。新规则先写进本文，再改配方；配方里与本文冲突的表述以本文为准，并修正配方。改本文等于改三类评估集的共同定义，评审要求与改指标口径相同：说明影响哪些配方、哪些历史结论失效，并在 `CHANGELOG.md` 记录。
+配方只写差异：`recipes/model_code_collection` 只写语料不变量与可跑性验证，`recipes/checkpoint` 只写 meta device 旁路与并行配置；共性的步骤、判定规则引用本文的章节标题加路径，不复制。新规则先写进本文，再改配方；配方里与本文冲突的表述以本文为准，并修正配方。改本文等于改三类评估集的共同定义，评审要求与改指标口径相同：说明影响哪些配方、哪些历史结论失效，并在 `CHANGELOG.md` 记录。
 
 更多已知问题与开放问题见 [`pitfalls.md`](pitfalls.md)。
 

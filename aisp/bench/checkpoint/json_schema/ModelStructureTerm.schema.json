@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ModelStructureTerm.schema.json",
   "title": "ModelStructureTerm",
-  "$ref": "#/$defs/glossary.ModelStructureTerm",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.ModelStructureTerm",
   "$defs": {
-    "glossary.ModelStructureTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.ModelStructureTerm": {
       "oneOf": [
         {
           "const": "MoE"

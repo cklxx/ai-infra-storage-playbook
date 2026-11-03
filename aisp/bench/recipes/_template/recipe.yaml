@@ -6,7 +6,7 @@ owner: <team-or-person>
 type: <evaluation-family>
 
 depends_on:
-  - recipes/model-code-collection
+  - recipes/model_code_collection
 
 bypass:
   what:
@@ -51,7 +51,7 @@ compatible_metrics:
   io-pattern-alignment: ["1.0.0"]
 
 acceptance:
-  checklist: ./acceptance-checklist.md
+  checklist: ./acceptance_checklist.md
   gates: [G0, G1, G2, G3, G4]
 
 latest_run: null

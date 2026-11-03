@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Bypassed.schema.json",
   "title": "Bypassed",
-  "$ref": "#/$defs/fidelity.Bypassed",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.Bypassed",
   "$defs": {
-    "fidelity.Bypassed": {
+    "aisp.bench.checkpoint.methodology.fidelity.Bypassed": {
       "oneOf": [
         {
           "const": "yes"

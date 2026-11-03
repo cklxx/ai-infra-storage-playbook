@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingFixedDimension.schema.json",
   "title": "ScalingFixedDimension",
-  "$ref": "#/$defs/scaling.ScalingFixedDimension",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingFixedDimension",
   "$defs": {
-    "scaling.ScalingFixedDimension": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingFixedDimension": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/scaling.ScalingDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingDimension"
         },
         "value": {
           "type": "string"
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling.ScalingDimension": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingDimension": {
       "oneOf": [
         {
           "const": "model_scale"

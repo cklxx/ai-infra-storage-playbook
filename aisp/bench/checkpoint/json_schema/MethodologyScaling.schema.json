@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyScaling.schema.json",
   "title": "MethodologyScaling",
-  "$ref": "#/$defs/methodology.MethodologyScaling",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyScaling",
   "$defs": {
-    "methodology.MethodologyScaling": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyScaling": {
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "invariants_kept": {
           "type": "boolean"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"

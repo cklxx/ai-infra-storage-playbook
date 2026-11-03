@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingFlow.schema.json",
   "title": "ContributingFlow",
-  "$ref": "#/$defs/contributing_flow.ContributingFlow",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing_flow.ContributingFlow",
   "$defs": {
-    "contributing_flow.ContributingFlow": {
+    "aisp.bench.contributing.contributing_flow.ContributingFlow": {
       "type": "object",
       "properties": {
         "review": {
-          "$ref": "#/$defs/contributing.ContributingReview"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingReview"
         },
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing_flow.ContributingStep"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing_flow.ContributingStep"
           }
         }
       },
@@ -23,11 +23,11 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingReview": {
+    "aisp.bench.contributing.contributing.ContributingReview": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/contributing.ContributingChangeKind"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingChangeKind"
         },
         "metric_feasibility_confirmed": {
           "type": "boolean"
@@ -57,7 +57,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingChangeKind": {
+    "aisp.bench.contributing.contributing.ContributingChangeKind": {
       "oneOf": [
         {
           "const": "small_change"
@@ -67,13 +67,13 @@
         }
       ]
     },
-    "contributing_flow.ContributingStep": {
+    "aisp.bench.contributing.contributing_flow.ContributingStep": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "create_recipe": {
-              "$ref": "#/$defs/contributing.ContributingRecipe"
+              "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipe"
             }
           },
           "required": [
@@ -85,7 +85,7 @@
           "type": "object",
           "properties": {
             "register_metric": {
-              "$ref": "#/$defs/contributing.ContributingMetricRegistration"
+              "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricRegistration"
             }
           },
           "required": [
@@ -97,7 +97,7 @@
           "type": "object",
           "properties": {
             "write_decision": {
-              "$ref": "#/$defs/contributing.ContributingDecision"
+              "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingDecision"
             }
           },
           "required": [
@@ -111,7 +111,7 @@
             "run_checks": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/contributing.ContributingCheckResult"
+                "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingCheckResult"
               }
             }
           },
@@ -122,7 +122,7 @@
         }
       ]
     },
-    "contributing.ContributingRecipe": {
+    "aisp.bench.contributing.contributing.ContributingRecipe": {
       "type": "object",
       "properties": {
         "name": {
@@ -131,13 +131,13 @@
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingRecipeFile"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFile"
           }
         },
         "required_fields": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingRecipeRequiredField"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeRequiredField"
           }
         },
         "notes": {
@@ -156,11 +156,11 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingRecipeFile": {
+    "aisp.bench.contributing.contributing.ContributingRecipeFile": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/contributing.ContributingRecipeFileKind"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFileKind"
         },
         "path": {
           "type": "string"
@@ -176,7 +176,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingRecipeFileKind": {
+    "aisp.bench.contributing.contributing.ContributingRecipeFileKind": {
       "oneOf": [
         {
           "const": "recipe_yaml"
@@ -192,7 +192,7 @@
         }
       ]
     },
-    "contributing.ContributingRecipeRequiredField": {
+    "aisp.bench.contributing.contributing.ContributingRecipeRequiredField": {
       "oneOf": [
         {
           "const": "bypass"
@@ -208,7 +208,7 @@
         }
       ]
     },
-    "contributing.ContributingMetricRegistration": {
+    "aisp.bench.contributing.contributing.ContributingMetricRegistration": {
       "type": "object",
       "properties": {
         "name": {
@@ -218,12 +218,12 @@
           "type": "string"
         },
         "version": {
-          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
         },
         "deprecation": {
           "oneOf": [
             {
-              "$ref": "#/$defs/contributing.ContributingMetricDeprecation"
+              "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricDeprecation"
             },
             {
               "type": "null"
@@ -233,13 +233,13 @@
         "tolerance": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingTolerance"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingTolerance"
           }
         },
         "compatible_metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingMetricVersion"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
           }
         }
       },
@@ -253,20 +253,20 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingMetricVersion": {
+    "aisp.bench.contributing.contributing.ContributingMetricVersion": {
       "type": "string"
     },
-    "contributing.ContributingMetricDeprecation": {
+    "aisp.bench.contributing.contributing.ContributingMetricDeprecation": {
       "type": "object",
       "properties": {
         "deprecated_version": {
-          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
         },
         "reason": {
           "type": "string"
         },
         "replacement_version": {
-          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
         }
       },
       "required": [
@@ -276,7 +276,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingTolerance": {
+    "aisp.bench.contributing.contributing.ContributingTolerance": {
       "type": "object",
       "properties": {
         "key": {
@@ -296,7 +296,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingDecision": {
+    "aisp.bench.contributing.contributing.ContributingDecision": {
       "type": "object",
       "properties": {
         "number": {
@@ -306,7 +306,7 @@
           "type": "string"
         },
         "kind": {
-          "$ref": "#/$defs/contributing.ContributingDecisionKind"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingDecisionKind"
         },
         "background": {
           "type": "string"
@@ -335,7 +335,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingDecisionKind": {
+    "aisp.bench.contributing.contributing.ContributingDecisionKind": {
       "oneOf": [
         {
           "const": "bypass_choice"
@@ -351,14 +351,14 @@
         }
       ]
     },
-    "contributing.ContributingCheckResult": {
+    "aisp.bench.contributing.contributing.ContributingCheckResult": {
       "type": "object",
       "properties": {
         "item": {
-          "$ref": "#/$defs/contributing.ContributingCheckItem"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingCheckItem"
         },
         "scope": {
-          "$ref": "#/$defs/contributing.ContributingCheckScope"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingCheckScope"
         },
         "detail": {
           "type": "string"
@@ -371,7 +371,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingCheckItem": {
+    "aisp.bench.contributing.contributing.ContributingCheckItem": {
       "oneOf": [
         {
           "const": "required_fields_not_empty"
@@ -396,7 +396,7 @@
         }
       ]
     },
-    "contributing.ContributingCheckScope": {
+    "aisp.bench.contributing.contributing.ContributingCheckScope": {
       "oneOf": [
         {
           "const": "general"

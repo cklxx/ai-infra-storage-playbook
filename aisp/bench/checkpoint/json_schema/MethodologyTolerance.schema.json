@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyTolerance.schema.json",
   "title": "MethodologyTolerance",
-  "$ref": "#/$defs/methodology.MethodologyTolerance",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyTolerance",
   "$defs": {
-    "methodology.MethodologyTolerance": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyTolerance": {
       "type": "object",
       "properties": {
         "metric": {
-          "$ref": "#/$defs/methodology.MethodologyMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyMetric"
         },
         "statistic": {
-          "$ref": "#/$defs/methodology.MethodologyToleranceStatistic"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceStatistic"
         },
         "initial": {
           "type": "number"
@@ -19,7 +19,7 @@
         "calibration": {
           "oneOf": [
             {
-              "$ref": "#/$defs/methodology.MethodologyToleranceCalibration"
+              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceCalibration"
             },
             {
               "type": "null"
@@ -35,7 +35,7 @@
       ],
       "additionalProperties": false
     },
-    "methodology.MethodologyMetric": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyMetric": {
       "oneOf": [
         {
           "const": "request_size_distribution"
@@ -66,7 +66,7 @@
         }
       ]
     },
-    "methodology.MethodologyToleranceStatistic": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceStatistic": {
       "oneOf": [
         {
           "const": "bucket_frequency_l1"
@@ -91,7 +91,7 @@
         }
       ]
     },
-    "methodology.MethodologyToleranceCalibration": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceCalibration": {
       "type": "object",
       "properties": {
         "recipe": {

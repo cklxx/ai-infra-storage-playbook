@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PitfallCategory.schema.json",
   "title": "PitfallCategory",
-  "$ref": "#/$defs/pitfalls.PitfallCategory",
+  "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.PitfallCategory",
   "$defs": {
-    "pitfalls.PitfallCategory": {
+    "aisp.bench.checkpoint.pitfalls.pitfalls.PitfallCategory": {
       "oneOf": [
         {
           "const": "methodology"

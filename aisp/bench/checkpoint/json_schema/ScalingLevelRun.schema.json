@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingLevelRun.schema.json",
   "title": "ScalingLevelRun",
-  "$ref": "#/$defs/scaling.ScalingLevelRun",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingLevelRun",
   "$defs": {
-    "scaling.ScalingLevelRun": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingLevelRun": {
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "dimension": {
-          "$ref": "#/$defs/scaling.ScalingDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingDimension"
         },
         "samples": {
           "type": "integer"
@@ -40,7 +40,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -62,7 +62,7 @@
         }
       ]
     },
-    "scaling.ScalingDimension": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingDimension": {
       "oneOf": [
         {
           "const": "model_scale"

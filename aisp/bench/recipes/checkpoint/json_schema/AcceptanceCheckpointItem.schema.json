@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/AcceptanceCheckpointItem.schema.json",
   "title": "AcceptanceCheckpointItem",
-  "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointItem",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem",
   "$defs": {
-    "acceptance_checkpoint.AcceptanceCheckpointItem": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem": {
       "oneOf": [
         {
           "const": "g0_real_run"

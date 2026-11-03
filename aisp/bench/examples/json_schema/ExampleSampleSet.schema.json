@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleSampleSet.schema.json",
   "title": "ExampleSampleSet",
-  "$ref": "#/$defs/examples.ExampleSampleSet",
+  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleSampleSet",
   "$defs": {
-    "examples.ExampleSampleSet": {
+    "aisp.bench.examples.readme.examples.ExampleSampleSet": {
       "type": "object",
       "properties": {
         "positive": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/examples.ExamplePositiveSample"
+            "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExamplePositiveSample"
           }
         },
         "negative": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/examples.ExampleNegativeSample"
+            "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleNegativeSample"
           }
         }
       },
@@ -26,10 +26,10 @@
       ],
       "additionalProperties": false
     },
-    "examples.ExamplePositiveSample": {
+    "aisp.bench.examples.readme.examples.ExamplePositiveSample": {
       "oneOf": [
         {
-          "const": "tiny-model/"
+          "const": "tiny_model/"
         },
         {
           "const": "io-pattern-real.json"
@@ -51,7 +51,7 @@
         }
       ]
     },
-    "examples.ExampleNegativeSample": {
+    "aisp.bench.examples.readme.examples.ExampleNegativeSample": {
       "oneOf": [
         {
           "const": "invalid/io-pattern-bad-sources.json"

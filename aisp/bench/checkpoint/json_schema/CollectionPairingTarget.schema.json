@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionPairingTarget.schema.json",
   "title": "CollectionPairingTarget",
-  "$ref": "#/$defs/collection.CollectionPairingTarget",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingTarget",
   "$defs": {
-    "collection.CollectionPairingTarget": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingTarget": {
       "type": "object",
       "properties": {
         "repo": {

@@ -41,7 +41,7 @@ def build_commands(skip_examples: bool) -> list[tuple[str, list[str]]]:
                     "--manifest",
                     str(EXAMPLES / "coverage.json"),
                     "--metrics",
-                    str(ROOT / "recipes" / "model-code-collection" / "metrics.yaml"),
+                    str(ROOT / "recipes" / "model_code_collection" / "metrics.yaml"),
                 ],
             ),
             (

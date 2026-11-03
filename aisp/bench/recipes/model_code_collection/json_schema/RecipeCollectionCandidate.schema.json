@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCandidate.schema.json",
+  "title": "RecipeCollectionCandidate",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidate",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidate": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "type": "string"
+        },
+        "org": {
+          "type": "string"
+        },
+        "license": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "created_at": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "model_id",
+        "org",
+        "license",
+        "tags",
+        "created_at"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

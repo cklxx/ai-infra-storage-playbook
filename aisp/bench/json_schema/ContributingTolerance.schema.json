@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingTolerance.schema.json",
   "title": "ContributingTolerance",
-  "$ref": "#/$defs/contributing.ContributingTolerance",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingTolerance",
   "$defs": {
-    "contributing.ContributingTolerance": {
+    "aisp.bench.contributing.contributing.ContributingTolerance": {
       "type": "object",
       "properties": {
         "key": {

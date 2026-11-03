@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesAcceptance.schema.json",
   "title": "PrinciplesAcceptance",
-  "$ref": "#/$defs/principles.PrinciplesAcceptance",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAcceptance",
   "$defs": {
-    "principles.PrinciplesAcceptance": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesAcceptance": {
       "type": "object",
       "properties": {
         "eval_set": {
-          "$ref": "#/$defs/principles.PrinciplesEvalSet"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet"
         },
         "verdict": {
-          "$ref": "#/$defs/principles.PrinciplesAcceptVerdict"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAcceptVerdict"
         },
         "missing": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesSuccessCriterion"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesSuccessCriterion"
           }
         }
       },
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesEvalSet": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet": {
       "oneOf": [
         {
           "const": "checkpoint"
@@ -40,7 +40,7 @@
         }
       ]
     },
-    "principles.PrinciplesAcceptVerdict": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesAcceptVerdict": {
       "oneOf": [
         {
           "const": "built"
@@ -50,7 +50,7 @@
         }
       ]
     },
-    "principles.PrinciplesSuccessCriterion": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesSuccessCriterion": {
       "oneOf": [
         {
           "const": "reproducible"

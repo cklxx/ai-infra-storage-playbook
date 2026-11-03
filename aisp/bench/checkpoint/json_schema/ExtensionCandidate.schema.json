@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionCandidate.schema.json",
   "title": "ExtensionCandidate",
-  "$ref": "#/$defs/extension.ExtensionCandidate",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCandidate",
   "$defs": {
-    "extension.ExtensionCandidate": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCandidate": {
       "type": "object",
       "properties": {
         "source": {
-          "$ref": "#/$defs/extension.ExtensionCandidateSource"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCandidateSource"
         },
         "model": {
-          "$ref": "#/$defs/ckpt_sample.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
         },
         "config": {
           "type": "string"
@@ -28,7 +28,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionCandidateSource": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCandidateSource": {
       "oneOf": [
         {
           "const": "model_list_new_item"
@@ -47,7 +47,7 @@
         }
       ]
     },
-    "ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
       "type": "object",
       "properties": {
         "id": {

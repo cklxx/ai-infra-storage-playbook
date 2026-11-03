@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/tiny_model/json_schema/TinyModelPurpose.schema.json",
+  "title": "TinyModelPurpose",
+  "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelPurpose",
+  "$defs": {
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelPurpose": {
+      "oneOf": [
+        {
+          "const": "manifest_fields_demo"
+        },
+        {
+          "const": "check_input"
+        },
+        {
+          "const": "onboarding"
+        }
+      ]
+    }
+  }
+}

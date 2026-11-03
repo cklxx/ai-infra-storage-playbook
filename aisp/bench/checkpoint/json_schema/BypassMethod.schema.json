@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/BypassMethod.schema.json",
   "title": "BypassMethod",
-  "$ref": "#/$defs/bypass.BypassMethod",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.BypassMethod",
   "$defs": {
-    "bypass.BypassMethod": {
+    "aisp.bench.checkpoint.methodology.bypass.BypassMethod": {
       "oneOf": [
         {
           "const": "meta_device"

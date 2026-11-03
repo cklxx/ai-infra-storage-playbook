@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryVersionInfo.schema.json",
   "title": "MetricsRegistryVersionInfo",
-  "$ref": "#/$defs/metrics_registry.MetricsRegistryVersionInfo",
+  "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersionInfo",
   "$defs": {
-    "metrics_registry.MetricsRegistryVersionInfo": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersionInfo": {
       "type": "object",
       "properties": {
         "current": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion"
         },
         "supported": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+            "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "metrics_registry.MetricsRegistryVersion": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion": {
       "type": "string"
     }
   }

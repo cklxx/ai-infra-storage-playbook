@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionAcceptanceItem.schema.json",
+  "title": "RecipeCollectionAcceptanceItem",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceItem",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceItem": {
+      "type": "object",
+      "properties": {
+        "metric": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric"
+        },
+        "actual": {
+          "type": "string"
+        },
+        "passed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "metric",
+        "actual",
+        "passed"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric": {
+      "oneOf": [
+        {
+          "const": "runnable_model_count"
+        },
+        {
+          "const": "runnable_rate"
+        },
+        {
+          "const": "architecture_family_coverage"
+        },
+        {
+          "const": "scale_coverage"
+        },
+        {
+          "const": "attention_variant_coverage"
+        },
+        {
+          "const": "training_pairing_rate"
+        },
+        {
+          "const": "reproducible_corpus"
+        }
+      ]
+    }
+  }
+}

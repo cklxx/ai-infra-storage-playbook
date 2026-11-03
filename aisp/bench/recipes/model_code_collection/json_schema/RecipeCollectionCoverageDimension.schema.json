@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCoverageDimension.schema.json",
+  "title": "RecipeCollectionCoverageDimension",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension": {
+      "oneOf": [
+        {
+          "const": "architecture_family"
+        },
+        {
+          "const": "scale"
+        },
+        {
+          "const": "attention_variant"
+        }
+      ]
+    }
+  }
+}

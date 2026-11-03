@@ -2,37 +2,37 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryEntry.schema.json",
   "title": "MetricsRegistryEntry",
-  "$ref": "#/$defs/metrics_registry.MetricsRegistryEntry",
+  "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryEntry",
   "$defs": {
-    "metrics_registry.MetricsRegistryEntry": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryEntry": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryName"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryName"
         },
         "doc": {
           "type": "string"
         },
         "version": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion"
         },
         "supported": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+            "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion"
           }
         },
         "gates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/gates.Gate"
+            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
           }
         },
         "unit": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryUnit"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryUnit"
         },
         "direction": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryDirection"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryDirection"
         }
       },
       "required": [
@@ -46,13 +46,13 @@
       ],
       "additionalProperties": false
     },
-    "metrics_registry.MetricsRegistryName": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryName": {
       "type": "string"
     },
-    "metrics_registry.MetricsRegistryVersion": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion": {
       "type": "string"
     },
-    "gates.Gate": {
+    "aisp.bench.checkpoint.methodology.gates.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -71,10 +71,10 @@
         }
       ]
     },
-    "metrics_registry.MetricsRegistryUnit": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryUnit": {
       "type": "string"
     },
-    "metrics_registry.MetricsRegistryDirection": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryDirection": {
       "type": "string"
     }
   }

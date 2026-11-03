@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckScalingArgs.schema.json",
   "title": "CheckScalingArgs",
-  "$ref": "#/$defs/checks.CheckScalingArgs",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingArgs",
   "$defs": {
-    "checks.CheckScalingArgs": {
+    "aisp.bench.checks.readme.checks.CheckScalingArgs": {
       "type": "object",
       "properties": {
         "input": {

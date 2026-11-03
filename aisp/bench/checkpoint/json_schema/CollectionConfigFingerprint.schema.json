@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionConfigFingerprint.schema.json",
   "title": "CollectionConfigFingerprint",
-  "$ref": "#/$defs/collection.CollectionConfigFingerprint",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionConfigFingerprint",
   "$defs": {
-    "collection.CollectionConfigFingerprint": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionConfigFingerprint": {
       "type": "object",
       "properties": {
         "architectures": {
@@ -43,7 +43,7 @@
         "moe": {
           "oneOf": [
             {
-              "$ref": "#/$defs/collection.CollectionMoeSpec"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec"
             },
             {
               "type": "null"
@@ -51,10 +51,10 @@
           ]
         },
         "positional_encoding": {
-          "$ref": "#/$defs/collection.CollectionPositionalEncoding"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPositionalEncoding"
         },
         "attention": {
-          "$ref": "#/$defs/collection.CollectionAttentionVariant"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant"
         }
       },
       "required": [
@@ -74,7 +74,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionMoeSpec": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec": {
       "type": "object",
       "properties": {
         "num_experts": {
@@ -94,7 +94,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionPositionalEncoding": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPositionalEncoding": {
       "oneOf": [
         {
           "const": "rope"
@@ -107,7 +107,7 @@
         }
       ]
     },
-    "collection.CollectionAttentionVariant": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant": {
       "oneOf": [
         {
           "const": "mha"

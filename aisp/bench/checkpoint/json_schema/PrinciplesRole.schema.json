@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesRole.schema.json",
   "title": "PrinciplesRole",
-  "$ref": "#/$defs/principles.PrinciplesRole",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRole",
   "$defs": {
-    "principles.PrinciplesRole": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesRole": {
       "oneOf": [
         {
           "const": "recipe_maintainer"

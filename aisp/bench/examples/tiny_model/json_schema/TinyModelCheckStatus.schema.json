@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/tiny_model/json_schema/TinyModelCheckStatus.schema.json",
+  "title": "TinyModelCheckStatus",
+  "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelCheckStatus",
+  "$defs": {
+    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelCheckStatus": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "passed": {
+              "type": "null"
+            }
+          },
+          "required": [
+            "passed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "failed": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "failed"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "skipped": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "skipped"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

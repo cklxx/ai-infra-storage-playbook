@@ -2,30 +2,30 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryRef.schema.json",
   "title": "MetricsRegistryRef",
-  "$ref": "#/$defs/metrics_registry.MetricsRegistryRef",
+  "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryRef",
   "$defs": {
-    "metrics_registry.MetricsRegistryRef": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryRef": {
       "type": "object",
       "properties": {
         "name": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryName"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryName"
         },
         "version": {
-          "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion"
         },
         "gate": {
-          "$ref": "#/$defs/gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
         },
         "acceptance_gates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/gates.Gate"
+            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
           }
         },
         "compatible_versions": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/metrics_registry.MetricsRegistryVersion"
+            "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion"
           }
         }
       },
@@ -38,13 +38,13 @@
       ],
       "additionalProperties": false
     },
-    "metrics_registry.MetricsRegistryName": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryName": {
       "type": "string"
     },
-    "metrics_registry.MetricsRegistryVersion": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryVersion": {
       "type": "string"
     },
-    "gates.Gate": {
+    "aisp.bench.checkpoint.methodology.gates.Gate": {
       "oneOf": [
         {
           "const": "G0"

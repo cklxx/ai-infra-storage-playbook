@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplate.schema.json",
   "title": "AcceptanceTemplate",
-  "$ref": "#/$defs/acceptance_template.AcceptanceTemplate",
+  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplate",
   "$defs": {
-    "acceptance_template.AcceptanceTemplate": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplate": {
       "type": "object",
       "properties": {
         "gates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/acceptance_template.AcceptanceTemplateGateChecklist"
+            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateGateChecklist"
           }
         }
       },
@@ -19,16 +19,16 @@
       ],
       "additionalProperties": false
     },
-    "acceptance_template.AcceptanceTemplateGateChecklist": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateGateChecklist": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
         },
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/acceptance_template.AcceptanceTemplateItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem"
           }
         }
       },
@@ -38,7 +38,7 @@
       ],
       "additionalProperties": false
     },
-    "gates.Gate": {
+    "aisp.bench.checkpoint.methodology.gates.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -57,7 +57,7 @@
         }
       ]
     },
-    "acceptance_template.AcceptanceTemplateItem": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem": {
       "oneOf": [
         {
           "const": "g0_runs_without_bypass"

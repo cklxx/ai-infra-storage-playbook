@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceCiRun.schema.json",
   "title": "ServiceCiRun",
-  "$ref": "#/$defs/service.ServiceCiRun",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceCiRun",
   "$defs": {
-    "service.ServiceCiRun": {
+    "aisp.bench.checkpoint.evaluation_service.service.ServiceCiRun": {
       "type": "object",
       "properties": {
         "trigger": {
-          "$ref": "#/$defs/service.ServiceCiTrigger"
+          "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceCiTrigger"
         },
         "records": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ckpt_sample.RunRecord"
+            "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.RunRecord"
           }
         },
         "small_scale_only": {
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "service.ServiceCiTrigger": {
+    "aisp.bench.checkpoint.evaluation_service.service.ServiceCiTrigger": {
       "oneOf": [
         {
           "const": "recipe_change"
@@ -50,20 +50,20 @@
         }
       ]
     },
-    "ckpt_sample.RunRecord": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.RunRecord": {
       "type": "object",
       "properties": {
         "run_id": {
           "type": "string"
         },
         "state": {
-          "$ref": "#/$defs/ckpt_sample.State"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.State"
         },
         "progress": {
-          "$ref": "#/$defs/ckpt_sample.WorkProgress"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.WorkProgress"
         },
         "artifacts": {
-          "$ref": "#/$defs/ckpt_sample.Artifacts"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Artifacts"
         }
       },
       "required": [
@@ -74,13 +74,13 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.State": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.State": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "queued": {
-              "$ref": "#/$defs/ckpt_sample.QueueProgress"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.QueueProgress"
             }
           },
           "required": [
@@ -116,7 +116,7 @@
           "type": "object",
           "properties": {
             "failed": {
-              "$ref": "#/$defs/ckpt_sample.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Failure"
             }
           },
           "required": [
@@ -128,7 +128,7 @@
           "type": "object",
           "properties": {
             "rejected": {
-              "$ref": "#/$defs/ckpt_sample.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Failure"
             }
           },
           "required": [
@@ -150,7 +150,7 @@
         }
       ]
     },
-    "ckpt_sample.QueueProgress": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.QueueProgress": {
       "type": "object",
       "properties": {
         "pos": {
@@ -166,7 +166,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Failure": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Failure": {
       "type": "object",
       "properties": {
         "kind": {
@@ -182,7 +182,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.WorkProgress": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.WorkProgress": {
       "type": "object",
       "properties": {
         "done": {
@@ -198,7 +198,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Artifacts": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Artifacts": {
       "type": "object",
       "properties": {
         "manifest": {
@@ -207,13 +207,13 @@
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ckpt_sample.CkptSli"
+            "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CkptSli"
           }
         },
         "slo": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/ckpt_sample.CkptSlo"
+            "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.CkptSlo"
           }
         },
         "report": {
@@ -228,13 +228,13 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.CkptSli": {
+    "aisp.bench.checkpoint.performance.sli.CkptSli": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "check_point_duration_sli": {
-              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric"
             }
           },
           "required": [
@@ -246,7 +246,7 @@
           "type": "object",
           "properties": {
             "training_stall_sli": {
-              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric"
             }
           },
           "required": [
@@ -258,7 +258,7 @@
           "type": "object",
           "properties": {
             "restore_duration_sli": {
-              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric"
             }
           },
           "required": [
@@ -270,7 +270,7 @@
           "type": "object",
           "properties": {
             "write_throughput_sli": {
-              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric"
             }
           },
           "required": [
@@ -282,7 +282,7 @@
           "type": "object",
           "properties": {
             "metadata_commit_sli": {
-              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.MetadataCommitMetric"
             }
           },
           "required": [
@@ -294,7 +294,7 @@
           "type": "object",
           "properties": {
             "write_latency_p99_sli": {
-              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric"
             }
           },
           "required": [
@@ -304,31 +304,31 @@
         }
       ]
     },
-    "ckpt_sample.CheckPointDurationMetric": {
+    "aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric": {
       "type": "number"
     },
-    "ckpt_sample.TrainingStallMetric": {
+    "aisp.bench.checkpoint.performance.sli.TrainingStallMetric": {
       "type": "number"
     },
-    "ckpt_sample.RestoreDurationMetric": {
+    "aisp.bench.checkpoint.performance.sli.RestoreDurationMetric": {
       "type": "number"
     },
-    "ckpt_sample.WriteThroughputMetric": {
+    "aisp.bench.checkpoint.performance.sli.WriteThroughputMetric": {
       "type": "number"
     },
-    "ckpt_sample.MetadataCommitMetric": {
+    "aisp.bench.checkpoint.performance.sli.MetadataCommitMetric": {
       "type": "number"
     },
-    "ckpt_sample.WriteLatencyP99Metric": {
+    "aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric": {
       "type": "number"
     },
-    "ckpt_sample.CkptSlo": {
+    "aisp.bench.checkpoint.performance.slo.CkptSlo": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "check_point_duration_slo": {
-              "$ref": "#/$defs/ckpt_sample.MetricLE@e80cc34b"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.MetricLE@90398eea"
             }
           },
           "required": [
@@ -340,7 +340,7 @@
           "type": "object",
           "properties": {
             "training_stall_slo": {
-              "$ref": "#/$defs/ckpt_sample.MetricLE@843aec0a"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.MetricLE@c27f7a91"
             }
           },
           "required": [
@@ -352,7 +352,7 @@
           "type": "object",
           "properties": {
             "restore_duration_slo": {
-              "$ref": "#/$defs/ckpt_sample.MetricLE@4efeec8b"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.MetricLE@4e8638b8"
             }
           },
           "required": [
@@ -364,7 +364,7 @@
           "type": "object",
           "properties": {
             "write_throughput_slo": {
-              "$ref": "#/$defs/ckpt_sample.MetricGE@ff80faa5"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.MetricGE@57c89cb9"
             }
           },
           "required": [
@@ -376,7 +376,7 @@
           "type": "object",
           "properties": {
             "metadata_commit_slo": {
-              "$ref": "#/$defs/ckpt_sample.MetricLE@60ef8e55"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.MetricLE@f1d06d27"
             }
           },
           "required": [
@@ -388,7 +388,7 @@
           "type": "object",
           "properties": {
             "write_latency_p99_slo": {
-              "$ref": "#/$defs/ckpt_sample.MetricLE@e2e968c9"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.slo.MetricLE@fdcaa9d0"
             }
           },
           "required": [
@@ -398,14 +398,14 @@
         }
       ]
     },
-    "ckpt_sample.MetricLE@e80cc34b": {
+    "aisp.bench.checkpoint.performance.slo.MetricLE@90398eea": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric"
         }
       },
       "required": [
@@ -414,14 +414,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.MetricLE@843aec0a": {
+    "aisp.bench.checkpoint.performance.slo.MetricLE@c27f7a91": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric"
         }
       },
       "required": [
@@ -430,14 +430,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.MetricLE@4efeec8b": {
+    "aisp.bench.checkpoint.performance.slo.MetricLE@4e8638b8": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric"
         }
       },
       "required": [
@@ -446,14 +446,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.MetricGE@ff80faa5": {
+    "aisp.bench.checkpoint.performance.slo.MetricGE@57c89cb9": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric"
         }
       },
       "required": [
@@ -462,14 +462,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.MetricLE@60ef8e55": {
+    "aisp.bench.checkpoint.performance.slo.MetricLE@f1d06d27": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.MetadataCommitMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.MetadataCommitMetric"
         }
       },
       "required": [
@@ -478,14 +478,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.MetricLE@e2e968c9": {
+    "aisp.bench.checkpoint.performance.slo.MetricLE@fdcaa9d0": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric"
         },
         "threshold": {
-          "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric"
         }
       },
       "required": [

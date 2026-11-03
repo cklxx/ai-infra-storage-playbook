@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointStage.schema.json",
   "title": "RecipeCheckpointStage",
-  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStage",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStage",
   "$defs": {
-    "recipe_checkpoint.RecipeCheckpointStage": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStage": {
       "type": "object",
       "properties": {
         "step": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStep"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStep"
         },
         "gate": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointGate"
         }
       },
       "required": [
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointStep": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStep": {
       "oneOf": [
         {
           "const": "select_and_run"
@@ -42,7 +42,7 @@
         }
       ]
     },
-    "recipe_checkpoint.RecipeCheckpointGate": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointGate": {
       "oneOf": [
         {
           "const": "G0"

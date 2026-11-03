@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingDimension.schema.json",
   "title": "ScalingDimension",
-  "$ref": "#/$defs/scaling.ScalingDimension",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingDimension",
   "$defs": {
-    "scaling.ScalingDimension": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingDimension": {
       "oneOf": [
         {
           "const": "model_scale"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesAcceptVerdict.schema.json",
   "title": "PrinciplesAcceptVerdict",
-  "$ref": "#/$defs/principles.PrinciplesAcceptVerdict",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAcceptVerdict",
   "$defs": {
-    "principles.PrinciplesAcceptVerdict": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesAcceptVerdict": {
       "oneOf": [
         {
           "const": "built"

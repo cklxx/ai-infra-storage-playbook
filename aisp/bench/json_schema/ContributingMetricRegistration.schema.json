@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricRegistration.schema.json",
   "title": "ContributingMetricRegistration",
-  "$ref": "#/$defs/contributing.ContributingMetricRegistration",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricRegistration",
   "$defs": {
-    "contributing.ContributingMetricRegistration": {
+    "aisp.bench.contributing.contributing.ContributingMetricRegistration": {
       "type": "object",
       "properties": {
         "name": {
@@ -14,12 +14,12 @@
           "type": "string"
         },
         "version": {
-          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
         },
         "deprecation": {
           "oneOf": [
             {
-              "$ref": "#/$defs/contributing.ContributingMetricDeprecation"
+              "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricDeprecation"
             },
             {
               "type": "null"
@@ -29,13 +29,13 @@
         "tolerance": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingTolerance"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingTolerance"
           }
         },
         "compatible_metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/contributing.ContributingMetricVersion"
+            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
           }
         }
       },
@@ -49,20 +49,20 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingMetricVersion": {
+    "aisp.bench.contributing.contributing.ContributingMetricVersion": {
       "type": "string"
     },
-    "contributing.ContributingMetricDeprecation": {
+    "aisp.bench.contributing.contributing.ContributingMetricDeprecation": {
       "type": "object",
       "properties": {
         "deprecated_version": {
-          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
         },
         "reason": {
           "type": "string"
         },
         "replacement_version": {
-          "$ref": "#/$defs/contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
         }
       },
       "required": [
@@ -72,7 +72,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingTolerance": {
+    "aisp.bench.contributing.contributing.ContributingTolerance": {
       "type": "object",
       "properties": {
         "key": {

@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionLoop.schema.json",
   "title": "ExtensionLoop",
-  "$ref": "#/$defs/extension_flow.ExtensionLoop",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension_flow.ExtensionLoop",
   "$defs": {
-    "extension_flow.ExtensionLoop": {
+    "aisp.bench.checkpoint.extension.extension_flow.ExtensionLoop": {
       "type": "object",
       "properties": {
         "trigger": {
-          "$ref": "#/$defs/extension.ExtensionTrigger"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionTrigger"
         },
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/extension_flow.ExtensionStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension_flow.ExtensionStep"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionTrigger": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionTrigger": {
       "oneOf": [
         {
           "const": "new_model_release"
@@ -48,7 +48,7 @@
         }
       ]
     },
-    "extension_flow.ExtensionStep": {
+    "aisp.bench.checkpoint.extension.extension_flow.ExtensionStep": {
       "oneOf": [
         {
           "type": "object",
@@ -56,7 +56,7 @@
             "find_gap": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/extension.ExtensionGap"
+                "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionGap"
               }
             }
           },
@@ -71,7 +71,7 @@
             "propose_candidate": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/extension.ExtensionCandidate"
+                "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCandidate"
               }
             }
           },
@@ -86,7 +86,7 @@
             "regress": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/extension.ExtensionRegression"
+                "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionRegression"
               }
             }
           },
@@ -99,7 +99,7 @@
           "type": "object",
           "properties": {
             "converge": {
-              "$ref": "#/$defs/extension.ExtensionVersion"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionVersion"
             }
           },
           "required": [
@@ -109,11 +109,11 @@
         }
       ]
     },
-    "extension.ExtensionGap": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionGap": {
       "type": "object",
       "properties": {
         "cell": {
-          "$ref": "#/$defs/extension.ExtensionCell"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCell"
         },
         "priority": {
           "type": "number"
@@ -125,7 +125,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionCell": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCell": {
       "type": "object",
       "properties": {
         "axes": {
@@ -160,7 +160,7 @@
         "empty": {
           "oneOf": [
             {
-              "$ref": "#/$defs/extension.ExtensionEmptyKind"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind"
             },
             {
               "type": "null"
@@ -177,7 +177,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionEmptyKind": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind": {
       "oneOf": [
         {
           "const": "should_exist"
@@ -186,7 +186,7 @@
           "type": "object",
           "properties": {
             "not_needed": {
-              "$ref": "#/$defs/extension.ExtensionExemption"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionExemption"
             }
           },
           "required": [
@@ -196,7 +196,7 @@
         }
       ]
     },
-    "extension.ExtensionExemption": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionExemption": {
       "type": "object",
       "properties": {
         "reason": {
@@ -212,14 +212,14 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionCandidate": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCandidate": {
       "type": "object",
       "properties": {
         "source": {
-          "$ref": "#/$defs/extension.ExtensionCandidateSource"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCandidateSource"
         },
         "model": {
-          "$ref": "#/$defs/ckpt_sample.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
         },
         "config": {
           "type": "string"
@@ -236,7 +236,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionCandidateSource": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCandidateSource": {
       "oneOf": [
         {
           "const": "model_list_new_item"
@@ -255,7 +255,7 @@
         }
       ]
     },
-    "ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -271,20 +271,20 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionRegression": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionRegression": {
       "type": "object",
       "properties": {
         "candidate": {
-          "$ref": "#/$defs/extension.ExtensionCandidate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCandidate"
         },
         "scope": {
-          "$ref": "#/$defs/extension.ExtensionRegressionScope"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionRegressionScope"
         },
         "baseline": {
           "type": "string"
         },
         "verdict": {
-          "$ref": "#/$defs/extension.ExtensionRegressionVerdict"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionRegressionVerdict"
         }
       },
       "required": [
@@ -295,7 +295,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionRegressionScope": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionRegressionScope": {
       "oneOf": [
         {
           "const": "smoke"
@@ -308,7 +308,7 @@
         }
       ]
     },
-    "extension.ExtensionRegressionVerdict": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionRegressionVerdict": {
       "oneOf": [
         {
           "const": "passed"
@@ -324,7 +324,7 @@
         }
       ]
     },
-    "extension.ExtensionVersion": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionVersion": {
       "type": "object",
       "properties": {
         "recipe": {

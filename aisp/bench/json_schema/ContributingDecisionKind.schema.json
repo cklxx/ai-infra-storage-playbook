@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingDecisionKind.schema.json",
   "title": "ContributingDecisionKind",
-  "$ref": "#/$defs/contributing.ContributingDecisionKind",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingDecisionKind",
   "$defs": {
-    "contributing.ContributingDecisionKind": {
+    "aisp.bench.contributing.contributing.ContributingDecisionKind": {
       "oneOf": [
         {
           "const": "bypass_choice"

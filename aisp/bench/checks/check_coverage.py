@@ -3,7 +3,7 @@
 
 Usage:
     python3 checks/check_coverage.py --manifest coverage.json \
-        --metrics recipes/model-code-collection/metrics.yaml
+        --metrics recipes/model_code_collection/metrics.yaml
 
 The coverage threshold comes from the recipe's metrics.yaml (coverage_ratio_min),
 optionally overridden with --min-coverage. Expired exemptions count as gaps,

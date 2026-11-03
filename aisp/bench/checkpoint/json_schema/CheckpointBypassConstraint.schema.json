@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointBypassConstraint.schema.json",
   "title": "CheckpointBypassConstraint",
-  "$ref": "#/$defs/checkpoint.CheckpointBypassConstraint",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassConstraint",
   "$defs": {
-    "checkpoint.CheckpointBypassConstraint": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassConstraint": {
       "oneOf": [
         {
           "const": "model_code_source"

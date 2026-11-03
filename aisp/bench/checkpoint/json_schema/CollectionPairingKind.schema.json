@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionPairingKind.schema.json",
   "title": "CollectionPairingKind",
-  "$ref": "#/$defs/collection.CollectionPairingKind",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingKind",
   "$defs": {
-    "collection.CollectionPairingKind": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingKind": {
       "oneOf": [
         {
           "const": "same_org"

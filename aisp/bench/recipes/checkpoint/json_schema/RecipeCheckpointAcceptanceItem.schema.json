@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointAcceptanceItem.schema.json",
   "title": "RecipeCheckpointAcceptanceItem",
-  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointAcceptanceItem",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointAcceptanceItem",
   "$defs": {
-    "recipe_checkpoint.RecipeCheckpointAcceptanceItem": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointAcceptanceItem": {
       "oneOf": [
         {
           "const": "alignment"

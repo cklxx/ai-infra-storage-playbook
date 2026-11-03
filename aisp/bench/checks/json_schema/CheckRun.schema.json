@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckRun.schema.json",
   "title": "CheckRun",
-  "$ref": "#/$defs/checks.CheckRun",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckRun",
   "$defs": {
-    "checks.CheckRun": {
+    "aisp.bench.checks.readme.checks.CheckRun": {
       "type": "object",
       "properties": {
         "script": {
-          "$ref": "#/$defs/checks.CheckScript"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScript"
         },
         "output": {
-          "$ref": "#/$defs/checks.CheckOutput"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutput"
         },
         "outcome": {
-          "$ref": "#/$defs/checks.CheckOutcome"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutcome"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckScript": {
+    "aisp.bench.checks.readme.checks.CheckScript": {
       "oneOf": [
         {
           "const": "validate_repo"
@@ -43,13 +43,13 @@
         }
       ]
     },
-    "checks.CheckOutput": {
+    "aisp.bench.checks.readme.checks.CheckOutput": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "json_line": {
-              "$ref": "#/$defs/checks.CheckJsonLine"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckJsonLine"
             }
           },
           "required": [
@@ -61,7 +61,7 @@
           "type": "object",
           "properties": {
             "readable": {
-              "$ref": "#/$defs/checks.CheckReadableOutput"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckReadableOutput"
             }
           },
           "required": [
@@ -71,14 +71,14 @@
         }
       ]
     },
-    "checks.CheckJsonLine": {
+    "aisp.bench.checks.readme.checks.CheckJsonLine": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         }
       },
       "required": [
@@ -87,7 +87,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckStatus": {
+    "aisp.bench.checks.readme.checks.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -100,7 +100,7 @@
         }
       ]
     },
-    "checks.CheckReadableOutput": {
+    "aisp.bench.checks.readme.checks.CheckReadableOutput": {
       "type": "object",
       "properties": {
         "items": {
@@ -122,14 +122,14 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckOutcome": {
+    "aisp.bench.checks.readme.checks.CheckOutcome": {
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         },
         "exit_code": {
-          "$ref": "#/$defs/checks.CheckExitCode"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode"
         }
       },
       "required": [
@@ -138,7 +138,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckExitCode": {
+    "aisp.bench.checks.readme.checks.CheckExitCode": {
       "oneOf": [
         {
           "const": 0

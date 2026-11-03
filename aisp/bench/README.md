@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `bench` 模块与 `## 接口` 的 `bench_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `BenchSpec`、`BenchStorageVersion`、`BenchEvalSet`、`BenchRun` 与 `BenchCheckReport`，操作 `RunBench`、`CheckRepo` 与 `ExtendBench`；先看 `BenchSpec` 与 `RunBench`，存储两层看 `BenchStorageVersion`，评估集与校验结果看 `BenchEvalSet` 与 `BenchCheckReport`。
 
-```viba bench_public
-import bench
-import bench_api
+```bash bench_public
+import aisp.bench.readme.bench as bench
+import aisp.bench.readme.bench_api as bench_api
 
 BenchSpec = bench.BenchSpec
 BenchStorageVersion = bench.BenchStorageVersion
@@ -20,14 +20,14 @@ ExtendBench = bench_api.ExtendBench
 
 ## 背景
 
-本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序；它的产物是 **bench**，即两类带版本的静态评估集——模型代码收集与 checkpoint 存储评估。评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为；评估集本身不会变化，让它变化的是这里的配方、指标与扩展流程。dataset 与 kvcache 待做（TODO）；完整指标表、SLO 的配置结构与版本比较方法见 [`checkpoint/storage-performance.md`](checkpoint/storage-performance.md)。
+本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序；它的产物是 **bench**，即两类带版本的静态评估集——模型代码收集与 checkpoint 存储评估。评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为；评估集本身不会变化，让它变化的是这里的配方、指标与扩展流程。dataset 与 kvcache 待做（TODO）；完整指标表、SLO 的配置结构与版本比较方法见 [`checkpoint/performance.md`](checkpoint/performance.md)。
 
 ## bench
 
 问题的形式化以 `BenchSpec` 这个 Object 类型为入口：评估对象、存储版本、评估集、指标与目录结构分别收进 `$subjects`（`BenchSubject` 的列表）、`$storage`（`BenchStorageVersion`）、`$eval_sets`（`BenchEvalSet` 的列表）、`$metrics`（`BenchMetricSet` 的列表）与 `$layout`（`BenchLayout`）五个字段。其中四项继续展开成 Object 类型：`BenchStorageVersion` 的 `$layers` 是 `BenchStorageLayer` 的列表，后者用 `$kind` 取 `BenchStorageLayerKind`、用 `$component` 取 `ckpt_sample.Component`；`BenchEvalSet` 的 `$subject` 取 `BenchSubject`，`$entry` 取 `BenchEvalSetEntry` 或 `nil`；`BenchMetricSet` 的 `$subject` 与 `$tier` 分取 `BenchSubject` 与 `BenchMetricTier`，`BenchLayout` 的 `$areas` 取 `BenchRepoArea` 的列表。`BenchRun` 与 `BenchCheckReport` 不在 `BenchSpec` 的字段里：前者由 `BenchRunArtifacts` 与 `BenchBacklink` 组成，后者收拢一次校验的结果。取值只能落在有限集合里的概念写成 Oneof 枚举：`BenchSubject` 表示评估对象，`BenchStorageLayerKind` 表示存储一层的种类，`BenchMetricTier` 表示指标层级，`BenchRepoArea` 表示仓库里要列出的目录与文件，`BenchCheckScope` 表示校验范围，`BenchGapKind` 表示覆盖缺口；`BenchStorageVersion` 的 `$changed_layers`、`BenchEvalSet` 与 `BenchMetricSet` 的 `$subject` 都引用这些枚举类型。
 
-```viba bench
-import ckpt_sample
+```bash bench
+import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
 
 BenchSpec =
   Object
@@ -67,7 +67,7 @@ BenchEvalSetEntry =
   * $measures (str * { 测什么：模型代码收集测语料是否够多、够全、能跑；checkpoint 测训练侧 checkpoint 写读的 IO })
   * $cases_from (str * { 用例从哪来：模型代码收集取 HuggingFace 等平台的 model id；checkpoint 取模型代码收集产出的训练代码与训练框架 })
   * $outputs (list[str] * { 产出：模型代码收集是清单（manifest）与覆盖矩阵；checkpoint 是 IO pattern 记录、SLI 记录、对齐结果与 scaling 结果 })
-  * $recipe_dir (str * { 配方目录：模型代码收集是 recipes/model-code-collection/，checkpoint 是 recipes/checkpoint/ })
+  * $recipe_dir (str * { 配方目录：模型代码收集是 recipes/model_code_collection/，checkpoint 是 recipes/checkpoint/ })
 
 BenchEvalSet =
   Object
@@ -105,8 +105,8 @@ BenchLayout =
   Object
   * $root (str * { 根目录 aisp/bench/，playbook 与 bench 评估集都在这一个目录下 })
   * $areas (list[BenchRepoArea] * { 根目录下的目录与文件；requirements.txt、CONTRIBUTING.md、CHANGELOG.md 是文件，其余是目录 })
-  * $method_docs (list[str] * { checkpoint/ 下的文档：principles.md、methodology.md、model-code-collection.md、checkpoint.md、ckpt-sample-interface.md、scaling.md、evaluation-service.md、extension.md、pitfalls.md、storage-performance.md、appendix-glossary.md })
-  * $recipe_dirs (list[str] * { recipes/ 下的目录：_template/、model-code-collection/、checkpoint/ })
+  * $method_docs (list[str] * { checkpoint/ 下的文档：principles.md、methodology.md、model_code_collection.md、checkpoint.md、ckpt_sample_interface.md、scaling.md、evaluation_service.md、extension.md、pitfalls.md、performance.md、appendix_glossary.md })
+  * $recipe_dirs (list[str] * { recipes/ 下的目录：_template/、model_code_collection/、checkpoint/ })
 
 BenchRunArtifacts =
   Object
@@ -150,13 +150,16 @@ BenchGapKind =
 
 ## 基本操作
 
-跑一次评估：准备一份运行请求，定下跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子，交给评估服务按配方执行。产物写在对象存储的 `runs/<run-id>/` 下，包括运行清单、SLI、度量值、对齐结果与人读报告；仓库里只在配方的 `latest_run` 留回链，写 URI、sha256 与状态三要素。校验仓库：在 `aisp/bench` 下安装 `requirements.txt` 的依赖，先跑 `scripts/validate_repo.py` 检查配方、指标登记表与 schema 的一致性，再跑 `scripts/run_checks.py` 在同一套检查之外加上 selftest 与 `examples/` 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过，阈值只从 `recipes/*/metrics.yaml` 读。扩展评估集：评估集是静态产物，不会自己变化；新模型、新框架或新并行策略出现后，由 playbook 发现覆盖缺口并生成新版本，流程见 [`checkpoint/extension.md`](checkpoint/extension.md)，新增或修改配方前先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+跑一次评估：准备一份运行请求，定下跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子，交给评估服务按配方执行。
+
+1. 校验仓库：在 `aisp/bench` 下安装 `requirements.txt` 的依赖，先跑 `scripts/validate_repo.py` 检查配方、指标登记表与 schema 的一致性，再跑 `scripts/run_checks.py` 在同一套检查之外加上 selftest 与 `examples/` 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过，阈值只从 `recipes/*/metrics.yaml` 读。
+2. 扩展评估集：评估集是静态产物，不会自己变化；新模型、新框架或新并行策略出现后，由 playbook 发现覆盖缺口并生成新版本，流程见 [`checkpoint/extension.md`](checkpoint/extension.md)，新增或修改配方前先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
 
 ## bench_api
 
-```viba bench_api
-import bench
-import ckpt_sample
+```bash bench_api
+import aisp.bench.readme.bench as bench
+import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
 
 RunBench =
      bench.BenchRun
@@ -179,9 +182,9 @@ ExtendBench =
 
 三个操作串成一条闭环：跑一次评估产出五份产物与回链，校验仓库确认配方、指标与 schema 一致，发现覆盖缺口后扩展评估集、生成新版本；新版本回到评估集，产物留在对象存储，仓库里只留回链。
 
-```viba bench_flow
-import bench
-import bench_api
+```bash bench_flow
+import aisp.bench.readme.bench as bench
+import aisp.bench.readme.bench_api as bench_api
 
 BenchRunDuty =
   Object
@@ -212,6 +215,6 @@ BenchFlow =
   * $backlink (bench.BenchBacklink * { 每次运行结束后，仓库里只留回链；产物本身在对象存储 })
 ```
 
-评估方法见 [`checkpoint/methodology.md`](checkpoint/methodology.md)，评估服务见 [`checkpoint/evaluation-service.md`](checkpoint/evaluation-service.md)，扩展流程见 [`checkpoint/extension.md`](checkpoint/extension.md)。判断这套 bench 能不能用见 [`checkpoint/principles.md`](checkpoint/principles.md) 与 [`metrics/coverage.md`](metrics/coverage.md)，验收结论的口径与实现见 [`metrics/`](metrics/README.md) 与 [`checks/README.md`](checks/README.md)，评估这套 playbook 自身见 [`meta-evaluation/method.md`](meta-evaluation/method.md)，领域词见 [`checkpoint/appendix-glossary.md`](checkpoint/appendix-glossary.md)。
+评估方法见 [`checkpoint/methodology.md`](checkpoint/methodology.md)，评估服务见 [`checkpoint/evaluation_service.md`](checkpoint/evaluation_service.md)，扩展流程见 [`checkpoint/extension.md`](checkpoint/extension.md)。判断这套 bench 能不能用见 [`checkpoint/principles.md`](checkpoint/principles.md) 与 [`metrics/coverage.md`](metrics/coverage.md)，验收结论的口径与实现见 [`metrics/`](metrics/README.md) 与 [`checks/README.md`](checks/README.md)，评估这套 playbook 自身见 [`meta-evaluation/method.md`](meta-evaluation/method.md)，领域词见 [`checkpoint/appendix_glossary.md`](checkpoint/appendix_glossary.md)。
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

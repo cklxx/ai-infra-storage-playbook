@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `scaling` 模块与 `## 接口` 的 `scaling_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `ScalingRunPlan`、`ScalingInvariantSet`、`ScalingLevelRun`、`ScalingExtrapolation`，操作 `ChooseDimension`、`PickInvariant`、`ScaleUp`、`Extrapolate`；先看 `ScalingRunPlan` 与 `ChooseDimension`，再由 `PickInvariant` 交回 `ScalingInvariantSet`、由 `ScaleUp` 交回 `ScalingLevelRun`，逐级结果汇进 `Extrapolate` 交回的 `ScalingExtrapolation`。
 
-```viba scaling_public
-import scaling
-import scaling_api
+```bash scaling_public
+import aisp.bench.checkpoint.scaling.scaling as scaling
+import aisp.bench.checkpoint.scaling.scaling_api as scaling_api
 
 ScalingRunPlan = scaling.ScalingRunPlan
 ScalingInvariantSet = scaling.ScalingInvariantSet
@@ -26,8 +26,8 @@ Extrapolate = scaling_api.Extrapolate
 
 问题形式化为 `scaling` 模块：取值只能落在有限集合里的概念写成 Oneof 枚举，`ScalingDimension` 是放大维度，`ScalingInvariantExample` 是不变量示例，`ScalingExtrapolationRule` 是外推规则，`ScalingWriteMode` 是写入模式，`ScalingNonlinearSource` 是放大中非线性变化的来源，`ScalingOpenQuestion` 是尚无答案的开放问题。需要成组记录的概念写成 Object 类型：`ScalingRunPlan` 的 `$dimension` 取这次放大的一个 `ScalingDimension`、`$fixed` 是其余四个维度的 `ScalingFixedDimension` 列表，`ScalingFixedDimension` 记一个被固定的维度与固定成的值。不变量这条链上，`ScalingInvariantCandidate` 是候选度量项，判断通过的写成 `ScalingInvariant`，`ScalingInvariantSet` 的 `$invariants` 收最终选定的 `ScalingInvariant` 列表，`$variables`、`$references` 与 `$unmeasurable` 分别记变量、参考项与测不到的候选。`ScalingLevelRun` 记一级放大的结果，其 `$level` 取 `levels.Level`、`$dimension` 取 `ScalingDimension`；`ScalingExtrapolation` 记一次外推，其 `$from_level` 与 `$to_level` 取 `levels.Level`、`$rules` 是 `ScalingExtrapolationRule` 的列表、`$timing` 是 `ScalingTiming`、`$nonlinear_sources` 是 `ScalingNonlinearSource` 的列表，`ScalingTiming` 的 `$mode` 取 `ScalingWriteMode`；`ScalingLevelReport` 记每一级的报告，其 `$level` 取 `levels.Level`。
 
-```viba scaling
-import levels
+```bash scaling
+import aisp.bench.checkpoint.scaling.levels as levels
 
 ScalingDimension =
   Oneof
@@ -59,7 +59,7 @@ ScalingInvariantCandidate =
 ScalingInvariant =
   Object
   * $name (str * { 不变量名称，写进配方的 metrics.yaml })
-  * $definition (str * { 定义：量的是什么 })
+  * $definition (str * { 定义：测的是什么 })
   * $computation (str * { 计算方式：从哪些原始数据、按什么公式算出来 })
   * $tolerance (str * { 容差：允许的波动范围，必须可计算 })
   * $verdict (str * { 判定规则：实测值在什么条件下判为保持，什么条件下判为失效 })
@@ -150,7 +150,7 @@ ScalingOpenQuestion =
 
 档位枚举保留在原有的 levels 模块；scaling 模块与其它文档都引用它。
 
-```viba levels
+```bash levels
 Level =
   Oneof
   | "S0" * { 单机，最小参数规模。对齐基准；度量项在容差内 }
@@ -163,13 +163,18 @@ Level =
 
 ## 基本操作
 
-需要四个操作。选维度：从模型规模、集群规模、并行策略、负载、存储后端里选一个放大，其余四个固定并记录，同时放大两个维度得到的结论无法归因。定不变量：从 [`methodology.md`](methodology.md) 的度量项里挑候选，逐个判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差，最终留下 3 到 6 条。逐级验证：按 S0 到 S5 的阶梯一级一级跑，至少四级，每级都要拿到完整度量、重新验证不变量并给偏差归因，不允许从最小规模直接跳到十万卡。外推：先判断存储侧是否饱和，数据与元数据分开算，处理时序与重叠，也就是同步或异步写入的时间折算，再处理 P99、P999 尾延迟，给出下一级的预测值与预测依据。每一级都要写报告，报告包含完整配置、不变量对比、变量曲线、偏差归因与下一级预测，报告放对象存储，仓库里只写回链。
+需要四个操作。
+
+1. 选维度：从模型规模、集群规模、并行策略、负载、存储后端里选一个放大，其余四个固定并记录，同时放大两个维度得到的结论无法归因。
+2. 定不变量：从 [`methodology.md`](methodology.md) 的度量项里挑候选，逐个判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差，最终留下 3 到 6 条。
+3. 逐级验证：按 S0 到 S5 的阶梯一级一级跑，至少四级，每级都要拿到完整度量、重新验证不变量并给偏差归因，不允许从最小规模直接跳到十万卡。
+4. 外推：先判断存储侧是否饱和，数据与元数据分开算，处理时序与重叠，也就是同步或异步写入的时间折算，再处理 P99、P999 尾延迟，给出下一级的预测值与预测依据。
 
 ## scaling_api
 
-```viba scaling_api
-import levels
-import scaling
+```bash scaling_api
+import aisp.bench.checkpoint.scaling.levels as levels
+import aisp.bench.checkpoint.scaling.scaling as scaling
 
 ChooseDimension =
      scaling.ScalingRunPlan
@@ -203,10 +208,10 @@ Extrapolate =
 
 scaling_flow 把维度、不变量、逐级验证、外推与报告串成一个整体：一份放大计划贯穿所有级，一组不变量在每一级重新验证，逐级结果汇到一次外推，每一级的结果写成一份报告。
 
-```viba scaling_flow
-import levels
-import scaling
-import scaling_api
+```bash scaling_flow
+import aisp.bench.checkpoint.scaling.levels as levels
+import aisp.bench.checkpoint.scaling.scaling as scaling
+import aisp.bench.checkpoint.scaling.scaling_api as scaling_api
 
 ScalingChooseDuty =
   Object

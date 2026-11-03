@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchSubject.schema.json",
   "title": "BenchSubject",
-  "$ref": "#/$defs/bench.BenchSubject",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject",
   "$defs": {
-    "bench.BenchSubject": {
+    "aisp.bench.readme.bench.BenchSubject": {
       "oneOf": [
         {
           "const": "model_code_collection"

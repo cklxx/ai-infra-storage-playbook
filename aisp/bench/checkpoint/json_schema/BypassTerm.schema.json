@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/BypassTerm.schema.json",
   "title": "BypassTerm",
-  "$ref": "#/$defs/glossary.BypassTerm",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.BypassTerm",
   "$defs": {
-    "glossary.BypassTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.BypassTerm": {
       "oneOf": [
         {
           "const": "meta_device"

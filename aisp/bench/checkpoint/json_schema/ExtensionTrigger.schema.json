@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionTrigger.schema.json",
   "title": "ExtensionTrigger",
-  "$ref": "#/$defs/extension.ExtensionTrigger",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionTrigger",
   "$defs": {
-    "extension.ExtensionTrigger": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionTrigger": {
       "oneOf": [
         {
           "const": "new_model_release"

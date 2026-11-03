@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesAutomatedStep.schema.json",
   "title": "PrinciplesAutomatedStep",
-  "$ref": "#/$defs/principles.PrinciplesAutomatedStep",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAutomatedStep",
   "$defs": {
-    "principles.PrinciplesAutomatedStep": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesAutomatedStep": {
       "oneOf": [
         {
           "const": "find_gaps"

@@ -2,34 +2,34 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchSpec.schema.json",
   "title": "BenchSpec",
-  "$ref": "#/$defs/bench.BenchSpec",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchSpec",
   "$defs": {
-    "bench.BenchSpec": {
+    "aisp.bench.readme.bench.BenchSpec": {
       "type": "object",
       "properties": {
         "subjects": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchSubject"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
           }
         },
         "storage": {
-          "$ref": "#/$defs/bench.BenchStorageVersion"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageVersion"
         },
         "eval_sets": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchEvalSet"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSet"
           }
         },
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchMetricSet"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricSet"
           }
         },
         "layout": {
-          "$ref": "#/$defs/bench.BenchLayout"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchLayout"
         }
       },
       "required": [
@@ -41,7 +41,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchSubject": {
+    "aisp.bench.readme.bench.BenchSubject": {
       "oneOf": [
         {
           "const": "model_code_collection"
@@ -57,13 +57,13 @@
         }
       ]
     },
-    "bench.BenchStorageVersion": {
+    "aisp.bench.readme.bench.BenchStorageVersion": {
       "type": "object",
       "properties": {
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchStorageLayer"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayer"
           }
         },
         "manifest": {
@@ -72,7 +72,7 @@
         "changed_layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchStorageLayerKind"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
           }
         }
       },
@@ -83,14 +83,14 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchStorageLayer": {
+    "aisp.bench.readme.bench.BenchStorageLayer": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/bench.BenchStorageLayerKind"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
         },
         "component": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "env": {
           "type": "string"
@@ -103,7 +103,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchStorageLayerKind": {
+    "aisp.bench.readme.bench.BenchStorageLayerKind": {
       "oneOf": [
         {
           "const": "backend"
@@ -113,7 +113,7 @@
         }
       ]
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {
@@ -140,16 +140,16 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchEvalSet": {
+    "aisp.bench.readme.bench.BenchEvalSet": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/bench.BenchSubject"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
         },
         "entry": {
           "oneOf": [
             {
-              "$ref": "#/$defs/bench.BenchEvalSetEntry"
+              "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSetEntry"
             },
             {
               "type": "null"
@@ -163,7 +163,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchEvalSetEntry": {
+    "aisp.bench.readme.bench.BenchEvalSetEntry": {
       "type": "object",
       "properties": {
         "version": {
@@ -194,14 +194,14 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchMetricSet": {
+    "aisp.bench.readme.bench.BenchMetricSet": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/bench.BenchSubject"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
         },
         "tier": {
-          "$ref": "#/$defs/bench.BenchMetricTier"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricTier"
         },
         "metrics": {
           "type": "array",
@@ -217,7 +217,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchMetricTier": {
+    "aisp.bench.readme.bench.BenchMetricTier": {
       "oneOf": [
         {
           "const": "sli"
@@ -227,7 +227,7 @@
         }
       ]
     },
-    "bench.BenchLayout": {
+    "aisp.bench.readme.bench.BenchLayout": {
       "type": "object",
       "properties": {
         "root": {
@@ -236,7 +236,7 @@
         "areas": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchRepoArea"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchRepoArea"
           }
         },
         "method_docs": {
@@ -260,7 +260,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchRepoArea": {
+    "aisp.bench.readme.bench.BenchRepoArea": {
       "oneOf": [
         {
           "const": "playbook"

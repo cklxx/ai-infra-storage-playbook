@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleOutcome.schema.json",
   "title": "ExampleOutcome",
-  "$ref": "#/$defs/examples.ExampleOutcome",
+  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleOutcome",
   "$defs": {
-    "examples.ExampleOutcome": {
+    "aisp.bench.examples.readme.examples.ExampleOutcome": {
       "oneOf": [
         {
           "const": "accepted"

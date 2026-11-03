@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/RestoreDurationMetric.schema.json",
   "title": "RestoreDurationMetric",
-  "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric",
   "$defs": {
-    "ckpt_sample.RestoreDurationMetric": {
+    "aisp.bench.checkpoint.performance.sli.RestoreDurationMetric": {
       "type": "number"
     }
   }

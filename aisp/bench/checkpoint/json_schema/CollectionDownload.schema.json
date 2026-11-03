@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionDownload.schema.json",
   "title": "CollectionDownload",
-  "$ref": "#/$defs/collection.CollectionDownload",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDownload",
   "$defs": {
-    "collection.CollectionDownload": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDownload": {
       "type": "object",
       "properties": {
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/collection.CollectionCodeFile"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFile"
           }
         },
         "oversized": {
@@ -22,7 +22,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/collection.CollectionFetchFailure"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFetchFailure"
           }
         },
         "resumed": {
@@ -37,14 +37,14 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionCodeFile": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFile": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "kind": {
-          "$ref": "#/$defs/collection.CollectionFileKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind"
         },
         "sha256": {
           "type": "string"
@@ -57,7 +57,7 @@
       ],
       "additionalProperties": false
     },
-    "collection.CollectionFileKind": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind": {
       "oneOf": [
         {
           "const": "config"
@@ -79,7 +79,7 @@
         }
       ]
     },
-    "collection.CollectionFetchFailure": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFetchFailure": {
       "oneOf": [
         {
           "const": "network"

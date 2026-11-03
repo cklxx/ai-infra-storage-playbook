@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplateCheck.schema.json",
   "title": "AcceptanceTemplateCheck",
-  "$ref": "#/$defs/acceptance_template.AcceptanceTemplateCheck",
+  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateCheck",
   "$defs": {
-    "acceptance_template.AcceptanceTemplateCheck": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateCheck": {
       "type": "object",
       "properties": {
         "item": {
-          "$ref": "#/$defs/acceptance_template.AcceptanceTemplateItem"
+          "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem"
         },
         "state": {
-          "$ref": "#/$defs/acceptance_template.AcceptanceTemplateCheckState"
+          "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateCheckState"
         }
       },
       "required": [
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "acceptance_template.AcceptanceTemplateItem": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem": {
       "oneOf": [
         {
           "const": "g0_runs_without_bypass"
@@ -87,7 +87,7 @@
         }
       ]
     },
-    "acceptance_template.AcceptanceTemplateCheckState": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateCheckState": {
       "oneOf": [
         {
           "type": "object",
@@ -105,7 +105,7 @@
           "type": "object",
           "properties": {
             "checked": {
-              "$ref": "#/$defs/acceptance_template.AcceptanceTemplateEvidence"
+              "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateEvidence"
             }
           },
           "required": [
@@ -115,7 +115,7 @@
         }
       ]
     },
-    "acceptance_template.AcceptanceTemplateEvidence": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateEvidence": {
       "oneOf": [
         {
           "type": "object",

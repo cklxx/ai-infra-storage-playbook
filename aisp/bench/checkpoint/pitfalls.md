@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `pitfalls` 模块与 `## 接口` 的 `pitfalls_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `PitfallEntry`、`PitfallCategory`、`Pitfall`、`PitfallStatus`，操作 `RegisterPitfall`、`JudgeResolved`、`OpenQuestion`；先看 `PitfallEntry` 与 `RegisterPitfall`，再看 `JudgeResolved` 与 `OpenQuestion`。
 
-```viba pitfalls_public
-import pitfalls
-import pitfalls_api
+```bash pitfalls_public
+import aisp.bench.checkpoint.pitfalls.pitfalls as pitfalls
+import aisp.bench.checkpoint.pitfalls.pitfalls_api as pitfalls_api
 
 PitfallCategory = pitfalls.PitfallCategory
 Pitfall = pitfalls.Pitfall
@@ -25,7 +25,7 @@ OpenQuestion = pitfalls_api.OpenQuestion
 
 问题形式化为一份坑登记表。一条登记记录写成 `PitfallEntry` 这个 Object 类型，六个字段分别收下分类、具体坑、现象、原因、处置与状态。`PitfallCategory`、`Pitfall`、`PitfallStatus` 与 `PitfallOpenQuestion` 都是 Oneof 枚举：`PitfallCategory` 给出条目所属的类别，`Pitfall` 的每个取值对应一条已知坑，`PitfallStatus` 给出 `$status` 字段的取值，`PitfallOpenQuestion` 承接未解决的坑挂出的开放问题。分类、具体坑与状态不是自由文本，分别取自 `PitfallCategory`、`Pitfall` 与 `PitfallStatus` 的取值。
 
-```viba pitfalls
+```bash pitfalls
 PitfallCategory =
   Oneof
   | "methodology" * { 方法论层面的坑：观测开销污染结论、应用层与系统层对不上、时序被压缩、单卡串行导致并发失真、冷热缓存差异、旁路后显存不释放 }
@@ -90,12 +90,16 @@ PitfallOpenQuestion =
 
 ## 基本操作
 
-要维护这份登记表，需要三个操作。第一个操作登记一条坑：按分类收下这条坑，写清现象、原因、处置与状态，字段不留空。第二个操作判断一条坑是否已解决：只有状态为"已解决"才算解决，已经解决的问题保留条目，不删除。第三个操作把未解决的坑挂成开放问题：写明它对应的问题、影响范围与当前处置方式，已解决的坑不挂。三个操作按这个顺序串起来，就得到一份可追溯的坑清单。
+要维护这份登记表，需要三个操作。
+
+1. 第一个操作登记一条坑：按分类收下这条坑，写清现象、原因、处置与状态，字段不留空。
+2. 第二个操作判断一条坑是否已解决：只有状态为"已解决"才算解决，已经解决的问题保留条目，不删除。
+3. 第三个操作把未解决的坑挂成开放问题：写明它对应的问题、影响范围与当前处置方式，已解决的坑不挂。
 
 ## pitfalls_api
 
-```viba pitfalls_api
-import pitfalls
+```bash pitfalls_api
+import aisp.bench.checkpoint.pitfalls.pitfalls as pitfalls
 
 RegisterPitfall =
      pitfalls.PitfallEntry
@@ -120,9 +124,9 @@ OpenQuestion =
 
 ## pitfalls_flow
 
-```viba pitfalls_flow
-import pitfalls
-import pitfalls_api
+```bash pitfalls_flow
+import aisp.bench.checkpoint.pitfalls.pitfalls as pitfalls
+import aisp.bench.checkpoint.pitfalls.pitfalls_api as pitfalls_api
 
 PitfallStep =
   Oneof

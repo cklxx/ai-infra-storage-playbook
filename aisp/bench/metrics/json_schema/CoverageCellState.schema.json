@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageCellState.schema.json",
   "title": "CoverageCellState",
-  "$ref": "#/$defs/coverage.CoverageCellState",
+  "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageCellState",
   "$defs": {
-    "coverage.CoverageCellState": {
+    "aisp.bench.metrics.coverage.coverage.CoverageCellState": {
       "oneOf": [
         {
           "const": "covered"

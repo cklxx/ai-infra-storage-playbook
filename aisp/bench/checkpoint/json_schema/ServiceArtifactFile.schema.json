@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceArtifactFile.schema.json",
   "title": "ServiceArtifactFile",
-  "$ref": "#/$defs/service.ServiceArtifactFile",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceArtifactFile",
   "$defs": {
-    "service.ServiceArtifactFile": {
+    "aisp.bench.checkpoint.evaluation_service.service.ServiceArtifactFile": {
       "type": "object",
       "properties": {
         "path": {

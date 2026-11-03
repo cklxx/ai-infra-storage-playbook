@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CkptSli.schema.json",
   "title": "CkptSli",
-  "$ref": "#/$defs/ckpt_sample.CkptSli",
+  "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CkptSli",
   "$defs": {
-    "ckpt_sample.CkptSli": {
+    "aisp.bench.checkpoint.performance.sli.CkptSli": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "check_point_duration_sli": {
-              "$ref": "#/$defs/ckpt_sample.CheckPointDurationMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric"
             }
           },
           "required": [
@@ -22,7 +22,7 @@
           "type": "object",
           "properties": {
             "training_stall_sli": {
-              "$ref": "#/$defs/ckpt_sample.TrainingStallMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric"
             }
           },
           "required": [
@@ -34,7 +34,7 @@
           "type": "object",
           "properties": {
             "restore_duration_sli": {
-              "$ref": "#/$defs/ckpt_sample.RestoreDurationMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric"
             }
           },
           "required": [
@@ -46,7 +46,7 @@
           "type": "object",
           "properties": {
             "write_throughput_sli": {
-              "$ref": "#/$defs/ckpt_sample.WriteThroughputMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric"
             }
           },
           "required": [
@@ -58,7 +58,7 @@
           "type": "object",
           "properties": {
             "metadata_commit_sli": {
-              "$ref": "#/$defs/ckpt_sample.MetadataCommitMetric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.MetadataCommitMetric"
             }
           },
           "required": [
@@ -70,7 +70,7 @@
           "type": "object",
           "properties": {
             "write_latency_p99_sli": {
-              "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric"
+              "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric"
             }
           },
           "required": [
@@ -80,22 +80,22 @@
         }
       ]
     },
-    "ckpt_sample.CheckPointDurationMetric": {
+    "aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric": {
       "type": "number"
     },
-    "ckpt_sample.TrainingStallMetric": {
+    "aisp.bench.checkpoint.performance.sli.TrainingStallMetric": {
       "type": "number"
     },
-    "ckpt_sample.RestoreDurationMetric": {
+    "aisp.bench.checkpoint.performance.sli.RestoreDurationMetric": {
       "type": "number"
     },
-    "ckpt_sample.WriteThroughputMetric": {
+    "aisp.bench.checkpoint.performance.sli.WriteThroughputMetric": {
       "type": "number"
     },
-    "ckpt_sample.MetadataCommitMetric": {
+    "aisp.bench.checkpoint.performance.sli.MetadataCommitMetric": {
       "type": "number"
     },
-    "ckpt_sample.WriteLatencyP99Metric": {
+    "aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric": {
       "type": "number"
     }
   }

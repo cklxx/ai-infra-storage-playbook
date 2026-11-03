@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointRegistration.schema.json",
   "title": "CheckpointRegistration",
-  "$ref": "#/$defs/checkpoint.CheckpointRegistration",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointRegistration",
   "$defs": {
-    "checkpoint.CheckpointRegistration": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointRegistration": {
       "type": "object",
       "properties": {
         "conclusion": {
-          "$ref": "#/$defs/checkpoint.CheckpointConclusion"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointConclusion"
         },
         "coverage_updated": {
           "type": "boolean"
@@ -20,22 +20,22 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointConclusion": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointConclusion": {
       "type": "object",
       "properties": {
         "alignment": {
-          "$ref": "#/$defs/checkpoint.CheckpointAlignment"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignment"
         },
         "scaling": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointScalingRun"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingRun"
           }
         },
         "acceptance": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointAcceptanceItem"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAcceptanceItem"
           }
         },
         "backlink": {
@@ -50,13 +50,13 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointAlignment": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignment": {
       "type": "object",
       "properties": {
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointAlignmentStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignmentStep"
           }
         },
         "within_tolerance": {
@@ -69,7 +69,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointAlignmentStep": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignmentStep": {
       "oneOf": [
         {
           "const": "minimal_config"
@@ -85,16 +85,16 @@
         }
       ]
     },
-    "checkpoint.CheckpointScalingRun": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingRun": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/checkpoint.CheckpointScalingDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingDimension"
         },
         "target": {
           "oneOf": [
             {
-              "$ref": "#/$defs/levels.Level"
+              "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
             },
             {
               "type": "null"
@@ -116,7 +116,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointScalingDimension": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingDimension": {
       "oneOf": [
         {
           "const": "parameter_count"
@@ -135,7 +135,7 @@
         }
       ]
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -157,7 +157,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointAcceptanceItem": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAcceptanceItem": {
       "oneOf": [
         {
           "const": "io_pattern_alignment"

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionGap.schema.json",
   "title": "ExtensionGap",
-  "$ref": "#/$defs/extension.ExtensionGap",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionGap",
   "$defs": {
-    "extension.ExtensionGap": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionGap": {
       "type": "object",
       "properties": {
         "cell": {
-          "$ref": "#/$defs/extension.ExtensionCell"
+          "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCell"
         },
         "priority": {
           "type": "number"
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionCell": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionCell": {
       "type": "object",
       "properties": {
         "axes": {
@@ -55,7 +55,7 @@
         "empty": {
           "oneOf": [
             {
-              "$ref": "#/$defs/extension.ExtensionEmptyKind"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind"
             },
             {
               "type": "null"
@@ -72,7 +72,7 @@
       ],
       "additionalProperties": false
     },
-    "extension.ExtensionEmptyKind": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind": {
       "oneOf": [
         {
           "const": "should_exist"
@@ -81,7 +81,7 @@
           "type": "object",
           "properties": {
             "not_needed": {
-              "$ref": "#/$defs/extension.ExtensionExemption"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionExemption"
             }
           },
           "required": [
@@ -91,7 +91,7 @@
         }
       ]
     },
-    "extension.ExtensionExemption": {
+    "aisp.bench.checkpoint.extension.extension.ExtensionExemption": {
       "type": "object",
       "properties": {
         "reason": {

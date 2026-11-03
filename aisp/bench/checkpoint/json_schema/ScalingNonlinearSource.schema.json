@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingNonlinearSource.schema.json",
   "title": "ScalingNonlinearSource",
-  "$ref": "#/$defs/scaling.ScalingNonlinearSource",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingNonlinearSource",
   "$defs": {
-    "scaling.ScalingNonlinearSource": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingNonlinearSource": {
       "oneOf": [
         {
           "const": "storage_saturation"

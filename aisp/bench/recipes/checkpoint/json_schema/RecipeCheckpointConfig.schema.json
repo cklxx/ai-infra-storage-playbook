@@ -2,24 +2,24 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointConfig.schema.json",
   "title": "RecipeCheckpointConfig",
-  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointConfig",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointConfig",
   "$defs": {
-    "recipe_checkpoint.RecipeCheckpointConfig": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointConfig": {
       "type": "object",
       "properties": {
         "parallel_coverage": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallelLead"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallelLead"
           }
         },
         "checkpoint_implementation": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
         },
         "write_modes": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointWriteMode"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointWriteMode"
           }
         },
         "data_layout": {
@@ -38,7 +38,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointParallelLead": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallelLead": {
       "oneOf": [
         {
           "const": "dp_led"
@@ -54,7 +54,7 @@
         }
       ]
     },
-    "recipe_checkpoint.RecipeCheckpointVersionedName": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName": {
       "type": "object",
       "properties": {
         "name": {
@@ -70,7 +70,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointWriteMode": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointWriteMode": {
       "oneOf": [
         {
           "const": "sync"

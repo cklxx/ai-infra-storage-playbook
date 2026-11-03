@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesGap.schema.json",
   "title": "PrinciplesGap",
-  "$ref": "#/$defs/principles.PrinciplesGap",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesGap",
   "$defs": {
-    "principles.PrinciplesGap": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesGap": {
       "type": "object",
       "properties": {
         "cell": {
@@ -18,7 +18,7 @@
           ]
         },
         "kind": {
-          "$ref": "#/$defs/principles.PrinciplesGapKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesGapKind"
         },
         "discovered_by_service": {
           "type": "boolean"
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesGapKind": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesGapKind": {
       "oneOf": [
         {
           "const": "new_architecture"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryUnit.schema.json",
   "title": "MetricsRegistryUnit",
-  "$ref": "#/$defs/metrics_registry.MetricsRegistryUnit",
+  "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryUnit",
   "$defs": {
-    "metrics_registry.MetricsRegistryUnit": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryUnit": {
       "type": "string"
     }
   }

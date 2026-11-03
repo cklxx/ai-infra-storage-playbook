@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/WriteLatencyP99Metric.schema.json",
   "title": "WriteLatencyP99Metric",
-  "$ref": "#/$defs/ckpt_sample.WriteLatencyP99Metric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric",
   "$defs": {
-    "ckpt_sample.WriteLatencyP99Metric": {
+    "aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric": {
       "type": "number"
     }
   }

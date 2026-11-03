@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyBypassPlan.schema.json",
   "title": "MethodologyBypassPlan",
-  "$ref": "#/$defs/methodology.MethodologyBypassPlan",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyBypassPlan",
   "$defs": {
-    "methodology.MethodologyBypassPlan": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyBypassPlan": {
       "type": "object",
       "properties": {
         "method": {
-          "$ref": "#/$defs/bypass.BypassMethod"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.BypassMethod"
         },
         "fidelity": {
-          "$ref": "#/$defs/bypass.FidelityLevel"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.FidelityLevel"
         },
         "premise": {
-          "$ref": "#/$defs/methodology.MethodologyBypassPremise"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyBypassPremise"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "bypass.BypassMethod": {
+    "aisp.bench.checkpoint.methodology.bypass.BypassMethod": {
       "oneOf": [
         {
           "const": "meta_device"
@@ -40,7 +40,7 @@
         }
       ]
     },
-    "bypass.FidelityLevel": {
+    "aisp.bench.checkpoint.methodology.bypass.FidelityLevel": {
       "oneOf": [
         {
           "const": "L0"
@@ -56,7 +56,7 @@
         }
       ]
     },
-    "methodology.MethodologyBypassPremise": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyBypassPremise": {
       "type": "object",
       "properties": {
         "io_path_unchanged": {

@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyBoundaryTable.schema.json",
   "title": "MethodologyBoundaryTable",
-  "$ref": "#/$defs/methodology.MethodologyBoundaryTable",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyBoundaryTable",
   "$defs": {
-    "methodology.MethodologyBoundaryTable": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyBoundaryTable": {
       "type": "object",
       "properties": {
         "rows": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/fidelity.FidelityBoundary"
+            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
           }
         }
       },
@@ -19,19 +19,19 @@
       ],
       "additionalProperties": false
     },
-    "fidelity.FidelityBoundary": {
+    "aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "bypassed": {
-          "$ref": "#/$defs/fidelity.Bypassed"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.Bypassed"
         },
         "method": {
           "oneOf": [
             {
-              "$ref": "#/$defs/bypass.BypassMethod"
+              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.BypassMethod"
             },
             {
               "type": "null"
@@ -39,7 +39,7 @@
           ]
         },
         "fidelity": {
-          "$ref": "#/$defs/bypass.FidelityLevel"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.FidelityLevel"
         },
         "kept": {
           "type": "string"
@@ -58,7 +58,7 @@
       ],
       "additionalProperties": false
     },
-    "fidelity.Bypassed": {
+    "aisp.bench.checkpoint.methodology.fidelity.Bypassed": {
       "oneOf": [
         {
           "const": "yes"
@@ -71,7 +71,7 @@
         }
       ]
     },
-    "bypass.BypassMethod": {
+    "aisp.bench.checkpoint.methodology.bypass.BypassMethod": {
       "oneOf": [
         {
           "const": "meta_device"
@@ -87,7 +87,7 @@
         }
       ]
     },
-    "bypass.FidelityLevel": {
+    "aisp.bench.checkpoint.methodology.bypass.FidelityLevel": {
       "oneOf": [
         {
           "const": "L0"

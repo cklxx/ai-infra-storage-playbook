@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyScaleRule.schema.json",
   "title": "MethodologyScaleRule",
-  "$ref": "#/$defs/methodology.MethodologyScaleRule",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyScaleRule",
   "$defs": {
-    "methodology.MethodologyScaleRule": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyScaleRule": {
       "oneOf": [
         {
           "const": "alignment_first"

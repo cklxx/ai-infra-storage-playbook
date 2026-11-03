@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckScalingInput.schema.json",
   "title": "CheckScalingInput",
-  "$ref": "#/$defs/checks.CheckScalingInput",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingInput",
   "$defs": {
-    "checks.CheckScalingInput": {
+    "aisp.bench.checks.readme.checks.CheckScalingInput": {
       "type": "object",
       "properties": {
         "levels": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/levels.Level"
+            "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
           }
         },
         "invariants": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/checks.CheckScalingInvariant"
+            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingInvariant"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -48,7 +48,7 @@
         }
       ]
     },
-    "checks.CheckScalingInvariant": {
+    "aisp.bench.checks.readme.checks.CheckScalingInvariant": {
       "type": "object",
       "properties": {
         "values": {

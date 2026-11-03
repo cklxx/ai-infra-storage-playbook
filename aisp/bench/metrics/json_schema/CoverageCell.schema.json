@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageCell.schema.json",
   "title": "CoverageCell",
-  "$ref": "#/$defs/coverage.CoverageCell",
+  "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageCell",
   "$defs": {
-    "coverage.CoverageCell": {
+    "aisp.bench.metrics.coverage.coverage.CoverageCell": {
       "type": "object",
       "properties": {
         "key": {
-          "$ref": "#/$defs/coverage.CoverageCellKey"
+          "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageCellKey"
         },
         "state": {
-          "$ref": "#/$defs/coverage.CoverageCellState"
+          "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageCellState"
         },
         "exemption": {
           "oneOf": [
             {
-              "$ref": "#/$defs/coverage.CoverageExemption"
+              "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageExemption"
             },
             {
               "type": "null"
@@ -31,17 +31,17 @@
       ],
       "additionalProperties": false
     },
-    "coverage.CoverageCellKey": {
+    "aisp.bench.metrics.coverage.coverage.CoverageCellKey": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/coverage.CoverageAxisValue"
+        "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxisValue"
       }
     },
-    "coverage.CoverageAxisValue": {
+    "aisp.bench.metrics.coverage.coverage.CoverageAxisValue": {
       "type": "object",
       "properties": {
         "axis": {
-          "$ref": "#/$defs/coverage.CoverageAxis"
+          "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxis"
         },
         "value": {
           "type": "string"
@@ -53,7 +53,7 @@
       ],
       "additionalProperties": false
     },
-    "coverage.CoverageAxis": {
+    "aisp.bench.metrics.coverage.coverage.CoverageAxis": {
       "oneOf": [
         {
           "const": "arch_family"
@@ -84,7 +84,7 @@
         }
       ]
     },
-    "coverage.CoverageCellState": {
+    "aisp.bench.metrics.coverage.coverage.CoverageCellState": {
       "oneOf": [
         {
           "const": "covered"
@@ -103,7 +103,7 @@
         }
       ]
     },
-    "coverage.CoverageExemption": {
+    "aisp.bench.metrics.coverage.coverage.CoverageExemption": {
       "type": "object",
       "properties": {
         "reason": {

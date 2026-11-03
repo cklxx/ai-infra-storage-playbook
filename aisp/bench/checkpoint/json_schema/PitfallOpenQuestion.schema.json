@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PitfallOpenQuestion.schema.json",
   "title": "PitfallOpenQuestion",
-  "$ref": "#/$defs/pitfalls.PitfallOpenQuestion",
+  "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.PitfallOpenQuestion",
   "$defs": {
-    "pitfalls.PitfallOpenQuestion": {
+    "aisp.bench.checkpoint.pitfalls.pitfalls.PitfallOpenQuestion": {
       "oneOf": [
         {
           "const": "observation_overhead_per_run"

@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointBypassPlan.schema.json",
   "title": "CheckpointBypassPlan",
-  "$ref": "#/$defs/checkpoint.CheckpointBypassPlan",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassPlan",
   "$defs": {
-    "checkpoint.CheckpointBypassPlan": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassPlan": {
       "type": "object",
       "properties": {
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointBypassStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassStep"
           }
         },
         "constraints": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointBypassConstraint"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassConstraint"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointBypassStep": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassStep": {
       "oneOf": [
         {
           "const": "meta_model"
@@ -45,7 +45,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointBypassConstraint": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassConstraint": {
       "oneOf": [
         {
           "const": "model_code_source"

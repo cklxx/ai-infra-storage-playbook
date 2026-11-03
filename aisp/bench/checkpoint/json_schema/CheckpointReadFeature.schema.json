@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointReadFeature.schema.json",
   "title": "CheckpointReadFeature",
-  "$ref": "#/$defs/checkpoint.CheckpointReadFeature",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointReadFeature",
   "$defs": {
-    "checkpoint.CheckpointReadFeature": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointReadFeature": {
       "oneOf": [
         {
           "const": "overlap_with_training_start"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ObservationLayer.schema.json",
   "title": "ObservationLayer",
-  "$ref": "#/$defs/observation.ObservationLayer",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.observation.ObservationLayer",
   "$defs": {
-    "observation.ObservationLayer": {
+    "aisp.bench.checkpoint.methodology.observation.ObservationLayer": {
       "oneOf": [
         {
           "const": "app"

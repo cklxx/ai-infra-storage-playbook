@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `contributing` 模块与 `## 接口` 的 `contributing_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `ContributingReview`、`ContributingRecipe`、`ContributingMetricRegistration` 与 `ContributingCheckResult`，操作 `CreateRecipe`、`RegisterMetric`、`WriteDecision` 与 `RunChecks`；先看 `ContributingReview` 与 `ContributingRecipe`，再按 `CreateRecipe`、`RegisterMetric`、`WriteDecision`、`RunChecks` 的顺序读，`ContributingMetricRegistration` 与 `ContributingCheckResult` 分别是登记指标的入参和跑校验的返回项。
 
-```viba contributing_public
-import contributing
-import contributing_api
+```bash contributing_public
+import aisp.bench.contributing.contributing as contributing
+import aisp.bench.contributing.contributing_api as contributing_api
 
 ContributingReview = contributing.ContributingReview
 ContributingRecipe = contributing.ContributingRecipe
@@ -26,7 +26,7 @@ RunChecks = contributing_api.RunChecks
 
 这一节把贡献流程形式化为一组 viba 类型：改动先由枚举 `ContributingChangeKind` 分类，`ContributingReview` 以它的取值作为 `kind`，并记录各项确认与受影响的清单。配方一侧有两个枚举，`ContributingRecipeFileKind` 说明要填哪一份文件，`ContributingRecipeRequiredField` 列出 `recipe.yaml` 里不允许留空的项；`ContributingRecipeFile` 把一份文件的种类、位置与内容绑在一起，`ContributingRecipe` 再聚合文件列表、必填项列表、`notes` 与 `changelog`。指标一侧，`ContributingMetricVersion` 是版本号的别名，`ContributingMetricRegistration` 聚合弃用信息 `ContributingMetricDeprecation` 与一组 `ContributingTolerance`。决策记录与校验结果各是一个类型，`ContributingDecision` 的分类取枚举 `ContributingDecisionKind`，`ContributingCheckResult` 的检查项与执行范围则取枚举 `ContributingCheckItem` 与 `ContributingCheckScope`。
 
-```viba contributing
+```bash contributing
 
 ContributingChangeKind =
   Oneof
@@ -141,8 +141,8 @@ ContributingCheckResult =
 
 ## contributing_api
 
-```viba contributing_api
-import contributing
+```bash contributing_api
+import aisp.bench.contributing.contributing as contributing
 
 CreateRecipe =
      contributing.ContributingRecipe
@@ -171,8 +171,8 @@ RunChecks =
 
 ## contributing_flow
 
-```viba contributing_flow
-import contributing
+```bash contributing_flow
+import aisp.bench.contributing.contributing as contributing
 
 ContributingStep =
   Oneof

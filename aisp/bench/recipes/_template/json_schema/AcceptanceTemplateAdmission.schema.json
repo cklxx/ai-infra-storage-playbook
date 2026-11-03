@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplateAdmission.schema.json",
   "title": "AcceptanceTemplateAdmission",
-  "$ref": "#/$defs/acceptance_template.AcceptanceTemplateAdmission",
+  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateAdmission",
   "$defs": {
-    "acceptance_template.AcceptanceTemplateAdmission": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateAdmission": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "allowed": {
-              "$ref": "#/$defs/gates.Gate"
+              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
             }
           },
           "required": [
@@ -24,7 +24,7 @@
             "blocked": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/acceptance_template.AcceptanceTemplateGateReview"
+                "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateGateReview"
               }
             }
           },
@@ -35,7 +35,7 @@
         }
       ]
     },
-    "gates.Gate": {
+    "aisp.bench.checkpoint.methodology.gates.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -54,22 +54,22 @@
         }
       ]
     },
-    "acceptance_template.AcceptanceTemplateGateReview": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateGateReview": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
         },
         "checked": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/acceptance_template.AcceptanceTemplateItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem"
           }
         },
         "unchecked": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/acceptance_template.AcceptanceTemplateItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem"
           }
         },
         "complete": {
@@ -84,7 +84,7 @@
       ],
       "additionalProperties": false
     },
-    "acceptance_template.AcceptanceTemplateItem": {
+    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem": {
       "oneOf": [
         {
           "const": "g0_runs_without_bypass"

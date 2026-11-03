@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointAlignment.schema.json",
   "title": "CheckpointAlignment",
-  "$ref": "#/$defs/checkpoint.CheckpointAlignment",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignment",
   "$defs": {
-    "checkpoint.CheckpointAlignment": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignment": {
       "type": "object",
       "properties": {
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointAlignmentStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignmentStep"
           }
         },
         "within_tolerance": {
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointAlignmentStep": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignmentStep": {
       "oneOf": [
         {
           "const": "minimal_config"

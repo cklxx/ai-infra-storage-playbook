@@ -2,24 +2,24 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateSpec.schema.json",
   "title": "RecipeTemplateSpec",
-  "$ref": "#/$defs/recipe_template.RecipeTemplateSpec",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateSpec",
   "$defs": {
-    "recipe_template.RecipeTemplateSpec": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateSpec": {
       "type": "object",
       "properties": {
         "template": {
-          "$ref": "#/$defs/recipe_template.RecipeTemplateDirectory"
+          "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateDirectory"
         },
         "requirements": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement"
           }
         },
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateScaffoldStep"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateScaffoldStep"
           }
         }
       },
@@ -30,23 +30,23 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateDirectory": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateDirectory": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
         },
         "recipe": {
-          "$ref": "#/$defs/recipe_template.RecipeTemplateRecipeYaml"
+          "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRecipeYaml"
         },
         "metrics": {
-          "$ref": "#/$defs/recipe_template.RecipeTemplateMetricsYaml"
+          "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetricsYaml"
         },
         "readme": {
-          "$ref": "#/$defs/recipe_template.RecipeTemplateReadme"
+          "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateReadme"
         },
         "acceptance_checklist": {
-          "$ref": "#/$defs/recipe_template.RecipeTemplateAcceptanceChecklist"
+          "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateAcceptanceChecklist"
         },
         "checks": {
           "type": "array",
@@ -57,7 +57,7 @@
         "build": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateBuildStage"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateBuildStage"
           }
         }
       },
@@ -72,7 +72,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateRecipeYaml": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRecipeYaml": {
       "type": "object",
       "properties": {
         "meta": {
@@ -90,17 +90,17 @@
         "fidelity_boundary": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/fidelity.FidelityBoundary"
+            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
           }
         },
         "io_pattern_invariants": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateInvariant"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateInvariant"
           }
         },
         "scaling_plan": {
-          "$ref": "#/$defs/recipe_template.RecipeTemplateScalingPlan"
+          "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateScalingPlan"
         },
         "compatible_metrics": {
           "type": "object",
@@ -133,19 +133,19 @@
       ],
       "additionalProperties": false
     },
-    "fidelity.FidelityBoundary": {
+    "aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "bypassed": {
-          "$ref": "#/$defs/fidelity.Bypassed"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.Bypassed"
         },
         "method": {
           "oneOf": [
             {
-              "$ref": "#/$defs/bypass.BypassMethod"
+              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.BypassMethod"
             },
             {
               "type": "null"
@@ -153,7 +153,7 @@
           ]
         },
         "fidelity": {
-          "$ref": "#/$defs/bypass.FidelityLevel"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.FidelityLevel"
         },
         "kept": {
           "type": "string"
@@ -172,7 +172,7 @@
       ],
       "additionalProperties": false
     },
-    "fidelity.Bypassed": {
+    "aisp.bench.checkpoint.methodology.fidelity.Bypassed": {
       "oneOf": [
         {
           "const": "yes"
@@ -185,7 +185,7 @@
         }
       ]
     },
-    "bypass.BypassMethod": {
+    "aisp.bench.checkpoint.methodology.bypass.BypassMethod": {
       "oneOf": [
         {
           "const": "meta_device"
@@ -201,7 +201,7 @@
         }
       ]
     },
-    "bypass.FidelityLevel": {
+    "aisp.bench.checkpoint.methodology.bypass.FidelityLevel": {
       "oneOf": [
         {
           "const": "L0"
@@ -217,7 +217,7 @@
         }
       ]
     },
-    "recipe_template.RecipeTemplateInvariant": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateInvariant": {
       "type": "object",
       "properties": {
         "definition": {
@@ -233,7 +233,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateScalingPlan": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateScalingPlan": {
       "type": "object",
       "properties": {
         "levels": {
@@ -259,13 +259,13 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateMetricsYaml": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetricsYaml": {
       "type": "object",
       "properties": {
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateMetric"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetric"
           }
         }
       },
@@ -274,7 +274,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateMetric": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetric": {
       "type": "object",
       "properties": {
         "name": {
@@ -304,7 +304,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateReadme": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateReadme": {
       "type": "object",
       "properties": {
         "objective": {
@@ -336,13 +336,13 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateAcceptanceChecklist": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateAcceptanceChecklist": {
       "type": "object",
       "properties": {
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateChecklistItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateChecklistItem"
           }
         }
       },
@@ -351,11 +351,11 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateChecklistItem": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateChecklistItem": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
         },
         "checked": {
           "type": "boolean"
@@ -367,7 +367,7 @@
       ],
       "additionalProperties": false
     },
-    "gates.Gate": {
+    "aisp.bench.checkpoint.methodology.gates.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -386,7 +386,7 @@
         }
       ]
     },
-    "recipe_template.RecipeTemplateBuildStage": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateBuildStage": {
       "oneOf": [
         {
           "const": "prepare"
@@ -399,7 +399,7 @@
         }
       ]
     },
-    "recipe_template.RecipeTemplateRequirement": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement": {
       "oneOf": [
         {
           "const": "fidelity_boundary_no_l0"
@@ -421,7 +421,7 @@
         }
       ]
     },
-    "recipe_template.RecipeTemplateScaffoldStep": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateScaffoldStep": {
       "oneOf": [
         {
           "const": "copy_directory"

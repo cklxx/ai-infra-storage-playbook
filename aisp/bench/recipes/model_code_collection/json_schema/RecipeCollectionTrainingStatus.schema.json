@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionTrainingStatus.schema.json",
+  "title": "RecipeCollectionTrainingStatus",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingStatus",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingStatus": {
+      "oneOf": [
+        {
+          "const": "paired"
+        },
+        {
+          "const": "external"
+        },
+        {
+          "const": "unpaired"
+        }
+      ]
+    }
+  }
+}

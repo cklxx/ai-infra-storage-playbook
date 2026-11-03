@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `examples` 模块与 `## 接口` 的 `examples_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `ExampleSampleSet`、`ExampleRunPlan` 与 `ExampleRunResult`，操作 `ListSamples`、`RunAll`、`RunOne` 与 `Verify`；先看 `ExampleSampleSet` 与 `ExampleRunPlan` 这两个输入类型，再按 `ListSamples`、`RunAll`、`RunOne`、`Verify` 的顺序读到 `ExampleRunResult`。
 
-```viba examples_public
-import examples
-import examples_api
+```bash examples_public
+import aisp.bench.examples.readme.examples as examples
+import aisp.bench.examples.readme.examples_api as examples_api
 
 ExampleSampleSet = examples.ExampleSampleSet
 ExampleRunPlan = examples.ExampleRunPlan
@@ -25,7 +25,7 @@ Verify = examples_api.Verify
 
 问题形式化为 `examples` 模块，概念分成类型与枚举两类。样例路径与极性写成枚举：正向样例的每条路径是 `ExamplePositiveSample` 的一个取值，负向样例的每条路径是 `ExampleNegativeSample` 的一个取值，`ExamplePolarity` 只有 positive 与 negative 两个取值，三者都是 Oneof 枚举。承载字段的结构写成对象类型：`ExampleSampleSet` 的 `$positive` 与 `$negative` 分别是 `ExamplePositiveSample` 与 `ExampleNegativeSample` 的列表，`ExampleAllRun` 与 `ExampleSingleRun` 各收下一种跑法要用的取值，`ExampleRunPlan` 再用 `$all` 与 `$single` 两个分支把这两个对象类型合成一个 Oneof 枚举。判结果的部分同样有类型：`ExampleOutcome` 是只有 accepted 与 rejected 两个取值的 Oneof 枚举，`ExampleRunResult` 由样例路径列表、期望的 `ExamplePolarity` 与实际给出的 `ExampleOutcome` 组成，`ExampleRunReport` 再收下 `ExampleRunResult` 的列表与不一致的样例路径。
 
-```viba examples
+```bash examples
 ExamplePolarity =
   Oneof
   | "positive" * { 正向样例：校验脚本应当接受，让检查有可跑通的输入 }
@@ -33,7 +33,7 @@ ExamplePolarity =
 
 ExamplePositiveSample =
   Oneof
-  | "tiny-model/" * { 最小模型代码与清单条目，演示 recipes/model-code-collection 的产物 }
+  | "tiny_model/" * { 最小模型代码与清单条目，演示 recipes/model_code_collection 的产物 }
   | "io-pattern-real.json" * { 真实运行的 IO pattern 记录 }
   | "io-pattern-bypassed.json" * { 旁路运行的记录，偏差在 checkpoint 阈值内 }
   | "coverage.json" * { 覆盖度清单，覆盖度刚好等于阈值 0.6 }
@@ -91,12 +91,17 @@ ExampleRunReport =
 
 ## 基本操作
 
-解决这个问题需要四个操作。列样例：交回正向样例与负向样例，并说明每个样例的用途；负向样例放在 `invalid/` 下，必须被拒绝。整套跑：执行 `python3 scripts/run_checks.py`，一次跑完全部样例。单项跑：执行 `python3 checks/check_io_pattern.py`，用 `--real`、`--bypassed` 与 `--metrics` 指定输入；单独跑一项时阈值从配方读取，示例里取 `recipes/checkpoint/metrics.yaml`。判结果：正向样例应当被接受，负向样例应当被拒绝；负向样例由 `checks/selftest.py` 使用，证明检查不只会通过。
+解决这个问题需要四个操作。
+
+1. 列样例：交回正向样例与负向样例，并说明每个样例的用途；负向样例放在 `invalid/` 下，必须被拒绝。
+2. 整套跑：执行 `python3 scripts/run_checks.py`，一次跑完全部样例。
+3. 单项跑：执行 `python3 checks/check_io_pattern.py`，用 `--real`、`--bypassed` 与 `--metrics` 指定输入；单独跑一项时阈值从配方读取，示例里取 `recipes/checkpoint/metrics.yaml`。
+4. 判结果：正向样例应当被接受，负向样例应当被拒绝；负向样例由 `checks/selftest.py` 使用，证明检查不只会通过。
 
 ## examples_api
 
-```viba examples_api
-import examples
+```bash examples_api
+import aisp.bench.examples.readme.examples as examples
 
 ListSamples =
      examples.ExampleSampleSet
@@ -122,9 +127,9 @@ Verify =
 
 ## examples_flow
 
-```viba examples_flow
-import examples
-import examples_api
+```bash examples_flow
+import aisp.bench.examples.readme.examples as examples
+import aisp.bench.examples.readme.examples_api as examples_api
 
 ExampleStep =
   Oneof

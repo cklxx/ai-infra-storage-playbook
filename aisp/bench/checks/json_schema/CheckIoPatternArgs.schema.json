@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckIoPatternArgs.schema.json",
   "title": "CheckIoPatternArgs",
-  "$ref": "#/$defs/checks.CheckIoPatternArgs",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckIoPatternArgs",
   "$defs": {
-    "checks.CheckIoPatternArgs": {
+    "aisp.bench.checks.readme.checks.CheckIoPatternArgs": {
       "type": "object",
       "properties": {
         "real": {

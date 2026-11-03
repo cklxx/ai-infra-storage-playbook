@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryProblemKind.schema.json",
   "title": "MetricsRegistryProblemKind",
-  "$ref": "#/$defs/metrics_registry.MetricsRegistryProblemKind",
+  "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryProblemKind",
   "$defs": {
-    "metrics_registry.MetricsRegistryProblemKind": {
+    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryProblemKind": {
       "oneOf": [
         {
           "const": "not_registered"

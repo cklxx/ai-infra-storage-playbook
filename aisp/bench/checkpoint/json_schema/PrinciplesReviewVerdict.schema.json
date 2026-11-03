@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesReviewVerdict.schema.json",
   "title": "PrinciplesReviewVerdict",
-  "$ref": "#/$defs/principles.PrinciplesReviewVerdict",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewVerdict",
   "$defs": {
-    "principles.PrinciplesReviewVerdict": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewVerdict": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/principles.PrinciplesReviewSubject"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject"
         },
         "role": {
-          "$ref": "#/$defs/principles.PrinciplesRole"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRole"
         },
         "decision": {
-          "$ref": "#/$defs/principles.PrinciplesReviewDecision"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewDecision"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesReviewSubject": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject": {
       "oneOf": [
         {
           "const": "metric_change"
@@ -37,7 +37,7 @@
         }
       ]
     },
-    "principles.PrinciplesRole": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesRole": {
       "oneOf": [
         {
           "const": "recipe_maintainer"
@@ -53,7 +53,7 @@
         }
       ]
     },
-    "principles.PrinciplesReviewDecision": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewDecision": {
       "oneOf": [
         {
           "const": "allowed"

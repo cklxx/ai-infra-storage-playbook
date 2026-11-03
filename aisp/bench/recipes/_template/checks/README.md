@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `check_template` 模块与 `## 接口` 的 `check_template_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `CheckTemplateSpec`、`CheckTemplateContract`、`CheckTemplateReport` 与 `CheckTemplateExitCode`，操作 `Place`、`Inspect`、`Run` 与 `Exit`；先看 `CheckTemplateSpec` 与 `CheckTemplateContract`，再按 `Place`、`Inspect`、`Run`、`Exit` 的顺序读，`CheckTemplateReport` 是 `Run` 的返回类型，`CheckTemplateExitCode` 是 `Exit` 的返回类型。
 
-```viba check_template_public
-import check_template
-import check_template_api
+```bash check_template_public
+import aisp.bench.recipes._template.checks.readme.check_template as check_template
+import aisp.bench.recipes._template.checks.readme.check_template_api as check_template_api
 
 CheckTemplateSpec = check_template.CheckTemplateSpec
 CheckTemplateContract = check_template.CheckTemplateContract
@@ -26,7 +26,7 @@ Exit = check_template_api.Exit
 
 问题形式化为 `check_template` 模块：需要组合的结构写成对象类型，取值范围固定的概念写成枚举类型。对象类型有 `CheckTemplateRunDir`、`CheckTemplateReport`、`CheckTemplateContract` 与 `CheckTemplateSpec`：`CheckTemplateRunDir` 描述用例目录，`CheckTemplateReport` 描述一次 check 写出的报告，`CheckTemplateContract` 把输入、输出与退出码归结到一起，`CheckTemplateSpec` 再由归属、示例和这份契约组成。枚举类型有 `CheckTemplatePlacement`、`CheckTemplateExampleCheck`、`CheckTemplateCaseFile`、`CheckTemplateStatus` 与 `CheckTemplateExitCode`：`CheckTemplateSpec` 的 `placement` 取 `CheckTemplatePlacement`、`examples` 的元素取 `CheckTemplateExampleCheck`，`CheckTemplateRunDir` 的 `files` 元素取 `CheckTemplateCaseFile`，`CheckTemplateReport` 的 `status` 取 `CheckTemplateStatus`，契约的 `exit_code` 取 `CheckTemplateExitCode`。
 
-```viba check_template
+```bash check_template
 CheckTemplatePlacement =
   Oneof
   | "recipe" * { 只对这个评估集成立的校验，放本配方的 checks/；这份文档只写这一类 }
@@ -81,12 +81,17 @@ CheckTemplateSpec =
 
 ## 基本操作
 
-解决这个问题需要四个操作。归属：判断一条校验是不是只对这个评估集成立，成立就放进本配方的 `checks/`，不成立就是通用校验，放 `aisp/bench/checks/`，不在配方里重复实现。读入：按 `--run-dir <path>` 收下用例目录，确认目录里有 `metrics.json` 与 `manifest.json`，缺任何一份按输入缺失处理。运行：在用例目录上执行这个 check，往标准输出写一行 JSON，字段是 `check`、`status`、`detail`，`status` 只取 `pass`、`fail`、`skip`。退出：按结果给出退出码，0 表示通过，1 表示不通过，2 表示缺依赖或输入缺失。
+解决这个问题需要四个操作。
+
+1. 归属：判断一条校验是不是只对这个评估集成立，成立就放进本配方的 `checks/`，不成立就是通用校验，放 `aisp/bench/checks/`，不在配方里重复实现。
+2. 读入：按 `--run-dir <path>` 收下用例目录，确认目录里有 `metrics.json` 与 `manifest.json`，缺任何一份按输入缺失处理。
+3. 运行：在用例目录上执行这个 check，往标准输出写一行 JSON，字段是 `check`、`status`、`detail`，`status` 只取 `pass`、`fail`、`skip`。
+4. 退出：按结果给出退出码，0 表示通过，1 表示不通过，2 表示缺依赖或输入缺失。
 
 ## check_template_api
 
-```viba check_template_api
-import check_template
+```bash check_template_api
+import aisp.bench.recipes._template.checks.readme.check_template as check_template
 
 Place =
      check_template.CheckTemplatePlacement
@@ -112,9 +117,9 @@ Exit =
 
 ## check_template_flow
 
-```viba check_template_flow
-import check_template
-import check_template_api
+```bash check_template_flow
+import aisp.bench.recipes._template.checks.readme.check_template as check_template
+import aisp.bench.recipes._template.checks.readme.check_template_api as check_template_api
 
 CheckTemplatePlaceDuty =
   Object

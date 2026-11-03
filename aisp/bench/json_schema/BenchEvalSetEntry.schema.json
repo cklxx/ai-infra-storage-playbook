@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchEvalSetEntry.schema.json",
   "title": "BenchEvalSetEntry",
-  "$ref": "#/$defs/bench.BenchEvalSetEntry",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSetEntry",
   "$defs": {
-    "bench.BenchEvalSetEntry": {
+    "aisp.bench.readme.bench.BenchEvalSetEntry": {
       "type": "object",
       "properties": {
         "version": {

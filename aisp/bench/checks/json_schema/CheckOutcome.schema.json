@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckOutcome.schema.json",
   "title": "CheckOutcome",
-  "$ref": "#/$defs/checks.CheckOutcome",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutcome",
   "$defs": {
-    "checks.CheckOutcome": {
+    "aisp.bench.checks.readme.checks.CheckOutcome": {
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         },
         "exit_code": {
-          "$ref": "#/$defs/checks.CheckExitCode"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode"
         }
       },
       "required": [
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckStatus": {
+    "aisp.bench.checks.readme.checks.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -33,7 +33,7 @@
         }
       ]
     },
-    "checks.CheckExitCode": {
+    "aisp.bench.checks.readme.checks.CheckExitCode": {
       "oneOf": [
         {
           "const": 0

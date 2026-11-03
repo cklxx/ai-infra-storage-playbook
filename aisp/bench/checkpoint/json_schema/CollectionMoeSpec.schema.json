@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionMoeSpec.schema.json",
   "title": "CollectionMoeSpec",
-  "$ref": "#/$defs/collection.CollectionMoeSpec",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec",
   "$defs": {
-    "collection.CollectionMoeSpec": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec": {
       "type": "object",
       "properties": {
         "num_experts": {

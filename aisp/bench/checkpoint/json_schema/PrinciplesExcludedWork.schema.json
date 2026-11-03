@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesExcludedWork.schema.json",
   "title": "PrinciplesExcludedWork",
-  "$ref": "#/$defs/principles.PrinciplesExcludedWork",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesExcludedWork",
   "$defs": {
-    "principles.PrinciplesExcludedWork": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesExcludedWork": {
       "oneOf": [
         {
           "const": "performance_tuning"

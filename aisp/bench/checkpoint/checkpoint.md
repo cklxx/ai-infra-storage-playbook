@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `checkpoint` 模块与 `## 接口` 的 `checkpoint_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `CheckpointSpec`、`CheckpointFidelity` 与 `CheckpointConclusion`，操作 `PrepareBypass`、`RecordBoundary`、`Align`、`ScaleUp` 与 `Register`；先看 `CheckpointSpec` 与 `PrepareBypass`，再按 `RecordBoundary`、`Align`、`ScaleUp`、`Register` 的顺序读到 `CheckpointFidelity` 与 `CheckpointConclusion`。
 
-```viba checkpoint_public
-import checkpoint
-import checkpoint_api
+```bash checkpoint_public
+import aisp.bench.checkpoint.checkpoint.checkpoint as checkpoint
+import aisp.bench.checkpoint.checkpoint.checkpoint_api as checkpoint_api
 
 CheckpointSpec = checkpoint.CheckpointSpec
 CheckpointFidelity = checkpoint.CheckpointFidelity
@@ -26,10 +26,10 @@ Register = checkpoint_api.Register
 
 checkpoint 存储评估的形式化分成类型与枚举两类。`CheckpointSpec` 是入口的 Object 类型，把评估对象 `CheckpointSubject`、旁路方案 `CheckpointBypassPlan` 与保真边界 `CheckpointFidelity` 分别收成 `$subject`、`$bypass` 与 `$fidelity` 三个字段，把阶段门、小规模对齐、放大维度、外推规则与验收项收成 `$gates`、`$alignment`、`$scaling`、`$extrapolation`、`$acceptance` 五个列表字段；`CheckpointFidelity` 的每一行是 `fidelity.FidelityBoundary`。可选项写成 Oneof 枚举：`CheckpointGate`、`CheckpointAlignmentStep`、`CheckpointScalingDimension`、`CheckpointExtrapolationRule` 与 `CheckpointAcceptanceItem` 依次是 `CheckpointSpec` 的 `$gates`、`$alignment`、`$scaling`、`$extrapolation` 与 `$acceptance` 的元素类型；`CheckpointWriteFeature` 与 `CheckpointReadFeature` 是写入侧与读取侧要记录的特征，`CheckpointBypassStep` 与 `CheckpointBypassConstraint` 是旁路的一个步骤与一条约束，分别构成 `CheckpointSubject` 的 `$write_features`、`$read_features` 与 `CheckpointBypassPlan` 的 `$steps`、`$constraints`。对齐、放大、结论、登记与并行配置各有自己的类型：`CheckpointAlignment` 记对齐步骤与容差判定，`CheckpointScalingRun` 记逐级放大的每一级，其中 `$dimension` 取 `CheckpointScalingDimension` 的一个取值，`CheckpointConclusion` 的 `$alignment` 取 `CheckpointAlignment`、`$scaling` 取 `CheckpointScalingRun` 的列表，另收验收项与回链，`CheckpointRegistration` 记结论与覆盖矩阵的更新状态，`CheckpointParallel` 记 DP/TP/PP/EP 四个度数。
 
-```viba checkpoint
-import fidelity
-import levels
-import ckpt_sample
+```bash checkpoint
+import aisp.bench.checkpoint.methodology.fidelity as fidelity
+import aisp.bench.checkpoint.scaling.levels as levels
+import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
 
 CheckpointSpec =
   Object
@@ -82,7 +82,7 @@ CheckpointBypassStep =
 
 CheckpointBypassConstraint =
   Oneof
-  | "model_code_source" * { 模型代码必须来自 recipes/model-code-collection，且是训练侧可用的实现；推理代码不能直接拿来跑预训练 }
+  | "model_code_source" * { 模型代码必须来自 recipes/model_code_collection，且是训练侧可用的实现；推理代码不能直接拿来跑预训练 }
   | "parallel_strategy" * { 并行策略（DP/TP/PP/EP）必须按真实配置设置；旁路只去掉计算，不去掉并行切分 }
   | "parameter_init" * { 参数初始化：meta device 不需要真实初始化，但若框架在初始化阶段就写盘（例如初始化检查点），该路径必须保留 }
   | "mixed_precision" * { 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 }
@@ -144,8 +144,8 @@ CheckpointScalingRun =
 
 CheckpointAcceptanceItem =
   Oneof
-  | "io_pattern_alignment" * { 口径见 metrics/io-pattern-alignment.md；它是 G2 的门槛 }
-  | "scaling_consistency" * { 口径见 metrics/scaling-consistency.md；每一级都要算 }
+  | "io_pattern_alignment" * { 口径见 metrics/io_pattern_alignment.md；它是 G2 的门槛 }
+  | "scaling_consistency" * { 口径见 metrics/scaling_consistency.md；每一级都要算 }
   | "fidelity" * { 保真边界表中 IO 路径不得出现 L0；人工评审 }
   | "reproducibility" * { 配置、commit、拓扑、预热、观测全部登记；人工评审 }
   | "coverage" * { 参数量分桶 × 集群规模 × 并行策略 的已覆盖格子数；自动统计 }
@@ -169,15 +169,15 @@ CheckpointRegistration =
 
 ## checkpoint_api
 
-```viba checkpoint_api
-import checkpoint
-import fidelity
-import levels
-import ckpt_sample
+```bash checkpoint_api
+import aisp.bench.checkpoint.checkpoint.checkpoint as checkpoint
+import aisp.bench.checkpoint.methodology.fidelity as fidelity
+import aisp.bench.checkpoint.scaling.levels as levels
+import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
 
 PrepareBypass =
      checkpoint.CheckpointBypassPlan
-  <- $model (ckpt_sample.Component * { 模型代码；必须来自 recipes/model-code-collection，且是训练侧可用的实现 })
+  <- $model (ckpt_sample.Component * { 模型代码；必须来自 recipes/model_code_collection，且是训练侧可用的实现 })
   <- $implementation (ckpt_sample.Component * { 训练框架的分布式检查点实现，记录名字与版本 })
   <- $parallel (checkpoint.CheckpointParallel * { 并行策略 DP/TP/PP/EP 的度数，按真实配置设置；旁路只去掉计算，不去掉并行切分 })
   <- $dtype (str * { 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 })
@@ -212,9 +212,9 @@ Register =
 
 ## checkpoint_flow
 
-```viba checkpoint_flow
-import checkpoint
-import checkpoint_api
+```bash checkpoint_flow
+import aisp.bench.checkpoint.checkpoint.checkpoint as checkpoint
+import aisp.bench.checkpoint.checkpoint.checkpoint_api as checkpoint_api
 
 CheckpointPrepareDuty =
   Object

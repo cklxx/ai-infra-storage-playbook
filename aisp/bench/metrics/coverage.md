@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `coverage` 模块与 `## 接口` 的 `coverage_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `CoverageManifest`、`CoverageCell`、`CoverageStats` 与 `CoverageVerdict`，操作 `RecordCell`、`ComputeCoverage` 与 `JudgeCoverage`；先看 `CoverageManifest` 与 `RecordCell`，再看 `CoverageStats` 与 `ComputeCoverage`，最后看 `CoverageVerdict` 与 `JudgeCoverage`。
 
-```viba coverage_public
-import coverage
-import coverage_api
+```bash coverage_public
+import aisp.bench.metrics.coverage.coverage as coverage
+import aisp.bench.metrics.coverage.coverage_api as coverage_api
 
 CoverageManifest = coverage.CoverageManifest
 CoverageCell = coverage.CoverageCell
@@ -25,7 +25,7 @@ JudgeCoverage = coverage_api.JudgeCoverage
 
 问题形式化为 `coverage` 模块：枚举 `CoverageAxis` 的九个取值是覆盖矩阵的九条轴，枚举 `CoverageCellState` 的五个取值是格子所处的五种状态，其中 `exempt` 状态要配一条 `CoverageExemption`。对象 `CoverageAxisValue` 把一条轴与这条轴上的一个取值配成一对，`$axis` 取 `CoverageAxis` 的一个取值，`$value` 是这条轴上的取值字符串；别名 `CoverageCellKey` 是 `CoverageAxisValue` 的列表，也就是一个格子的坐标。对象 `CoverageCell` 由坐标、状态与可选的 `CoverageExemption` 组成，别名 `CoverageGap` 就是 `CoverageCellKey`，指应有但没有的格子；对象 `CoverageManifest` 收配方声明的轴与全部格子。对象 `CoverageStats` 是计算产物，收分母、已覆盖数、覆盖度、缺口率与 `CoverageGap` 清单；Oneof `CoverageReport` 的两个分支分别携带 `CoverageStats` 与清单非法的原因；对象 `CoverageThreshold` 单独收通过判定用的 `$coverage_ratio_min`；Oneof `CoverageVerdict` 的取值是 `pass`、`fail`、`incomparable`，由 `CoverageReport` 与 `CoverageThreshold` 判定得到。
 
-```viba coverage
+```bash coverage
 CoverageAxis =
   Oneof
   | "arch_family" * { 覆盖矩阵的一维：架构族；每份配方的轴集合至少三项，且必须包含它 }
@@ -43,7 +43,9 @@ CoverageAxisValue =
   * $axis (CoverageAxis * { 这个取值属于哪一条轴 })
   * $value (str * { 这条轴上的取值；具体取值由配方决定，不在 schema 里固定 })
 
-CoverageCellKey = list[CoverageAxisValue] * { 格子的坐标：清单声明的每条轴上一个取值；轴至少三项，且必须包含 arch_family }
+CoverageCellKey =
+  list[CoverageAxisValue]
+  * { 格子的坐标：清单声明的每条轴上一个取值；轴至少三项，且必须包含 arch_family }
 
 CoverageCellState =
   Oneof
@@ -97,12 +99,17 @@ CoverageVerdict =
 
 ## 基本操作
 
-解决这个问题需要四个操作。登记格子：按最近一次运行的结果，把一条格子的状态写进覆盖度清单，清单由评估服务在每次运行后更新。算覆盖率：按清单算覆盖度与缺口率，exempt 不进分母，豁免过期自动转为 gap，缺口按优先级排序。判定是否够：用覆盖度对照配方 metrics.yaml 里的 coverage_ratio_min，大于或等于阈值判通过，低于阈值判不通过；清单缺轴或状态未知时判不可比，重跑。登记豁免：对明确不需要覆盖的格子记下理由与复核日期，写进清单，状态记为 exempt；超过复核日期自动转为 gap。
+解决这个问题需要四个操作。
+
+1. 登记格子：按最近一次运行的结果，把一条格子的状态写进覆盖度清单，清单由评估服务在每次运行后更新。
+2. 算覆盖率：按清单算覆盖度与缺口率，exempt 不进分母，豁免过期自动转为 gap，缺口按优先级排序。
+3. 判定是否够：用覆盖度对照配方 metrics.yaml 里的 coverage_ratio_min，大于或等于阈值判通过，低于阈值判不通过；清单缺轴或状态未知时判不可比，重跑。
+4. 登记豁免：对明确不需要覆盖的格子记下理由与复核日期，写进清单，状态记为 exempt；超过复核日期自动转为 gap。
 
 ## coverage_api
 
-```viba coverage_api
-import coverage
+```bash coverage_api
+import aisp.bench.metrics.coverage.coverage as coverage
 
 RecordCell =
      coverage.CoverageManifest
@@ -132,9 +139,9 @@ GrantExemption =
 
 ## coverage_flow
 
-```viba coverage_flow
-import coverage
-import coverage_api
+```bash coverage_flow
+import aisp.bench.metrics.coverage.coverage as coverage
+import aisp.bench.metrics.coverage.coverage_api as coverage_api
 
 CoverageStep =
   Oneof

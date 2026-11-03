@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckStatus.schema.json",
   "title": "CheckStatus",
-  "$ref": "#/$defs/checks.CheckStatus",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus",
   "$defs": {
-    "checks.CheckStatus": {
+    "aisp.bench.checks.readme.checks.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"

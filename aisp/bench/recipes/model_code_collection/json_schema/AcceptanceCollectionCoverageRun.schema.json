@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/AcceptanceCollectionCoverageRun.schema.json",
+  "title": "AcceptanceCollectionCoverageRun",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionCoverageRun",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionCoverageRun": {
+      "type": "object",
+      "properties": {
+        "subset_size": {
+          "type": "integer"
+        },
+        "passed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "subset_size",
+        "passed"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

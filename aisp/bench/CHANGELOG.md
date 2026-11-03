@@ -8,12 +8,12 @@
 - 文档里的结构改成 viba 类型 + `Hint`：methodology 的阶段门、旁路手段、保真等级、采集层，scaling 的规模档位，evaluation-service 的运行请求，都是类型定义；字段说明写在字段上，不再用「字段 | 含义」表格。
 - `schemas/run-spec.schema.json` 删除，运行请求的 schema 改由 viba 生成（`checkpoint/json_schema/RunRequest.schema.json`）；校验脚本同时认 `schemas/` 与生成目录。
 - 新增 `scripts/export_json_schema.py` 与 [`checkpoint/json_schema/`](checkpoint/json_schema/)：文档里的 viba 代码块，每个类型生成一份 JSON Schema，文件名就是类型名；函数跳过。文档只留一段说明文件在哪。
-- 新增 [`checkpoint/ckpt-sample-interface.md`](checkpoint/ckpt-sample-interface.md)：checkpoint 样本的接口用 viba 写成 public / apis / types / configs 四个模块，`public` 只做转发；每个 SLI 指标是具名类型，SLO 判定用 `MetricLE` / `MetricGE` 泛型。
+- 新增 [`checkpoint/ckpt_sample_interface.md`](checkpoint/ckpt_sample_interface.md)：checkpoint 样本的接口用 viba 写成 public / apis / types / configs 四个模块，`public` 只做转发；每个 SLI 指标是具名类型，SLO 判定用 `MetricLE` / `MetricGE` 泛型。
 - 仓库改为多项目结构：playbook 与 bench 的整体移入 `aisp/bench/`，以后 `aisp/tla/` 等与 `aisp/bench/` 并列；`aisp` 同时作为 Python 包名。仓库更名 `ai-infra-storage-playbook`。文档内的相对链接不变，schema 的 `$id` 改为 `.../ai-infra-storage-checkpoint/aisp/bench/schemas/`。
 - README 开头新增「它评什么」：用一张表列出 checkpoint / dataset / kvcache 每次运行记录的 SLI 指标。
 - 拆分 SLI 与 SLO：SLI 覆盖全部样本并全量留存，SLO 只判重保子集、阈值由部署方提供；新增 `schemas/sli.schema.json`、`schemas/slo.schema.json` 与 `examples/sli.json`。
 - 存储拆为两层：`AI_INFRA_STORAGE_BACKEND`（纯存储系统）与 `AI_INFRA_STORAGE_ADAPTER`（存储传输适配层），run-spec、manifest、覆盖度轴与配方同步。
-- 新增 [`checkpoint/storage-performance.md`](checkpoint/storage-performance.md)：按评估集分别定义 SLO——checkpoint 看写入时长与训练停顿，dataset 看数据停顿比例与 batch 尾延迟，kvcache 看 TTFT 与 TPOT；底层存储指标只用于归因。
+- 新增 [`checkpoint/performance.md`](checkpoint/performance.md)：按评估集分别定义 SLO——checkpoint 看写入时长与训练停顿，dataset 看数据停顿比例与 batch 尾延迟，kvcache 看 TTFT 与 TPOT；底层存储指标只用于归因。
 - 新增 [`meta-evaluation/method.md`](meta-evaluation/method.md)：评估 playbook 自身的五个问题、测量方法与判定标准。
 - 澄清静态产物与生成程序：评估集是带版本的静态用例清单，扩展由 playbook 完成；`checkpoint/self-evolution.md` 改名 `extension.md`。
 - scaling 上限从万卡改为十万卡：阶梯扩为 S0–S5，S4 = 万卡（实测上限），S5 = 十万卡（外推目标）；配方、指标参数、检查清单与相关文档同步。
@@ -21,8 +21,8 @@
 - 指标一致性加固：`validate_repo` 校验指标版本、gate、`compatible_metrics` 与登记表一致；`compatible_metrics` 改为按指标名列出版本。
 - 扩展点放开：指标名、框架名、配方类别、阶段门改为 pattern；覆盖度轴改为配方声明；`run-spec` 的 `scale` 改名 `level`。
 - 新增 `checks/selftest.py` 与 `examples/invalid/`，证明检查会拒绝非法输入。
-- 新增 `checkpoint/appendix-glossary.md`，补齐并行策略、模型结构、存储与 IO 的基础词。
-- `metrics/metric-schema.yaml` 改名 `metrics/registry.yaml`；`examples/tiny-model/entry.json` 改名 `manifest-entry.json`。
+- 新增 `checkpoint/appendix_glossary.md`，补齐并行策略、模型结构、存储与 IO 的基础词。
+- `metrics/metric-schema.yaml` 改名 `metrics/registry.yaml`；`examples/tiny_model/entry.json` 改名 `manifest-entry.json`。
 - 章节顺序调整：methodology 的阶段门前移；principles 的三类评估集关系前移；evaluation-service 的失败处理紧跟生命周期。
 - 评估服务与扩展回归机制仍只有设计，没有实现；现有可执行部分是 `checks/`、`scripts/` 与 `examples/`。
 - `checkpoint/methodology.md` 明确为方法的唯一出处：三类评估集只引用、只写差异，不复制定义。

@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/StorageLayer.schema.json",
   "title": "StorageLayer",
-  "$ref": "#/$defs/ckpt_sample.StorageLayer",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer",
   "$defs": {
-    "ckpt_sample.StorageLayer": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer": {
       "type": "object",
       "properties": {
         "backend": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "adapter": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         }
       },
       "required": [
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {

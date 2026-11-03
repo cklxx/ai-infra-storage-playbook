@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionAcceptanceReport.schema.json",
+  "title": "RecipeCollectionAcceptanceReport",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceReport",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceReport": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceItem"
+          }
+        },
+        "coverage": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverage"
+        },
+        "passed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "items",
+        "coverage",
+        "passed"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceItem": {
+      "type": "object",
+      "properties": {
+        "metric": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric"
+        },
+        "actual": {
+          "type": "string"
+        },
+        "passed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "metric",
+        "actual",
+        "passed"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric": {
+      "oneOf": [
+        {
+          "const": "runnable_model_count"
+        },
+        {
+          "const": "runnable_rate"
+        },
+        {
+          "const": "architecture_family_coverage"
+        },
+        {
+          "const": "scale_coverage"
+        },
+        {
+          "const": "attention_variant_coverage"
+        },
+        {
+          "const": "training_pairing_rate"
+        },
+        {
+          "const": "reproducible_corpus"
+        }
+      ]
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverage": {
+      "type": "object",
+      "properties": {
+        "cells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell"
+          }
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGap"
+          }
+        }
+      },
+      "required": [
+        "cells",
+        "gaps"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell": {
+      "type": "object",
+      "properties": {
+        "dimension": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension"
+        },
+        "bucket": {
+          "type": "string"
+        },
+        "count": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "dimension",
+        "bucket",
+        "count"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension": {
+      "oneOf": [
+        {
+          "const": "architecture_family"
+        },
+        {
+          "const": "scale"
+        },
+        {
+          "const": "attention_variant"
+        }
+      ]
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGap": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind": {
+      "oneOf": [
+        {
+          "const": "empty_cell"
+        },
+        {
+          "const": "unknown_code_role"
+        }
+      ]
+    }
+  }
+}

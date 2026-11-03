@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/GlossaryTerm.schema.json",
   "title": "GlossaryTerm",
-  "$ref": "#/$defs/glossary.GlossaryTerm",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryTerm",
   "$defs": {
-    "glossary.GlossaryTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryTerm": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "parallel_strategy": {
-              "$ref": "#/$defs/glossary.ParallelStrategyTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.ParallelStrategyTerm"
             }
           },
           "required": [
@@ -22,7 +22,7 @@
           "type": "object",
           "properties": {
             "model_structure": {
-              "$ref": "#/$defs/glossary.ModelStructureTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.ModelStructureTerm"
             }
           },
           "required": [
@@ -34,7 +34,7 @@
           "type": "object",
           "properties": {
             "storage_io": {
-              "$ref": "#/$defs/glossary.StorageIoTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.StorageIoTerm"
             }
           },
           "required": [
@@ -46,7 +46,7 @@
           "type": "object",
           "properties": {
             "bypass": {
-              "$ref": "#/$defs/glossary.BypassTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.BypassTerm"
             }
           },
           "required": [
@@ -56,7 +56,7 @@
         }
       ]
     },
-    "glossary.ParallelStrategyTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.ParallelStrategyTerm": {
       "oneOf": [
         {
           "const": "DP"
@@ -72,7 +72,7 @@
         }
       ]
     },
-    "glossary.ModelStructureTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.ModelStructureTerm": {
       "oneOf": [
         {
           "const": "MoE"
@@ -94,7 +94,7 @@
         }
       ]
     },
-    "glossary.StorageIoTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.StorageIoTerm": {
       "oneOf": [
         {
           "const": "shard"
@@ -119,7 +119,7 @@
         }
       ]
     },
-    "glossary.BypassTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.BypassTerm": {
       "oneOf": [
         {
           "const": "meta_device"

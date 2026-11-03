@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckOutput.schema.json",
   "title": "CheckOutput",
-  "$ref": "#/$defs/checks.CheckOutput",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutput",
   "$defs": {
-    "checks.CheckOutput": {
+    "aisp.bench.checks.readme.checks.CheckOutput": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "json_line": {
-              "$ref": "#/$defs/checks.CheckJsonLine"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckJsonLine"
             }
           },
           "required": [
@@ -22,7 +22,7 @@
           "type": "object",
           "properties": {
             "readable": {
-              "$ref": "#/$defs/checks.CheckReadableOutput"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckReadableOutput"
             }
           },
           "required": [
@@ -32,14 +32,14 @@
         }
       ]
     },
-    "checks.CheckJsonLine": {
+    "aisp.bench.checks.readme.checks.CheckJsonLine": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         }
       },
       "required": [
@@ -48,7 +48,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckStatus": {
+    "aisp.bench.checks.readme.checks.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -61,7 +61,7 @@
         }
       ]
     },
-    "checks.CheckReadableOutput": {
+    "aisp.bench.checks.readme.checks.CheckReadableOutput": {
       "type": "object",
       "properties": {
         "items": {

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingDecision.schema.json",
   "title": "ContributingDecision",
-  "$ref": "#/$defs/contributing.ContributingDecision",
+  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingDecision",
   "$defs": {
-    "contributing.ContributingDecision": {
+    "aisp.bench.contributing.contributing.ContributingDecision": {
       "type": "object",
       "properties": {
         "number": {
@@ -14,7 +14,7 @@
           "type": "string"
         },
         "kind": {
-          "$ref": "#/$defs/contributing.ContributingDecisionKind"
+          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingDecisionKind"
         },
         "background": {
           "type": "string"
@@ -43,7 +43,7 @@
       ],
       "additionalProperties": false
     },
-    "contributing.ContributingDecisionKind": {
+    "aisp.bench.contributing.contributing.ContributingDecisionKind": {
       "oneOf": [
         {
           "const": "bypass_choice"

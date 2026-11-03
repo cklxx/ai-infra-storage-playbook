@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `principles` 模块与 `## 接口` 的 `principles_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `PrinciplesSpec`、`PrinciplesSuccessCriterion`、`PrinciplesAcceptance`、`PrinciplesReviewVerdict` 与 `PrinciplesGapRoute`，操作 `AcceptGate`、`ReviewChange` 与 `RouteGap`；先看入口 `PrinciplesSpec` 与验收操作 `AcceptGate`，再看 `ReviewChange`、`RouteGap` 各自交回的 `PrinciplesReviewVerdict` 与 `PrinciplesGapRoute`。
 
-```viba principles_public
-import principles
-import principles_api
+```bash principles_public
+import aisp.bench.checkpoint.principles.principles as principles
+import aisp.bench.checkpoint.principles.principles_api as principles_api
 
 PrinciplesSpec = principles.PrinciplesSpec
 PrinciplesSuccessCriterion = principles.PrinciplesSuccessCriterion
@@ -26,7 +26,7 @@ RouteGap = principles_api.RouteGap
 
 问题的形式化以 `PrinciplesSpec` 这个 Object 类型为入口：定位、持续维护 benchmark 的理由、评估集关系、边界、硬原则、成功判据与角色分工分别收进 `$positioning`（`PrinciplesPositioning`）、`$benchmark`（`PrinciplesContinuousBenchmark`）、`$eval_sets`（`PrinciplesEvalSetRelation`）、`$scope`（`PrinciplesScope`）、`$hard_principles`（`PrinciplesHardPrinciple` 的列表）、`$success_criteria`（`PrinciplesSuccessCriterion` 的列表）与 `$roles`（`PrinciplesRoles`）七个字段。`PrinciplesSpec` 的中间字段继续展开成 Object 类型：`PrinciplesPositioning` 的 `$parts`、`$questions`、`$output` 分别是 `PrinciplesPart`、`PrinciplesQuestion` 的列表与单个 `PrinciplesEvalSet`；`PrinciplesContinuousBenchmark` 的 `$reasons` 是 `PrinciplesBenchmarkReason` 的列表，`$loop` 是 `PrinciplesClosedLoop`，后者的 `$parts`、`$stages`、`$human` 分别取 `PrinciplesLoopPart`、`PrinciplesLoopStage` 与 `PrinciplesHumanInLoop`，而 `PrinciplesHumanInLoop` 的 `$automatic`、`$reviewed` 又分别取 `PrinciplesAutomatedStep`、`PrinciplesReviewSubject`；`PrinciplesEvalSetRelation` 的 `$source` 是 `PrinciplesModelCodeLibrary`，`$derived` 是 `PrinciplesEvalSet`；`PrinciplesScope` 的 `$included`、`$excluded` 分别是 `PrinciplesIncludedWork`、`PrinciplesExcludedWork` 的列表，`PrinciplesRoles` 的 `$roles`、`$rules` 分别是 `PrinciplesRole`、`PrinciplesRoleRule` 的列表。取值只能落在有限集合里的概念写成 Oneof 枚举：`PrinciplesPart`、`PrinciplesQuestion`、`PrinciplesBenchmarkReason` 表示本项目的组成部分、本项目回答的问题与持续维护 benchmark 的理由，`PrinciplesLoopPart`、`PrinciplesLoopStage`、`PrinciplesAutomatedStep`、`PrinciplesReviewSubject` 表示闭环的组成部分、阶段、自动步骤与人审事项，`PrinciplesEvalSet`、`PrinciplesIncludedWork`、`PrinciplesExcludedWork` 表示评估集类别与范围的两侧，`PrinciplesHardPrinciple`、`PrinciplesSuccessCriterion`、`PrinciplesRole`、`PrinciplesRoleRule` 表示硬原则、成功判据、角色与角色规则，`PrinciplesAcceptVerdict`、`PrinciplesReviewDecision`、`PrinciplesGapKind` 表示验收结论、评审结论与缺口来源。`PrinciplesAcceptance`、`PrinciplesReviewVerdict` 与 `PrinciplesGapRoute` 不在 `PrinciplesSpec` 的字段里，它们复用同一批枚举：`PrinciplesAcceptance` 的 `$eval_set`、`$verdict` 分取 `PrinciplesEvalSet`、`PrinciplesAcceptVerdict`，`$missing` 是 `PrinciplesSuccessCriterion` 的列表，`PrinciplesReviewVerdict` 的 `$subject`、`$decision` 分取 `PrinciplesReviewSubject`、`PrinciplesReviewDecision`，`PrinciplesGapRoute` 的 `$gap` 是 `PrinciplesGap`、`$stages` 是 `PrinciplesLoopStage` 的列表，`PrinciplesGap` 的 `$kind` 取 `PrinciplesGapKind`。
 
-```viba principles
+```bash principles
 PrinciplesSpec =
   Object
   * $positioning (PrinciplesPositioning * { 定位：本项目是什么、产出什么、回答哪三个问题 })
@@ -108,7 +108,7 @@ PrinciplesEvalSetRelation =
   * $source (PrinciplesModelCodeLibrary * { 前置原料库：模型代码收集库 })
   * $derived (PrinciplesEvalSet * { 从原料库取样构建的评估集：checkpoint 存储评估集（训练侧） })
   * $recipe (str * { 声明这条依赖的配方文件：recipes/checkpoint/recipe.yaml })
-  * $dependency (str * { 配方里必须写的依赖：depends_on: recipes/model-code-collection })
+  * $dependency (str * { 配方里必须写的依赖：depends_on: recipes/model_code_collection })
   * $pending (list[PrinciplesEvalSet] * { dataset 与 kvcache 评估集待做（TODO） })
 
 PrinciplesModelCodeLibrary =
@@ -221,12 +221,15 @@ PrinciplesGapRoute =
 
 ## 基本操作
 
-验收（AcceptGate）判断一个评估集算不算建成：按成功判据逐条对照，五条全部满足才算建成，缺哪条返回哪条。评审（ReviewChange）时按 no_self_review 规则检查评审者：角色可以由同一人兼任，但改口径的人不能是自己评审自己。回流（RouteGap）把缺口交回闭环：缺口从覆盖度矩阵的空白格子或新架构、新框架、新并行策略、未覆盖的 IO 特征进入，经缺口分析、playbook 生成新版本、回归，回到当前版本的评估集。这三个操作分别由验收、评审与回流三项职责承担，闭环靠它们把评估集、评估服务与扩展机制串起来。
+验收（AcceptGate）判断一个评估集算不算建成：按成功判据逐条对照，五条全部满足才算建成，缺哪条返回哪条。
+
+1. 评审（ReviewChange）时按 no_self_review 规则检查评审者：角色可以由同一人兼任，但改口径的人不能是自己评审自己。
+2. 回流（RouteGap）把缺口交回闭环：缺口从覆盖度矩阵的空白格子或新架构、新框架、新并行策略、未覆盖的 IO 特征进入，经缺口分析、playbook 生成新版本、回归，回到当前版本的评估集。
 
 ## principles_api
 
-```viba principles_api
-import principles
+```bash principles_api
+import aisp.bench.checkpoint.principles.principles as principles
 
 AcceptGate =
      principles.PrinciplesAcceptance
@@ -249,9 +252,9 @@ RouteGap =
 
 ## principles_flow
 
-```viba principles_flow
-import principles
-import principles_api
+```bash principles_flow
+import aisp.bench.checkpoint.principles.principles as principles
+import aisp.bench.checkpoint.principles.principles_api as principles_api
 
 PrinciplesAcceptDuty =
   Object

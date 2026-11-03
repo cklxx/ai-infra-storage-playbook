@@ -2,22 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyReport.schema.json",
   "title": "ScalingConsistencyReport",
-  "$ref": "#/$defs/scaling_consistency.ScalingConsistencyReport",
+  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyReport",
   "$defs": {
-    "scaling_consistency.ScalingConsistencyReport": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyReport": {
       "type": "object",
       "properties": {
         "ladder": {
-          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLadder"
+          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLadder"
         },
         "comparisons": {
-          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparisonSet"
+          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparisonSet"
         },
         "tolerance": {
-          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyTolerance"
+          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyTolerance"
         },
         "judgement": {
-          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyJudgement"
+          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyJudgement"
         }
       },
       "required": [
@@ -28,13 +28,13 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyLadder": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLadder": {
       "type": "object",
       "properties": {
         "levels": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLevelRecord"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLevelRecord"
           }
         }
       },
@@ -43,16 +43,16 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyLevelRecord": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLevelRecord": {
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "values": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyMeasurement"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyMeasurement"
           }
         }
       },
@@ -62,7 +62,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -84,7 +84,7 @@
         }
       ]
     },
-    "scaling_consistency.ScalingConsistencyMeasurement": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyMeasurement": {
       "oneOf": [
         {
           "type": "object",
@@ -115,19 +115,19 @@
         }
       ]
     },
-    "scaling_consistency.ScalingConsistencyComparisonSet": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparisonSet": {
       "type": "object",
       "properties": {
         "adjacent": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparison"
           }
         },
         "first_last": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparison"
           }
         },
         "max_adjacent": {
@@ -135,7 +135,7 @@
             {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/scaling_consistency.ScalingConsistencyComparison"
+                "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparison"
               }
             },
             {
@@ -166,17 +166,17 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyComparison": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparison": {
       "type": "object",
       "properties": {
         "invariant": {
           "type": "string"
         },
         "from": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "to": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "deviation": {
           "type": "number"
@@ -198,7 +198,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyTolerance": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyTolerance": {
       "type": "object",
       "properties": {
         "per_level": {
@@ -214,16 +214,16 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyJudgement": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyJudgement": {
       "type": "object",
       "properties": {
         "verdict": {
-          "$ref": "#/$defs/scaling_consistency.ScalingConsistencyVerdict"
+          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyVerdict"
         },
         "drift": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyDrift"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyDrift"
           }
         },
         "failed_invariants": {
@@ -240,7 +240,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyVerdict": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyVerdict": {
       "oneOf": [
         {
           "const": "consistent"
@@ -259,7 +259,7 @@
         }
       ]
     },
-    "scaling_consistency.ScalingConsistencyDrift": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyDrift": {
       "type": "object",
       "properties": {
         "invariant": {
@@ -268,7 +268,7 @@
         "directions": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyDirection"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyDirection"
           }
         },
         "monotonic": {
@@ -282,7 +282,7 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyDirection": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyDirection": {
       "oneOf": [
         {
           "const": "up"

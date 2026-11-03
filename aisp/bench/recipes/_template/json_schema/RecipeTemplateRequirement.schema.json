@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateRequirement.schema.json",
   "title": "RecipeTemplateRequirement",
-  "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement",
   "$defs": {
-    "recipe_template.RecipeTemplateRequirement": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement": {
       "oneOf": [
         {
           "const": "fidelity_boundary_no_l0"

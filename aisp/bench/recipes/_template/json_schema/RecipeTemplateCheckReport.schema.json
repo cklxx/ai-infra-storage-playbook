@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateCheckReport.schema.json",
   "title": "RecipeTemplateCheckReport",
-  "$ref": "#/$defs/recipe_template.RecipeTemplateCheckReport",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateCheckReport",
   "$defs": {
-    "recipe_template.RecipeTemplateCheckReport": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateCheckReport": {
       "type": "object",
       "properties": {
         "passed": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement"
           }
         },
         "failed": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_template.RecipeTemplateRequirement"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_template.RecipeTemplateRequirement": {
+    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateRequirement": {
       "oneOf": [
         {
           "const": "fidelity_boundary_no_l0"

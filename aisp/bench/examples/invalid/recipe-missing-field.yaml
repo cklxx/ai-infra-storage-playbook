@@ -27,6 +27,6 @@ scaling_plan:
 compatible_metrics:
   io-pattern-alignment: ["1.0.0"]
 acceptance:
-  checklist: ./acceptance-checklist.md
+  checklist: ./acceptance_checklist.md
   gates: [G2]
 latest_run: null

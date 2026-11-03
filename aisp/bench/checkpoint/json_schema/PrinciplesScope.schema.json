@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesScope.schema.json",
   "title": "PrinciplesScope",
-  "$ref": "#/$defs/principles.PrinciplesScope",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesScope",
   "$defs": {
-    "principles.PrinciplesScope": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesScope": {
       "type": "object",
       "properties": {
         "included": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesIncludedWork"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesIncludedWork"
           }
         },
         "excluded": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesExcludedWork"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesExcludedWork"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesIncludedWork": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesIncludedWork": {
       "oneOf": [
         {
           "const": "model_code"
@@ -51,7 +51,7 @@
         }
       ]
     },
-    "principles.PrinciplesExcludedWork": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesExcludedWork": {
       "oneOf": [
         {
           "const": "performance_tuning"

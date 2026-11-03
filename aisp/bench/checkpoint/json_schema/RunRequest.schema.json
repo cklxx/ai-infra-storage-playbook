@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/RunRequest.schema.json",
   "title": "RunRequest",
-  "$ref": "#/$defs/service.RunRequest",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.RunRequest",
   "$defs": {
-    "service.RunRequest": {
+    "aisp.bench.checkpoint.evaluation_service.service.RunRequest": {
       "type": "object",
       "properties": {
         "recipe": {
@@ -14,12 +14,12 @@
           "type": "string"
         },
         "model": {
-          "$ref": "#/$defs/ckpt_sample.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
         },
         "framework": {
           "oneOf": [
             {
-              "$ref": "#/$defs/service.Framework"
+              "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.Framework"
             },
             {
               "type": "null"
@@ -27,19 +27,19 @@
           ]
         },
         "level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "topology": {
-          "$ref": "#/$defs/ckpt_sample.Topology"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Topology"
         },
         "storage": {
-          "$ref": "#/$defs/ckpt_sample.StorageLayer"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer"
         },
         "load": {
-          "$ref": "#/$defs/service.Load"
+          "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.Load"
         },
         "observe": {
-          "$ref": "#/$defs/ckpt_sample.ObservationConfig"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.ObservationConfig"
         },
         "seed": {
           "type": "integer"
@@ -59,7 +59,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -75,7 +75,7 @@
       ],
       "additionalProperties": false
     },
-    "service.Framework": {
+    "aisp.bench.checkpoint.evaluation_service.service.Framework": {
       "type": "object",
       "properties": {
         "name": {
@@ -91,7 +91,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -113,7 +113,7 @@
         }
       ]
     },
-    "ckpt_sample.Topology": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Topology": {
       "type": "object",
       "properties": {
         "nodes": {
@@ -137,14 +137,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.StorageLayer": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer": {
       "type": "object",
       "properties": {
         "backend": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "adapter": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         }
       },
       "required": [
@@ -153,7 +153,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {
@@ -180,7 +180,7 @@
       ],
       "additionalProperties": false
     },
-    "service.Load": {
+    "aisp.bench.checkpoint.evaluation_service.service.Load": {
       "type": "object",
       "properties": {
         "concurrency": {
@@ -240,7 +240,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.ObservationConfig": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.ObservationConfig": {
       "type": "object",
       "properties": {
         "enabled": {
@@ -252,7 +252,7 @@
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/observation.ObservationLayer"
+            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.observation.ObservationLayer"
           }
         }
       },
@@ -263,7 +263,7 @@
       ],
       "additionalProperties": false
     },
-    "observation.ObservationLayer": {
+    "aisp.bench.checkpoint.methodology.observation.ObservationLayer": {
       "oneOf": [
         {
           "const": "app"

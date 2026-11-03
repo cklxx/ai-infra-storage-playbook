@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchStorageVersion.schema.json",
   "title": "BenchStorageVersion",
-  "$ref": "#/$defs/bench.BenchStorageVersion",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageVersion",
   "$defs": {
-    "bench.BenchStorageVersion": {
+    "aisp.bench.readme.bench.BenchStorageVersion": {
       "type": "object",
       "properties": {
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchStorageLayer"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayer"
           }
         },
         "manifest": {
@@ -19,7 +19,7 @@
         "changed_layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/bench.BenchStorageLayerKind"
+            "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
           }
         }
       },
@@ -30,14 +30,14 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchStorageLayer": {
+    "aisp.bench.readme.bench.BenchStorageLayer": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/bench.BenchStorageLayerKind"
+          "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
         },
         "component": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "env": {
           "type": "string"
@@ -50,7 +50,7 @@
       ],
       "additionalProperties": false
     },
-    "bench.BenchStorageLayerKind": {
+    "aisp.bench.readme.bench.BenchStorageLayerKind": {
       "oneOf": [
         {
           "const": "backend"
@@ -60,7 +60,7 @@
         }
       ]
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {

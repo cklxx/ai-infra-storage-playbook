@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckArgs.schema.json",
   "title": "CheckArgs",
-  "$ref": "#/$defs/checks.CheckArgs",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckArgs",
   "$defs": {
-    "checks.CheckArgs": {
+    "aisp.bench.checks.readme.checks.CheckArgs": {
       "oneOf": [
         {
           "type": "object",
@@ -34,7 +34,7 @@
           "type": "object",
           "properties": {
             "check_io_pattern": {
-              "$ref": "#/$defs/checks.CheckIoPatternArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckIoPatternArgs"
             }
           },
           "required": [
@@ -46,7 +46,7 @@
           "type": "object",
           "properties": {
             "check_coverage": {
-              "$ref": "#/$defs/checks.CheckCoverageArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckCoverageArgs"
             }
           },
           "required": [
@@ -58,7 +58,7 @@
           "type": "object",
           "properties": {
             "check_scaling_consistency": {
-              "$ref": "#/$defs/checks.CheckScalingArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingArgs"
             }
           },
           "required": [
@@ -68,7 +68,7 @@
         }
       ]
     },
-    "checks.CheckIoPatternArgs": {
+    "aisp.bench.checks.readme.checks.CheckIoPatternArgs": {
       "type": "object",
       "properties": {
         "real": {
@@ -99,7 +99,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckCoverageArgs": {
+    "aisp.bench.checks.readme.checks.CheckCoverageArgs": {
       "type": "object",
       "properties": {
         "manifest": {
@@ -126,7 +126,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckScalingArgs": {
+    "aisp.bench.checks.readme.checks.CheckScalingArgs": {
       "type": "object",
       "properties": {
         "input": {

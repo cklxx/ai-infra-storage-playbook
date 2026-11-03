@@ -2,30 +2,30 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckSpec.schema.json",
   "title": "CheckSpec",
-  "$ref": "#/$defs/checks.CheckSpec",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckSpec",
   "$defs": {
-    "checks.CheckSpec": {
+    "aisp.bench.checks.readme.checks.CheckSpec": {
       "type": "object",
       "properties": {
         "scripts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checks.CheckScriptSpec"
+            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScriptSpec"
           }
         },
         "threshold": {
-          "$ref": "#/$defs/checks.CheckThreshold"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckThreshold"
         },
         "directories": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checks.CheckDirectoryRule"
+            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckDirectoryRule"
           }
         },
         "doc_links": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checks.CheckDocLink"
+            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckDocLink"
           }
         }
       },
@@ -37,26 +37,26 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckScriptSpec": {
+    "aisp.bench.checks.readme.checks.CheckScriptSpec": {
       "type": "object",
       "properties": {
         "script": {
-          "$ref": "#/$defs/checks.CheckScript"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScript"
         },
         "args": {
-          "$ref": "#/$defs/checks.CheckArgs"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckArgs"
         },
         "output": {
-          "$ref": "#/$defs/checks.CheckOutput"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutput"
         },
         "outcomes": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checks.CheckOutcome"
+            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutcome"
           }
         },
         "dependency": {
-          "$ref": "#/$defs/checks.CheckDependency"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckDependency"
         }
       },
       "required": [
@@ -68,7 +68,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckScript": {
+    "aisp.bench.checks.readme.checks.CheckScript": {
       "oneOf": [
         {
           "const": "validate_repo"
@@ -87,7 +87,7 @@
         }
       ]
     },
-    "checks.CheckArgs": {
+    "aisp.bench.checks.readme.checks.CheckArgs": {
       "oneOf": [
         {
           "type": "object",
@@ -117,7 +117,7 @@
           "type": "object",
           "properties": {
             "check_io_pattern": {
-              "$ref": "#/$defs/checks.CheckIoPatternArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckIoPatternArgs"
             }
           },
           "required": [
@@ -129,7 +129,7 @@
           "type": "object",
           "properties": {
             "check_coverage": {
-              "$ref": "#/$defs/checks.CheckCoverageArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckCoverageArgs"
             }
           },
           "required": [
@@ -141,7 +141,7 @@
           "type": "object",
           "properties": {
             "check_scaling_consistency": {
-              "$ref": "#/$defs/checks.CheckScalingArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingArgs"
             }
           },
           "required": [
@@ -151,7 +151,7 @@
         }
       ]
     },
-    "checks.CheckIoPatternArgs": {
+    "aisp.bench.checks.readme.checks.CheckIoPatternArgs": {
       "type": "object",
       "properties": {
         "real": {
@@ -182,7 +182,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckCoverageArgs": {
+    "aisp.bench.checks.readme.checks.CheckCoverageArgs": {
       "type": "object",
       "properties": {
         "manifest": {
@@ -209,7 +209,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckScalingArgs": {
+    "aisp.bench.checks.readme.checks.CheckScalingArgs": {
       "type": "object",
       "properties": {
         "input": {
@@ -225,13 +225,13 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckOutput": {
+    "aisp.bench.checks.readme.checks.CheckOutput": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "json_line": {
-              "$ref": "#/$defs/checks.CheckJsonLine"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckJsonLine"
             }
           },
           "required": [
@@ -243,7 +243,7 @@
           "type": "object",
           "properties": {
             "readable": {
-              "$ref": "#/$defs/checks.CheckReadableOutput"
+              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckReadableOutput"
             }
           },
           "required": [
@@ -253,14 +253,14 @@
         }
       ]
     },
-    "checks.CheckJsonLine": {
+    "aisp.bench.checks.readme.checks.CheckJsonLine": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         }
       },
       "required": [
@@ -269,7 +269,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckStatus": {
+    "aisp.bench.checks.readme.checks.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -282,7 +282,7 @@
         }
       ]
     },
-    "checks.CheckReadableOutput": {
+    "aisp.bench.checks.readme.checks.CheckReadableOutput": {
       "type": "object",
       "properties": {
         "items": {
@@ -304,14 +304,14 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckOutcome": {
+    "aisp.bench.checks.readme.checks.CheckOutcome": {
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         },
         "exit_code": {
-          "$ref": "#/$defs/checks.CheckExitCode"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode"
         }
       },
       "required": [
@@ -320,7 +320,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckExitCode": {
+    "aisp.bench.checks.readme.checks.CheckExitCode": {
       "oneOf": [
         {
           "const": 0
@@ -333,17 +333,17 @@
         }
       ]
     },
-    "checks.CheckDependency": {
+    "aisp.bench.checks.readme.checks.CheckDependency": {
       "type": "object",
       "properties": {
         "install": {
           "type": "string"
         },
         "missing_status": {
-          "$ref": "#/$defs/checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
         },
         "missing_exit_code": {
-          "$ref": "#/$defs/checks.CheckExitCode"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode"
         }
       },
       "required": [
@@ -353,16 +353,16 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckThreshold": {
+    "aisp.bench.checks.readme.checks.CheckThreshold": {
       "type": "object",
       "properties": {
         "source": {
-          "$ref": "#/$defs/checks.CheckThresholdSource"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckThresholdSource"
         },
         "tolerance": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/checks.CheckToleranceValue"
+            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckToleranceValue"
           }
         },
         "items": {
@@ -386,7 +386,7 @@
       ],
       "additionalProperties": false
     },
-    "checks.CheckThresholdSource": {
+    "aisp.bench.checks.readme.checks.CheckThresholdSource": {
       "oneOf": [
         {
           "const": "metrics_yaml"
@@ -396,7 +396,7 @@
         }
       ]
     },
-    "checks.CheckToleranceValue": {
+    "aisp.bench.checks.readme.checks.CheckToleranceValue": {
       "oneOf": [
         {
           "type": "object",
@@ -424,7 +424,7 @@
         }
       ]
     },
-    "checks.CheckDirectoryRule": {
+    "aisp.bench.checks.readme.checks.CheckDirectoryRule": {
       "oneOf": [
         {
           "const": "template"
@@ -437,11 +437,11 @@
         }
       ]
     },
-    "checks.CheckDocLink": {
+    "aisp.bench.checks.readme.checks.CheckDocLink": {
       "type": "object",
       "properties": {
         "script": {
-          "$ref": "#/$defs/checks.CheckScript"
+          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScript"
         },
         "doc": {
           "type": "string"

@@ -2,30 +2,30 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointSpec.schema.json",
   "title": "RecipeCheckpointSpec",
-  "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointSpec",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointSpec",
   "$defs": {
-    "recipe_checkpoint.RecipeCheckpointSpec": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointSpec": {
       "type": "object",
       "properties": {
         "input": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointInput"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointInput"
         },
         "config": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointConfig"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointConfig"
         },
         "stages": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStage"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStage"
           }
         },
         "products": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointProducts"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointProducts"
         },
         "acceptance": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointAcceptanceItem"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointAcceptanceItem"
           }
         }
       },
@@ -38,26 +38,26 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointInput": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointInput": {
       "type": "object",
       "properties": {
         "model_code": {
           "type": "string"
         },
         "framework": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
         },
         "parallel": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallel"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallel"
         },
         "dataset_layout": {
           "type": "string"
         },
         "storage_backend": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
         },
         "storage_adapter": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
         }
       },
       "required": [
@@ -70,7 +70,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointVersionedName": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName": {
       "type": "object",
       "properties": {
         "name": {
@@ -86,7 +86,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointParallel": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallel": {
       "type": "object",
       "properties": {
         "dp": {
@@ -110,22 +110,22 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointConfig": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointConfig": {
       "type": "object",
       "properties": {
         "parallel_coverage": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointParallelLead"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallelLead"
           }
         },
         "checkpoint_implementation": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
         },
         "write_modes": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointWriteMode"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointWriteMode"
           }
         },
         "data_layout": {
@@ -144,7 +144,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointParallelLead": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallelLead": {
       "oneOf": [
         {
           "const": "dp_led"
@@ -160,7 +160,7 @@
         }
       ]
     },
-    "recipe_checkpoint.RecipeCheckpointWriteMode": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointWriteMode": {
       "oneOf": [
         {
           "const": "sync"
@@ -170,14 +170,14 @@
         }
       ]
     },
-    "recipe_checkpoint.RecipeCheckpointStage": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStage": {
       "type": "object",
       "properties": {
         "step": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointStep"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStep"
         },
         "gate": {
-          "$ref": "#/$defs/recipe_checkpoint.RecipeCheckpointGate"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointGate"
         }
       },
       "required": [
@@ -186,7 +186,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointStep": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointStep": {
       "oneOf": [
         {
           "const": "select_and_run"
@@ -208,7 +208,7 @@
         }
       ]
     },
-    "recipe_checkpoint.RecipeCheckpointGate": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointGate": {
       "oneOf": [
         {
           "const": "G0"
@@ -230,7 +230,7 @@
         }
       ]
     },
-    "recipe_checkpoint.RecipeCheckpointProducts": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointProducts": {
       "type": "object",
       "properties": {
         "io_pattern": {
@@ -254,7 +254,7 @@
       ],
       "additionalProperties": false
     },
-    "recipe_checkpoint.RecipeCheckpointAcceptanceItem": {
+    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointAcceptanceItem": {
       "oneOf": [
         {
           "const": "alignment"

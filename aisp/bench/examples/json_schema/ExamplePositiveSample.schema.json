@@ -2,12 +2,12 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExamplePositiveSample.schema.json",
   "title": "ExamplePositiveSample",
-  "$ref": "#/$defs/examples.ExamplePositiveSample",
+  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExamplePositiveSample",
   "$defs": {
-    "examples.ExamplePositiveSample": {
+    "aisp.bench.examples.readme.examples.ExamplePositiveSample": {
       "oneOf": [
         {
-          "const": "tiny-model/"
+          "const": "tiny_model/"
         },
         {
           "const": "io-pattern-real.json"

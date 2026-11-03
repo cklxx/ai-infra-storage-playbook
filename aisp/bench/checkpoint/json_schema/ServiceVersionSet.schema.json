@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceVersionSet.schema.json",
   "title": "ServiceVersionSet",
-  "$ref": "#/$defs/service.ServiceVersionSet",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceVersionSet",
   "$defs": {
-    "service.ServiceVersionSet": {
+    "aisp.bench.checkpoint.evaluation_service.service.ServiceVersionSet": {
       "type": "object",
       "properties": {
         "recipe": {
@@ -19,7 +19,7 @@
         "framework": {
           "oneOf": [
             {
-              "$ref": "#/$defs/service.Framework"
+              "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.Framework"
             },
             {
               "type": "null"
@@ -27,10 +27,10 @@
           ]
         },
         "model": {
-          "$ref": "#/$defs/ckpt_sample.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
         },
         "storage": {
-          "$ref": "#/$defs/ckpt_sample.StorageLayer"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer"
         },
         "compatible_metrics": {
           "type": "array",
@@ -50,7 +50,7 @@
       ],
       "additionalProperties": false
     },
-    "service.Framework": {
+    "aisp.bench.checkpoint.evaluation_service.service.Framework": {
       "type": "object",
       "properties": {
         "name": {
@@ -66,7 +66,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -82,14 +82,14 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.StorageLayer": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer": {
       "type": "object",
       "properties": {
         "backend": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "adapter": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         }
       },
       "required": [
@@ -98,7 +98,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {

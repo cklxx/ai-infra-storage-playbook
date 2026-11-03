@@ -4,9 +4,9 @@
 
 只做转发：从 `## 问题` 的 `recipe_template` 模块与 `## 接口` 的 `recipe_template_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `RecipeTemplateSpec`、`RecipeTemplateDirectory` 与 `RecipeTemplateRequirement`，操作 `CopyTemplate`、`FillPlaceholders`、`CheckRequirements` 与 `ScaffoldRecipe`；先看 `RecipeTemplateSpec` 与 `RecipeTemplateDirectory`，再按 `CopyTemplate`、`FillPlaceholders`、`CheckRequirements` 的顺序读到 `RecipeTemplateRequirement` 的六条硬要求，`ScaffoldRecipe` 一次完成前三个操作。
 
-```viba recipe_template_public
-import recipe_template
-import recipe_template_api
+```bash recipe_template_public
+import aisp.bench.recipes._template.readme.recipe_template as recipe_template
+import aisp.bench.recipes._template.readme.recipe_template_api as recipe_template_api
 
 RecipeTemplateSpec = recipe_template.RecipeTemplateSpec
 RecipeTemplateDirectory = recipe_template.RecipeTemplateDirectory
@@ -25,9 +25,9 @@ ScaffoldRecipe = recipe_template_api.ScaffoldRecipe
 
 问题的形式化分成类型与枚举两类。`RecipeTemplateSpec` 是入口的 Object 类型，`$template` 取一个 `RecipeTemplateDirectory`，`$requirements` 与 `$steps` 分别是 `RecipeTemplateRequirement` 与 `RecipeTemplateScaffoldStep` 的列表。配方目录里的每个文件各自写成一个类型：`RecipeTemplateDirectory` 的 `$recipe`、`$metrics`、`$readme`、`$acceptance_checklist` 分别取 `RecipeTemplateRecipeYaml`、`RecipeTemplateMetricsYaml`、`RecipeTemplateReadme`、`RecipeTemplateAcceptanceChecklist`，`RecipeTemplateRecipeYaml` 再展开出 `RecipeTemplateInvariant`、`RecipeTemplateScalingPlan` 与 `fidelity.FidelityBoundary`，`RecipeTemplateMetricsYaml` 的 `$metrics` 是 `RecipeTemplateMetric` 的列表。取值只能落在有限集合里的概念写成 Oneof 枚举：`RecipeTemplateRequirement` 的六个取值是填写的硬要求，`RecipeTemplateScaffoldStep` 的四个取值是脚手架的步骤，`RecipeTemplateBuildStage` 的三个取值是配方入口的阶段；`RecipeTemplateCheckReport` 的 `$passed` 与 `$failed` 都以 `RecipeTemplateRequirement` 为元素类型，`RecipeTemplateScaffold` 把复制出的 `RecipeTemplateDirectory` 与一份 `RecipeTemplateCheckReport` 配在一起。
 
-```viba recipe_template
-import fidelity
-import gates
+```bash recipe_template
+import aisp.bench.checkpoint.methodology.fidelity as fidelity
+import aisp.bench.checkpoint.methodology.gates as gates
 
 RecipeTemplateSpec =
   Object
@@ -41,7 +41,7 @@ RecipeTemplateDirectory =
   * $recipe (RecipeTemplateRecipeYaml * { recipe.yaml：元信息、旁路范围、保真边界、不变量、scaling 计划、兼容的指标版本；评估服务与校验脚本读取 })
   * $metrics (RecipeTemplateMetricsYaml * { metrics.yaml：选用的指标、参数、阈值；评估服务与对齐判定读取 })
   * $readme (RecipeTemplateReadme * { README.md：目标、输入、输出、步骤、验收、负责人；人看 })
-  * $acceptance_checklist (RecipeTemplateAcceptanceChecklist * { acceptance-checklist.md：阶段门 G0–G4 的勾选项；评审看 })
+  * $acceptance_checklist (RecipeTemplateAcceptanceChecklist * { acceptance_checklist.md：阶段门 G0–G4 的勾选项；评审看 })
   * $checks (list[str] * { checks/：本配方专属校验脚本；CI 看 })
   * $build (list[RecipeTemplateBuildStage] * { build.py：配方入口，prepare / run / collect 三个阶段；实现者看 })
 
@@ -134,8 +134,8 @@ RecipeTemplateScaffold =
 
 ## recipe_template_api
 
-```viba recipe_template_api
-import recipe_template
+```bash recipe_template_api
+import aisp.bench.recipes._template.readme.recipe_template as recipe_template
 
 CopyTemplate =
      recipe_template.RecipeTemplateDirectory
@@ -163,9 +163,9 @@ ScaffoldRecipe =
 
 ## recipe_template_flow
 
-```viba recipe_template_flow
-import recipe_template
-import recipe_template_api
+```bash recipe_template_flow
+import aisp.bench.recipes._template.readme.recipe_template as recipe_template
+import aisp.bench.recipes._template.readme.recipe_template_api as recipe_template_api
 
 RecipeTemplateCopyDuty =
   Object

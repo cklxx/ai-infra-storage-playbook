@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckExitCode.schema.json",
   "title": "CheckExitCode",
-  "$ref": "#/$defs/checks.CheckExitCode",
+  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode",
   "$defs": {
-    "checks.CheckExitCode": {
+    "aisp.bench.checks.readme.checks.CheckExitCode": {
       "oneOf": [
         {
           "const": 0

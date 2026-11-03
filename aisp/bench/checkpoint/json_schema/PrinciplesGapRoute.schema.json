@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesGapRoute.schema.json",
   "title": "PrinciplesGapRoute",
-  "$ref": "#/$defs/principles.PrinciplesGapRoute",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesGapRoute",
   "$defs": {
-    "principles.PrinciplesGapRoute": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesGapRoute": {
       "type": "object",
       "properties": {
         "gap": {
-          "$ref": "#/$defs/principles.PrinciplesGap"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesGap"
         },
         "stages": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesLoopStage"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesLoopStage"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesGap": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesGap": {
       "type": "object",
       "properties": {
         "cell": {
@@ -37,7 +37,7 @@
           ]
         },
         "kind": {
-          "$ref": "#/$defs/principles.PrinciplesGapKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesGapKind"
         },
         "discovered_by_service": {
           "type": "boolean"
@@ -50,7 +50,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesGapKind": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesGapKind": {
       "oneOf": [
         {
           "const": "new_architecture"
@@ -66,7 +66,7 @@
         }
       ]
     },
-    "principles.PrinciplesLoopStage": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesLoopStage": {
       "oneOf": [
         {
           "const": "current_set"

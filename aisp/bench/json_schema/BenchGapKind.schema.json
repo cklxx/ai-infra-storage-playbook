@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchGapKind.schema.json",
   "title": "BenchGapKind",
-  "$ref": "#/$defs/bench.BenchGapKind",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchGapKind",
   "$defs": {
-    "bench.BenchGapKind": {
+    "aisp.bench.readme.bench.BenchGapKind": {
       "oneOf": [
         {
           "const": "new_model"

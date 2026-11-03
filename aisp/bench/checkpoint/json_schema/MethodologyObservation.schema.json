@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyObservation.schema.json",
   "title": "MethodologyObservation",
-  "$ref": "#/$defs/methodology.MethodologyObservation",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyObservation",
   "$defs": {
-    "methodology.MethodologyObservation": {
+    "aisp.bench.checkpoint.methodology.methodology.MethodologyObservation": {
       "type": "object",
       "properties": {
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/observation.ObservationLayer"
+            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.observation.ObservationLayer"
           }
         },
         "byte_skew": {
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "observation.ObservationLayer": {
+    "aisp.bench.checkpoint.methodology.observation.ObservationLayer": {
       "oneOf": [
         {
           "const": "app"

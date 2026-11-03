@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceCiTrigger.schema.json",
   "title": "ServiceCiTrigger",
-  "$ref": "#/$defs/service.ServiceCiTrigger",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceCiTrigger",
   "$defs": {
-    "service.ServiceCiTrigger": {
+    "aisp.bench.checkpoint.evaluation_service.service.ServiceCiTrigger": {
       "oneOf": [
         {
           "const": "recipe_change"

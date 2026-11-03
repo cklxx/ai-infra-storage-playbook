@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionFetchFailure.schema.json",
+  "title": "RecipeCollectionFetchFailure",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailure",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailure": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind"
+        },
+        "detail": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "detail"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind": {
+      "oneOf": [
+        {
+          "const": "network"
+        },
+        {
+          "const": "permission"
+        },
+        {
+          "const": "not_found"
+        },
+        {
+          "const": "license_not_accepted"
+        }
+      ]
+    }
+  }
+}

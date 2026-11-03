@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingReportDuty.schema.json",
   "title": "ScalingReportDuty",
-  "$ref": "#/$defs/scaling_flow.ScalingReportDuty",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling_flow.ScalingReportDuty",
   "$defs": {
-    "scaling_flow.ScalingReportDuty": {
+    "aisp.bench.checkpoint.scaling.scaling_flow.ScalingReportDuty": {
       "type": "object",
       "properties": {
         "report": {
-          "$ref": "#/$defs/scaling.ScalingLevelReport"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingLevelReport"
         }
       },
       "required": [
@@ -16,11 +16,11 @@
       ],
       "additionalProperties": false
     },
-    "scaling.ScalingLevelReport": {
+    "aisp.bench.checkpoint.scaling.scaling.ScalingLevelReport": {
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "config": {
           "type": "string"
@@ -52,7 +52,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"

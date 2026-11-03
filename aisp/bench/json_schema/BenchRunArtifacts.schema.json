@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchRunArtifacts.schema.json",
   "title": "BenchRunArtifacts",
-  "$ref": "#/$defs/bench.BenchRunArtifacts",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchRunArtifacts",
   "$defs": {
-    "bench.BenchRunArtifacts": {
+    "aisp.bench.readme.bench.BenchRunArtifacts": {
       "type": "object",
       "properties": {
         "manifest": {

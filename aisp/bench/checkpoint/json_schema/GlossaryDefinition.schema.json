@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/GlossaryDefinition.schema.json",
   "title": "GlossaryDefinition",
-  "$ref": "#/$defs/glossary.GlossaryDefinition",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryDefinition",
   "$defs": {
-    "glossary.GlossaryDefinition": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryDefinition": {
       "type": "string"
     }
   }

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ParallelStrategyTerm.schema.json",
   "title": "ParallelStrategyTerm",
-  "$ref": "#/$defs/glossary.ParallelStrategyTerm",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.ParallelStrategyTerm",
   "$defs": {
-    "glossary.ParallelStrategyTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.glossary.ParallelStrategyTerm": {
       "oneOf": [
         {
           "const": "DP"

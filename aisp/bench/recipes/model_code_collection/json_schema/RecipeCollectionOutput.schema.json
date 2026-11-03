@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionOutput.schema.json",
+  "title": "RecipeCollectionOutput",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionOutput",
+  "$defs": {
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionOutput": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionOutputKind"
+        },
+        "location": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionOutputKind": {
+      "oneOf": [
+        {
+          "const": "model_code"
+        },
+        {
+          "const": "manifest"
+        },
+        {
+          "const": "coverage_manifest"
+        },
+        {
+          "const": "latest_run"
+        }
+      ]
+    }
+  }
+}

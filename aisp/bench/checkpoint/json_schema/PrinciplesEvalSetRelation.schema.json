@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesEvalSetRelation.schema.json",
   "title": "PrinciplesEvalSetRelation",
-  "$ref": "#/$defs/principles.PrinciplesEvalSetRelation",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSetRelation",
   "$defs": {
-    "principles.PrinciplesEvalSetRelation": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesEvalSetRelation": {
       "type": "object",
       "properties": {
         "source": {
-          "$ref": "#/$defs/principles.PrinciplesModelCodeLibrary"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesModelCodeLibrary"
         },
         "derived": {
-          "$ref": "#/$defs/principles.PrinciplesEvalSet"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet"
         },
         "recipe": {
           "type": "string"
@@ -22,7 +22,7 @@
         "pending": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesEvalSet"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet"
           }
         }
       },
@@ -35,7 +35,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesModelCodeLibrary": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesModelCodeLibrary": {
       "type": "object",
       "properties": {
         "inference_models": {
@@ -55,7 +55,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesEvalSet": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet": {
       "oneOf": [
         {
           "const": "checkpoint"

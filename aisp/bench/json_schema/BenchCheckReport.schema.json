@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchCheckReport.schema.json",
   "title": "BenchCheckReport",
-  "$ref": "#/$defs/bench.BenchCheckReport",
+  "$ref": "#/$defs/aisp.bench.readme.bench.BenchCheckReport",
   "$defs": {
-    "bench.BenchCheckReport": {
+    "aisp.bench.readme.bench.BenchCheckReport": {
       "type": "object",
       "properties": {
         "exit_code": {

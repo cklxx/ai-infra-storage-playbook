@@ -2,48 +2,48 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointSpec.schema.json",
   "title": "CheckpointSpec",
-  "$ref": "#/$defs/checkpoint.CheckpointSpec",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointSpec",
   "$defs": {
-    "checkpoint.CheckpointSpec": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointSpec": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/checkpoint.CheckpointSubject"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointSubject"
         },
         "bypass": {
-          "$ref": "#/$defs/checkpoint.CheckpointBypassPlan"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassPlan"
         },
         "fidelity": {
-          "$ref": "#/$defs/checkpoint.CheckpointFidelity"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointFidelity"
         },
         "gates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointGate"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointGate"
           }
         },
         "alignment": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointAlignmentStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignmentStep"
           }
         },
         "scaling": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointScalingDimension"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingDimension"
           }
         },
         "extrapolation": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointExtrapolationRule"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointExtrapolationRule"
           }
         },
         "acceptance": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointAcceptanceItem"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAcceptanceItem"
           }
         }
       },
@@ -59,11 +59,11 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointSubject": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointSubject": {
       "type": "object",
       "properties": {
         "implementation": {
-          "$ref": "#/$defs/ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
         },
         "sharding": {
           "type": "string"
@@ -71,13 +71,13 @@
         "write_features": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointWriteFeature"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointWriteFeature"
           }
         },
         "read_features": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointReadFeature"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointReadFeature"
           }
         }
       },
@@ -89,7 +89,7 @@
       ],
       "additionalProperties": false
     },
-    "ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
       "type": "object",
       "properties": {
         "name": {
@@ -116,7 +116,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointWriteFeature": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointWriteFeature": {
       "oneOf": [
         {
           "const": "total_bytes"
@@ -141,7 +141,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointReadFeature": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointReadFeature": {
       "oneOf": [
         {
           "const": "overlap_with_training_start"
@@ -154,19 +154,19 @@
         }
       ]
     },
-    "checkpoint.CheckpointBypassPlan": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassPlan": {
       "type": "object",
       "properties": {
         "steps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointBypassStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassStep"
           }
         },
         "constraints": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/checkpoint.CheckpointBypassConstraint"
+            "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassConstraint"
           }
         }
       },
@@ -176,7 +176,7 @@
       ],
       "additionalProperties": false
     },
-    "checkpoint.CheckpointBypassStep": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassStep": {
       "oneOf": [
         {
           "const": "meta_model"
@@ -195,7 +195,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointBypassConstraint": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassConstraint": {
       "oneOf": [
         {
           "const": "model_code_source"
@@ -211,23 +211,23 @@
         }
       ]
     },
-    "checkpoint.CheckpointFidelity": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointFidelity": {
       "type": "object",
       "properties": {
         "forward_backward": {
-          "$ref": "#/$defs/fidelity.FidelityBoundary"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
         },
         "optimizer_step": {
-          "$ref": "#/$defs/fidelity.FidelityBoundary"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
         },
         "parallel_split": {
-          "$ref": "#/$defs/fidelity.FidelityBoundary"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
         },
         "checkpoint_write": {
-          "$ref": "#/$defs/fidelity.FidelityBoundary"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
         },
         "checkpoint_read": {
-          "$ref": "#/$defs/fidelity.FidelityBoundary"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary"
         }
       },
       "required": [
@@ -239,19 +239,19 @@
       ],
       "additionalProperties": false
     },
-    "fidelity.FidelityBoundary": {
+    "aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "bypassed": {
-          "$ref": "#/$defs/fidelity.Bypassed"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.Bypassed"
         },
         "method": {
           "oneOf": [
             {
-              "$ref": "#/$defs/bypass.BypassMethod"
+              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.BypassMethod"
             },
             {
               "type": "null"
@@ -259,7 +259,7 @@
           ]
         },
         "fidelity": {
-          "$ref": "#/$defs/bypass.FidelityLevel"
+          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.FidelityLevel"
         },
         "kept": {
           "type": "string"
@@ -278,7 +278,7 @@
       ],
       "additionalProperties": false
     },
-    "fidelity.Bypassed": {
+    "aisp.bench.checkpoint.methodology.fidelity.Bypassed": {
       "oneOf": [
         {
           "const": "yes"
@@ -291,7 +291,7 @@
         }
       ]
     },
-    "bypass.BypassMethod": {
+    "aisp.bench.checkpoint.methodology.bypass.BypassMethod": {
       "oneOf": [
         {
           "const": "meta_device"
@@ -307,7 +307,7 @@
         }
       ]
     },
-    "bypass.FidelityLevel": {
+    "aisp.bench.checkpoint.methodology.bypass.FidelityLevel": {
       "oneOf": [
         {
           "const": "L0"
@@ -323,7 +323,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointGate": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointGate": {
       "oneOf": [
         {
           "const": "G0"
@@ -345,7 +345,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointAlignmentStep": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAlignmentStep": {
       "oneOf": [
         {
           "const": "minimal_config"
@@ -361,7 +361,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointScalingDimension": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingDimension": {
       "oneOf": [
         {
           "const": "parameter_count"
@@ -380,7 +380,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointExtrapolationRule": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointExtrapolationRule": {
       "oneOf": [
         {
           "const": "aggregate_bandwidth"
@@ -393,7 +393,7 @@
         }
       ]
     },
-    "checkpoint.CheckpointAcceptanceItem": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAcceptanceItem": {
       "oneOf": [
         {
           "const": "io_pattern_alignment"

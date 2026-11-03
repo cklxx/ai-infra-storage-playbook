@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointGate.schema.json",
   "title": "CheckpointGate",
-  "$ref": "#/$defs/checkpoint.CheckpointGate",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointGate",
   "$defs": {
-    "checkpoint.CheckpointGate": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointGate": {
       "oneOf": [
         {
           "const": "G0"

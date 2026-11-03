@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceRunVerdict.schema.json",
   "title": "ServiceRunVerdict",
-  "$ref": "#/$defs/service.ServiceRunVerdict",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceRunVerdict",
   "$defs": {
-    "service.ServiceRunVerdict": {
+    "aisp.bench.checkpoint.evaluation_service.service.ServiceRunVerdict": {
       "oneOf": [
         {
           "const": "passed"

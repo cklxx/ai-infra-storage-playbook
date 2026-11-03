@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/AcceptanceCheckpointProgress.schema.json",
   "title": "AcceptanceCheckpointProgress",
-  "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointProgress",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointProgress",
   "$defs": {
-    "acceptance_checkpoint.AcceptanceCheckpointProgress": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointProgress": {
       "type": "object",
       "properties": {
         "checked": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointItem"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem"
           }
         },
         "pending": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/acceptance_checkpoint.AcceptanceCheckpointItem"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "acceptance_checkpoint.AcceptanceCheckpointItem": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem": {
       "oneOf": [
         {
           "const": "g0_real_run"

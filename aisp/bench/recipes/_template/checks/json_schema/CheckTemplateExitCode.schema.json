@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateExitCode.schema.json",
   "title": "CheckTemplateExitCode",
-  "$ref": "#/$defs/check_template.CheckTemplateExitCode",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateExitCode",
   "$defs": {
-    "check_template.CheckTemplateExitCode": {
+    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateExitCode": {
       "oneOf": [
         {
           "const": 0

@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyLadder.schema.json",
   "title": "ScalingConsistencyLadder",
-  "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLadder",
+  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLadder",
   "$defs": {
-    "scaling_consistency.ScalingConsistencyLadder": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLadder": {
       "type": "object",
       "properties": {
         "levels": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyLevelRecord"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLevelRecord"
           }
         }
       },
@@ -19,16 +19,16 @@
       ],
       "additionalProperties": false
     },
-    "scaling_consistency.ScalingConsistencyLevelRecord": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLevelRecord": {
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
         },
         "values": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/scaling_consistency.ScalingConsistencyMeasurement"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyMeasurement"
           }
         }
       },
@@ -38,7 +38,7 @@
       ],
       "additionalProperties": false
     },
-    "levels.Level": {
+    "aisp.bench.checkpoint.scaling.levels.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -60,7 +60,7 @@
         }
       ]
     },
-    "scaling_consistency.ScalingConsistencyMeasurement": {
+    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyMeasurement": {
       "oneOf": [
         {
           "type": "object",

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PitfallStatus.schema.json",
   "title": "PitfallStatus",
-  "$ref": "#/$defs/pitfalls.PitfallStatus",
+  "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.PitfallStatus",
   "$defs": {
-    "pitfalls.PitfallStatus": {
+    "aisp.bench.checkpoint.pitfalls.pitfalls.PitfallStatus": {
       "oneOf": [
         {
           "const": "resolved"

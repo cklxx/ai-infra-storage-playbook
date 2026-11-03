@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionFileKind.schema.json",
   "title": "CollectionFileKind",
-  "$ref": "#/$defs/collection.CollectionFileKind",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind",
   "$defs": {
-    "collection.CollectionFileKind": {
+    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind": {
       "oneOf": [
         {
           "const": "config"

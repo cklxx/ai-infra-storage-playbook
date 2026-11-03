@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesRoles.schema.json",
   "title": "PrinciplesRoles",
-  "$ref": "#/$defs/principles.PrinciplesRoles",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRoles",
   "$defs": {
-    "principles.PrinciplesRoles": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesRoles": {
       "type": "object",
       "properties": {
         "roles": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesRole"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRole"
           }
         },
         "rules": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/principles.PrinciplesRoleRule"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRoleRule"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "principles.PrinciplesRole": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesRole": {
       "oneOf": [
         {
           "const": "recipe_maintainer"
@@ -42,7 +42,7 @@
         }
       ]
     },
-    "principles.PrinciplesRoleRule": {
+    "aisp.bench.checkpoint.principles.principles.PrinciplesRoleRule": {
       "oneOf": [
         {
           "const": "allow_concurrent"

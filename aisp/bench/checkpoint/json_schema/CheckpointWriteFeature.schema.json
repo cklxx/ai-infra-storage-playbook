@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointWriteFeature.schema.json",
   "title": "CheckpointWriteFeature",
-  "$ref": "#/$defs/checkpoint.CheckpointWriteFeature",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointWriteFeature",
   "$defs": {
-    "checkpoint.CheckpointWriteFeature": {
+    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointWriteFeature": {
       "oneOf": [
         {
           "const": "total_bytes"
