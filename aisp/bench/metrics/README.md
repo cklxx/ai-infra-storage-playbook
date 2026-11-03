@@ -9,52 +9,52 @@
 ```viba metrics_registry
 import gates
 
-MetricsRegistryName = str * Hint[{ 指标名；配方的 compatible_metrics 与 metrics.yaml 按这个名字引用指标 }]
+MetricsRegistryName = str * { 指标名；配方的 compatible_metrics 与 metrics.yaml 按这个名字引用指标 }
 
-MetricsRegistryVersion = str * Hint[{ 指标口径的版本，例如 1.0.0；口径变了就升版本，旧口径保留在文档末尾 }]
+MetricsRegistryVersion = str * { 指标口径的版本，例如 1.0.0；口径变了就升版本，旧口径保留在文档末尾 }
 
-MetricsRegistryUnit = str * Hint[{ 单位：口径的一部分，写在指标文档的口径一节；同名指标口径不同，算出来的数就不可比 }]
+MetricsRegistryUnit = str * { 单位：口径的一部分，写在指标文档的口径一节；同名指标口径不同，算出来的数就不可比 }
 
-MetricsRegistryDirection = str * Hint[{ 方向：口径的一部分，写在指标文档的口径一节，说明这个指标的值往哪个方向算变好 }]
+MetricsRegistryDirection = str * { 方向：口径的一部分，写在指标文档的口径一节，说明这个指标的值往哪个方向算变好 }
 
 MetricsRegistryEntry =
   Object
-  * $name (MetricsRegistryName * Hint[{ 指标名；配方的 compatible_metrics 与 metrics.yaml 按这个名字引用指标 }])
-  * $doc (str * Hint[{ 指标文档的位置，在 metrics/ 下；一个指标一篇文档，实现放在 checks/，实测值放对象存储、仓库里只写回链，业务结论放配方的 README.md }])
-  * $version (MetricsRegistryVersion * Hint[{ 当前版本 }])
-  * $supported (list[MetricsRegistryVersion] * Hint[{ 支持的版本；配方使用的版本必须在这个列表里 }])
-  * $gates (list[gates.Gate] * Hint[{ 这个指标可服务的阶段门；IO pattern 对齐度服务 G2，scaling 一致性服务 G3；配方声明的 gate 必须是这里列出的之一 }])
-  * $unit (MetricsRegistryUnit * Hint[{ 单位：口径的一部分，写在指标文档的口径一节 }])
-  * $direction (MetricsRegistryDirection * Hint[{ 方向：口径的一部分，写在指标文档的口径一节 }])
-  * Hint[{ 登记表存当前版本、支持的版本、可服务的阶段门与文档位置；单位与方向写在指标文档的口径一节，登记时一并核对 }]
+  * $name (MetricsRegistryName * { 指标名；配方的 compatible_metrics 与 metrics.yaml 按这个名字引用指标 })
+  * $doc (str * { 指标文档的位置，在 metrics/ 下；一个指标一篇文档，实现放在 checks/，实测值放对象存储、仓库里只写回链，业务结论放配方的 README.md })
+  * $version (MetricsRegistryVersion * { 当前版本 })
+  * $supported (list[MetricsRegistryVersion] * { 支持的版本；配方使用的版本必须在这个列表里 })
+  * $gates (list[gates.Gate] * { 这个指标可服务的阶段门；IO pattern 对齐度服务 G2，scaling 一致性服务 G3；配方声明的 gate 必须是这里列出的之一 })
+  * $unit (MetricsRegistryUnit * { 单位：口径的一部分，写在指标文档的口径一节 })
+  * $direction (MetricsRegistryDirection * { 方向：口径的一部分，写在指标文档的口径一节 })
+  * { 登记表存当前版本、支持的版本、可服务的阶段门与文档位置；单位与方向写在指标文档的口径一节，登记时一并核对 }
 
 MetricsRegistryRef =
   Object
-  * $name (MetricsRegistryName * Hint[{ 配方引用的指标名 }])
-  * $version (MetricsRegistryVersion * Hint[{ 配方使用的版本 }])
-  * $gate (gates.Gate * Hint[{ 配方为这个指标声明的 gate }])
-  * $acceptance_gates (list[gates.Gate] * Hint[{ 配方 acceptance.gates 里列出的门 }])
-  * $compatible_versions (list[MetricsRegistryVersion] * Hint[{ 配方 compatible_metrics 里为该指标列出的版本 }])
+  * $name (MetricsRegistryName * { 配方引用的指标名 })
+  * $version (MetricsRegistryVersion * { 配方使用的版本 })
+  * $gate (gates.Gate * { 配方为这个指标声明的 gate })
+  * $acceptance_gates (list[gates.Gate] * { 配方 acceptance.gates 里列出的门 })
+  * $compatible_versions (list[MetricsRegistryVersion] * { 配方 compatible_metrics 里为该指标列出的版本 })
 
 MetricsRegistryProblemKind =
   Oneof
-  | "not_registered" * Hint[{ 指标没有登记 }]
-  | "version_not_supported" * Hint[{ 配方使用的版本不在登记表的 supported 里 }]
-  | "gate_not_declared" * Hint[{ 配方声明的 gate 不在登记表为该指标列出的 gate 里 }]
-  | "gate_not_in_acceptance" * Hint[{ 该 gate 不在配方的 acceptance.gates 里 }]
-  | "not_compatible" * Hint[{ 该指标与版本不在配方的 compatible_metrics 里 }]
-  | "version_not_published" * Hint[{ compatible_metrics 里为该指标列出的某个版本没有在登记表发布过 }]
+  | "not_registered" * { 指标没有登记 }
+  | "version_not_supported" * { 配方使用的版本不在登记表的 supported 里 }
+  | "gate_not_declared" * { 配方声明的 gate 不在登记表为该指标列出的 gate 里 }
+  | "gate_not_in_acceptance" * { 该 gate 不在配方的 acceptance.gates 里 }
+  | "not_compatible" * { 该指标与版本不在配方的 compatible_metrics 里 }
+  | "version_not_published" * { compatible_metrics 里为该指标列出的某个版本没有在登记表发布过 }
 
 MetricsRegistryProblem =
   Object
-  * $metric (MetricsRegistryName * Hint[{ 出问题的指标名 }])
-  * $kind (MetricsRegistryProblemKind * Hint[{ 哪一条检查没有通过 }])
-  * $detail (str * Hint[{ 具体说明，指出缺的是什么 }])
+  * $metric (MetricsRegistryName * { 出问题的指标名 })
+  * $kind (MetricsRegistryProblemKind * { 哪一条检查没有通过 })
+  * $detail (str * { 具体说明，指出缺的是什么 })
 
 MetricsRegistryVersionInfo =
   Object
-  * $current (MetricsRegistryVersion * Hint[{ 当前版本 }])
-  * $supported (list[MetricsRegistryVersion] * Hint[{ 支持的版本 }])
+  * $current (MetricsRegistryVersion * { 当前版本 })
+  * $supported (list[MetricsRegistryVersion] * { 支持的版本 })
 ```
 
 ## 基本操作
@@ -68,19 +68,19 @@ import metrics_registry
 
 RegisterMetric =
      metrics_registry.MetricsRegistryEntry
-  <- $entry (metrics_registry.MetricsRegistryEntry * Hint[{ 要登记的指标条目：指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向 }])
-  <- Hint[{ 登记一个指标：把条目写进 metrics/registry.yaml；新增指标时文档、登记表、引用它的配方配置三者都要改；返回登记后的条目 }]
+  <- $entry (metrics_registry.MetricsRegistryEntry * { 要登记的指标条目：指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向 })
+  <- { 登记一个指标：把条目写进 metrics/registry.yaml；新增指标时文档、登记表、引用它的配方配置三者都要改；返回登记后的条目 }
 
 LookupMetric =
      (metrics_registry.MetricsRegistryVersionInfo | nil)
-  <- $name (metrics_registry.MetricsRegistryName * Hint[{ 要查的指标名 }])
-  <- Hint[{ 查一个指标的版本：返回当前版本与支持的版本；配方使用的版本与 compatible_metrics 里列出的版本都必须在这个列表里；登记表里没有这个指标时给 nil }]
+  <- $name (metrics_registry.MetricsRegistryName * { 要查的指标名 })
+  <- { 查一个指标的版本：返回当前版本与支持的版本；配方使用的版本与 compatible_metrics 里列出的版本都必须在这个列表里；登记表里没有这个指标时给 nil }
 
 ValidateRefs =
      list[metrics_registry.MetricsRegistryProblem]
-  <- $refs (list[metrics_registry.MetricsRegistryRef] * Hint[{ 配方里对指标的引用，一项一个指标；每项带指标名、配方使用的版本、声明的 gate、acceptance.gates 与 compatible_metrics 里的版本 }])
-  <- $registry (list[metrics_registry.MetricsRegistryEntry] * Hint[{ 登记表：一项一个指标，提供该指标的版本、支持的版本与可服务的阶段门 }])
-  <- Hint[{ 校验引用：逐条检查指标是否已登记、版本是否受支持、gate 是否在登记表为该指标列出的 gate 里、该 gate 是否在配方的 acceptance.gates 里、该指标与版本是否在 compatible_metrics 里、compatible_metrics 里的版本是否都已发布；返回没有通过的项，空列表表示通过 }]
+  <- $refs (list[metrics_registry.MetricsRegistryRef] * { 配方里对指标的引用，一项一个指标；每项带指标名、配方使用的版本、声明的 gate、acceptance.gates 与 compatible_metrics 里的版本 })
+  <- $registry (list[metrics_registry.MetricsRegistryEntry] * { 登记表：一项一个指标，提供该指标的版本、支持的版本与可服务的阶段门 })
+  <- { 校验引用：逐条检查指标是否已登记、版本是否受支持、gate 是否在登记表为该指标列出的 gate 里、该 gate 是否在配方的 acceptance.gates 里、该指标与版本是否在 compatible_metrics 里、compatible_metrics 里的版本是否都已发布；返回没有通过的项，空列表表示通过 }
 ```
 
 ## 组织
@@ -91,15 +91,15 @@ import metrics_registry_api
 
 MetricsRegistryFlow =
   Object
-  * $entry (metrics_registry.MetricsRegistryEntry * Hint[{ 登记表的一条条目：指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向 }])
-  * $refs (list[metrics_registry.MetricsRegistryRef] * Hint[{ 配方里对指标的引用，一项一个指标；校验操作逐条检查它们 }])
-  * $steps (list[MetricsRegistryStep] * Hint[{ 登记、查版本、校验引用三个操作，按登记 → 查询 → 校验的顺序 }])
+  * $entry (metrics_registry.MetricsRegistryEntry * { 登记表的一条条目：指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向 })
+  * $refs (list[metrics_registry.MetricsRegistryRef] * { 配方里对指标的引用，一项一个指标；校验操作逐条检查它们 })
+  * $steps (list[MetricsRegistryStep] * { 登记、查版本、校验引用三个操作，按登记 → 查询 → 校验的顺序 })
 
 MetricsRegistryStep =
   Oneof
-  | $register (metrics_registry_api.RegisterMetric * Hint[{ 登记一个指标：把条目写进 metrics/registry.yaml；新增指标时指标文档与引用它的配方配置也要一起改 }])
-  | $lookup (metrics_registry_api.LookupMetric * Hint[{ 查一个指标的版本：返回当前版本与支持的版本，配方引用的版本必须在其中 }])
-  | $validate (metrics_registry_api.ValidateRefs * Hint[{ 校验引用：用登记表检查配方对指标的引用，返回没有通过的项；空列表表示通过 }])
+  | $register (metrics_registry_api.RegisterMetric * { 登记一个指标：把条目写进 metrics/registry.yaml；新增指标时指标文档与引用它的配方配置也要一起改 })
+  | $lookup (metrics_registry_api.LookupMetric * { 查一个指标的版本：返回当前版本与支持的版本，配方引用的版本必须在其中 })
+  | $validate (metrics_registry_api.ValidateRefs * { 校验引用：用登记表检查配方对指标的引用，返回没有通过的项；空列表表示通过 })
 ```
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

@@ -9,194 +9,194 @@
 ```viba principles
 PrinciplesSpec =
   Object
-  * $positioning (PrinciplesPositioning * Hint[{ 定位：本项目是什么、产出什么、回答哪三个问题 }])
-  * $benchmark (PrinciplesContinuousBenchmark * Hint[{ 为什么做一套持续维护的 benchmark：一次性的测跑回答不了的三个问题，以及三部分闭环 }])
-  * $eval_sets (PrinciplesEvalSetRelation * Hint[{ 三类评估集的关系：模型代码收集库是前置原料库，checkpoint 评估集从库里取样构建 }])
-  * $scope (PrinciplesScope * Hint[{ 边界：本项目管什么、不管什么 }])
-  * $hard_principles (list[PrinciplesHardPrinciple] * Hint[{ 三条硬原则：计算可以假，IO 必须真；小规模要能对齐，大规模要能外推；结果只回链，不入库 }])
-  * $success_criteria (list[PrinciplesSuccessCriterion] * Hint[{ 成功判据：一个评估集算建成了，需要同时满足的五条 }])
-  * $roles (PrinciplesRoles * Hint[{ 角色分工，以及兼任与评审回避的规则 }])
+  * $positioning (PrinciplesPositioning * { 定位：本项目是什么、产出什么、回答哪三个问题 })
+  * $benchmark (PrinciplesContinuousBenchmark * { 为什么做一套持续维护的 benchmark：一次性的测跑回答不了的三个问题，以及三部分闭环 })
+  * $eval_sets (PrinciplesEvalSetRelation * { 三类评估集的关系：模型代码收集库是前置原料库，checkpoint 评估集从库里取样构建 })
+  * $scope (PrinciplesScope * { 边界：本项目管什么、不管什么 })
+  * $hard_principles (list[PrinciplesHardPrinciple] * { 三条硬原则：计算可以假，IO 必须真；小规模要能对齐，大规模要能外推；结果只回链，不入库 })
+  * $success_criteria (list[PrinciplesSuccessCriterion] * { 成功判据：一个评估集算建成了，需要同时满足的五条 })
+  * $roles (PrinciplesRoles * { 角色分工，以及兼任与评审回避的规则 })
 
 PrinciplesPositioning =
   Object
-  * $parts (list[PrinciplesPart] * Hint[{ 本项目是生成评估集的 playbook：一套配方、指标与流程 }])
-  * $output (PrinciplesEvalSet * Hint[{ 产出：AI Infra 存储与传输侧的评估集 }])
-  * $questions (list[PrinciplesQuestion] * Hint[{ 它回答的三个问题：测什么、怎么测、测完怎么让下一版测得更多 }])
+  * $parts (list[PrinciplesPart] * { 本项目是生成评估集的 playbook：一套配方、指标与流程 })
+  * $output (PrinciplesEvalSet * { 产出：AI Infra 存储与传输侧的评估集 })
+  * $questions (list[PrinciplesQuestion] * { 它回答的三个问题：测什么、怎么测、测完怎么让下一版测得更多 })
 
 PrinciplesPart =
   Oneof
-  | "recipes" * Hint[{ 配方：recipes/ 下的配方文件，依赖在 recipe.yaml 里显式声明 }]
-  | "metrics" * Hint[{ 指标：口径、阈值、验收标准与校验脚本 }]
-  | "process" * Hint[{ 流程：闭环里从评估集到回归的步骤 }]
+  | "recipes" * { 配方：recipes/ 下的配方文件，依赖在 recipe.yaml 里显式声明 }
+  | "metrics" * { 指标：口径、阈值、验收标准与校验脚本 }
+  | "process" * { 流程：闭环里从评估集到回归的步骤 }
 
 PrinciplesQuestion =
   Oneof
-  | "what" * Hint[{ 测什么 }]
-  | "how" * Hint[{ 怎么测 }]
-  | "next" * Hint[{ 测完怎么让下一版测得更多 }]
+  | "what" * { 测什么 }
+  | "how" * { 怎么测 }
+  | "next" * { 测完怎么让下一版测得更多 }
 
 PrinciplesContinuousBenchmark =
   Object
-  * $reasons (list[PrinciplesBenchmarkReason] * Hint[{ 一次性的测跑只能回答当前实现有多快，回答不了这三个问题；这三个问题也是需要一套持续维护的 benchmark 的原因 }])
-  * $loop (PrinciplesClosedLoop * Hint[{ 三部分闭环：评估集、评估服务、扩展机制 }])
+  * $reasons (list[PrinciplesBenchmarkReason] * { 一次性的测跑只能回答当前实现有多快，回答不了这三个问题；这三个问题也是需要一套持续维护的 benchmark 的原因 })
+  * $loop (PrinciplesClosedLoop * { 三部分闭环：评估集、评估服务、扩展机制 })
 
 PrinciplesBenchmarkReason =
   Oneof
-  | "coverage" * Hint[{ 覆盖是否够：真实模型代码产生的 IO 是长尾的；少数几个旗舰模型覆盖不到分片写入、小文件元数据、跨节点 KV 搬运这些会打垮存储的场景 }]
-  | "extrapolation" * Hint[{ 结论是否可外推：单机测出来的结论在十万卡上未必成立，因为聚合带宽、元数据放大、并行策略都在变 }]
-  | "decay" * Hint[{ 覆盖度是否在衰减：新模型、新推理框架出现后，bench 若没有机制发现缺口并生成新版本，覆盖度会随时间下降 }]
+  | "coverage" * { 覆盖是否够：真实模型代码产生的 IO 是长尾的；少数几个旗舰模型覆盖不到分片写入、小文件元数据、跨节点 KV 搬运这些会打垮存储的场景 }
+  | "extrapolation" * { 结论是否可外推：单机测出来的结论在十万卡上未必成立，因为聚合带宽、元数据放大、并行策略都在变 }
+  | "decay" * { 覆盖度是否在衰减：新模型、新推理框架出现后，bench 若没有机制发现缺口并生成新版本，覆盖度会随时间下降 }
 
 PrinciplesClosedLoop =
   Object
-  * $parts (list[PrinciplesLoopPart] * Hint[{ 闭环的三部分；三者缺一，闭环就断 }])
-  * $stages (list[PrinciplesLoopStage] * Hint[{ 闭环按顺序经过的五个阶段；最后一个阶段回到第一个 }])
-  * $human (PrinciplesHumanInLoop * Hint[{ 闭环里人的位置：哪些步骤自动，哪些改动要人审核 }])
+  * $parts (list[PrinciplesLoopPart] * { 闭环的三部分；三者缺一，闭环就断 })
+  * $stages (list[PrinciplesLoopStage] * { 闭环按顺序经过的五个阶段；最后一个阶段回到第一个 })
+  * $human (PrinciplesHumanInLoop * { 闭环里人的位置：哪些步骤自动，哪些改动要人审核 })
 
 PrinciplesLoopPart =
   Oneof
-  | "eval_set" * Hint[{ 评估集：提供覆盖与外推依据 }]
-  | "eval_service" * Hint[{ 评估服务：负责持续运行 }]
-  | "extension" * Hint[{ 扩展机制：负责覆盖度不衰减；由 playbook 执行，评估集本身不变 }]
+  | "eval_set" * { 评估集：提供覆盖与外推依据 }
+  | "eval_service" * { 评估服务：负责持续运行 }
+  | "extension" * { 扩展机制：负责覆盖度不衰减；由 playbook 执行，评估集本身不变 }
 
 PrinciplesLoopStage =
   Oneof
-  | "current_set" * Hint[{ 当前版本的评估集（覆盖度矩阵） }]
-  | "service_run" * Hint[{ 评估服务：跑用例 → 产出 IO pattern 与结论 }]
-  | "gap_analysis" * Hint[{ 缺口分析：新架构 / 新框架 / 新并行策略 / 未覆盖的 IO 特征 }]
-  | "new_version" * Hint[{ playbook 生成新版本：新用例、新配方、新适配层 }]
-  | "regression" * Hint[{ 回归：旧用例结论是否仍然成立；结果回到当前版本的评估集 }]
+  | "current_set" * { 当前版本的评估集（覆盖度矩阵） }
+  | "service_run" * { 评估服务：跑用例 → 产出 IO pattern 与结论 }
+  | "gap_analysis" * { 缺口分析：新架构 / 新框架 / 新并行策略 / 未覆盖的 IO 特征 }
+  | "new_version" * { playbook 生成新版本：新用例、新配方、新适配层 }
+  | "regression" * { 回归：旧用例结论是否仍然成立；结果回到当前版本的评估集 }
 
 PrinciplesHumanInLoop =
   Object
-  * $automatic (list[PrinciplesAutomatedStep] * Hint[{ 自动做的三件事：发现缺口、生成候选用例、回归 }])
-  * $reviewed (list[PrinciplesReviewSubject] * Hint[{ 人审核的三类事项：口径变更、阈值调整、任何会让历史结论不可比的改动 }])
+  * $automatic (list[PrinciplesAutomatedStep] * { 自动做的三件事：发现缺口、生成候选用例、回归 })
+  * $reviewed (list[PrinciplesReviewSubject] * { 人审核的三类事项：口径变更、阈值调整、任何会让历史结论不可比的改动 })
 
 PrinciplesAutomatedStep =
   Oneof
-  | "find_gaps" * Hint[{ 自动发现缺口 }]
-  | "generate_candidates" * Hint[{ 自动生成候选用例 }]
-  | "regress" * Hint[{ 自动回归 }]
+  | "find_gaps" * { 自动发现缺口 }
+  | "generate_candidates" * { 自动生成候选用例 }
+  | "regress" * { 自动回归 }
 
 PrinciplesReviewSubject =
   Oneof
-  | "metric_change" * Hint[{ 口径变更 }]
-  | "threshold_change" * Hint[{ 阈值调整 }]
-  | "incomparable_change" * Hint[{ 任何会让历史结论不可比的改动 }]
+  | "metric_change" * { 口径变更 }
+  | "threshold_change" * { 阈值调整 }
+  | "incomparable_change" * { 任何会让历史结论不可比的改动 }
 
 PrinciplesEvalSetRelation =
   Object
-  * $source (PrinciplesModelCodeLibrary * Hint[{ 前置原料库：模型代码收集库 }])
-  * $derived (PrinciplesEvalSet * Hint[{ 从原料库取样构建的评估集：checkpoint 存储评估集（训练侧） }])
-  * $recipe (str * Hint[{ 声明这条依赖的配方文件：recipes/checkpoint/recipe.yaml }])
-  * $dependency (str * Hint[{ 配方里必须写的依赖：depends_on: recipes/model-code-collection }])
-  * $pending (list[PrinciplesEvalSet] * Hint[{ dataset 与 kvcache 评估集待做（TODO） }])
+  * $source (PrinciplesModelCodeLibrary * { 前置原料库：模型代码收集库 })
+  * $derived (PrinciplesEvalSet * { 从原料库取样构建的评估集：checkpoint 存储评估集（训练侧） })
+  * $recipe (str * { 声明这条依赖的配方文件：recipes/checkpoint/recipe.yaml })
+  * $dependency (str * { 配方里必须写的依赖：depends_on: recipes/model-code-collection })
+  * $pending (list[PrinciplesEvalSet] * { dataset 与 kvcache 评估集待做（TODO） })
 
 PrinciplesModelCodeLibrary =
   Object
-  * $inference_models (str * Hint[{ 推理模型代码，1000+，尽量配对训练代码 }])
-  * $diversity (str * Hint[{ 结构去重后的多样性覆盖 }])
-  * $mock_group (str * Hint[{ mock process group 可跑性验证 }])
+  * $inference_models (str * { 推理模型代码，1000+，尽量配对训练代码 })
+  * $diversity (str * { 结构去重后的多样性覆盖 })
+  * $mock_group (str * { mock process group 可跑性验证 })
 
 PrinciplesEvalSet =
   Oneof
-  | "checkpoint" * Hint[{ checkpoint 存储评估集（训练侧）；从模型代码收集库取样构建 }]
-  | "dataset" * Hint[{ dataset 评估集；待做（TODO） }]
-  | "kvcache" * Hint[{ kvcache 评估集；待做（TODO） }]
+  | "checkpoint" * { checkpoint 存储评估集（训练侧）；从模型代码收集库取样构建 }
+  | "dataset" * { dataset 评估集；待做（TODO） }
+  | "kvcache" * { kvcache 评估集；待做（TODO） }
 
 PrinciplesScope =
   Object
-  * $included (list[PrinciplesIncludedWork] * Hint[{ 本项目管什么 }])
-  * $excluded (list[PrinciplesExcludedWork] * Hint[{ 本项目不管什么，每条带原因 }])
+  * $included (list[PrinciplesIncludedWork] * { 本项目管什么 })
+  * $excluded (list[PrinciplesExcludedWork] * { 本项目不管什么，每条带原因 })
 
 PrinciplesIncludedWork =
   Oneof
-  | "model_code" * Hint[{ 模型代码的收集、去重、可跑性验证方法 }]
-  | "checkpoint" * Hint[{ 训练侧 checkpoint 的存储评估方法；dataset 与 kvcache 待做（TODO） }]
-  | "bypass" * Hint[{ 旁路计算、保留 IO 的通用方法，以及保真程度的登记方式 }]
-  | "scaling" * Hint[{ 小规模对齐与 scaling 外推的方法 }]
-  | "service" * Hint[{ 评估服务的接口、调度、结果回链规范 }]
-  | "extension" * Hint[{ playbook 扩展评估集的触发条件、缺口分析、审核边界 }]
-  | "metrics" * Hint[{ 指标口径、阈值、验收标准与校验脚本 }]
+  | "model_code" * { 模型代码的收集、去重、可跑性验证方法 }
+  | "checkpoint" * { 训练侧 checkpoint 的存储评估方法；dataset 与 kvcache 待做（TODO） }
+  | "bypass" * { 旁路计算、保留 IO 的通用方法，以及保真程度的登记方式 }
+  | "scaling" * { 小规模对齐与 scaling 外推的方法 }
+  | "service" * { 评估服务的接口、调度、结果回链规范 }
+  | "extension" * { playbook 扩展评估集的触发条件、缺口分析、审核边界 }
+  | "metrics" * { 指标口径、阈值、验收标准与校验脚本 }
 
 PrinciplesExcludedWork =
   Oneof
-  | "performance_tuning" * Hint[{ 模型训练与推理的性能调优。原因：那是被评估对象，不是评估设施 }]
-  | "kernel_optimization" * Hint[{ 计算 kernel 优化。原因：与存储传输侧的 IO 无关 }]
-  | "hardware_selection" * Hint[{ 存储硬件选型。原因：硬件选型的输入来自评估结论，选型决策不在这里做 }]
-  | "production_ops" * Hint[{ 生产集群运维。原因：评估集群与生产集群是两套环境 }]
-  | "report_archival" * Hint[{ 一次性 benchmark 报告的归档。原因：报告是运行产物，只回链，不入库 }]
-  | "raw_assets" * Hint[{ 原始数据集、模型权重、checkpoint。原因：体积与权限都不适合放进仓库 }]
+  | "performance_tuning" * { 模型训练与推理的性能调优。原因：那是被评估对象，不是评估设施 }
+  | "kernel_optimization" * { 计算 kernel 优化。原因：与存储传输侧的 IO 无关 }
+  | "hardware_selection" * { 存储硬件选型。原因：硬件选型的输入来自评估结论，选型决策不在这里做 }
+  | "production_ops" * { 生产集群运维。原因：评估集群与生产集群是两套环境 }
+  | "report_archival" * { 一次性 benchmark 报告的归档。原因：报告是运行产物，只回链，不入库 }
+  | "raw_assets" * { 原始数据集、模型权重、checkpoint。原因：体积与权限都不适合放进仓库 }
 
 PrinciplesHardPrinciple =
   Oneof
-  | "fake_compute_real_io" * Hint[{ 计算可以假，IO 必须真。评估的目的是存储传输侧；计算部分（forward、backward、optimizer、prefill、decode）对 IO 的贡献只有「什么时候发起」和「发起多少」，不贡献请求本身的特征，所以计算可以被旁路。但发起 IO 的那条代码路径必须保持原样：真实的数据加载、真实的 checkpoint 写入、真实的通信原语调用。旁路了哪些、保留了什么、带来了什么偏差，逐项登记在配方的「保真边界表」里；没有登记表的配方视为未完成 }]
-  | "align_then_extrapolate" * Hint[{ 小规模要能对齐，大规模要能外推。小规模上跑出来的 IO pattern 必须能和同等规模的真实运行对上，否则后面的外推没有依据；大规模结论必须由逐级验证得到，不允许从小规模直接跳到十万卡给结论。外推的依据是 scaling 不变量：一组在放大过程中应保持稳定的 IO 特征；不变量选得对不对，决定了外推结论是否可信 }]
-  | "link_only" * Hint[{ 结果只回链，不入库。仓库里永远只有配方、指标、阈值、校验脚本、模板，以及指向外部产物的 URI、sha256、状态；任何一次运行的大报告、trace、日志、产物都放在对象存储或 CI artifact 里。判断标准：删掉外部存储里的所有产物，本项目应当仍然完整、仍然能重新跑出结论；如果删不掉，说明仓库里混进了不该放的东西 }]
+  | "fake_compute_real_io" * { 计算可以假，IO 必须真。评估的目的是存储传输侧；计算部分（forward、backward、optimizer、prefill、decode）对 IO 的贡献只有「什么时候发起」和「发起多少」，不贡献请求本身的特征，所以计算可以被旁路。但发起 IO 的那条代码路径必须保持原样：真实的数据加载、真实的 checkpoint 写入、真实的通信原语调用。旁路了哪些、保留了什么、带来了什么偏差，逐项登记在配方的「保真边界表」里；没有登记表的配方视为未完成 }
+  | "align_then_extrapolate" * { 小规模要能对齐，大规模要能外推。小规模上跑出来的 IO pattern 必须能和同等规模的真实运行对上，否则后面的外推没有依据；大规模结论必须由逐级验证得到，不允许从小规模直接跳到十万卡给结论。外推的依据是 scaling 不变量：一组在放大过程中应保持稳定的 IO 特征；不变量选得对不对，决定了外推结论是否可信 }
+  | "link_only" * { 结果只回链，不入库。仓库里永远只有配方、指标、阈值、校验脚本、模板，以及指向外部产物的 URI、sha256、状态；任何一次运行的大报告、trace、日志、产物都放在对象存储或 CI artifact 里。判断标准：删掉外部存储里的所有产物，本项目应当仍然完整、仍然能重新跑出结论；如果删不掉，说明仓库里混进了不该放的东西 }
 
 PrinciplesSuccessCriterion =
   Oneof
-  | "reproducible" * Hint[{ 配方能被另一个人照着跑通，不需要口口相传的隐含步骤 }]
-  | "aligned" * Hint[{ 小规模结果与真实运行在声明的容差内对齐 }]
-  | "scaling_validated" * Hint[{ scaling 不变量在每一级都验证过，且偏差有归因 }]
-  | "gaps_registered" * Hint[{ 覆盖度矩阵上有明确的空白格子，且空白格子被登记为待补，而不是被忽略 }]
-  | "loop_proven" * Hint[{ 至少一个真实缺口是由评估服务发现、并驱动 playbook 生成新版本补上的；这条衡量的是闭环是否真的转起来了 }]
+  | "reproducible" * { 配方能被另一个人照着跑通，不需要口口相传的隐含步骤 }
+  | "aligned" * { 小规模结果与真实运行在声明的容差内对齐 }
+  | "scaling_validated" * { scaling 不变量在每一级都验证过，且偏差有归因 }
+  | "gaps_registered" * { 覆盖度矩阵上有明确的空白格子，且空白格子被登记为待补，而不是被忽略 }
+  | "loop_proven" * { 至少一个真实缺口是由评估服务发现、并驱动 playbook 生成新版本补上的；这条衡量的是闭环是否真的转起来了 }
 
 PrinciplesRoles =
   Object
-  * $roles (list[PrinciplesRole] * Hint[{ 四类角色 }])
-  * $rules (list[PrinciplesRoleRule] * Hint[{ 兼任与评审回避的规则 }])
+  * $roles (list[PrinciplesRole] * { 四类角色 })
+  * $rules (list[PrinciplesRoleRule] * { 兼任与评审回避的规则 })
 
 PrinciplesRole =
   Oneof
-  | "recipe_maintainer" * Hint[{ 配方维护者：负责单个评估集的正确性与可复现性 }]
-  | "metric_maintainer" * Hint[{ 指标维护者：负责 metrics/ 的口径一致，历史结果可比 }]
-  | "service_maintainer" * Hint[{ 服务维护者：负责评估服务的调度、结果存储、回链完整性 }]
-  | "reviewer" * Hint[{ 评审者：负责口径可实现、阈值有依据、结论可外推 }]
+  | "recipe_maintainer" * { 配方维护者：负责单个评估集的正确性与可复现性 }
+  | "metric_maintainer" * { 指标维护者：负责 metrics/ 的口径一致，历史结果可比 }
+  | "service_maintainer" * { 服务维护者：负责评估服务的调度、结果存储、回链完整性 }
+  | "reviewer" * { 评审者：负责口径可实现、阈值有依据、结论可外推 }
 
 PrinciplesRoleRule =
   Oneof
-  | "allow_concurrent" * Hint[{ 角色可以由同一人兼任 }]
-  | "no_self_review" * Hint[{ 改口径的人不能是自己评审自己 }]
+  | "allow_concurrent" * { 角色可以由同一人兼任 }
+  | "no_self_review" * { 改口径的人不能是自己评审自己 }
 
 PrinciplesAcceptance =
   Object
-  * $eval_set (PrinciplesEvalSet * Hint[{ 被验收的评估集 }])
-  * $verdict (PrinciplesAcceptVerdict * Hint[{ 建成或未建成 }])
-  * $missing (list[PrinciplesSuccessCriterion] * Hint[{ 未满足的成功判据；建成时为空 }])
+  * $eval_set (PrinciplesEvalSet * { 被验收的评估集 })
+  * $verdict (PrinciplesAcceptVerdict * { 建成或未建成 })
+  * $missing (list[PrinciplesSuccessCriterion] * { 未满足的成功判据；建成时为空 })
 
 PrinciplesAcceptVerdict =
   Oneof
-  | "built" * Hint[{ 五条成功判据全部满足，这个评估集算建成 }]
-  | "not_built" * Hint[{ 至少一条成功判据未满足，这个评估集还不算建成 }]
+  | "built" * { 五条成功判据全部满足，这个评估集算建成 }
+  | "not_built" * { 至少一条成功判据未满足，这个评估集还不算建成 }
 
 PrinciplesReviewVerdict =
   Object
-  * $subject (PrinciplesReviewSubject * Hint[{ 这次评审针对的改动 }])
-  * $role (PrinciplesRole * Hint[{ 承担评审的角色：评审者，负责口径可实现、阈值有依据、结论可外推 }])
-  * $decision (PrinciplesReviewDecision * Hint[{ 评审结论：允许或禁止 }])
+  * $subject (PrinciplesReviewSubject * { 这次评审针对的改动 })
+  * $role (PrinciplesRole * { 承担评审的角色：评审者，负责口径可实现、阈值有依据、结论可外推 })
+  * $decision (PrinciplesReviewDecision * { 评审结论：允许或禁止 })
 
 PrinciplesReviewDecision =
   Oneof
-  | "allowed" * Hint[{ 评审通过：评审者不是提出改动的人 }]
-  | "self_review_forbidden" * Hint[{ 评审不通过：改口径的人不能是自己评审自己 }]
+  | "allowed" * { 评审通过：评审者不是提出改动的人 }
+  | "self_review_forbidden" * { 评审不通过：改口径的人不能是自己评审自己 }
 
 PrinciplesGap =
   Object
-  * $cell ((str | nil) * Hint[{ 缺口在覆盖度矩阵上的位置：空白格子；没有具体格子时给 nil }])
-  * $kind (PrinciplesGapKind * Hint[{ 缺口从哪来：新架构、新框架、新并行策略、未覆盖的 IO 特征 }])
-  * $discovered_by_service (bool * Hint[{ 这个缺口是不是由评估服务发现的；成功判据要求至少一个真实缺口由评估服务发现、并驱动 playbook 生成新版本 }])
+  * $cell ((str | nil) * { 缺口在覆盖度矩阵上的位置：空白格子；没有具体格子时给 nil })
+  * $kind (PrinciplesGapKind * { 缺口从哪来：新架构、新框架、新并行策略、未覆盖的 IO 特征 })
+  * $discovered_by_service (bool * { 这个缺口是不是由评估服务发现的；成功判据要求至少一个真实缺口由评估服务发现、并驱动 playbook 生成新版本 })
 
 PrinciplesGapKind =
   Oneof
-  | "new_architecture" * Hint[{ 新架构 }]
-  | "new_framework" * Hint[{ 新框架 }]
-  | "new_parallel_strategy" * Hint[{ 新并行策略 }]
-  | "uncovered_io_feature" * Hint[{ 未覆盖的 IO 特征 }]
+  | "new_architecture" * { 新架构 }
+  | "new_framework" * { 新框架 }
+  | "new_parallel_strategy" * { 新并行策略 }
+  | "uncovered_io_feature" * { 未覆盖的 IO 特征 }
 
 PrinciplesGapRoute =
   Object
-  * $gap (PrinciplesGap * Hint[{ 要回流的缺口 }])
-  * $stages (list[PrinciplesLoopStage] * Hint[{ 缺口在闭环里经过的阶段：从缺口分析开始，经 playbook 生成新版本、回归，最后回到当前版本的评估集 }])
+  * $gap (PrinciplesGap * { 要回流的缺口 })
+  * $stages (list[PrinciplesLoopStage] * { 缺口在闭环里经过的阶段：从缺口分析开始，经 playbook 生成新版本、回归，最后回到当前版本的评估集 })
 ```
 
 ## 基本操作
@@ -210,21 +210,21 @@ import principles
 
 AcceptGate =
      principles.PrinciplesAcceptance
-  <- $eval_set (principles.PrinciplesEvalSet * Hint[{ 被判断是否算建成的评估集 }])
-  <- $satisfied (list[principles.PrinciplesSuccessCriterion] * Hint[{ 已经满足的成功判据；未列出的判据视为未满足 }])
-  <- Hint[{ 验收：拿五条成功判据逐条对照。五条全部满足才算建成；返回结论与缺的判据 }]
+  <- $eval_set (principles.PrinciplesEvalSet * { 被判断是否算建成的评估集 })
+  <- $satisfied (list[principles.PrinciplesSuccessCriterion] * { 已经满足的成功判据；未列出的判据视为未满足 })
+  <- { 验收：拿五条成功判据逐条对照。五条全部满足才算建成；返回结论与缺的判据 }
 
 ReviewChange =
      principles.PrinciplesReviewVerdict
-  <- $subject (principles.PrinciplesReviewSubject * Hint[{ 要评审的改动：口径变更、阈值调整、任何会让历史结论不可比的改动 }])
-  <- $author (str * Hint[{ 提出改动的人 }])
-  <- $reviewer (str * Hint[{ 准备评审这次改动的人 }])
-  <- Hint[{ 评审：这次改动由评审者评审，并按 no_self_review 规则检查评审者是不是提出改动的人。同一个人提出又评审时返回 self_review_forbidden，否则返回 allowed，同时带上这次评审针对的改动与承担评审的角色 }]
+  <- $subject (principles.PrinciplesReviewSubject * { 要评审的改动：口径变更、阈值调整、任何会让历史结论不可比的改动 })
+  <- $author (str * { 提出改动的人 })
+  <- $reviewer (str * { 准备评审这次改动的人 })
+  <- { 评审：这次改动由评审者评审，并按 no_self_review 规则检查评审者是不是提出改动的人。同一个人提出又评审时返回 self_review_forbidden，否则返回 allowed，同时带上这次评审针对的改动与承担评审的角色 }
 
 RouteGap =
      principles.PrinciplesGapRoute
-  <- $gap (principles.PrinciplesGap * Hint[{ 要回流的缺口：覆盖度矩阵上的空白格子，或新架构、新框架、新并行策略、未覆盖的 IO 特征 }])
-  <- Hint[{ 回流：把缺口交给闭环。缺口从缺口分析进入，经 playbook 生成新版本、回归，最后回到当前版本的评估集；返回缺口与它经过的阶段 }]
+  <- $gap (principles.PrinciplesGap * { 要回流的缺口：覆盖度矩阵上的空白格子，或新架构、新框架、新并行策略、未覆盖的 IO 特征 })
+  <- { 回流：把缺口交给闭环。缺口从缺口分析进入，经 playbook 生成新版本、回归，最后回到当前版本的评估集；返回缺口与它经过的阶段 }
 ```
 
 ## 组织
@@ -235,26 +235,26 @@ import principles_api
 
 PrinciplesAcceptDuty =
   Object
-  * $step (principles_api.AcceptGate * Hint[{ 验收：判断一个评估集算不算建成 }])
-  * $criteria (list[principles.PrinciplesSuccessCriterion] * Hint[{ 这一步逐条比对的五条成功判据 }])
+  * $step (principles_api.AcceptGate * { 验收：判断一个评估集算不算建成 })
+  * $criteria (list[principles.PrinciplesSuccessCriterion] * { 这一步逐条比对的五条成功判据 })
 
 PrinciplesReviewDuty =
   Object
-  * $step (principles_api.ReviewChange * Hint[{ 评审：判断一次改动由谁来评、能不能评 }])
-  * $subjects (list[principles.PrinciplesReviewSubject] * Hint[{ 这一步覆盖的三类改动：口径变更、阈值调整、任何会让历史结论不可比的改动 }])
+  * $step (principles_api.ReviewChange * { 评审：判断一次改动由谁来评、能不能评 })
+  * $subjects (list[principles.PrinciplesReviewSubject] * { 这一步覆盖的三类改动：口径变更、阈值调整、任何会让历史结论不可比的改动 })
 
 PrinciplesRouteDuty =
   Object
-  * $step (principles_api.RouteGap * Hint[{ 回流：把缺口交回闭环 }])
-  * $stages (list[principles.PrinciplesLoopStage] * Hint[{ 缺口在闭环里经过的阶段 }])
+  * $step (principles_api.RouteGap * { 回流：把缺口交回闭环 })
+  * $stages (list[principles.PrinciplesLoopStage] * { 缺口在闭环里经过的阶段 })
 
 PrinciplesFlow =
   Object
-  * $spec (principles.PrinciplesSpec * Hint[{ 问题定义：定位、为什么做持续维护的 benchmark、评估集关系、边界、硬原则、成功判据、角色 }])
-  * $loop (principles.PrinciplesClosedLoop * Hint[{ 闭环：评估集、评估服务、扩展机制三部分缺一就断 }])
-  * $accept (PrinciplesAcceptDuty * Hint[{ 第一项职责：验收一个评估集算不算建成 }])
-  * $review (PrinciplesReviewDuty * Hint[{ 第二项职责：评审口径、阈值与不可比改动 }])
-  * $route (PrinciplesRouteDuty * Hint[{ 第三项职责：把缺口回流到闭环 }])
+  * $spec (principles.PrinciplesSpec * { 问题定义：定位、为什么做持续维护的 benchmark、评估集关系、边界、硬原则、成功判据、角色 })
+  * $loop (principles.PrinciplesClosedLoop * { 闭环：评估集、评估服务、扩展机制三部分缺一就断 })
+  * $accept (PrinciplesAcceptDuty * { 第一项职责：验收一个评估集算不算建成 })
+  * $review (PrinciplesReviewDuty * { 第二项职责：评审口径、阈值与不可比改动 })
+  * $route (PrinciplesRouteDuty * { 第三项职责：把缺口回流到闭环 })
 ```
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

@@ -12,101 +12,101 @@ import gates
 
 RecipeTemplateSpec =
   Object
-  * $template (RecipeTemplateDirectory * Hint[{ 模板目录：六个文件各自的内容与读者 }])
-  * $requirements (list[RecipeTemplateRequirement] * Hint[{ 填写的硬要求；复制后逐条检查 }])
-  * $steps (list[RecipeTemplateScaffoldStep] * Hint[{ 复制脚手架的步骤：手动路径按复制目录、替换占位内容、检查硬要求的顺序执行；脚本路径用 new_recipe.py 一步完成复制、基础替换与检查 }])
+  * $template (RecipeTemplateDirectory * { 模板目录：六个文件各自的内容与读者 })
+  * $requirements (list[RecipeTemplateRequirement] * { 填写的硬要求；复制后逐条检查 })
+  * $steps (list[RecipeTemplateScaffoldStep] * { 复制脚手架的步骤：手动路径按复制目录、替换占位内容、检查硬要求的顺序执行；脚本路径用 new_recipe.py 一步完成复制、基础替换与检查 })
 
 RecipeTemplateDirectory =
   Object
-  * $name (str * Hint[{ 评估集名；对应 recipes/<评估集名>/，模板里是尖括号占位，复制后不要保留尖括号 }])
-  * $recipe (RecipeTemplateRecipeYaml * Hint[{ recipe.yaml：元信息、旁路范围、保真边界、不变量、scaling 计划、兼容的指标版本；评估服务与校验脚本读取 }])
-  * $metrics (RecipeTemplateMetricsYaml * Hint[{ metrics.yaml：选用的指标、参数、阈值；评估服务与对齐判定读取 }])
-  * $readme (RecipeTemplateReadme * Hint[{ README.md：目标、输入、输出、步骤、验收、负责人；人看 }])
-  * $acceptance_checklist (RecipeTemplateAcceptanceChecklist * Hint[{ acceptance-checklist.md：阶段门 G0–G4 的勾选项；评审看 }])
-  * $checks (list[str] * Hint[{ checks/：本配方专属校验脚本；CI 看 }])
-  * $build (list[RecipeTemplateBuildStage] * Hint[{ build.py：配方入口，prepare / run / collect 三个阶段；实现者看 }])
+  * $name (str * { 评估集名；对应 recipes/<评估集名>/，模板里是尖括号占位，复制后不要保留尖括号 })
+  * $recipe (RecipeTemplateRecipeYaml * { recipe.yaml：元信息、旁路范围、保真边界、不变量、scaling 计划、兼容的指标版本；评估服务与校验脚本读取 })
+  * $metrics (RecipeTemplateMetricsYaml * { metrics.yaml：选用的指标、参数、阈值；评估服务与对齐判定读取 })
+  * $readme (RecipeTemplateReadme * { README.md：目标、输入、输出、步骤、验收、负责人；人看 })
+  * $acceptance_checklist (RecipeTemplateAcceptanceChecklist * { acceptance-checklist.md：阶段门 G0–G4 的勾选项；评审看 })
+  * $checks (list[str] * { checks/：本配方专属校验脚本；CI 看 })
+  * $build (list[RecipeTemplateBuildStage] * { build.py：配方入口，prepare / run / collect 三个阶段；实现者看 })
 
 RecipeTemplateRecipeYaml =
   Object
-  * $meta (dict[str, str] * Hint[{ 元信息；评估服务与校验脚本读取 }])
-  * $bypass_scope (list[str] * Hint[{ 旁路范围；评估服务与校验脚本读取 }])
-  * $fidelity_boundary (list[fidelity.FidelityBoundary] * Hint[{ 保真边界；凡是存储与传输路径，fidelity 不允许是 L0 }])
-  * $io_pattern_invariants (list[RecipeTemplateInvariant] * Hint[{ 不变量；写 3–6 条，每条都要有可计算的定义与容差 }])
-  * $scaling_plan (RecipeTemplateScalingPlan * Hint[{ scaling 计划；至少两级，且必须写明固定哪些维度、放大哪个维度 }])
-  * $compatible_metrics (dict[str, list[str]] * Hint[{ 指标名到兼容版本的映射；必须覆盖 metrics.yaml 里实际使用的版本 }])
-  * $latest_run ((str | nil) * Hint[{ 最近一次运行；初始为 null，由评估服务在首次运行后写入，不要手填 }])
+  * $meta (dict[str, str] * { 元信息；评估服务与校验脚本读取 })
+  * $bypass_scope (list[str] * { 旁路范围；评估服务与校验脚本读取 })
+  * $fidelity_boundary (list[fidelity.FidelityBoundary] * { 保真边界；凡是存储与传输路径，fidelity 不允许是 L0 })
+  * $io_pattern_invariants (list[RecipeTemplateInvariant] * { 不变量；写 3–6 条，每条都要有可计算的定义与容差 })
+  * $scaling_plan (RecipeTemplateScalingPlan * { scaling 计划；至少两级，且必须写明固定哪些维度、放大哪个维度 })
+  * $compatible_metrics (dict[str, list[str]] * { 指标名到兼容版本的映射；必须覆盖 metrics.yaml 里实际使用的版本 })
+  * $latest_run ((str | nil) * { 最近一次运行；初始为 null，由评估服务在首次运行后写入，不要手填 })
 
 RecipeTemplateReadme =
   Object
-  * $objective (str * Hint[{ 目标 }])
-  * $inputs (str * Hint[{ 输入 }])
-  * $outputs (str * Hint[{ 输出 }])
-  * $steps (str * Hint[{ 步骤 }])
-  * $acceptance (str * Hint[{ 验收 }])
-  * $owner (str * Hint[{ 负责人 }])
+  * $objective (str * { 目标 })
+  * $inputs (str * { 输入 })
+  * $outputs (str * { 输出 })
+  * $steps (str * { 步骤 })
+  * $acceptance (str * { 验收 })
+  * $owner (str * { 负责人 })
 
 RecipeTemplateAcceptanceChecklist =
   Object
-  * $items (list[RecipeTemplateChecklistItem] * Hint[{ 阶段门 G0–G4 的勾选项；评审逐项勾选 }])
+  * $items (list[RecipeTemplateChecklistItem] * { 阶段门 G0–G4 的勾选项；评审逐项勾选 })
 
 RecipeTemplateChecklistItem =
   Object
-  * $gate (gates.Gate * Hint[{ 这一项对应哪个阶段门，G0 到 G4 }])
-  * $checked (bool * Hint[{ 是否已勾选 }])
+  * $gate (gates.Gate * { 这一项对应哪个阶段门，G0 到 G4 })
+  * $checked (bool * { 是否已勾选 })
 
 RecipeTemplateBuildStage =
   Oneof
-  | "prepare" * Hint[{ 配方入口的第一个阶段：prepare }]
-  | "run" * Hint[{ 配方入口的第二个阶段：run }]
-  | "collect" * Hint[{ 配方入口的第三个阶段：collect }]
+  | "prepare" * { 配方入口的第一个阶段：prepare }
+  | "run" * { 配方入口的第二个阶段：run }
+  | "collect" * { 配方入口的第三个阶段：collect }
 
 RecipeTemplateScalingPlan =
   Object
-  * $levels (list[str] * Hint[{ 至少两级，每一级一条 }])
-  * $fixed_dimensions (list[str] * Hint[{ 固定哪些维度 }])
-  * $varied_dimension (str * Hint[{ 放大哪个维度 }])
+  * $levels (list[str] * { 至少两级，每一级一条 })
+  * $fixed_dimensions (list[str] * { 固定哪些维度 })
+  * $varied_dimension (str * { 放大哪个维度 })
 
 RecipeTemplateInvariant =
   Object
-  * $definition (str * Hint[{ 可计算的定义 }])
-  * $tolerance (str * Hint[{ 容差；与定义一起判定这一条不变量是否保持 }])
+  * $definition (str * { 可计算的定义 })
+  * $tolerance (str * { 容差；与定义一起判定这一条不变量是否保持 })
 
 RecipeTemplateMetricsYaml =
   Object
-  * $metrics (list[RecipeTemplateMetric] * Hint[{ 选用的指标；评估服务与对齐判定读取 }])
+  * $metrics (list[RecipeTemplateMetric] * { 选用的指标；评估服务与对齐判定读取 })
 
 RecipeTemplateMetric =
   Object
-  * $name (str * Hint[{ 指标名；compatible_metrics 按这个名列版本 }])
-  * $version (str * Hint[{ 这个指标实际使用的版本；必须被 compatible_metrics 覆盖 }])
-  * $params (dict[str, str] * Hint[{ 参数；评估服务与对齐判定读取 }])
-  * $tolerance (dict[str, float] * Hint[{ 阈值；只写在 metrics.yaml 的 tolerance，不要在别处再抄一份 }])
+  * $name (str * { 指标名；compatible_metrics 按这个名列版本 })
+  * $version (str * { 这个指标实际使用的版本；必须被 compatible_metrics 覆盖 })
+  * $params (dict[str, str] * { 参数；评估服务与对齐判定读取 })
+  * $tolerance (dict[str, float] * { 阈值；只写在 metrics.yaml 的 tolerance，不要在别处再抄一份 })
 
 RecipeTemplateRequirement =
   Oneof
-  | "fidelity_boundary_no_l0" * Hint[{ fidelity_boundary 中凡是存储与传输路径，fidelity 不允许是 L0 }]
-  | "io_pattern_invariants_3_to_6" * Hint[{ io_pattern_invariants 写 3–6 条，每条都要有可计算的定义与容差 }]
-  | "scaling_plan_at_least_two_levels" * Hint[{ scaling_plan 至少两级，且必须写明固定哪些维度、放大哪个维度 }]
-  | "compatible_metrics_cover_used_versions" * Hint[{ compatible_metrics 按指标名列出版本，且必须覆盖 metrics.yaml 里实际使用的版本 }]
-  | "tolerance_only_in_metrics" * Hint[{ 阈值只写在 metrics.yaml 的 tolerance，不要在别处再抄一份 }]
-  | "latest_run_null_until_first_run" * Hint[{ latest_run 初始为 null，由评估服务在首次运行后写入，不要手填 }]
+  | "fidelity_boundary_no_l0" * { fidelity_boundary 中凡是存储与传输路径，fidelity 不允许是 L0 }
+  | "io_pattern_invariants_3_to_6" * { io_pattern_invariants 写 3–6 条，每条都要有可计算的定义与容差 }
+  | "scaling_plan_at_least_two_levels" * { scaling_plan 至少两级，且必须写明固定哪些维度、放大哪个维度 }
+  | "compatible_metrics_cover_used_versions" * { compatible_metrics 按指标名列出版本，且必须覆盖 metrics.yaml 里实际使用的版本 }
+  | "tolerance_only_in_metrics" * { 阈值只写在 metrics.yaml 的 tolerance，不要在别处再抄一份 }
+  | "latest_run_null_until_first_run" * { latest_run 初始为 null，由评估服务在首次运行后写入，不要手填 }
 
 RecipeTemplateScaffoldStep =
   Oneof
-  | "copy_directory" * Hint[{ 复制本目录到 recipes/<评估集名>/ }]
-  | "replace_placeholders" * Hint[{ 逐项替换尖括号内的占位内容，复制后不要保留尖括号 }]
-  | "check_requirements" * Hint[{ 检查新目录是否满足填写的硬要求 }]
-  | "run_new_recipe_script" * Hint[{ 运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求 }]
+  | "copy_directory" * { 复制本目录到 recipes/<评估集名>/ }
+  | "replace_placeholders" * { 逐项替换尖括号内的占位内容，复制后不要保留尖括号 }
+  | "check_requirements" * { 检查新目录是否满足填写的硬要求 }
+  | "run_new_recipe_script" * { 运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求 }
 
 RecipeTemplateCheckReport =
   Object
-  * $passed (list[RecipeTemplateRequirement] * Hint[{ 已满足的硬要求 }])
-  * $failed (list[RecipeTemplateRequirement] * Hint[{ 未满足的硬要求；为空表示全部满足 }])
+  * $passed (list[RecipeTemplateRequirement] * { 已满足的硬要求 })
+  * $failed (list[RecipeTemplateRequirement] * { 未满足的硬要求；为空表示全部满足 })
 
 RecipeTemplateScaffold =
   Object
-  * $directory (RecipeTemplateDirectory * Hint[{ 复制出的配方目录 recipes/<评估集名>/ }])
-  * $report (RecipeTemplateCheckReport * Hint[{ 新目录的硬要求检查结果 }])
+  * $directory (RecipeTemplateDirectory * { 复制出的配方目录 recipes/<评估集名>/ })
+  * $report (RecipeTemplateCheckReport * { 新目录的硬要求检查结果 })
 ```
 
 ## 基本操作
@@ -120,26 +120,26 @@ import recipe_template
 
 CopyTemplate =
      recipe_template.RecipeTemplateDirectory
-  <- $template (recipe_template.RecipeTemplateDirectory * Hint[{ 模板目录：六个文件各自的内容与读者 }])
-  <- $name (str * Hint[{ 评估集名；对应 recipes/<评估集名>/，复制后不要保留尖括号 }])
-  <- Hint[{ 复制本目录到 recipes/<评估集名>/；返回复制出的目录。此时 recipe.yaml 与 metrics.yaml 仍是模板内容，需要逐项替换尖括号内的占位内容 }]
+  <- $template (recipe_template.RecipeTemplateDirectory * { 模板目录：六个文件各自的内容与读者 })
+  <- $name (str * { 评估集名；对应 recipes/<评估集名>/，复制后不要保留尖括号 })
+  <- { 复制本目录到 recipes/<评估集名>/；返回复制出的目录。此时 recipe.yaml 与 metrics.yaml 仍是模板内容，需要逐项替换尖括号内的占位内容 }
 
 FillPlaceholders =
      recipe_template.RecipeTemplateDirectory
-  <- $directory (recipe_template.RecipeTemplateDirectory * Hint[{ 复制出的配方目录；尖括号占位内容还没替换 }])
-  <- $values (dict[str, str] * Hint[{ 尖括号占位符到实际内容的映射；逐项替换 }])
-  <- Hint[{ 逐项替换尖括号内的占位内容；复制后不要保留尖括号；返回替换完成的配方目录 }]
+  <- $directory (recipe_template.RecipeTemplateDirectory * { 复制出的配方目录；尖括号占位内容还没替换 })
+  <- $values (dict[str, str] * { 尖括号占位符到实际内容的映射；逐项替换 })
+  <- { 逐项替换尖括号内的占位内容；复制后不要保留尖括号；返回替换完成的配方目录 }
 
 CheckRequirements =
      recipe_template.RecipeTemplateCheckReport
-  <- $recipe (recipe_template.RecipeTemplateRecipeYaml * Hint[{ 待检查的 recipe.yaml }])
-  <- $metrics (recipe_template.RecipeTemplateMetricsYaml * Hint[{ 待检查的 metrics.yaml；阈值只写在这里的 tolerance }])
-  <- Hint[{ 按填写的硬要求逐条检查 recipe.yaml 与 metrics.yaml；返回已满足与未满足的条目，未满足列表为空才算通过 }]
+  <- $recipe (recipe_template.RecipeTemplateRecipeYaml * { 待检查的 recipe.yaml })
+  <- $metrics (recipe_template.RecipeTemplateMetricsYaml * { 待检查的 metrics.yaml；阈值只写在这里的 tolerance })
+  <- { 按填写的硬要求逐条检查 recipe.yaml 与 metrics.yaml；返回已满足与未满足的条目，未满足列表为空才算通过 }
 
 ScaffoldRecipe =
      recipe_template.RecipeTemplateScaffold
-  <- $name (str * Hint[{ 评估集名；脚本用它替换 recipes/<评估集名>/ 里的尖括号 }])
-  <- Hint[{ 运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求；返回复制出的配方目录与检查结果 }]
+  <- $name (str * { 评估集名；脚本用它替换 recipes/<评估集名>/ 里的尖括号 })
+  <- { 运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求；返回复制出的配方目录与检查结果 }
 ```
 
 ## 组织
@@ -150,32 +150,32 @@ import recipe_template_api
 
 RecipeTemplateCopyDuty =
   Object
-  * $step (recipe_template_api.CopyTemplate * Hint[{ 复制：把本目录复制到 recipes/<评估集名>/ }])
-  * $directory (recipe_template.RecipeTemplateDirectory * Hint[{ 这一步的产物：复制出的配方目录 }])
+  * $step (recipe_template_api.CopyTemplate * { 复制：把本目录复制到 recipes/<评估集名>/ })
+  * $directory (recipe_template.RecipeTemplateDirectory * { 这一步的产物：复制出的配方目录 })
 
 RecipeTemplateFillDuty =
   Object
-  * $step (recipe_template_api.FillPlaceholders * Hint[{ 替换：逐项替换尖括号内的占位内容 }])
-  * $directory (recipe_template.RecipeTemplateDirectory * Hint[{ 这一步的产物：不保留尖括号的配方目录 }])
+  * $step (recipe_template_api.FillPlaceholders * { 替换：逐项替换尖括号内的占位内容 })
+  * $directory (recipe_template.RecipeTemplateDirectory * { 这一步的产物：不保留尖括号的配方目录 })
 
 RecipeTemplateCheckDuty =
   Object
-  * $step (recipe_template_api.CheckRequirements * Hint[{ 检查：硬要求逐条判定 }])
-  * $report (recipe_template.RecipeTemplateCheckReport * Hint[{ 这一步的产物：已满足与未满足的条目 }])
+  * $step (recipe_template_api.CheckRequirements * { 检查：硬要求逐条判定 })
+  * $report (recipe_template.RecipeTemplateCheckReport * { 这一步的产物：已满足与未满足的条目 })
 
 RecipeTemplateScriptDuty =
   Object
-  * $step (recipe_template_api.ScaffoldRecipe * Hint[{ 脚本路径：运行 python3 scripts/new_recipe.py <评估集名>，一次完成复制与基础替换并检查新目录 }])
-  * $scaffold (recipe_template.RecipeTemplateScaffold * Hint[{ 这一步的产物：配方目录与检查结果 }])
+  * $step (recipe_template_api.ScaffoldRecipe * { 脚本路径：运行 python3 scripts/new_recipe.py <评估集名>，一次完成复制与基础替换并检查新目录 })
+  * $scaffold (recipe_template.RecipeTemplateScaffold * { 这一步的产物：配方目录与检查结果 })
 
 RecipeTemplateFlow =
   Object
-  * $spec (recipe_template.RecipeTemplateSpec * Hint[{ 问题定义：模板目录、六个文件、recipe.yaml 与 metrics.yaml 的字段、填写的硬要求、复制脚手架的步骤 }])
-  * $copy (RecipeTemplateCopyDuty * Hint[{ 第一步：复制本目录 }])
-  * $fill (RecipeTemplateFillDuty * Hint[{ 第二步：替换尖括号内的占位内容 }])
-  * $check (RecipeTemplateCheckDuty * Hint[{ 第三步：检查硬要求 }])
-  * $script (RecipeTemplateScriptDuty * Hint[{ 另一条路径：用 scripts/new_recipe.py 一次完成复制、基础替换与检查 }])
-  * $result (recipe_template.RecipeTemplateScaffold * Hint[{ 最终产物：配方目录与硬要求检查结果；手动路径由前三步得到，脚本路径由 ScaffoldRecipe 一次得到 }])
+  * $spec (recipe_template.RecipeTemplateSpec * { 问题定义：模板目录、六个文件、recipe.yaml 与 metrics.yaml 的字段、填写的硬要求、复制脚手架的步骤 })
+  * $copy (RecipeTemplateCopyDuty * { 第一步：复制本目录 })
+  * $fill (RecipeTemplateFillDuty * { 第二步：替换尖括号内的占位内容 })
+  * $check (RecipeTemplateCheckDuty * { 第三步：检查硬要求 })
+  * $script (RecipeTemplateScriptDuty * { 另一条路径：用 scripts/new_recipe.py 一次完成复制、基础替换与检查 })
+  * $result (recipe_template.RecipeTemplateScaffold * { 最终产物：配方目录与硬要求检查结果；手动路径由前三步得到，脚本路径由 ScaffoldRecipe 一次得到 })
 ```
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。
