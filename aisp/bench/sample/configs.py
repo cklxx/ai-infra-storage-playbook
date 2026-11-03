@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from typing import Any, Literal, cast, get_args
 
 from .observation import ObservationLayer
+from .types import _only
 
 
 @dataclass(frozen=True)
@@ -22,6 +23,7 @@ class Model:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "Model":
+        _only(raw, ('id', 'git_commit_id'), "Model")
         return cls(id=raw["id"], git_commit_id=raw["git_commit_id"])
 
 
@@ -35,6 +37,14 @@ class Topology:
     gpus_per_node: int
     network: Network
     mount: Mount
+
+    def __post_init__(self) -> None:
+        # schema 只写了 integer，没给下限；0 节点的拓扑算出来的档位没有意义，
+        # 样本侧也会退化成空跑，这里直接拒绝。
+        if self.nodes < 1:
+            raise ValueError(f"nodes 至少为 1，得到 {self.nodes}")
+        if self.gpus_per_node < 1:
+            raise ValueError(f"gpus_per_node 至少为 1，得到 {self.gpus_per_node}")
 
     @property
     def total_gpus(self) -> int:
@@ -50,6 +60,7 @@ class Topology:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "Topology":
+        _only(raw, ('nodes', 'gpus_per_node', 'network', 'mount'), "Topology")
         return cls(
             nodes=raw["nodes"],
             gpus_per_node=raw["gpus_per_node"],
@@ -73,6 +84,7 @@ class ObservationConfig:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "ObservationConfig":
+        _only(raw, ('enabled', 'sample_rate', 'layers'), "ObservationConfig")
         return cls(
             enabled=raw["enabled"],
             sample_rate=raw["sample_rate"],
@@ -97,6 +109,7 @@ class SampleConfigBase:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "SampleConfigBase":
+        _only(raw, ('model', 'topology', 'observe'), "SampleConfigBase")
         return cls(
             model=Model.from_json(raw["model"]),
             topology=Topology.from_json(raw["topology"]),

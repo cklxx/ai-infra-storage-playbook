@@ -304,6 +304,50 @@ def check_state_machine_edges() -> list[tuple[str, bool]]:
     return out
 
 
+def check_contract_matrix() -> list[tuple[str, bool]]:
+    """解码器与 schema 的键集合对齐：additionalProperties: false 要落到解码器上。"""
+
+    cfg = _make_config(1, 8)
+    cases = [
+        ("RunSpec", RunSpec, _spec()),
+        ("RunRecord", RunRecord, RunRecord(
+            run_id="r", state=Running(), progress=WorkProgress(0, 0),
+            artifacts=Artifacts(manifest="", metrics=(), slo=(), report=""))),
+        ("Artifacts", Artifacts, Artifacts(manifest="m", metrics=(), slo=(), report="r")),
+        ("Component", Component, Component(name="gpfs", version="5.1")),
+        ("StorageLayer", StorageLayer, _spec().storage),
+        ("Failure", Failure, Failure(kind="timeout", detail="x")),
+        ("Model", Model, cfg.model),
+        ("Topology", Topology, cfg.topology),
+        ("ObservationConfig", ObservationConfig, cfg.observe),
+        ("SampleConfigBase", SampleConfigBase, cfg),
+    ]
+    out = []
+    for name, cls, instance in cases:
+        def rejects_extra(cls=cls, instance=instance):
+            try:
+                cls.from_json({**instance.to_json(), "junk": 1})
+                return False
+            except ValueError:
+                return True
+        out.append((f"{name} rejects an unknown key", rejects_extra()))
+
+    # 0 规模的拓扑算不出有意义的档位，样本侧也会退化成空跑，必须拒绝。
+    out += [
+        ("Topology rejects nodes=0", _rejects_value(Topology, 0, 8)),
+        ("Topology rejects gpus_per_node=0", _rejects_value(Topology, 1, 0)),
+    ]
+    return out
+
+
+def _rejects_value(cls, nodes: int, gpus: int) -> bool:
+    try:
+        cls(nodes, gpus, "rdma", "local-nvme")
+        return False
+    except ValueError:
+        return True
+
+
 def check_rejected() -> list[tuple[str, bool]]:
     svc = _service()
     bad1 = svc.start(_spec(sample="not-registered@9.9.9"))
@@ -461,6 +505,7 @@ def main() -> int:
         check_stop(),
         check_strict_decoding(),
         check_state_machine_edges(),
+        check_contract_matrix(),
         check_rejected(),
         check_schema(),
     ]

@@ -17,6 +17,18 @@ from typing import Any, ClassVar, Literal, Optional, Union
 # ---------------------------------------------------------------------------
 
 
+def _only(raw: dict[str, Any], allowed: tuple[str, ...], what: str) -> None:
+    """JSON Schema 用 additionalProperties: false；解码时同样拒绝多余键。
+
+    from_json 宽松接受未知键会让「schema 校验过的载荷」和「解码器接受的载荷」
+    出现两套口径，这里对齐成一套。
+    """
+
+    extra = set(raw) - set(allowed)
+    if extra:
+        raise ValueError(f"{what} 含多余的键: {sorted(extra)}")
+
+
 @dataclass(frozen=True)
 class Component:
     """一个存储组件：纯存储系统或传输适配层。"""
@@ -34,6 +46,7 @@ class Component:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "Component":
+        _only(raw, ('name', 'version', 'git_commit_id'), "Component")
         return cls(
             name=raw["name"],
             version=raw["version"],
@@ -53,6 +66,7 @@ class StorageLayer:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "StorageLayer":
+        _only(raw, ('backend', 'adapter'), "StorageLayer")
         return cls(
             backend=Component.from_json(raw["backend"]),
             adapter=Component.from_json(raw["adapter"]),
@@ -92,6 +106,7 @@ class Failure:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "Failure":
+        _only(raw, ('kind', 'detail'), "Failure")
         return cls(kind=raw["kind"], detail=raw["detail"])
 
 
@@ -406,6 +421,7 @@ class Artifacts:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "Artifacts":
+        _only(raw, ('manifest', 'metrics', 'slo', 'report'), "Artifacts")
         return cls(
             manifest=raw["manifest"],
             metrics=tuple(ckpt_sli_from_json(item) for item in raw["metrics"]),
@@ -433,6 +449,7 @@ class RunRecord:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "RunRecord":
+        _only(raw, ('run_id', 'state', 'progress', 'artifacts'), "RunRecord")
         return cls(
             run_id=raw["run_id"],
             state=state_from_json(raw["state"]),
@@ -460,6 +477,7 @@ class RunSpec:
 
     @classmethod
     def from_json(cls, raw: dict[str, Any]) -> "RunSpec":
+        _only(raw, ('sample', 'config', 'storage', 'seed'), "RunSpec")
         return cls(
             sample=raw["sample"],
             config=raw["config"],

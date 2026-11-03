@@ -63,7 +63,7 @@ record.to_json()  # 直接可过 RunRecord.schema.json
 python3 checks/check_sample_interface.py
 ```
 
-69 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled（含排队期立即取消与迟到终态不覆盖）、非法样本 Rejected（含非 int seed、空白组件名、config 加载失败）、记录上限淘汰、MetricLE/GE 判定、严格解码，以及本接口 23 个类型各自 schema 的逐份校验与 5 个非法实例被拒。
+81 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled（含排队期立即取消与迟到终态不覆盖）、非法样本 Rejected（含非 int seed、空白组件名、config 加载失败）、记录上限淘汰、10 个解码器逐类拒绝未知键、0 规模拓扑被拒、MetricLE/GE 判定、严格解码，以及本接口 23 个类型各自 schema 的逐份校验与 5 个非法实例被拒。
 
 ## 测量口径
 
@@ -78,6 +78,7 @@ python3 checks/check_sample_interface.py
 - `InMemorySampleService` 只用于开发期自检：不做进程隔离，产物路径是 `memory://` 占位，生产实现要替换 `artifact_writer` 落对象存储。
 - S0–S5 阶梯的默认阈值在 `levels.py`；配方要覆盖时由 `get_level` 注入自己的阶梯，不在代码里写死。
 - `Topology` 的 `network` / `mount` 用 `Literal` 收窄，比 schema 的 `string` 更严；schema 只约束类型，取值约束来自文档 Hint。
+- `Topology` 要求 `nodes` 与 `gpus_per_node` 至少为 1。schema 只写了 `integer`，没有下限；0 规模算不出有意义的档位，样本侧也会退化成空跑，因此解码与构造都拒绝。
 - `start()` 只登记请求就返回；`stop()` 是取消请求，返回时状态已是 `cancelled`，但样本本身可能还跑到下一个检查点。`cancelled` 是吸收态，后台线程迟到的 `completed` / `failed` 不会覆盖它。
 - 记录默认最多留 1000 条（`max_records`），超出时按插入顺序淘汰最早的终态记录；被淘汰的 `run_id` 再 `query` 会抛 `KeyError`。运行中的记录不淘汰。
 - `progress` 恒为 0/0，表示「该实现不报告细粒度工作量」；完成与否只看 `state`。不拿 SLI 条数当 `total`。

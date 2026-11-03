@@ -124,7 +124,9 @@ def _p99(values: list[float]) -> float:
 
 
 def runner(spec: RunSpec, config: SampleConfigBase) -> list:
-    rank_count = max(1, config.topology.nodes * config.topology.gpus_per_node)
+    # Topology 已保证 nodes / gpus_per_node 至少为 1；这里不再用 max(1, ...)
+    # 掩盖 0，否则 0 卡配置会静默跑成 1 rank 并产出看似正常的指标。
+    rank_count = config.topology.nodes * config.topology.gpus_per_node
     workdir = _workdir(config)
     latencies: list[float] = []
     lock = threading.Lock()

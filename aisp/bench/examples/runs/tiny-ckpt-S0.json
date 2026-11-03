@@ -1,25 +1,25 @@
 {
-  "manifest": "memory://runs/sync-a9d1c4b46f9c4c6ba94de2c49197db4e/manifest.json",
+  "manifest": "memory://runs/sync-2b2d15d6f5c042c0b8bbfabdc9052e57/manifest.json",
   "metrics": [
     {
-      "check_point_duration_sli": 0.0674383845180273
+      "check_point_duration_sli": 0.059746935963630676
     },
     {
-      "training_stall_sli": 0.0674383845180273
+      "training_stall_sli": 0.059746935963630676
     },
     {
-      "restore_duration_sli": 0.12390042841434479
+      "restore_duration_sli": 0.13032352179288864
     },
     {
-      "write_throughput_sli": 497556877.1376839
+      "write_throughput_sli": 561609251.7351074
     },
     {
-      "metadata_commit_sli": 3.905355930328369
+      "metadata_commit_sli": 4.190940409898758
     },
     {
-      "write_latency_p99_sli": 0.9519997984170914
+      "write_latency_p99_sli": 0.8934624493122101
     }
   ],
   "slo": [],
-  "report": "memory://runs/sync-a9d1c4b46f9c4c6ba94de2c49197db4e/report.html"
+  "report": "memory://runs/sync-2b2d15d6f5c042c0b8bbfabdc9052e57/report.html"
 }
