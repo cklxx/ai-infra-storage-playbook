@@ -64,10 +64,13 @@ class InMemorySampleService:
         runners: Dict[str, SampleRunner],
         config_loader: ConfigLoader,
         artifact_writer: Optional[ArtifactWriter] = None,
+        max_records: int = 1000,
     ) -> None:
         self._runners = dict(runners)
         self._load_config = config_loader
         self._write_artifacts = artifact_writer or _default_artifact_writer
+        # 参考实现把记录留在内存里供 Query 回查；超过上限先淘汰最早的终态记录。
+        self._max_records = max(1, max_records)
 
         self._lock = threading.Lock()
         self._records: Dict[str, RunRecord] = {}
@@ -93,14 +96,18 @@ class InMemorySampleService:
                 run_id=run_id,
                 state=Rejected(error=Failure(kind="request", detail=str(exc))),
             )
-            self._records[run_id] = record
+            with self._lock:
+                self._records[run_id] = record
+                self._evict_terminal_locked()
             return record
         except Exception as exc:  # noqa: BLE001 - config 加载异常同样归为请求不合法
             record = RunRecord(
                 run_id=run_id,
                 state=Rejected(error=Failure(kind="request", detail=f"config: {type(exc).__name__}: {exc}")),
             )
-            self._records[run_id] = record
+            with self._lock:
+                self._records[run_id] = record
+                self._evict_terminal_locked()
             return record
 
         with self._lock:
@@ -207,7 +214,9 @@ class InMemorySampleService:
             self._set_state(
                 run_id,
                 Completed(),
-                progress=WorkProgress(len(metrics), max(1, len(metrics))),
+                # 参考实现不报告细粒度工作量，保持 0/0（未知）；完成与否看状态。
+                # 用 SLI 条数冒充 total 是错把结果当进度。
+                progress=WorkProgress(0, 0),
                 artifacts=artifacts,
             )
         except TimeoutError as exc:
@@ -231,8 +240,9 @@ class InMemorySampleService:
     ) -> None:
         with self._lock:
             old = self._records[run_id]
-            # stop() 已把状态置为 cancelled；后台线程此时再上报 running 属于回退，丢弃。
-            if old.state.tag == "cancelled" and state.tag not in _TERMINAL:
+            # cancelled 是吸收态：stop() 之后后台线程迟到的 running / completed /
+            # failed 都不许把取消结果覆盖掉。
+            if old.state.tag == "cancelled":
                 return
             self._records[run_id] = RunRecord(
                 run_id=run_id,
@@ -240,3 +250,16 @@ class InMemorySampleService:
                 progress=progress if progress is not None else old.progress,
                 artifacts=artifacts if artifacts is not None else old.artifacts,
             )
+            if state.tag in _TERMINAL:
+                self._evict_terminal_locked()
+
+    def _evict_terminal_locked(self) -> None:
+        """超过 max_records 时按插入顺序淘汰最早的终态记录；运行中的不动。"""
+
+        if len(self._records) <= self._max_records:
+            return
+        for run_id, record in list(self._records.items()):
+            if len(self._records) <= self._max_records:
+                return
+            if record.state.tag in _TERMINAL:
+                del self._records[run_id]

@@ -256,6 +256,54 @@ def check_strict_decoding() -> list[tuple[str, bool]]:
     ]
 
 
+def check_state_machine_edges() -> list[tuple[str, bool]]:
+    """取消后迟到的终态不得覆盖 cancelled；记录数有上限；进度不冒充工作量。"""
+
+    import threading
+
+    release = threading.Event()
+
+    def slow(spec, config):
+        release.wait(timeout=3.0)
+        return [CheckPointDuration(value=1.0)]
+
+    svc = InMemorySampleService(runners={"slow@0.1.0": slow}, config_loader=_loader)
+    record = svc.start(RunSpec(
+        sample="slow@0.1.0", config="c",
+        storage=StorageLayer(Component(name="b", version="1"), Component(name="a", version="1")),
+        seed=1,
+    ))
+    time.sleep(0.1)
+    svc.stop(record.run_id)
+    svc._set_state(record.run_id, Completed())   # 模拟迟到的完成上报
+    release.set()
+    out = [
+        ("cancelled absorbs a late Completed", svc.query(record.run_id).state.tag == "cancelled"),
+    ]
+
+    # 记录上限：跑 6 次，上限设 3，应只留 3 条终态记录。
+    small = InMemorySampleService(
+        runners={"s@1": lambda s, c: []}, config_loader=_loader, max_records=3
+    )
+    spec = RunSpec(sample="s@1", config="c",
+                   storage=StorageLayer(Component(name="b", version="1"), Component(name="a", version="1")),
+                   seed=1)
+    ids = []
+    for _ in range(6):
+        r = small.start(spec)
+        ids.append(r.run_id)
+        deadline = time.time() + 2.0
+        while time.time() < deadline and small.query(r.run_id).state.tag != "completed":
+            time.sleep(0.01)
+    out.append(("record store evicts terminal records above max_records", len(small._records) <= 3))
+
+    # 进度：完成时仍是 0/0，不用 SLI 条数冒充 total。
+    final = small.query(ids[-1])
+    out.append(("progress stays 0/0 instead of faking workload",
+                final.progress.done == 0 and final.progress.total == 0))
+    return out
+
+
 def check_rejected() -> list[tuple[str, bool]]:
     svc = _service()
     bad1 = svc.start(_spec(sample="not-registered@9.9.9"))
@@ -412,6 +460,7 @@ def main() -> int:
         check_start_and_query(),
         check_stop(),
         check_strict_decoding(),
+        check_state_machine_edges(),
         check_rejected(),
         check_schema(),
     ]
