@@ -129,6 +129,7 @@ aisp/bench/                   playbook 与 bench 评估集
 │   ├── model-code-collection.md   模型代码收集
 │   ├── checkpoint-dataset.md      训练侧 checkpoint / dataset 评估
 │   ├── ckpt-sample-interface.md  checkpoint 样本接口：public / apis / types / configs 四个 viba 模块
+│   ├── json_schema/               接口的 JSON Schema，每个导出类型一份，由 scripts/export_json_schema.py 生成
 │   ├── kvcache.md                 推理侧 kvcache 评估
 │   ├── scaling.md                 不变量、外推规则、逐级验证
 │   ├── evaluation-service.md      评估服务

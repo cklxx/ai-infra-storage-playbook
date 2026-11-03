@@ -4,7 +4,7 @@
 
 ## Unreleased
 
-- 新增 `scripts/export_json_schema.py`：把 `playbook/ckpt-sample-interface.md` 里 public 导出的类型转成 JSON Schema，写回文档末尾的「json schema」章节；标题与导出名一致，函数导出跳过。该章节由脚本生成，不手改。
+- 新增 `scripts/export_json_schema.py` 与 [`playbook/json_schema/`](playbook/json_schema/)：把 `playbook/ckpt-sample-interface.md` 里 public 导出的每个类型转成一份 JSON Schema，文件名就是导出名；函数导出跳过。文档末尾只留一段说明文件在哪。
 - 新增 [`playbook/ckpt-sample-interface.md`](playbook/ckpt-sample-interface.md)：checkpoint 样本的接口用 viba 写成 public / apis / types / configs 四个模块，`public` 只做转发；每个 SLI 指标是具名类型，SLO 判定用 `MetricLE` / `MetricGE` 泛型。
 - 仓库改为多项目结构：playbook 与 bench 的整体移入 `aisp/bench/`，以后 `aisp/tla/` 等与 `aisp/bench/` 并列；`aisp` 同时作为 Python 包名。仓库更名 `ai-infra-storage-playbook`。文档内的相对链接不变，schema 的 `$id` 改为 `.../ai-infra-storage-playbook/aisp/bench/schemas/`。
 - README 开头新增「它评什么」：用一张表列出 checkpoint / dataset / kvcache 每次运行记录的 SLI 指标。

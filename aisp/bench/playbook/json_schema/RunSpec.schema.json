@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/playbook/json_schema/RunSpec.schema.json",
+  "title": "RunSpec",
+  "$ref": "#/$defs/types.RunSpec",
+  "$defs": {
+    "types.RunSpec": {
+      "type": "object",
+      "properties": {
+        "sample": {
+          "type": "string"
+        },
+        "config": {
+          "type": "string"
+        },
+        "storage": {
+          "$ref": "#/$defs/types.StorageLayer"
+        },
+        "seed": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "sample",
+        "config",
+        "storage",
+        "seed"
+      ],
+      "additionalProperties": false
+    },
+    "types.StorageLayer": {
+      "type": "object",
+      "properties": {
+        "backend": {
+          "$ref": "#/$defs/types.Component"
+        },
+        "adapter": {
+          "$ref": "#/$defs/types.Component"
+        }
+      },
+      "required": [
+        "backend",
+        "adapter"
+      ],
+      "additionalProperties": false
+    },
+    "types.Component": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "git_commit_id": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "version",
+        "git_commit_id"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
