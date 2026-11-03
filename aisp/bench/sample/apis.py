@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import Protocol, runtime_checkable
 
 from .configs import SampleConfigBase
+from .levels import Level
 from .types import Artifacts, RunRecord, RunSpec
 
 
@@ -32,7 +33,7 @@ class SampleService(Protocol):
         """执行接口：同一份请求同步跑到结束，返回时四份产物已写完。"""
         ...
 
-    def get_level(self, config: SampleConfigBase) -> str:
+    def get_level(self, config: SampleConfigBase) -> Level:
         """导出属性：按节点数与每节点卡数落到 S0..S5。"""
         ...
 
@@ -46,3 +47,11 @@ class SampleRunner(Protocol):
 
     def __call__(self, spec: RunSpec, config: SampleConfigBase) -> list:  # list[CkptSli]
         ...
+
+
+# 文档把五个接口当独立名字导出；这里用未绑定方法表达，public 层直接转发。
+Start = SampleService.start
+Stop = SampleService.stop
+Query = SampleService.query
+Execute = SampleService.execute
+GetLevel = SampleService.get_level

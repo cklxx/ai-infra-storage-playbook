@@ -9,11 +9,13 @@
 
 | 文件 | 对应文档模块 | 是什么 |
 |---|---|---|
-| `types.py` | `types` | RunSpec / RunRecord / StorageLayer / State(oneof) / Artifacts / CkptSli(6 种) / CkptSlo(MetricLE/GE) / Level / Failure |
-| `configs.py` | `configs` | SampleConfigBase（model + topology + observe）；默认 S0–S5 阶梯与 `resolve_level` |
+| `types.py` | `types` | RunSpec / RunRecord / StorageLayer / Component / State(oneof) / QueueProgress / WorkProgress / Artifacts / CkptSli(6 种) / CkptSlo(MetricLE/GE) / 6 个 Metric / Failure |
+| `configs.py` | `configs` | SampleConfigBase（model + topology + observe）；Model / Topology / ObservationConfig |
+| `levels.py` | `levels`（scaling.md） | `Level` = S0..S5；默认阶梯与 `resolve_level` |
+| `observation.py` | `observation`（methodology.md） | `ObservationLayer` = app / sys / storage |
 | `apis.py` | `apis` | `SampleService` Protocol：Start / Stop / Query / Execute / GetLevel；`SampleRunner` 是样本作者要实现的 callable |
 | `memory.py` | — | `InMemorySampleService` 参考实现：后台线程跑 Start、锁内推进状态机、可取消 |
-| `__init__.py` | `public` | 只做转发与重绑定，外部 `from aisp.bench.sample import ...` |
+| `__init__.py` | `public` | 只做转发；导出集合严格等于文档 public 的十个名字 |
 
 ## JSON 形态
 
@@ -31,9 +33,9 @@ oneof 是单键对象，键名就是 schema 里的属性名：
 ## 最小用法
 
 ```python
-from sample import (
-    InMemorySampleService, RunSpec, StorageLayer, Component, CheckPointDuration,
-)
+from sample import RunSpec, SampleConfigBase
+from sample.memory import InMemorySampleService
+from sample.types import Component, StorageLayer, CheckPointDuration
 
 def my_sample(spec, config):
     return [CheckPointDuration(value=12.5)]  # 六种 CkptSli 任选
@@ -61,7 +63,7 @@ record.to_json()  # 直接可过 RunRecord.schema.json
 python3 checks/check_sample_interface.py
 ```
 
-27 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled、非法样本 Rejected、MetricLE/GE 判定，以及六份 schema 的逐类型校验。
+63 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled（含排队期立即取消）、非法样本 Rejected、MetricLE/GE 判定、严格解码，以及本接口 23 个类型各自 schema 的逐份校验与 5 个非法实例被拒。
 
 ## 测量口径
 
@@ -77,4 +79,5 @@ python3 checks/check_sample_interface.py
 - S0–S5 阶梯的默认阈值在 `configs.py`；配方要覆盖时由 `get_level` 注入自己的阶梯，不在代码里写死。
 - `Topology` 的 `network` / `mount` 用 `Literal` 收窄，比 schema 的 `string` 更严；schema 只约束类型，取值约束来自文档 Hint。
 - `start()` 只登记请求就返回；`stop()` 是取消请求，返回时状态已是 `cancelled`，但样本本身可能还跑到下一个检查点。
-- `public` 层的 `Start` / `Stop` 等是 `SampleService` 的转发引用，使用时要带实例：`Start(svc, spec)`。
+- `public` 层只导出文档列的十个名字（Start / Stop / Query / Execute / GetLevel / RunSpec / RunRecord / Artifacts / CkptSli / CkptSlo / SampleConfigBase）。实现类要从 `sample.memory`、`sample.types`、`sample.levels` 导入。
+- `Start` / `Stop` 等是 `SampleService` 的未绑定方法，使用时要带实例：`Start(svc, spec)`。

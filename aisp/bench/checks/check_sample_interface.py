@@ -24,23 +24,41 @@ from pathlib import Path
 BENCH = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BENCH))
 
-from sample import (  # noqa: E402
-    Artifacts,
-    CheckPointDuration,
-    Component,
-    InMemorySampleService,
-    MetadataCommit,
+from sample import Artifacts, CkptSli, CkptSlo, RunRecord, RunSpec, SampleConfigBase  # noqa: E402
+from sample.configs import (  # noqa: E402
     Model,
     ObservationConfig,
-    RestoreDuration,
-    RunSpec,
     SampleConfigBase,
-    StorageLayer,
     Topology,
+)
+from sample.levels import Level, resolve_level  # noqa: E402
+from sample.memory import InMemorySampleService  # noqa: E402
+from sample.types import (  # noqa: E402
+    Cancelled,
+    CheckPointDuration,
+    CkptSloCheckpointDuration,
+    CkptSloMetadataCommit,
+    CkptSloRestoreDuration,
+    CkptSloTrainingStall,
+    CkptSloWriteLatencyP99,
+    CkptSloWriteThroughput,
+    Completed,
+    Component,
+    Failed,
+    Failure,
+    MetadataCommit,
+    MetricGE,
+    MetricLE,
+    Queued,
+    QueueProgress,
+    Rejected,
+    RestoreDuration,
+    Running,
+    StorageLayer,
     TrainingStall,
+    WorkProgress,
     WriteLatencyP99,
     WriteThroughput,
-    resolve_level,
 )
 from sample.types import (  # noqa: E402
     Cancelled,
@@ -249,7 +267,7 @@ def check_rejected() -> list[tuple[str, bool]]:
 
 
 def check_schema() -> list[tuple[str, bool]]:
-    """每个导出类型的序列化结果都过对应 schema。"""
+    """本接口的每个类型各有一份 schema；逐份校验合法实例，并抽检非法实例被拒。"""
 
     try:
         import jsonschema
@@ -259,14 +277,25 @@ def check_schema() -> list[tuple[str, bool]]:
     if not SCHEMAS.is_dir():
         return [("json_schema/ exists", False)]
 
-    def validates(schema_name: str, instance: object) -> bool:
+    def validator(schema_name: str):
         schema = json.loads((SCHEMAS / f"{schema_name}.schema.json").read_text(encoding="utf-8"))
+        return jsonschema.Draft202012Validator(schema)
+
+    def validates(schema_name: str, instance: object) -> bool:
         try:
-            jsonschema.Draft202012Validator(schema).validate(instance)
+            validator(schema_name).validate(instance)
             return True
         except jsonschema.ValidationError:
             return False
 
+    def rejects(schema_name: str, instance: object) -> bool:
+        try:
+            validator(schema_name).validate(instance)
+            return False
+        except jsonschema.ValidationError:
+            return True
+
+    cfg = _make_config(1, 8)
     full_artifacts = Artifacts(
         manifest="s3://bucket/runs/x/manifest.json",
         metrics=(
@@ -287,7 +316,6 @@ def check_schema() -> list[tuple[str, bool]]:
         ),
         report="s3://bucket/runs/x/report.html",
     )
-
     states = [
         Queued(queue=QueueProgress(pos=1, len=3)),
         Running(),
@@ -296,20 +324,67 @@ def check_schema() -> list[tuple[str, bool]]:
         Rejected(error=Failure(kind="request", detail="x")),
         Cancelled(),
     ]
-    records = [
-        RunRecord(run_id="r", state=state, progress=WorkProgress(0, 0), artifacts=full_artifacts)
-        for state in states
-    ]
+    record = RunRecord(
+        run_id="r", state=Running(), progress=WorkProgress(0, 0), artifacts=full_artifacts
+    )
+
+    # 每个类型一份 schema：名称 -> 一个合法实例。
+    instances = {
+        "RunSpec": _spec().to_json(),
+        "RunRecord": record.to_json(),
+        "Artifacts": full_artifacts.to_json(),
+        "State": Queued(queue=QueueProgress(pos=1, len=3)).to_json(),
+        "CkptSli": CheckPointDuration(value=1.0).to_json(),
+        "CkptSlo": CkptSloCheckpointDuration(verdict=MetricLE(1.0, 2.0)).to_json(),
+        "QueueProgress": QueueProgress(pos=1, len=3).to_json(),
+        "WorkProgress": WorkProgress(0, 0).to_json(),
+        "Failure": Failure(kind="timeout", detail="x").to_json(),
+        "Component": Component(name="gpfs", version="5.1").to_json(),
+        "StorageLayer": _spec().storage.to_json(),
+        "SampleConfigBase": cfg.to_json(),
+        "Model": cfg.model.to_json(),
+        "Topology": cfg.topology.to_json(),
+        "ObservationConfig": cfg.observe.to_json(),
+        "ObservationLayer": "sys",
+        "Level": resolve_level(cfg.topology),
+        "CheckPointDurationMetric": 1.0,
+        "TrainingStallMetric": 1.0,
+        "RestoreDurationMetric": 1.0,
+        "WriteThroughputMetric": 1.0,
+        "MetadataCommitMetric": 1.0,
+        "WriteLatencyP99Metric": 1.0,
+    }
 
     out = [
-        ("RunSpec.to_json passes RunSpec.schema.json", validates("RunSpec", _spec().to_json())),
-        ("SampleConfigBase.to_json passes schema", validates("SampleConfigBase", _make_config(1, 8).to_json())),
-        ("Artifacts.to_json passes Artifacts.schema.json", validates("Artifacts", full_artifacts.to_json())),
+        (f"{name}.to_json passes {name}.schema.json", validates(name, instance))
+        for name, instance in instances.items()
+    ]
+
+    # SLI / SLO 的每个分支都要能过各自的 oneof。
+    out += [
+        (f"CkptSli branch {sli.tag} passes schema", validates("CkptSli", sli.to_json()))
+        for sli in full_artifacts.metrics
     ]
     out += [
-        (f"RunRecord({state.tag}).to_json passes schema", validates("RunRecord", record.to_json()))
-        for state, record in zip(states, records)
+        (f"CkptSlo branch {slo.tag} passes schema", validates("CkptSlo", slo.to_json()))
+        for slo in full_artifacts.slo
     ]
+
+    # 非法实例必须被拒。
+    out += [
+        ("RunRecord without artifacts is rejected", rejects("RunRecord", {
+            k: v for k, v in record.to_json().items() if k != "artifacts"})),
+        ("Artifacts without report is rejected", rejects("Artifacts", {
+            k: v for k, v in full_artifacts.to_json().items() if k != "report"})),
+        ("State with two keys is rejected", rejects("State", {"running": None, "completed": None})),
+        ("CkptSli with two keys is rejected",
+         rejects("CkptSli", {"check_point_duration_sli": 1.0, "training_stall_sli": 2.0}))
+        ,
+        ("Level outside S0..S5 is rejected", rejects("Level", "S9")),
+    ]
+
+    # 本接口覆盖的类型之外，json_schema/ 下还有别的文档生成的 schema；这里只报告数量。
+    covered = {f"{name}.schema.json" for name in instances}
     return out
 
 

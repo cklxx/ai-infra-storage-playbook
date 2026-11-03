@@ -13,7 +13,8 @@ from dataclasses import replace
 from typing import Callable, Dict, Optional
 
 from .apis import SampleRunner
-from .configs import SampleConfigBase, resolve_level
+from .configs import SampleConfigBase
+from .levels import Level, resolve_level
 from .types import (
     Artifacts,
     Cancelled,
@@ -77,7 +78,7 @@ class InMemorySampleService:
     # SampleService
     # ------------------------------------------------------------------
 
-    def get_level(self, config: SampleConfigBase) -> str:
+    def get_level(self, config: SampleConfigBase) -> Level:
         return resolve_level(config.topology)
 
     def start(self, spec: RunSpec) -> RunRecord:

@@ -414,9 +414,6 @@ class Artifacts:
         )
 
 
-Level = Literal["S0", "S1", "S2", "S3", "S4", "S5"]
-
-
 @dataclass(frozen=True)
 class RunRecord:
     """服务返回给调用方的运行标识、状态、进度与产物位置。"""

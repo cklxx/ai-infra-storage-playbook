@@ -15,7 +15,8 @@ import json
 import sys
 from pathlib import Path
 
-from . import InMemorySampleService, RunSpec, SampleConfigBase
+from . import RunSpec, SampleConfigBase
+from .memory import InMemorySampleService
 from .samples import tiny_ckpt
 
 
