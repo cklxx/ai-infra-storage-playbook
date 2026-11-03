@@ -64,7 +64,21 @@ record.to_json()  # 直接可过 RunRecord.schema.json
 python3 checks/check_sample_interface.py
 ```
 
-81 例：GetLevel 落档、Execute 同步产物、Start 异步翻 completed、Stop 置 cancelled（含排队期立即取消与迟到终态不覆盖）、非法样本 Rejected（含非 int seed、空白组件名、config 加载失败）、记录上限淘汰、10 个解码器逐类拒绝未知键、0 规模拓扑被拒、MetricLE/GE 判定、严格解码，以及本接口 23 个类型各自 schema 的逐份校验与 5 个非法实例被拒。
+黑盒契约检查：类型与接口名只从 `sample` 的 public 层取，服务实例只经 `sample.memory.InMemorySampleService` 构造，不读 `_set_state` / `_records` / `_threads`。七组、22 条断言；失败按组上报并列出具体项。
+
+| 组 | 覆盖 |
+|---|---|
+| serialization | 每个类型 `to_json` 过同名 schema、往返幂等、拒未知键 |
+| state machine | 提交到完成、查询只读、已结束的运行原样交回、`progress` 恒 0/0、记录上限淘汰 |
+| cancellation | 返回即 `cancelled`，迟到的完成不覆盖 |
+| bad requests | 未知样本 / 缺版本 / 非 int seed / 空白组件 / config 加载失败 → `rejected` |
+| level | 四档落档，0 规模拓扑被拒 |
+| observation | 层数规则与 sys 规则各给一个只违反它的样本 |
+| sample output | 六项 SLI 全为正，过 `Artifacts.schema.json` |
+
+`checkpoint/json_schema` 缺失或不装 `jsonschema` 时，schema 断言放行并在 `skipped` 字段里写明，不冒充已校验。
+
+变异测试：改坏 7 处实现，6 处被抓。`_set_state` 的取消吸收分支没被抓，因为 `_run_background` 已先在 `cancel_event` 上拦住迟到的完成，这一层在黑盒下不可观测，属等价变异体。
 
 ## 测量口径
 

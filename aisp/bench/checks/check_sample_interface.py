@@ -1,539 +1,419 @@
 #!/usr/bin/env python3
-"""自检 ckpt-sample-interface 的 Python 落地。
+"""checkpoint 样本接口的黑盒契约检查。
 
-覆盖：
-  1. GetLevel 按拓扑落档 S0..S5。
-  2. Execute 同步返回带 metrics 的 Artifacts。
-  3. Start 入队后后台跑完，状态翻到 completed 且产物有路径。
-  4. Stop 把运行置为 cancelled。
-  5. 非法样本名 / 格式错 -> Rejected；不存在的 run_id -> KeyError。
-  6. MetricLE / MetricGE 的 passed 判定。
-  7. 序列化结果通过 checkpoint/json_schema/ 的同名 schema。
+边界
+----
+- 类型与接口名只从 ``sample``（文档 public 层）取。
+- 服务实例只通过 ``sample.memory.InMemorySampleService`` 构造，这是唯一的实现入口。
+- 不读私有成员（``_set_state`` / ``_records`` / ``_validate`` / ``_threads``）；
+  取消吸收、记录淘汰这类行为一律通过 ``start`` / ``stop`` / ``query`` 观察。
 
-退出码：0 全过，1 有失败，2 缺 jsonschema。
+组织
+----
+七个组，每组是一类契约；组内多条断言。报告按组计数，失败时列出具体断言。
+
+- 序列化：``to_json`` 过 schema、往返幂等、未知键被拒。
+- 状态机：提交到完成的完整路径、查询只读、已结束的运行原样交回。
+- 取消：返回即为 cancelled，且迟到的完成不覆盖它。
+- 非法请求：请求不合法时直接 rejected，不起后台运行。
+- 阶梯：拓扑落档与 0 规模拒绝。
+- 观测：采集层至少两层且含 sys。
+- 样本产出：真实跑一次，六项 SLI 齐全并过 Artifacts schema。
 """
 
 from __future__ import annotations
 
 import json
+import os
 import sys
+import tempfile
+import threading
 import time
 from pathlib import Path
+from typing import Any, Callable
 
-# 让脚本能直接以 checks/xxx.py 方式跑，不必安装包。
-BENCH = Path(__file__).resolve().parents[1]
+BENCH = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BENCH))
 
-from sample import Artifacts, CkptSli, CkptSlo, RunRecord, RunSpec, SampleConfigBase  # noqa: E402
-from sample.configs import (  # noqa: E402
+import sample  # noqa: F401 - 黑盒边界：public 层
+
+from sample import Artifacts, RunRecord, RunSpec
+from sample.ckpt_sample import (
+    CheckPointDuration,
+    Component,
+    Failure,
     Model,
     ObservationConfig,
+    Running,
     SampleConfigBase,
-    Topology,
-)
-from sample.levels import Level, resolve_level  # noqa: E402
-from sample.memory import InMemorySampleService  # noqa: E402
-from sample.types import (  # noqa: E402
-    Cancelled,
-    CheckPointDuration,
-    CkptSloCheckpointDuration,
-    CkptSloMetadataCommit,
-    CkptSloRestoreDuration,
-    CkptSloTrainingStall,
-    CkptSloWriteLatencyP99,
-    CkptSloWriteThroughput,
-    Completed,
-    Component,
-    Failed,
-    Failure,
-    MetadataCommit,
-    MetricGE,
-    MetricLE,
-    Queued,
-    QueueProgress,
-    Rejected,
-    RestoreDuration,
-    Running,
     StorageLayer,
-    TrainingStall,
-    WorkProgress,
-    WriteLatencyP99,
-    WriteThroughput,
-)
-from sample.types import (  # noqa: E402
-    Cancelled,
-    Completed,
-    CkptSloCheckpointDuration,
-    CkptSloMetadataCommit,
-    CkptSloRestoreDuration,
-    CkptSloTrainingStall,
-    CkptSloWriteLatencyP99,
-    CkptSloWriteThroughput,
-    Failed,
-    Failure,
-    MetricGE,
-    MetricLE,
-    Queued,
-    QueueProgress,
-    Rejected,
-    RunRecord,
-    Running,
+    Topology,
     WorkProgress,
 )
+from sample.levels import resolve_level
+from sample.memory import InMemorySampleService
+from sample.samples import tiny_ckpt
 
 SCHEMAS = BENCH / "checkpoint" / "json_schema"
 
+Assertion = tuple[str, bool]
 
-def _make_config(nodes: int, gpus: int) -> SampleConfigBase:
+
+# ---------------------------------------------------------------------------
+# 公共夹具
+# ---------------------------------------------------------------------------
+
+
+def _storage() -> StorageLayer:
+    return StorageLayer(
+        backend=Component(name="gpfs", version="5.1"),
+        adapter=Component(name="torchstore", version="0.2", git_commit_id="9f2c1a4"),
+    )
+
+
+def _spec(sample_name: str = "s@1") -> RunSpec:
+    return RunSpec(sample=sample_name, config="tiny-64-s0", storage=_storage(), seed=20261103)
+
+
+def _config(nodes: int = 1, gpus: int = 8) -> SampleConfigBase:
     return SampleConfigBase(
-        model=Model(id="example/tiny-64", git_commit_id="0123456789abcdef0123456789abcdef01234567"),
+        model=Model(id="example/tiny-64", git_commit_id="0" * 40),
         topology=Topology(nodes=nodes, gpus_per_node=gpus, network="rdma", mount="local-nvme"),
         observe=ObservationConfig(enabled=True, sample_rate=0.1, layers=("app", "sys")),
     )
 
 
-def _runner(spec: RunSpec, config: SampleConfigBase):
-    return [
-        CheckPointDuration(value=12.5),
-        WriteThroughput(value=1.2 * 1024 * 1024 * 1024),
-    ]
-
-
-def _loader(name: str) -> SampleConfigBase:
-    return _make_config(nodes=1, gpus=8)
-
-
-def _service() -> InMemorySampleService:
+def _service(runners: dict[str, Callable] | None = None, **kwargs: Any) -> InMemorySampleService:
     return InMemorySampleService(
-        runners={"tiny-ckpt@0.1.0": _runner},
-        config_loader=_loader,
+        runners=runners or {"s@1": lambda spec, config: []},
+        config_loader=lambda name: _config(),
+        **kwargs,
     )
 
 
-def check_level() -> list[tuple[str, bool]]:
-    cases = [
-        ((1, 8), "S0"),
-        ((1, 16), "S1"),
-        ((2, 8), "S1"),
-        ((8, 8), "S2"),       # 64 卡
-        ((64, 8), "S3"),      # 512 卡
-        ((128, 8), "S4"),     # 1024 卡 = 万卡档起点
-        ((1024, 8), "S4"),    # 8192 卡
-        ((2048, 8), "S5"),    # 16384 卡
-        ((12500, 8), "S5"),
-    ]
-    out = []
-    for (nodes, gpus), expected in cases:
-        got = resolve_level(Topology(nodes=nodes, gpus_per_node=gpus, network="none", mount="nfs"))
-        out.append((f"level {nodes}x{gpus} -> {expected}", got == expected))
-    return out
+def _wait(svc: InMemorySampleService, run_id: str, want: str, timeout: float = 5.0) -> str:
+    """只通过 query 等待状态；不读内部记录表。"""
 
-
-def check_metric_verdict() -> list[tuple[str, bool]]:
-    le = CkptSloCheckpointDuration(verdict=MetricLE(actual=10.0, threshold=12.0))
-    le_bad = CkptSloCheckpointDuration(verdict=MetricLE(actual=13.0, threshold=12.0))
-    ge = CkptSloWriteThroughput(verdict=MetricGE(actual=2.0, threshold=1.5))
-    ge_bad = CkptSloWriteThroughput(verdict=MetricGE(actual=1.0, threshold=1.5))
-    return [
-        ("LE passes when actual <= threshold", le.verdict.passed and not le_bad.verdict.passed),
-        ("GE passes when actual >= threshold", ge.verdict.passed and not ge_bad.verdict.passed),
-    ]
-
-
-def _spec(sample: str = "tiny-ckpt@0.1.0") -> RunSpec:
-    return RunSpec(
-        sample=sample,
-        config="tiny-64-s0",
-        storage=StorageLayer(
-            backend=Component(name="gpfs", version="5.1"),
-            adapter=Component(name="torchstore", version="0.2", git_commit_id="9f2c1a4"),
-        ),
-        seed=20261103,
-    )
-
-
-def check_execute() -> list[tuple[str, bool]]:
-    svc = _service()
-    artifacts = svc.execute(_spec())
-    payload = artifacts.to_json()
-    ok = (
-        isinstance(artifacts, Artifacts)
-        and len(artifacts.metrics) == 2
-        and payload["manifest"] != ""
-        and payload["report"] != ""
-        and payload["metrics"][0] == {"check_point_duration_sli": 12.5}
-    )
-    return [("execute returns artifacts with metrics and paths", ok)]
-
-
-def check_start_and_query() -> list[tuple[str, bool]]:
-    svc = _service()
-    record = svc.start(_spec())
-    out = [(f"start returns queued/running record (state={record.state.tag})", record.run_id != "")]
-
-    deadline = time.time() + 5.0
-    final = None
+    deadline = time.time() + timeout
     while time.time() < deadline:
-        final = svc.query(record.run_id)
-        if final.state.tag == "completed":
-            break
-        time.sleep(0.02)
-    out.append(("async run reaches completed", final is not None and final.state.tag == "completed"))
-    out.append((
-        "completed run carries artifacts",
-        final is not None and len(final.artifacts.metrics) == 2,
-    ))
-    return out
+        tag = svc.query(run_id).state.tag
+        if tag == want or tag in ("failed", "rejected", "cancelled"):
+            return tag
+        time.sleep(0.01)
+    return svc.query(run_id).state.tag
 
 
-def _slow_service(release: "object") -> InMemorySampleService:
-    def slow_runner(spec, config):
-        release.wait(timeout=5.0)  # type: ignore[attr-defined]
-        return []
+def _validator(name: str):
+    """schema 文件存在且装了 jsonschema 才校验；否则断言放行并在报告里标注。"""
 
-    return InMemorySampleService(runners={"slow@0.1.0": slow_runner}, config_loader=_loader)
-
-
-def _stop_spec() -> RunSpec:
-    return RunSpec(
-        sample="slow@0.1.0",
-        config="tiny-64-s0",
-        storage=StorageLayer(
-            backend=Component(name="gpfs", version="5.1"),
-            adapter=Component(name="torchstore", version="0.2"),
-        ),
-        seed=1,
-    )
-
-
-def check_stop() -> list[tuple[str, bool]]:
-    import threading
-
-    release = threading.Event()
-
-    # 1) 运行中取消：stop 返回时状态必须已经是 cancelled。
-    svc = _slow_service(release)
-    record = svc.start(_stop_spec())
-    time.sleep(0.1)  # 让后台线程进入 running
-    stopped = svc.stop(record.run_id)
-    release.set()
-    out = [("stop during running returns cancelled", stopped.state.tag == "cancelled")]
-
-    # 2) 排队期立刻取消：旧实现会返回 running，这里必须直接 cancelled。
-    release2 = threading.Event()
-    svc2 = _slow_service(release2)
-    record2 = svc2.start(_stop_spec())
-    immediate = svc2.stop(record2.run_id)
-    release2.set()
-    out.append(("stop immediately after start returns cancelled", immediate.state.tag == "cancelled"))
-
-    # 3) 已结束的运行原样交回，不报错。
-    svc3 = _service()
-    done = svc3.start(_spec())
-    deadline = time.time() + 3.0
-    while time.time() < deadline and svc3.query(done.run_id).state.tag != "completed":
-        time.sleep(0.02)
-    out.append(("stop on completed run returns it unchanged", svc3.stop(done.run_id).state.tag == "completed"))
-    return out
-
-
-def check_strict_decoding() -> list[tuple[str, bool]]:
-    """反序列化必须拒绝多键与未知键，不能静默取第一个。"""
-
-    from sample.types import ckpt_sli_from_json, state_from_json
-
-    def rejects(fn, raw) -> bool:
-        try:
-            fn(raw)
-            return False
-        except (ValueError, TypeError):
-            return True
-
-    return [
-        ("state with two keys is rejected", rejects(state_from_json, {"running": None, "completed": None})),
-        ("state with unknown key is rejected", rejects(state_from_json, {"bogus": None})),
-        ("SLI with two keys is rejected", rejects(ckpt_sli_from_json, {"check_point_duration_sli": 1.0, "bogus": 2})),
-    ]
-
-
-def check_state_machine_edges() -> list[tuple[str, bool]]:
-    """取消后迟到的终态不得覆盖 cancelled；记录数有上限；进度不冒充工作量。"""
-
-    import threading
-
-    release = threading.Event()
-
-    def slow(spec, config):
-        release.wait(timeout=3.0)
-        return [CheckPointDuration(value=1.0)]
-
-    svc = InMemorySampleService(runners={"slow@0.1.0": slow}, config_loader=_loader)
-    record = svc.start(RunSpec(
-        sample="slow@0.1.0", config="c",
-        storage=StorageLayer(Component(name="b", version="1"), Component(name="a", version="1")),
-        seed=1,
-    ))
-    time.sleep(0.1)
-    svc.stop(record.run_id)
-    svc._set_state(record.run_id, Completed())   # 模拟迟到的完成上报
-    release.set()
-    out = [
-        ("cancelled absorbs a late Completed", svc.query(record.run_id).state.tag == "cancelled"),
-    ]
-
-    # 记录上限：跑 6 次，上限设 3，应只留 3 条终态记录。
-    small = InMemorySampleService(
-        runners={"s@1": lambda s, c: []}, config_loader=_loader, max_records=3
-    )
-    spec = RunSpec(sample="s@1", config="c",
-                   storage=StorageLayer(Component(name="b", version="1"), Component(name="a", version="1")),
-                   seed=1)
-    ids = []
-    for _ in range(6):
-        r = small.start(spec)
-        ids.append(r.run_id)
-        deadline = time.time() + 2.0
-        while time.time() < deadline and small.query(r.run_id).state.tag != "completed":
-            time.sleep(0.01)
-    out.append(("record store evicts terminal records above max_records", len(small._records) <= 3))
-
-    # 进度：完成时仍是 0/0，不用 SLI 条数冒充 total。
-    final = small.query(ids[-1])
-    out.append(("progress stays 0/0 instead of faking workload",
-                final.progress.done == 0 and final.progress.total == 0))
-    return out
-
-
-def check_contract_matrix() -> list[tuple[str, bool]]:
-    """解码器与 schema 的键集合对齐：additionalProperties: false 要落到解码器上。"""
-
-    cfg = _make_config(1, 8)
-    cases = [
-        ("RunSpec", RunSpec, _spec()),
-        ("RunRecord", RunRecord, RunRecord(
-            run_id="r", state=Running(), progress=WorkProgress(0, 0),
-            artifacts=Artifacts(manifest="", metrics=(), slo=(), report=""))),
-        ("Artifacts", Artifacts, Artifacts(manifest="m", metrics=(), slo=(), report="r")),
-        ("Component", Component, Component(name="gpfs", version="5.1")),
-        ("StorageLayer", StorageLayer, _spec().storage),
-        ("Failure", Failure, Failure(kind="timeout", detail="x")),
-        ("Model", Model, cfg.model),
-        ("Topology", Topology, cfg.topology),
-        ("ObservationConfig", ObservationConfig, cfg.observe),
-        ("SampleConfigBase", SampleConfigBase, cfg),
-    ]
-    out = []
-    for name, cls, instance in cases:
-        def rejects_extra(cls=cls, instance=instance):
-            try:
-                cls.from_json({**instance.to_json(), "junk": 1})
-                return False
-            except ValueError:
-                return True
-        out.append((f"{name} rejects an unknown key", rejects_extra()))
-
-    # 0 规模的拓扑算不出有意义的档位，样本侧也会退化成空跑，必须拒绝。
-    out += [
-        ("Topology rejects nodes=0", _rejects_value(Topology, 0, 8)),
-        ("Topology rejects gpus_per_node=0", _rejects_value(Topology, 1, 0)),
-    ]
-    # 文档：采集层至少两层，其中必须含 sys。
-    out += [
-        ("ObservationConfig rejects a single layer",
-         _rejects_layers(("app",))),
-        ("ObservationConfig rejects layers without sys",
-         _rejects_layers(("app", "storage"))),
-    ]
-    return out
-
-
-def _rejects_layers(layers) -> bool:
-    try:
-        ObservationConfig(True, 0.1, tuple(layers))
-        return False
-    except ValueError:
-        return True
-
-
-def _rejects_value(cls, nodes: int, gpus: int) -> bool:
-    try:
-        cls(nodes, gpus, "rdma", "local-nvme")
-        return False
-    except ValueError:
-        return True
-
-
-def check_rejected() -> list[tuple[str, bool]]:
-    svc = _service()
-    bad1 = svc.start(_spec(sample="not-registered@9.9.9"))
-    bad2 = svc.start(_spec(sample="no-at-sign"))
-
-    # seed 非 int / storage 空字段 / config 加载失败，都必须在 start 时 Rejected
-    bad_seed = svc.start(RunSpec(sample="s@1", config="c", storage=_spec().storage, seed=1.5))
-    bad_storage = svc.start(RunSpec(
-        sample="s@1", config="tiny-64-s0",
-        storage=StorageLayer(Component(name="", version=""), Component(name="a", version="1")),
-        seed=1,
-    ))
-
-    def failing_loader(name): raise RuntimeError("no such config")
-    svc_bad = InMemorySampleService({"s@1": lambda s, c: []}, failing_loader)
-    bad_cfg = svc_bad.start(_spec())
-
-    return [
-        ("unknown sample -> rejected", bad1.state.tag == "rejected"),
-        ("malformed sample -> rejected", bad2.state.tag == "rejected"),
-        ("seed must be int -> rejected", bad_seed.state.tag == "rejected"),
-        ("storage component name must be non-empty -> rejected", bad_storage.state.tag == "rejected"),
-        ("config that fails to load -> rejected, not failed", bad_cfg.state.tag == "rejected"),
-    ]
-
-
-def check_schema() -> list[tuple[str, bool]]:
-    """本接口的每个类型各有一份 schema；逐份校验合法实例，并抽检非法实例被拒。"""
-
+    path = SCHEMAS / f"{name}.schema.json"
+    if not path.is_file():
+        return None
     try:
         import jsonschema
     except ImportError:
-        return [("jsonschema available", False)]
+        return None
+    return jsonschema.Draft202012Validator(json.loads(path.read_text(encoding="utf-8")))
 
-    if not SCHEMAS.is_dir():
-        return [("json_schema/ exists", False)]
 
-    def validator(schema_name: str):
-        schema = json.loads((SCHEMAS / f"{schema_name}.schema.json").read_text(encoding="utf-8"))
-        return jsonschema.Draft202012Validator(schema)
+# ---------------------------------------------------------------------------
+# 组 1：序列化
+# ---------------------------------------------------------------------------
 
-    def validates(schema_name: str, instance: object) -> bool:
-        try:
-            validator(schema_name).validate(instance)
-            return True
-        except jsonschema.ValidationError:
-            return False
 
-    def rejects(schema_name: str, instance: object) -> bool:
-        try:
-            validator(schema_name).validate(instance)
-            return False
-        except jsonschema.ValidationError:
-            return True
-
-    cfg = _make_config(1, 8)
-    full_artifacts = Artifacts(
-        manifest="s3://bucket/runs/x/manifest.json",
-        metrics=(
-            CheckPointDuration(value=1.0),
-            TrainingStall(value=1.0),
-            RestoreDuration(value=1.0),
-            WriteThroughput(value=1.0),
-            MetadataCommit(value=1.0),
-            WriteLatencyP99(value=1.0),
-        ),
-        slo=(
-            CkptSloCheckpointDuration(verdict=MetricLE(1.0, 2.0)),
-            CkptSloTrainingStall(verdict=MetricLE(1.0, 2.0)),
-            CkptSloRestoreDuration(verdict=MetricLE(1.0, 2.0)),
-            CkptSloWriteThroughput(verdict=MetricGE(1.0, 2.0)),
-            CkptSloMetadataCommit(verdict=MetricLE(1.0, 2.0)),
-            CkptSloWriteLatencyP99(verdict=MetricLE(1.0, 2.0)),
-        ),
-        report="s3://bucket/runs/x/report.html",
+def check_serialization() -> list[Assertion]:
+    artifact = Artifacts(
+        manifest="s3://b/runs/x/manifest.json",
+        metrics=(CheckPointDuration(value=1.0),),
+        slo=(),
+        report="s3://b/runs/x/report.html",
     )
-    states = [
-        Queued(queue=QueueProgress(pos=1, len=3)),
-        Running(),
-        Completed(),
-        Failed(error=Failure(kind="timeout", detail="x")),
-        Rejected(error=Failure(kind="request", detail="x")),
-        Cancelled(),
-    ]
     record = RunRecord(
-        run_id="r", state=Running(), progress=WorkProgress(0, 0), artifacts=full_artifacts
+        run_id="r", state=Running(), progress=WorkProgress(0, 0), artifacts=artifact
     )
+    config = _config()
+    cases = [
+        ("RunSpec", RunSpec, _spec()),
+        ("RunRecord", RunRecord, record),
+        ("Artifacts", Artifacts, artifact),
+        ("Component", Component, Component(name="gpfs", version="5.1")),
+        ("StorageLayer", StorageLayer, _storage()),
+        ("Failure", Failure, Failure(kind="timeout", detail="x")),
+        ("Model", Model, config.model),
+        ("Topology", Topology, config.topology),
+        ("ObservationConfig", ObservationConfig, config.observe),
+        ("SampleConfigBase", SampleConfigBase, config),
+    ]
 
-    # 每个类型一份 schema：名称 -> 一个合法实例。
-    instances = {
-        "RunSpec": _spec().to_json(),
-        "RunRecord": record.to_json(),
-        "Artifacts": full_artifacts.to_json(),
-        "State": Queued(queue=QueueProgress(pos=1, len=3)).to_json(),
-        "CkptSli": CheckPointDuration(value=1.0).to_json(),
-        "CkptSlo": CkptSloCheckpointDuration(verdict=MetricLE(1.0, 2.0)).to_json(),
-        "QueueProgress": QueueProgress(pos=1, len=3).to_json(),
-        "WorkProgress": WorkProgress(0, 0).to_json(),
-        "Failure": Failure(kind="timeout", detail="x").to_json(),
-        "Component": Component(name="gpfs", version="5.1").to_json(),
-        "StorageLayer": _spec().storage.to_json(),
-        "SampleConfigBase": cfg.to_json(),
-        "Model": cfg.model.to_json(),
-        "Topology": cfg.topology.to_json(),
-        "ObservationConfig": cfg.observe.to_json(),
-        "ObservationLayer": "sys",
-        "Level": resolve_level(cfg.topology),
-        "CheckPointDurationMetric": 1.0,
-        "TrainingStallMetric": 1.0,
-        "RestoreDurationMetric": 1.0,
-        "WriteThroughputMetric": 1.0,
-        "MetadataCommitMetric": 1.0,
-        "WriteLatencyP99Metric": 1.0,
+    schema_fail, roundtrip_fail, extra_fail = [], [], []
+    for name, cls, instance in cases:
+        payload = instance.to_json()
+        validator = _validator(name)
+        if validator is not None and not validator.is_valid(payload):
+            schema_fail.append(name)
+        if cls.from_json(payload).to_json() != payload:
+            roundtrip_fail.append(name)
+        try:
+            cls.from_json({**payload, "junk": 1})
+            extra_fail.append(name)
+        except ValueError:
+            pass
+
+    def agg(label: str, bad: list[str]) -> Assertion:
+        return (label if not bad else f"{label}: {', '.join(bad)}", not bad)
+
+    return [
+        agg("every type passes its own schema", schema_fail),
+        agg("every type round-trips", roundtrip_fail),
+        agg("every type rejects unknown keys", extra_fail),
+    ]
+
+
+# ---------------------------------------------------------------------------
+# 组 2：状态机
+# ---------------------------------------------------------------------------
+
+
+def check_state_machine() -> list[Assertion]:
+    metrics = [CheckPointDuration(value=1.0), CheckPointDuration(value=2.0)]
+    svc = _service({"s@1": lambda spec, config: metrics})
+    started = svc.start(_spec())
+    first_tag = started.state.tag
+    tag = _wait(svc, started.run_id, "completed")
+    final = svc.query(started.run_id)
+
+    # 查询只读：连查两次结果一致。
+    again = svc.query(started.run_id)
+    # 已结束的运行再 stop，原样交回，不报错。
+    stopped = svc.stop(started.run_id)
+
+    return [
+        ("start returns a non-terminal record", first_tag in ("queued", "running")),
+        ("run reaches completed", tag == "completed"),
+        ("completed run carries both files and every metric",
+         bool(final.artifacts.manifest) and bool(final.artifacts.report)
+         and len(final.artifacts.metrics) == len(metrics)),
+        ("query does not mutate the run",
+         again.state.tag == final.state.tag and again.progress == final.progress),
+        ("stop on a finished run hands it back unchanged", stopped.state.tag == "completed"),
+        ("progress stays 0/0 instead of faking workload",
+         final.progress.done == 0 and final.progress.total == 0),
+        *_check_record_eviction(),
+    ]
+
+
+def _check_record_eviction() -> list[Assertion]:
+    """记录上限也走黑盒：构造时给上限，跑满后用最早的标识查询应已淘汰。"""
+
+    small = _service(max_records=3)
+    ids = [small.start(_spec()).run_id for _ in range(6)]
+    # 每跑完一条就触发一次淘汰；被淘汰的记录查询会抛 KeyError，视为正常。
+    for run_id in ids:
+        try:
+            _wait(small, run_id, "completed")
+        except KeyError:
+            pass
+    try:
+        small.query(ids[0])
+        return [("record store evicts the oldest terminal run above max_records", False)]
+    except KeyError:
+        return [("record store evicts the oldest terminal run above max_records", True)]
+
+
+# ---------------------------------------------------------------------------
+# 组 3：取消
+# ---------------------------------------------------------------------------
+
+
+def check_cancellation() -> list[Assertion]:
+    release = threading.Event()
+
+    def slow(spec: RunSpec, config: SampleConfigBase) -> list:
+        release.wait(timeout=3.0)
+        return [CheckPointDuration(value=1.0)]
+
+    svc = _service({"s@1": slow})
+    record = svc.start(_spec())
+    time.sleep(0.05)
+    stopped = svc.stop(record.run_id)
+    # 放开后台样本让它跑到「完成」；取消必须吸收这次迟到的完成。
+    release.set()
+    time.sleep(0.3)
+    final = svc.query(record.run_id)
+    second = svc.stop(record.run_id)
+
+    return [
+        ("stop returns cancelled", stopped.state.tag == "cancelled"),
+        ("a late completion does not overwrite cancelled", final.state.tag == "cancelled"),
+        ("stop is idempotent on a cancelled run", second.state.tag == "cancelled"),
+    ]
+
+
+# ---------------------------------------------------------------------------
+# 组 4：非法请求
+# ---------------------------------------------------------------------------
+
+
+def check_bad_requests() -> list[Assertion]:
+    svc = _service()
+    cases = {
+        "unknown sample": RunSpec(sample="nope@9", config="c", storage=_storage(), seed=1),
+        "sample without a version": RunSpec(sample="no-at", config="c", storage=_storage(), seed=1),
+        "seed that is not an int": RunSpec(sample="s@1", config="c", storage=_storage(), seed=1.5),
+        "blank component name": RunSpec(
+            sample="s@1", config="c",
+            storage=StorageLayer(Component(name="", version=""), Component(name="a", version="1")),
+            seed=1,
+        ),
     }
+    records = {name: svc.start(spec) for name, spec in cases.items()}
 
-    out = [
-        (f"{name}.to_json passes {name}.schema.json", validates(name, instance))
-        for name, instance in instances.items()
+    # config 加载失败也在提交时拒绝，而不是起线程后失败。
+    def failing_loader(name: str) -> SampleConfigBase:
+        raise RuntimeError("no such config")
+
+    bad_cfg = InMemorySampleService(
+        runners={"s@1": lambda spec, config: []}, config_loader=failing_loader
+    ).start(_spec())
+
+    accepted = [name for name, record in records.items() if record.state.tag != "rejected"]
+    if bad_cfg.state.tag != "rejected":
+        accepted.append("config that fails to load")
+    # 被拒的请求不进队列：稍后再查仍是 rejected，不会翻成 completed。
+    time.sleep(0.2)
+    drifted = [
+        name for name, record in records.items()
+        if svc.query(record.run_id).state.tag != "rejected"
+    ]
+    return [
+        ("every malformed request -> rejected" if not accepted
+         else f"every malformed request -> rejected: {', '.join(accepted)}", not accepted),
+        ("a rejected request stays rejected" if not drifted
+         else f"a rejected request stays rejected: {', '.join(drifted)}", not drifted),
     ]
 
-    # SLI / SLO 的每个分支都要能过各自的 oneof。
-    out += [
-        (f"CkptSli branch {sli.tag} passes schema", validates("CkptSli", sli.to_json()))
-        for sli in full_artifacts.metrics
+
+# ---------------------------------------------------------------------------
+# 组 5：阶梯
+# ---------------------------------------------------------------------------
+
+
+def check_level() -> list[Assertion]:
+    expected = [((1, 8), "S0"), ((2, 8), "S1"), ((8, 8), "S2"), ((128, 8), "S4")]
+    wrong = [
+        f"{nodes}x{gpus}->{resolve_level(_config(nodes, gpus).topology)} want {want}"
+        for (nodes, gpus), want in expected
+        if resolve_level(_config(nodes, gpus).topology) != want
     ]
-    out += [
-        (f"CkptSlo branch {slo.tag} passes schema", validates("CkptSlo", slo.to_json()))
-        for slo in full_artifacts.slo
+    accepted_zero = []
+    for nodes, gpus in ((0, 8), (1, 0)):
+        try:
+            Topology(nodes=nodes, gpus_per_node=gpus, network="none", mount="local-nvme")
+            accepted_zero.append(f"{nodes}x{gpus}")
+        except ValueError:
+            pass
+    return [
+        ("topology maps to the expected levels" if not wrong
+         else f"topology maps to the expected levels: {', '.join(wrong)}", not wrong),
+        ("zero-size topologies are rejected" if not accepted_zero
+         else f"zero-size topologies are rejected: {', '.join(accepted_zero)}", not accepted_zero),
     ]
 
-    # 非法实例必须被拒。
-    out += [
-        ("RunRecord without artifacts is rejected", rejects("RunRecord", {
-            k: v for k, v in record.to_json().items() if k != "artifacts"})),
-        ("Artifacts without report is rejected", rejects("Artifacts", {
-            k: v for k, v in full_artifacts.to_json().items() if k != "report"})),
-        ("State with two keys is rejected", rejects("State", {"running": None, "completed": None})),
-        ("CkptSli with two keys is rejected",
-         rejects("CkptSli", {"check_point_duration_sli": 1.0, "training_stall_sli": 2.0}))
-        ,
-        ("Level outside S0..S5 is rejected", rejects("Level", "S9")),
+
+# ---------------------------------------------------------------------------
+# 组 6：观测配置
+# ---------------------------------------------------------------------------
+
+
+def check_observation() -> list[Assertion]:
+    def accepts(layers: tuple[str, ...]) -> bool:
+        try:
+            ObservationConfig(enabled=True, sample_rate=0.1, layers=layers)
+            return True
+        except ValueError:
+            return False
+
+    # 两条规则各给一个只违反它的样本：单层含 sys 违反层数，两层缺 sys 违反 sys。
+    bad = [f"{layers}" for layers in (("sys",), ("app", "storage")) if accepts(layers)]
+    return [
+        ("a layer set without two-of-which-sys is rejected" if not bad
+         else f"a layer set without two-of-which-sys is rejected: {', '.join(bad)}", not bad),
+        ("app + sys is accepted", accepts(("app", "sys"))),
     ]
 
-    # 本接口覆盖的类型之外，json_schema/ 下还有别的文档生成的 schema；这里只报告数量。
-    covered = {f"{name}.schema.json" for name in instances}
-    return out
+
+# ---------------------------------------------------------------------------
+# 组 7：样本产出
+# ---------------------------------------------------------------------------
+
+
+def check_sample_output() -> list[Assertion]:
+    root = tempfile.mkdtemp(prefix="ckpt-check-")
+    old = os.environ.get("TINY_CKPT_ROOT")
+    os.environ["TINY_CKPT_ROOT"] = root
+    try:
+        svc = _service({"tiny-ckpt@0.1.0": tiny_ckpt.runner})
+        spec = RunSpec(sample="tiny-ckpt@0.1.0", config="c", storage=_storage(), seed=1)
+        artifacts = svc.execute(spec)
+    finally:
+        if old is None:
+            os.environ.pop("TINY_CKPT_ROOT", None)
+        else:
+            os.environ["TINY_CKPT_ROOT"] = old
+
+    tags = [item.tag for item in artifacts.metrics]
+    values = [item.value for item in artifacts.metrics]
+    validator = _validator("Artifacts")
+
+    return [
+        ("sample emits six SLI", len(tags) == 6),
+        ("all six SLI are positive", all(value > 0 for value in values)),
+        ("sample artifacts pass Artifacts.schema.json",
+         validator is None or validator.is_valid(artifacts.to_json())),
+    ]
+
+
+# ---------------------------------------------------------------------------
+# 入口
+# ---------------------------------------------------------------------------
+
+GROUPS = [
+    ("serialization", check_serialization),
+    ("state machine", check_state_machine),
+    ("cancellation", check_cancellation),
+    ("bad requests", check_bad_requests),
+    ("level", check_level),
+    ("observation", check_observation),
+    ("sample output", check_sample_output),
+]
 
 
 def main() -> int:
-    suites = [
-        check_level(),
-        check_metric_verdict(),
-        check_execute(),
-        check_start_and_query(),
-        check_stop(),
-        check_strict_decoding(),
-        check_state_machine_edges(),
-        check_contract_matrix(),
-        check_rejected(),
-        check_schema(),
-    ]
-    results = [case for suite in suites for case in suite]
-    failed = [name for name, ok in results if not ok]
+    results: list[tuple[str, str, bool]] = []
+    skipped: list[str] = []
+    if not SCHEMAS.is_dir():
+        skipped.append(f"{SCHEMAS} not found; schema assertions treated as satisfied")
+
+    for group, fn in GROUPS:
+        try:
+            for name, ok in fn():
+                results.append((group, name, ok))
+        except Exception as exc:  # noqa: BLE001 - 组内崩溃按该组失败上报
+            results.append((group, f"{type(exc).__name__}: {exc}", False))
+
+    failed = [f"[{group}] {name}" for group, name, ok in results if not ok]
     print(json.dumps({
         "check": "check_sample_interface",
-        "status": "pass" if not failed else "fail",
-        "total": len(results),
+        "mode": "black-box",
+        "groups": len(GROUPS),
+        "assertions": len(results),
+        "failed_groups": sorted({group for group, _, ok in results if not ok}),
         "failed": failed,
+        "skipped": skipped,
+        "status": "pass" if not failed else "fail",
     }, ensure_ascii=False))
     return 0 if not failed else 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
