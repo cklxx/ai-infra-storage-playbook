@@ -18,4 +18,17 @@ ObservationLayer =
   | "storage" * { 存储服务端的请求日志与指标。拿得到服务端视角的吞吐、尾延迟、元数据操作；采样率与聚合粒度受限 }
 ```
 
+## 基本操作
+
+只有一个操作：开观测。给出想开的层，返回实际开起来的层。
+
 ## apis.viba
+
+```bash apis
+import aisp.bench.checkpoint.observation.types as observation
+
+Collect =
+     list[observation.ObservationLayer]
+  <- $wanted (list[observation.ObservationLayer] * { 想开的层 })
+  <- { 开观测：写清每层的采样率与统计口径；少于两层就不足以交叉核对，返回实际开起来的层 }
+```

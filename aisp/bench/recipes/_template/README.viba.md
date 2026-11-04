@@ -40,8 +40,8 @@ RecipeTemplateDirectory =
   * $name (str * { 评估集名；对应 recipes/<评估集名>/，模板里是尖括号占位，复制后不要保留尖括号 })
   * $recipe (RecipeTemplateRecipeYaml * { recipe.yaml：元信息、旁路范围、保真边界、不变量、scaling 计划、兼容的指标版本；评估服务与校验脚本读取 })
   * $metrics (RecipeTemplateMetricsYaml * { metrics.yaml：选用的指标、参数、阈值；评估服务与对齐判定读取 })
-  * $readme (RecipeTemplateReadme * { README.md：目标、输入、输出、步骤、验收、负责人；人看 })
-  * $acceptance_checklist (RecipeTemplateAcceptanceChecklist * { acceptance_checklist.md：阶段门 G0–G4 的勾选项；评审看 })
+  * $readme (RecipeTemplateReadme * { README.viba.md：目标、输入、输出、步骤、验收、负责人；人看 })
+  * $acceptance_checklist (RecipeTemplateAcceptanceChecklist * { acceptance_checklist.viba.md：阶段门 G0–G4 的勾选项；评审看 })
   * $checks (list[str] * { checks/：本配方专属校验脚本；CI 看 })
   * $build (list[RecipeTemplateBuildStage] * { build.py：配方入口，prepare / run / collect 三个阶段；实现者看 })
 

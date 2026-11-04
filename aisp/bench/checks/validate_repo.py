@@ -42,7 +42,7 @@ RECIPES = ROOT / "recipes"
 SCHEMAS = ROOT / "schemas"
 GENERATED_SCHEMAS = ROOT / "checkpoint" / "json_schema"
 REGISTRY = ROOT / "metrics" / "registry.yaml"
-REQUIRED_FILES = ("README.md", "recipe.yaml", "metrics.yaml", "acceptance_checklist.md")
+REQUIRED_FILES = ("README.viba.md", "recipe.yaml", "metrics.yaml", "acceptance_checklist.viba.md")
 
 
 def load_yaml(path: Path) -> object:

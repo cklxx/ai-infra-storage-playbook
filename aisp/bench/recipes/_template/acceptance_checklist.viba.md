@@ -50,7 +50,7 @@ AcceptanceTemplateItem =
   | "g3_next_level_prediction_written" * { G3 逐级 scaling：下一级预测值与预测依据已写 }
   | "g4_latest_run_written" * { G4 结论登记：latest_run 已由评估服务写入，回链三要素齐全 }
   | "g4_coverage_matrix_updated" * { G4 结论登记：覆盖度矩阵已更新 }
-  | "g4_remaining_biases_logged" * { G4 结论登记：未解决的偏差已登记进 checkpoint/pitfalls.md }
+  | "g4_remaining_biases_logged" * { G4 结论登记：未解决的偏差已登记进 checkpoint/pitfalls.viba.md }
   | "g4_versions_consistent" * { G4 结论登记：配方版本、指标版本、服务版本一致且可查 }
 
 AcceptanceTemplateEvidence =

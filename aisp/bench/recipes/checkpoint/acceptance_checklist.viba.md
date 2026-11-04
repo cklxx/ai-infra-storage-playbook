@@ -53,7 +53,7 @@ AcceptanceCheckpointItem =
   | "g3_tail_latency_split_by_node" * { G3 逐级 scaling：尾延迟（P99/P999）已按节点拆分排查 }
   | "g4_latest_run_written_with_backlink" * { G4 结论登记：latest_run 已由评估服务写入，回链三要素齐全 }
   | "g4_coverage_matrix_updated" * { G4 结论登记：覆盖度矩阵已更新 }
-  | "g4_unresolved_deviations_registered" * { G4 结论登记：未解决的偏差已登记进 checkpoint/pitfalls.md }
+  | "g4_unresolved_deviations_registered" * { G4 结论登记：未解决的偏差已登记进 checkpoint/pitfalls.viba.md }
   | "g4_versions_queryable" * { G4 结论登记：checkpoint 实现、框架版本与服务版本均可查 }
 
 AcceptanceCheckpointSection =

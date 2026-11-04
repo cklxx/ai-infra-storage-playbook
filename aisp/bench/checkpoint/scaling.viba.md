@@ -49,7 +49,7 @@ ScalingRunPlan =
 
 ScalingInvariantCandidate =
   Object
-  * $metric (str * { 候选度量项的名字，从 methodology.md 的度量项里挑出与本次评估目标相关的项 })
+  * $metric (str * { 候选度量项的名字，从 methodology.viba.md 的度量项里挑出与本次评估目标相关的项 })
   * $definition (str * { 这个度量项怎么算，写清分子、分母或统计口径 })
   * $varies_with_dimension (bool * { 是否随目标维度变化；会变的量是变量，不是不变量 })
   * $measurable (bool * { 是否能被测量；测不到的不能当不变量 })
@@ -168,7 +168,7 @@ Level =
 需要四个操作。
 
 1. 选维度：从模型规模、集群规模、并行策略、负载、存储后端里选一个放大，其余四个固定并记录，同时放大两个维度得到的结论无法归因。
-2. 定不变量：从 [`methodology.md`](methodology.md) 的度量项里挑候选，逐个判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差，最终留下 3 到 6 条。
+2. 定不变量：从 [`methodology.viba.md`](methodology.viba.md) 的度量项里挑候选，逐个判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差，最终留下 3 到 6 条。
 3. 逐级验证：按 S0 到 S5 的阶梯一级一级跑，至少四级，每级都要拿到完整度量、重新验证不变量并给偏差归因，不允许从最小规模直接跳到十万卡。
 4. 外推：先判断存储侧是否饱和，数据与元数据分开算，处理时序与重叠，也就是同步或异步写入的时间折算，再处理 P99、P999 尾延迟，给出下一级的预测值与预测依据。
 
@@ -187,7 +187,7 @@ ChooseDimension =
 PickInvariant =
      scaling.ScalingInvariantSet
   <- $dimension (scaling.ScalingDimension * { 目标维度；判断候选会不会随它变化 })
-  <- $candidates (list[scaling.ScalingInvariantCandidate] * { 候选度量项：从 methodology.md 的度量项里挑出与本次评估目标相关的项，每项带定义、三个判断与容差 })
+  <- $candidates (list[scaling.ScalingInvariantCandidate] * { 候选度量项：从 methodology.viba.md 的度量项里挑出与本次评估目标相关的项，每项带定义、三个判断与容差 })
   <- { 定不变量：逐个候选判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差；会变的是变量，变了不影响结论的只是参考项；最终留下 3 到 6 条不变量，每条写进配方的 metrics.yaml，包含名称、定义、计算方式、容差、判定规则；返回不变量集合，以及变量、参考项与测不到的候选 }
 
 ScaleUp =

@@ -58,6 +58,10 @@ import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 import aisp.bench.checkpoint.readme.types as ckpt_bench
+import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
+import aisp.bench.checkpoint.measures.apis as measures_api
+import aisp.bench.checkpoint.observation.apis as observation_api
+import aisp.bench.checkpoint.performance.apis as perf_api
 
 Collect =
      list[ckpt_sample.Model]
@@ -72,18 +76,23 @@ PickSamples =
 Execute =
      ckpt_sample.RunRecord
   <- $spec (ckpt_sample.RunSpec * { 一条用例 })
+  <- $prepare (checkpoint_api.PrepareBypass * { 它交回的五步做法与四条约束决定这次怎么旁路：模型在 meta device 上建，反向与 optimizer 换占位，checkpoint 写入原样保留 })
+  <- $collect (observation_api.Collect * { 开跑前先让它开观测，trace 才有来源；它交回实际开的层，少于两层这次运行就不算数 })
+  <- $measure (perf_api.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
   <- { 旁路计算，保留 checkpoint 写入与读取，跑一次，记 IO 与 SLI }
 
 Judge =
      list[slo.CkptSlo]
   <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
   <- $policy (str * { 部署方给的阈值 })
+  <- $judge (perf_api.Judge * { 把 Artifacts.metrics 交给它，它逐项配阈值判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
   <- { 逐指标对照阈值，给出通过 / 失败 / 不可比 }
 
 Compare =
      str
   <- $a (ckpt_sample.RunRecord * { 旧存储版本的运行 })
   <- $b (ckpt_sample.RunRecord * { 新存储版本的运行 })
+  <- $compare (measures_api.CompareTolerance * { 两个版本同名的每项指标各调它一次，它按这一项的统计量判定两个值是否落在容差内；有一项超差，两个版本就不可比 })
   <- { 同一份负载，逐指标比差值，只允许存储两层里有一层不同；返回比较结果的位置 }
 
 FindGaps =

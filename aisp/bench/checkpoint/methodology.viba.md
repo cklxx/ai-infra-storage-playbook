@@ -20,7 +20,7 @@ Align = methodology_api.Align
 
 ## 背景
 
-本文是整套方法的唯一出处：旁路、保真等级、保真边界表、IO pattern 度量项、对齐判定、阶段门只在这里定义一次；三类评估集的配方引用本文的章节，只写各自的差异。本文解决"评估集怎么建、怎么判它可信"。存储在一个样本上的表现（SLI）怎么测、重保子集怎么判（SLO）、两个存储版本怎么比，见 [`performance.md`](performance.md)，两篇的分工不要混。
+本文是整套方法的唯一出处：旁路、保真等级、保真边界表、IO pattern 度量项、对齐判定、阶段门只在这里定义一次；三类评估集的配方引用本文的章节，只写各自的差异。本文解决"评估集怎么建、怎么判它可信"。存储在一个样本上的表现（SLI）怎么测、重保子集怎么判（SLO）、两个存储版本怎么比，见 [`performance.viba.md`](performance.viba.md)，两篇的分工不要混。
 
 ## methodology
 
@@ -30,7 +30,7 @@ Align = methodology_api.Align
 
 G1 到 G4 的判定记录写进 `recipe.yaml`，不写进文档正文。
 
-`BypassMethod` 写的是请求序列的保真等级，不含时序。旁路计算后时序一定被压缩：原本散布在整个训练步里的写入会挤到末尾。时序按 [`scaling.md`](scaling.md) 的「时序与重叠」折算，必要时在旁路实现里注入与真实计算等长的延迟；请求序列与时序必须分开评估。L2 是大多数场景的默认目标：它保证发了哪些请求，不保证什么时候发；L3 只用于对齐基准，不用于批量运行。
+`BypassMethod` 写的是请求序列的保真等级，不含时序。旁路计算后时序一定被压缩：原本散布在整个训练步里的写入会挤到末尾。时序按 [`scaling.viba.md`](scaling.viba.md) 的「时序与重叠」折算，必要时在旁路实现里注入与真实计算等长的延迟；请求序列与时序必须分开评估。L2 是大多数场景的默认目标：它保证发了哪些请求，不保证什么时候发；L3 只用于对齐基准，不用于批量运行。
 
 每个配方必须填写，没有这张表视为未完成。行结构见 [`json_schema/FidelityBoundary.schema.json`](json_schema/FidelityBoundary.schema.json)。
 
@@ -58,7 +58,7 @@ PlanBypass =
   <- $method (bypass.BypassMethod * { 从四种旁路手段里选一种；它决定请求序列的保真等级 })
   <- $fidelity (bypass.FidelityLevel * { 请求序列的保真等级；L2 是大多数场景的默认目标，L3 只用于对齐基准，不用于批量运行 })
   <- $premise (methodology.MethodologyBypassPremise * { 旁路依赖的前提：发起 IO 的代码路径没有被替换，时序偏差已登记 })
-  <- { 准备旁路：选定手段与保真等级，确认 IO 路径不变，登记时序偏差；时序按 scaling.md 的「时序与重叠」折算，必要时在旁路实现里注入与真实计算等长的延迟。返回旁路方案 }
+  <- { 准备旁路：选定手段与保真等级，确认 IO 路径不变，登记时序偏差；时序按 scaling.viba.md 的「时序与重叠」折算，必要时在旁路实现里注入与真实计算等长的延迟。返回旁路方案 }
 
 RecordBoundary =
      methodology.MethodologyBoundaryTable
@@ -79,13 +79,13 @@ Align =
   <- $real (methodology.MethodologyObservation * { 不做旁路的同规模真实运行，按 Observe 采集 })
   <- $bypass (methodology.MethodologyObservation * { 与真实运行同规模的旁路运行，也按 Observe 采集 })
   <- $tolerances (list[methodology.MethodologyTolerance] * { 配方 metrics.yaml 标定的容差；不是本文的初始容差 })
-  <- { 小规模对齐：在选定的度量项上比较两次运行的统计量，判定是否落在容差内；差异超过容差时按 MethodologyAttributionCause 的顺序逐项排除，归因结论写进配方的 README.md。返回对齐判定 }
+  <- { 小规模对齐：在选定的度量项上比较两次运行的统计量，判定是否落在容差内；差异超过容差时按 MethodologyAttributionCause 的顺序逐项排除，归因结论写进配方的 README.viba.md。返回对齐判定 }
 
 Scale =
      methodology.MethodologyScaling
-  <- $level (levels.Level * { 这次放大到的档位；级别的定义见 scaling.md })
+  <- $level (levels.Level * { 这次放大到的档位；级别的定义见 scaling.viba.md })
   <- $invariants (list[methodology.MethodologyMetric] * { 这一级要重新验证的不变量；对齐通过之前不允许进入 scaling })
-  <- { 逐级放大：总则见 scaling.md；对齐通过之前不允许进入 scaling，每一级都要重新验证不变量，跳级得到的结论没有依据；偏差要有归因。返回这一级的结果 }
+  <- { 逐级放大：总则见 scaling.viba.md；对齐通过之前不允许进入 scaling，每一级都要重新验证不变量，跳级得到的结论没有依据；偏差要有归因。返回这一级的结果 }
 
 Reproduce =
      methodology.MethodologyReproduction
@@ -140,10 +140,10 @@ MethodologyFlow =
   * $reproduce (MethodologyReproduceDuty * { 第六步：固定可复现条件 })
 ```
 
-Scaling 的总则见 [`scaling.md`](scaling.md)。
+Scaling 的总则见 [`scaling.viba.md`](scaling.viba.md)。
 
 配方只写差异：`recipes/model_code_collection` 只写语料不变量与可跑性验证，`recipes/checkpoint` 只写 meta device 旁路与并行配置；共性的步骤、判定规则引用本文的章节标题加路径，不复制。新规则先写进本文，再改配方；配方里与本文冲突的表述以本文为准，并修正配方。改本文等于改三类评估集的共同定义，评审要求与改指标口径相同：说明影响哪些配方、哪些历史结论失效，并在 `CHANGELOG.md` 记录。
 
-更多已知问题与开放问题见 [`pitfalls.md`](pitfalls.md)。
+更多已知问题与开放问题见 [`pitfalls.viba.md`](pitfalls.viba.md)。
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

@@ -19,7 +19,7 @@ ValidateRefs = metrics_registry_api.ValidateRefs
 
 ## 背景
 
-指标登记表是校验脚本的输入。任何进入 `recipes/*/metrics.yaml` 的指标，必须先在 `metrics/` 有口径定义，并在 `metrics/registry.yaml` 登记；同一个指标名口径不同，算出来的数就不同，历史结果就不可比，回归全部失效。本目录剩下的两个指标衡量评估集自身是否可信：[覆盖度](coverage.md) 判断评估集是否覆盖目标维度，[scaling 一致性](scaling_consistency.md) 判断外推依据是否成立；被测对象在一个样本上的 SLI 与 SLO 不在本目录，见 [`checkpoint/performance.md`](../checkpoint/performance.md)。
+指标登记表是校验脚本的输入。任何进入 `recipes/*/metrics.yaml` 的指标，必须先在 `metrics/` 有口径定义，并在 `metrics/registry.yaml` 登记；同一个指标名口径不同，算出来的数就不同，历史结果就不可比，回归全部失效。本目录剩下的两个指标衡量评估集自身是否可信：[覆盖度](coverage.viba.md) 判断评估集是否覆盖目标维度，[scaling 一致性](scaling_consistency.viba.md) 判断外推依据是否成立；被测对象在一个样本上的 SLI 与 SLO 不在本目录，见 [`checkpoint/performance.viba.md`](../checkpoint/performance.viba.md)。
 
 ## types.viba
 
@@ -39,7 +39,7 @@ MetricsRegistryDirection = str * { 方向：口径的一部分，写在指标文
 MetricsRegistryEntry =
   Object
   * $name (MetricsRegistryName * { 指标名；配方的 compatible_metrics 与 metrics.yaml 按这个名字引用指标 })
-  * $doc (str * { 指标文档的位置，在 metrics/ 下；一个指标一篇文档，实现放在 checks/，实测值放对象存储、仓库里只写回链，业务结论放配方的 README.md })
+  * $doc (str * { 指标文档的位置，在 metrics/ 下；一个指标一篇文档，实现放在 checks/，实测值放对象存储、仓库里只写回链，业务结论放配方的 README.viba.md })
   * $version (MetricsRegistryVersion * { 当前版本 })
   * $supported (list[MetricsRegistryVersion] * { 支持的版本；配方使用的版本必须在这个列表里 })
   * $gates (list[gates.Gate] * { 这个指标可服务的阶段门；IO pattern 对齐度服务 G2，scaling 一致性服务 G3；配方声明的 gate 必须是这里列出的之一 })

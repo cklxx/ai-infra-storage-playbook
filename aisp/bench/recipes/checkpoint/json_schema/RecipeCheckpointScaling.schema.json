@@ -30,7 +30,7 @@
           }
         },
         "gate": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointGate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointGate"
         }
       },
       "required": [
@@ -52,7 +52,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointGate": {
+    "aisp.bench.checkpoint.checkpoint.types.CheckpointGate": {
       "oneOf": [
         {
           "const": "G0"
@@ -87,7 +87,7 @@
           "type": "string"
         },
         "gate": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointGate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointGate"
         }
       },
       "required": [

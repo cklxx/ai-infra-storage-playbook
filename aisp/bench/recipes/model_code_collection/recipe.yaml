@@ -75,7 +75,7 @@ compatible_metrics:
   coverage: ["1.0.0"]
 
 acceptance:
-  checklist: ./acceptance_checklist.md
+  checklist: ./acceptance_checklist.viba.md
   gates: [G0, G1, G4]
 
 latest_run: null

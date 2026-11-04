@@ -41,7 +41,7 @@ SKIPPED = ("a function is no JSON value", "has no argument")
 
 def module_path(doc: Path) -> list[str]:
     parts = list(doc.relative_to(REPO).with_suffix("").parts)
-    parts[-1] = parts[-1].lower()
+    parts[-1] = parts[-1].lower().removesuffix(".viba")
     for part in parts:
         if not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", part):
             raise SystemExit(f"{doc}: {part!r} cannot be a module name")

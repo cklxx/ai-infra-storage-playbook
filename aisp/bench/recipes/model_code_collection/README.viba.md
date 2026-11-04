@@ -20,7 +20,7 @@ CheckAcceptance = recipe_collection_api.CheckAcceptance
 
 ## 背景
 
-本配方收集 1000 个以上可跑的推理模型代码、尽量配对训练代码，生产另外两个配方的原料：一份可复现、去重后、验证过能跑的 LLM 模型代码语料。给定清单与 commit，语料要能在新机器上重建出同样的文件集合；结构族、规模量级、注意力变体的覆盖矩阵要能计算。方法说明见 [`checkpoint/model_code_collection.md`](../../checkpoint/model_code_collection.md)，开放问题见同一篇文档的「开放问题」。
+本配方收集 1000 个以上可跑的推理模型代码、尽量配对训练代码，生产另外两个配方的原料：一份可复现、去重后、验证过能跑的 LLM 模型代码语料。给定清单与 commit，语料要能在新机器上重建出同样的文件集合；结构族、规模量级、注意力变体的覆盖矩阵要能计算。方法说明见 [`checkpoint/model_code_collection.viba.md`](../../checkpoint/model_code_collection.viba.md)，开放问题见同一篇文档的「开放问题」。
 
 ## types.viba
 
@@ -209,7 +209,7 @@ RecipeCollectionAcceptance =
   Object
   * $metrics (list[RecipeCollectionAcceptanceMetric] * { 七项验收指标：可跑模型数、可跑率、架构族覆盖、规模覆盖、注意力变体覆盖、训练代码配对率、语料可复现 })
   * $checker (str * { 覆盖矩阵与缺口清单的计算脚本：checks/check_coverage.py })
-  * $checklist (str * { 逐项确认的验收清单：acceptance_checklist.md })
+  * $checklist (str * { 逐项确认的验收清单：acceptance_checklist.viba.md })
   * $owner (str * { 负责人；见本目录 recipe.yaml 的 owner 字段；语料版本升级前必须由负责人确认覆盖缺口清单 })
 
 RecipeCollectionAcceptanceItem =
@@ -231,7 +231,7 @@ RecipeCollectionAcceptanceReport =
 
 1. 接着下载代码与配置并判定代码角色：白名单见方法文档的「只取代码与配置」，下载后计算每个文件的 `sha256`、记录仓库的当前 commit、校验文件数与清单一致，失败按网络、权限、不存在、许可未接受四类分别记录；对每个模型产出 `code_role` 与 `code_role_evidence`，证据不足时写 `unknown`，不要猜，`unknown` 计入覆盖缺口。
 2. 再做可跑性验证：用固定 rank 数（默认 2）初始化 mock 的进程组，每个 rank 单独起进程、分时占用同一张卡、跑一次前向，输入维度用配置允许的小值；记录 `yes` / `no` / `partial` 与失败步骤、错误摘要，超时统一设为 10 分钟并单独归类。
-3. 最后统计覆盖度并验收：用 `checks/check_coverage.py` 计算覆盖矩阵与缺口清单，按 [`acceptance_checklist.md`](acceptance_checklist.md) 逐项确认可跑模型数、可跑率、架构族覆盖、规模覆盖、注意力变体覆盖、训练代码配对率、语料可复现七项指标；语料版本升级前必须由负责人确认覆盖缺口清单，负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner` 字段。
+3. 最后统计覆盖度并验收：用 `checks/check_coverage.py` 计算覆盖矩阵与缺口清单，按 [`acceptance_checklist.viba.md`](acceptance_checklist.viba.md) 逐项确认可跑模型数、可跑率、架构族覆盖、规模覆盖、注意力变体覆盖、训练代码配对率、语料可复现七项指标；语料版本升级前必须由负责人确认覆盖缺口清单，负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner` 字段。
 
 ## apis.viba
 

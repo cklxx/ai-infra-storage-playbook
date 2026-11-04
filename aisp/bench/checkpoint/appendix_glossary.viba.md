@@ -17,7 +17,7 @@ Define = glossary_api.Define
 
 ## 背景
 
-本附录解释各篇文档里反复出现、但属于存储与推理领域而非本项目的词，按并行策略、模型结构、存储与 IO、旁路相关四类组织。项目自造词（评估集、配方、旁路、保真、回链）在 [`README.md`](../README.md) 的「术语」里，本附录不重复。读到不认识的词先查本附录，本附录没有的再去 README 查；两处都没有，就是文档的缺口，补进来。
+本附录解释各篇文档里反复出现、但属于存储与推理领域而非本项目的词，按并行策略、模型结构、存储与 IO、旁路相关四类组织。项目自造词（评估集、配方、旁路、保真、回链）在 [`README.viba.md`](../README.viba.md) 的「术语」里，本附录不重复。读到不认识的词先查本附录，本附录没有的再去 README 查；两处都没有，就是文档的缺口，补进来。
 
 ## types.viba
 
@@ -76,7 +76,7 @@ GlossaryDefinition = str * { 一个术语的定义，内容就是该术语取值
 
 ## 基本操作
 
-查一个词要两个操作：Lookup 查它属于哪一类，Define 查它的定义。Lookup 收一个 GlossaryTerm 取值，答一个 GlossaryCategory 取值，也就是并行策略、模型结构、存储与 IO、旁路相关四类里的哪一类。Define 收同一个 GlossaryTerm 取值，答一个 GlossaryDefinition，也就是这个词在「问题」里挂的那段说明。两个操作都只读：不修改术语表，也不新增词。附录里没列的词说明它属于项目自造词，按「背景」说的去 [`README.md`](../README.md) 的「术语」里查。
+查一个词要两个操作：Lookup 查它属于哪一类，Define 查它的定义。Lookup 收一个 GlossaryTerm 取值，答一个 GlossaryCategory 取值，也就是并行策略、模型结构、存储与 IO、旁路相关四类里的哪一类。Define 收同一个 GlossaryTerm 取值，答一个 GlossaryDefinition，也就是这个词在「问题」里挂的那段说明。两个操作都只读：不修改术语表，也不新增词。附录里没列的词说明它属于项目自造词，按「背景」说的去 [`README.viba.md`](../README.viba.md) 的「术语」里查。
 
 ## apis.viba
 

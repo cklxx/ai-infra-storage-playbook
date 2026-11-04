@@ -6,6 +6,7 @@
 
 ```bash public
 import aisp.bench.checkpoint.extension.types as extension
+import aisp.bench.metrics.coverage.types as coverage
 import aisp.bench.checkpoint.extension.apis as extension_api
 
 ExtensionCoverage = extension.ExtensionCoverage
@@ -24,31 +25,21 @@ Converge = extension_api.Converge
 
 ## types.viba
 
-问题形式化为 `extension` 模块：对象类型 `ExtensionCoverage`、`ExtensionCell`、`ExtensionExemption`、`ExtensionGap`、`ExtensionCandidate`、`ExtensionRegression` 与 `ExtensionVersion` 分别表示覆盖度矩阵、矩阵中的一个格子、一条豁免记录、一个缺口、一个候选用例、一次回归验证与一个评估集版本。枚举 `ExtensionAxis`、`ExtensionEmptyKind`、`ExtensionCandidateSource`、`ExtensionRegressionScope`、`ExtensionRegressionVerdict` 与 `ExtensionTrigger` 分别表示矩阵的轴、空格子的性质、候选的生成路径、回归的范围、回归的结论与闭环的触发条件。`ExtensionCoverage` 由 `ExtensionAxis` 的取值与若干 `ExtensionCell` 组成，`ExtensionCell` 的 `empty` 字段在格子为空时取 `ExtensionEmptyKind` 的一个取值，取 `not_needed` 时携带 `ExtensionExemption`；`ExtensionGap` 指向 `empty` 为 `should_exist` 的 `ExtensionCell` 并携带优先级。闭环由 `ExtensionTrigger` 的一个取值启动；`ExtensionCandidate` 的 `source` 字段取 `ExtensionCandidateSource` 的一个取值；`ExtensionRegression` 记录 `ExtensionCandidate`、`ExtensionRegressionScope` 与 `ExtensionRegressionVerdict` 各一个取值；`ExtensionVersion` 由回归结论收敛得到。
+问题形式化为 `extension` 模块：对象类型 `ExtensionCoverage`、`ExtensionCell`、`ExtensionExemption`、`ExtensionGap`、`ExtensionCandidate`、`ExtensionRegression` 与 `ExtensionVersion` 分别表示覆盖度矩阵、矩阵中的一个格子、一条豁免记录、一个缺口、一个候选用例、一次回归验证与一个评估集版本。枚举 `coverage.CoverageAxis`、`ExtensionEmptyKind`、`ExtensionCandidateSource`、`ExtensionRegressionScope`、`ExtensionRegressionVerdict` 与 `ExtensionTrigger` 分别表示矩阵的轴、空格子的性质、候选的生成路径、回归的范围、回归的结论与闭环的触发条件。`ExtensionCoverage` 由 `coverage.CoverageAxis` 的取值与若干 `ExtensionCell` 组成，`ExtensionCell` 的 `empty` 字段在格子为空时取 `ExtensionEmptyKind` 的一个取值，取 `not_needed` 时携带 `ExtensionExemption`；`ExtensionGap` 指向 `empty` 为 `should_exist` 的 `ExtensionCell` 并携带优先级。闭环由 `ExtensionTrigger` 的一个取值启动；`ExtensionCandidate` 的 `source` 字段取 `ExtensionCandidateSource` 的一个取值；`ExtensionRegression` 记录 `ExtensionCandidate`、`ExtensionRegressionScope` 与 `ExtensionRegressionVerdict` 各一个取值；`ExtensionVersion` 由回归结论收敛得到。
 
 ```bash types
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.metrics.coverage.types as coverage
 
-ExtensionAxis =
-  Oneof
-  | "arch_family" * { 模型结构轴：按 [model_code_collection.md](model_code_collection.md) 的架构族划分 }
-  | "model_scale" * { 参数量分桶，至少 6 个量级 }
-  | "attention" * { MHA / GQA / MQA / MLA / 线性注意力 / 滑动窗口 }
-  | "framework" * { vllm / sglang / deepinfer }
-  | "parallel" * { DP / TP / PP / EP 的代表组合 }
-  | "cluster" * { S0–S5；档位定义见 [scaling.md](scaling.md) 的 levels 模块 }
-  | "io_feature" * { 小请求密集 / 大块顺序 / 高并发 / 热点访问 / 突发 }
-  | "storage_backend" * { GPFS / HDFS / Alluxio / Ceph / JuiceFS }
-  | "storage_adapter" * { mooncake / torchstore / bytecheckpoint }
 
 ExtensionCoverage =
   Object
-  * $axes (list[ExtensionAxis] * { 矩阵的轴；由各配方的 metrics.yaml 定义，但必须包含「模型结构」与「系统规模」两个轴 })
+  * $axes (list[coverage.CoverageAxis] * { 矩阵的轴；由各配方的 metrics.yaml 定义，但必须包含「模型结构」与「系统规模」两个轴 })
   * $cells (list[ExtensionCell] * { 矩阵的每个格子；每个格子记录用例数、最近一次通过时间、最近一次失败 })
 
 ExtensionCell =
   Object
-  * $axes (dict[str, str] * { 这个格子的位置：轴名到取值，轴名取自 ExtensionAxis })
+  * $axes (dict[str, str] * { 这个格子的位置：轴名到取值，轴名取自 coverage.CoverageAxis })
   * $cases (int * { 这个格子里的用例数 })
   * $last_passed_at ((str | nil) * { 最近一次通过时间；从未通过给 nil })
   * $last_failed_at ((str | nil) * { 最近一次失败时间；从未失败给 nil })

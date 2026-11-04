@@ -27,4 +27,18 @@ FidelityLevel =
   | "L3" * { 在 L2 之上，时序与并发也与真实运行一致，跨节点传输是真实的 }
 ```
 
+## 基本操作
+
+只有一个操作：选手段。给出这个配方要求的保真等级与可接受的成本，在四种手段里挑一个。
+
 ## apis.viba
+
+```bash apis
+import aisp.bench.checkpoint.bypass.types as bypass
+
+Choose =
+     bypass.BypassMethod
+  <- $needed (bypass.FidelityLevel * { 这个配方要求请求序列达到的保真等级 })
+  <- $budget (str * { 可接受的成本：低、中、高 })
+  <- { 在四种手段里挑一个：成本与保真度递增，达到要求的保真等级里挑成本最低的；L3 只用于对齐基准，不用于批量运行 }
+```

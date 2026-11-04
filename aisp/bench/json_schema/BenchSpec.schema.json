@@ -296,7 +296,7 @@
           "const": "requirements.txt"
         },
         {
-          "const": "CONTRIBUTING.md"
+          "const": "CONTRIBUTING.viba.md"
         },
         {
           "const": "CHANGELOG.md"

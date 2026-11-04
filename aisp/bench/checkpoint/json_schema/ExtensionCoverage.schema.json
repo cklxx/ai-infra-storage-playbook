@@ -10,7 +10,7 @@
         "axes": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionAxis"
+            "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageAxis"
           }
         },
         "cells": {
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.extension.types.ExtensionAxis": {
+    "aisp.bench.metrics.coverage.types.CoverageAxis": {
       "oneOf": [
         {
           "const": "arch_family"

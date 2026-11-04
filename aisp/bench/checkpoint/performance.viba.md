@@ -71,4 +71,28 @@ MetricGE[Value] =
   * $threshold Value
 ```
 
+## 基本操作
+
+1. 测量：一次运行跑完，从它记下的观测里算出六个指标，每项一条 `CkptSli`。
+2. 判定：把每条指标的取值填进对应的 `CkptSlo`，与部署方给的阈值比较，答通过、失败或不可比。
+
+## apis.viba
+
+```bash apis
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.performance.types as sli
+import aisp.bench.checkpoint.performance.slo as slo
+
+Measure =
+     list[sli.CkptSli]
+  <- $run (ckpt_sample.RunRecord * { 一次已经跑完、观测已开的运行 })
+  <- { 从这次运行记下的观测里算出六个指标：写入时长、训练停顿、恢复时长、写入吞吐、元数据提交、写请求 P99；返回每项一条，没有阈值 }
+
+Judge =
+     list[slo.CkptSlo]
+  <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
+  <- $policy (str * { 部署方给的阈值；每个指标一个，缺哪个就判不了哪个 })
+  <- { 逐指标填进对应的 CkptSlo，与阈值比较：落在阈值内答通过，否则答失败；阈值缺失时答不可比 }
+```
+
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

@@ -64,7 +64,7 @@ CheckScalingArgs =
 
 CheckScalingInput =
   Object
-  * $levels (list[levels.Level] * { 逐级比较的级别，按 S0 起的顺序；级别定义见 scaling.md })
+  * $levels (list[levels.Level] * { 逐级比较的级别，按 S0 起的顺序；级别定义见 scaling.viba.md })
   * $invariants (dict[str, CheckScalingInvariant] * { 不变量名到这一条不变量的逐级数据 })
 
 CheckScalingInvariant =

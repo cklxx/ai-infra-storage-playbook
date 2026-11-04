@@ -76,7 +76,7 @@ MethodologyAttributionCause =
 MethodologyAlignment =
   Object
   * $within_tolerance (bool * { 选定度量项是否全部落在配方 metrics.yaml 标定的容差内 })
-  * $attribution (list[MethodologyAttributionCause] * { 差异超过容差时按枚举顺序逐项排除；归因结论写进配方的 README.md，不要只留在聊天记录里 })
+  * $attribution (list[MethodologyAttributionCause] * { 差异超过容差时按枚举顺序逐项排除；归因结论写进配方的 README.viba.md，不要只留在聊天记录里 })
 
 MethodologyScaleRule =
   Oneof
@@ -85,7 +85,7 @@ MethodologyScaleRule =
 
 MethodologyScaling =
   Object
-  * $level (levels.Level * { 这次放大到的档位，级别的定义见 scaling.md })
+  * $level (levels.Level * { 这次放大到的档位，级别的定义见 scaling.viba.md })
   * $invariants_kept (bool * { 这一级的不变量是否都在容差内保持 })
   * $attribution (str * { 偏差归因；没有偏差写 none，不留空 })
 
@@ -136,4 +136,19 @@ MethodologyFailureMode =
   | "communication_mock" * { 现象：rank 间不同步，交织时序消失；处置：关键路径改用真实通信，或把该路径排除在结论之外 }
 ```
 
+## 基本操作
+
+只有一个操作：比一个度量项。给出一项的容差与两个数值，按这一项的统计量判定是否落在容差内。
+
 ## apis.viba
+
+```bash apis
+import aisp.bench.checkpoint.measures.types as measures
+
+CompareTolerance =
+     bool
+  <- $tolerance (measures.MethodologyTolerance * { 这一项的统计量与容差 })
+  <- $observed (float * { 旁路运行测得的数值 })
+  <- $expected (float * { 真实运行测得的数值 })
+  <- { 按这一项的统计量比较两个数：落在容差内答 true；超出时按归因顺序逐项排除，归因结论写进配方的 README.viba.md }
+```

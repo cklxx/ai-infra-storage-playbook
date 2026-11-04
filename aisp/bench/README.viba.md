@@ -20,7 +20,7 @@ ExtendBench = bench_api.ExtendBench
 
 ## 背景
 
-本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序；它的产物是 **bench**，即两类带版本的静态评估集——模型代码收集与 checkpoint 存储评估。评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为；评估集本身不会变化，让它变化的是这里的配方、指标与扩展流程。dataset 与 kvcache 待做（TODO）；完整指标表、SLO 的配置结构与版本比较方法见 [`checkpoint/performance.md`](checkpoint/performance.md)。
+本项目是 **playbook**：生成、运行与校验 AI Infra 存储传输侧评估集的程序；它的产物是 **bench**，即两类带版本的静态评估集——模型代码收集与 checkpoint 存储评估。评估用**真实模型代码产生的 IO**，测存储与传输在训练、推理、集群规模下的行为；评估集本身不会变化，让它变化的是这里的配方、指标与扩展流程。dataset 与 kvcache 待做（TODO）；完整指标表、SLO 的配置结构与版本比较方法见 [`checkpoint/performance.viba.md`](checkpoint/performance.viba.md)。
 
 ## types.viba
 
@@ -98,14 +98,14 @@ BenchRepoArea =
   | "decisions" * { 关键取舍的决策记录（ADR） }
   | "examples" * { 最小可跑样例与负例 }
   | "requirements.txt" * { 校验脚本的依赖 }
-  | "CONTRIBUTING.md" * { 新增配方、修改指标、记录决策的流程 }
+  | "CONTRIBUTING.viba.md" * { 新增配方、修改指标、记录决策的流程 }
   | "CHANGELOG.md" * { 手册自身的版本变更 }
 
 BenchLayout =
   Object
   * $root (str * { 根目录 aisp/bench/，playbook 与 bench 评估集都在这一个目录下 })
-  * $areas (list[BenchRepoArea] * { 根目录下的目录与文件；requirements.txt、CONTRIBUTING.md、CHANGELOG.md 是文件，其余是目录 })
-  * $method_docs (list[str] * { checkpoint/ 下的文档：principles.md、methodology.md、model_code_collection.md、checkpoint.md、ckpt_sample.md、scaling.md、evaluation_service.md、extension.md、pitfalls.md、performance.md、appendix_glossary.md })
+  * $areas (list[BenchRepoArea] * { 根目录下的目录与文件；requirements.txt、CONTRIBUTING.viba.md、CHANGELOG.md 是文件，其余是目录 })
+  * $method_docs (list[str] * { checkpoint/ 下的文档：principles.viba.md、methodology.viba.md、model_code_collection.viba.md、checkpoint.viba.md、ckpt_sample.viba.md、scaling.viba.md、evaluation_service.viba.md、extension.viba.md、pitfalls.viba.md、performance.viba.md、appendix_glossary.viba.md })
   * $recipe_dirs (list[str] * { recipes/ 下的目录：_template/、model_code_collection/、checkpoint/ })
 
 BenchRunArtifacts =
@@ -153,28 +153,37 @@ BenchGapKind =
 跑一次评估：准备一份运行请求，定下跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子，交给评估服务按配方执行。
 
 1. 校验仓库：在 `aisp/bench` 下安装 `requirements.txt` 的依赖，先跑 `scripts/validate_repo.py` 检查配方、指标登记表与 schema 的一致性，再跑 `scripts/run_checks.py` 在同一套检查之外加上 selftest 与 `examples/` 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过，阈值只从 `recipes/*/metrics.yaml` 读。
-2. 扩展评估集：评估集是静态产物，不会自己变化；新模型、新框架或新并行策略出现后，由 playbook 发现覆盖缺口并生成新版本，流程见 [`checkpoint/extension.md`](checkpoint/extension.md)，新增或修改配方前先读 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
+2. 扩展评估集：评估集是静态产物，不会自己变化；新模型、新框架或新并行策略出现后，由 playbook 发现覆盖缺口并生成新版本，流程见 [`checkpoint/extension.viba.md`](checkpoint/extension.viba.md)，新增或修改配方前先读 [`CONTRIBUTING.viba.md`](CONTRIBUTING.viba.md)。
 
 ## apis.viba
 
 ```bash apis
 import aisp.bench.readme.types as bench
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.evaluation_service.apis as service_api
+import aisp.bench.checkpoint.extension.apis as extension_api
+import aisp.bench.checks.readme.apis as checks_api
 
 RunBench =
      bench.BenchRun
   <- $spec (ckpt_sample.RunSpec * { 一份运行请求：跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子 })
+  <- $submit (service_api.Submit * { 请求交给它入队，它交回的运行标识是后面取产物的钥匙 })
+  <- $collect (service_api.Collect * { 运行结束后用它取回五份产物与回链；回链原样写进配方的 latest_run })
   <- { 跑一次评估：把请求交给评估服务，按配方执行；产出 runs/<run-id>/ 下的运行清单、SLI、度量值、对齐结果与人读报告；仓库里只在配方的 latest_run 留回链。返回运行标识与状态、五份产物与回链 }
 
 CheckRepo =
      bench.BenchCheckReport
   <- $scope (bench.BenchCheckScope * { 校验范围：repo 只检查配方、指标登记表与 schema 的一致性；full 在这之外加 selftest 与 examples/ 样例 })
+  <- $run (checks_api.RunCheck * { scope 为 repo 时只跑 validate_repo 一个脚本，它的输出与退出码就是这次校验的结果 })
+  <- $run_all (checks_api.RunAllChecks * { scope 为 full 时跑全部脚本；任一脚本不通过，这次校验就不通过 })
   <- { 校验仓库：scope 为 repo 时跑 scripts/validate_repo.py，检查配方、指标登记表与 schema 的一致性；scope 为 full 时跑 scripts/run_checks.py，在前面那项之外加上 selftest 与 examples/ 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过；阈值只从 recipes/*/metrics.yaml 读。返回退出码、没有通过的检查项与缺的依赖 }
 
 ExtendBench =
      bench.BenchEvalSet
   <- $current (bench.BenchEvalSet * { 当前版本的评估集 })
   <- $gaps (list[bench.BenchGapKind] * { 这次发现的覆盖缺口：新模型、新框架、新并行策略 })
+  <- $find_gap (extension_api.FindGap * { 空白格子交给它扫，它交回带优先级的缺口清单；新版本评估集按这份清单补格子 })
+  <- $propose (extension_api.ProposeCandidate * { 缺口交给它生成候选用例；跑得起来的候选才进新版本 })
   <- { 扩展评估集：评估集是静态产物，不会自己变化；由 playbook 发现覆盖缺口并生成新版本。返回新版本的评估集 }
 ```
 
@@ -215,6 +224,6 @@ BenchFlow =
   * $backlink (bench.BenchBacklink * { 每次运行结束后，仓库里只留回链；产物本身在对象存储 })
 ```
 
-评估方法见 [`checkpoint/methodology.md`](checkpoint/methodology.md)，评估服务见 [`checkpoint/evaluation_service.md`](checkpoint/evaluation_service.md)，扩展流程见 [`checkpoint/extension.md`](checkpoint/extension.md)。判断这套 bench 能不能用见 [`checkpoint/principles.md`](checkpoint/principles.md) 与 [`metrics/coverage.md`](metrics/coverage.md)，验收结论的口径与实现见 [`metrics/`](metrics/README.md) 与 [`checks/README.md`](checks/README.md)，评估这套 playbook 自身见 [`meta-evaluation/method.md`](meta-evaluation/method.md)，领域词见 [`checkpoint/appendix_glossary.md`](checkpoint/appendix_glossary.md)。
+评估方法见 [`checkpoint/methodology.viba.md`](checkpoint/methodology.viba.md)，评估服务见 [`checkpoint/evaluation_service.viba.md`](checkpoint/evaluation_service.viba.md)，扩展流程见 [`checkpoint/extension.viba.md`](checkpoint/extension.viba.md)。判断这套 bench 能不能用见 [`checkpoint/principles.viba.md`](checkpoint/principles.viba.md) 与 [`metrics/coverage.viba.md`](metrics/coverage.viba.md)，验收结论的口径与实现见 [`metrics/`](metrics/README.viba.md) 与 [`checks/README.viba.md`](checks/README.viba.md)，评估这套 playbook 自身见 [`meta-evaluation/method.md`](meta-evaluation/method.md)，领域词见 [`checkpoint/appendix_glossary.viba.md`](checkpoint/appendix_glossary.viba.md)。
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

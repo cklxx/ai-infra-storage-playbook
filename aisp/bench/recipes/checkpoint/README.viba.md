@@ -5,6 +5,7 @@
 只做转发：从 `## 问题` 的 `recipe_checkpoint` 模块与 `## 接口` 的 `recipe_checkpoint_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `RecipeCheckpointSpec`、`RecipeCheckpointBypass` 与 `RecipeCheckpointProducts`，操作 `RunBaseline`、`PrepareBypass`、`Align`、`Scale` 与 `Register`；先看 `RecipeCheckpointSpec` 与 `RecipeCheckpointBypass`，再按 `RunBaseline`、`PrepareBypass`、`Align`、`Scale`、`Register` 的顺序读到 `RecipeCheckpointProducts`。
 
 ```bash public
+import aisp.bench.checkpoint.checkpoint.types as checkpoint
 import aisp.bench.recipes.checkpoint.readme.types as recipe_checkpoint
 import aisp.bench.recipes.checkpoint.readme.apis as recipe_checkpoint_api
 
@@ -20,13 +21,14 @@ Register = recipe_checkpoint_api.Register
 
 ## 背景
 
-训练侧存储评估，评估对象是训练框架的 checkpoint 写入与读取两条路径，计算部分被旁路。目标是在真实存储与传输路径上测出训练任务产生的 IO 特征，不在合成负载上测，并把结论从单机小参数外推到十万卡。方法说明见 [`checkpoint/checkpoint.md`](../../checkpoint/checkpoint.md)。
+训练侧存储评估，评估对象是训练框架的 checkpoint 写入与读取两条路径，计算部分被旁路。目标是在真实存储与传输路径上测出训练任务产生的 IO 特征，不在合成负载上测，并把结论从单机小参数外推到十万卡。方法说明见 [`checkpoint/checkpoint.viba.md`](../../checkpoint/checkpoint.viba.md)。
 
 ## types.viba
 
-问题形式化为 `recipe_checkpoint` 模块，概念分成类型与枚举两类：承载字段的结构写成对象类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`RecipeCheckpointSpec` 是入口类型，五个字段分别收下输入 `RecipeCheckpointInput`、配置要求 `RecipeCheckpointConfig`、`RecipeCheckpointStage` 的列表、产出 `RecipeCheckpointProducts` 与 `RecipeCheckpointAcceptanceItem` 的列表；`RecipeCheckpointInput` 用 `RecipeCheckpointVersionedName` 描述框架、storage.backend 与 storage.adapter，用 `RecipeCheckpointParallel` 描述四个并行度数，`RecipeCheckpointConfig` 的并行策略覆盖与写入方式分别取 `RecipeCheckpointParallelLead` 与 `RecipeCheckpointWriteMode` 这两个枚举的列表。步骤、阶段门与验收项写成枚举：`RecipeCheckpointStep` 给出六个步骤，`RecipeCheckpointGate` 给出六个阶段门，`RecipeCheckpointAcceptanceItem` 给出验收项，`RecipeCheckpointStage` 把 `RecipeCheckpointStep` 的一个取值与 `RecipeCheckpointGate` 的一个取值配成一对；`RecipeCheckpointBypass` 由 `RecipeCheckpointBypassStep` 的列表、`fidelity.FidelityBoundary` 的列表与一条 `ckpt_sample.RunRecord` 组成。判定与放大的结果各有类型：`RecipeCheckpointAlignment` 由 `RecipeCheckpointAlignmentItem` 的列表与一个 `bool` 结论组成，`RecipeCheckpointScaling` 由 `RecipeCheckpointParameterScaling` 与 `RecipeCheckpointClusterScaling` 组成，两者的检查分别取 `RecipeCheckpointParameterScalingCheck` 与 `RecipeCheckpointClusterScalingCheck` 的列表，并各带一个 `RecipeCheckpointGate`；`RecipeCheckpointRegistration` 记录登记结果，`RecipeCheckpointProducts` 的四个字段都是 `str`，给出四份产出的位置。
+问题形式化为 `recipe_checkpoint` 模块，概念分成类型与枚举两类：承载字段的结构写成对象类型，取值只能落在有限集合里的词汇写成 Oneof 枚举。`RecipeCheckpointSpec` 是入口类型，五个字段分别收下输入 `RecipeCheckpointInput`、配置要求 `RecipeCheckpointConfig`、`RecipeCheckpointStage` 的列表、产出 `RecipeCheckpointProducts` 与 `RecipeCheckpointAcceptanceItem` 的列表；`RecipeCheckpointInput` 用 `RecipeCheckpointVersionedName` 描述框架、storage.backend 与 storage.adapter，用 `RecipeCheckpointParallel` 描述四个并行度数，`RecipeCheckpointConfig` 的并行策略覆盖与写入方式分别取 `RecipeCheckpointParallelLead` 与 `RecipeCheckpointWriteMode` 这两个枚举的列表。步骤、阶段门与验收项写成枚举：`RecipeCheckpointStep` 给出六个步骤，`checkpoint.CheckpointGate` 给出六个阶段门，`RecipeCheckpointAcceptanceItem` 给出验收项，`RecipeCheckpointStage` 把 `RecipeCheckpointStep` 的一个取值与 `checkpoint.CheckpointGate` 的一个取值配成一对；`RecipeCheckpointBypass` 由 `RecipeCheckpointBypassStep` 的列表、`fidelity.FidelityBoundary` 的列表与一条 `ckpt_sample.RunRecord` 组成。判定与放大的结果各有类型：`RecipeCheckpointAlignment` 由 `RecipeCheckpointAlignmentItem` 的列表与一个 `bool` 结论组成，`RecipeCheckpointScaling` 由 `RecipeCheckpointParameterScaling` 与 `RecipeCheckpointClusterScaling` 组成，两者的检查分别取 `RecipeCheckpointParameterScalingCheck` 与 `RecipeCheckpointClusterScalingCheck` 的列表，并各带一个 `checkpoint.CheckpointGate`；`RecipeCheckpointRegistration` 记录登记结果，`RecipeCheckpointProducts` 的四个字段都是 `str`，给出四份产出的位置。
 
 ```bash types
+import aisp.bench.checkpoint.checkpoint.types as checkpoint
 import aisp.bench.checkpoint.fidelity.types as fidelity
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
@@ -94,19 +96,11 @@ RecipeCheckpointStep =
   | "scale_cluster" * { 第 5 步：固定参数量，把集群规模放到万卡，再外推到十万卡 }
   | "register" * { 第 6 步：回链写入 latest_run，更新覆盖度矩阵，未解决的偏差进坑表 }
 
-RecipeCheckpointGate =
-  Oneof
-  | "G0" * { 第 1 步的通过条件：能跑完一次前向、一次反向、一次 optimizer.step 与一次 checkpoint 写入 }
-  | "G1" * { 第 2 步的通过条件：旁路后跑完与第 1 步相同的流程，保真边界表填完 }
-  | "G2" * { 第 3 步的通过条件：全部分项在容差内或有条件通过 }
-  | "G3-a" * { 第 4 步的通过条件：G3-a }
-  | "G3-b" * { 第 5 步的通过条件：G3-b，偏差有归因 }
-  | "G4" * { 第 6 步的通过条件：G4 }
 
 RecipeCheckpointStage =
   Object
   * $step (RecipeCheckpointStep * { 六个步骤之一 })
-  * $gate (RecipeCheckpointGate * { 这一步的通过条件；按步骤顺序对应 G0、G1、G2、G3-a、G3-b、G4 })
+  * $gate (checkpoint.CheckpointGate * { 这一步的通过条件；按步骤顺序对应 G0、G1、G2、G3-a、G3-b、G4 })
 
 RecipeCheckpointProducts =
   Object
@@ -128,7 +122,7 @@ RecipeCheckpointAlignmentItem =
   * $metric (str * { 分项名称，按 metrics.yaml 的度量项 })
   * $within_tolerance (bool * { 这一项是否在容差内 })
   * $conditional (bool * { 这一项是否属于有条件通过 })
-  * $attribution (str * { 这一项的偏差归因；不通过项按 checkpoint/methodology.md 的归因顺序排查，结论写进本目录的 notes 或方法文档的坑表 })
+  * $attribution (str * { 这一项的偏差归因；不通过项按 checkpoint/methodology.viba.md 的归因顺序排查，结论写进本目录的 notes 或方法文档的坑表 })
 
 RecipeCheckpointAlignment =
   Object
@@ -144,7 +138,7 @@ RecipeCheckpointParameterScalingCheck =
 RecipeCheckpointParameterScaling =
   Object
   * $checks (list[RecipeCheckpointParameterScalingCheck] * { 第 4 步的三项检查 })
-  * $gate (RecipeCheckpointGate * { 通过条件 G3-a })
+  * $gate (checkpoint.CheckpointGate * { 通过条件 G3-a })
 
 RecipeCheckpointClusterScalingCheck =
   Oneof
@@ -157,7 +151,7 @@ RecipeCheckpointClusterScaling =
   Object
   * $checks (list[RecipeCheckpointClusterScalingCheck] * { 第 5 步的四项检查 })
   * $attribution (str * { 偏差归因；G3-b 的通过条件要求偏差有归因 })
-  * $gate (RecipeCheckpointGate * { 通过条件 G3-b })
+  * $gate (checkpoint.CheckpointGate * { 通过条件 G3-b })
 
 RecipeCheckpointScaling =
   Object
@@ -209,7 +203,7 @@ Align =
      recipe_checkpoint.RecipeCheckpointAlignment
   <- $real (ckpt_sample.RunRecord * { 不做旁路的运行；与旁路运行同一配置，观测配置相同 })
   <- $bypass (ckpt_sample.RunRecord * { 旁路运行；与真实运行同一配置，观测配置相同 })
-  <- { 第 3 步小规模对齐：同一配置跑两遍，一次真实、一次旁路，观测配置相同；按 metrics.yaml 的容差判定分项，不通过的项按 checkpoint/methodology.md 的归因顺序排查；全部在容差内或有条件通过取得 G2。返回分项对比与判定 }
+  <- { 第 3 步小规模对齐：同一配置跑两遍，一次真实、一次旁路，观测配置相同；按 metrics.yaml 的容差判定分项，不通过的项按 checkpoint/methodology.viba.md 的归因顺序排查；全部在容差内或有条件通过取得 G2。返回分项对比与判定 }
 
 Scale =
      recipe_checkpoint.RecipeCheckpointScaling
@@ -274,6 +268,6 @@ RecipeCheckpointFlow =
   * $acceptance (list[recipe_checkpoint.RecipeCheckpointAcceptanceItem] * { 五项验收目标 })
 ```
 
-验收里的 SLO 指标与判定顺序见 [`checkpoint/performance.md`](../../checkpoint/performance.md) 的 3.1 节。负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner`；开放问题见 [`checkpoint/checkpoint.md`](../../checkpoint/checkpoint.md) 的「开放问题」。
+验收里的 SLO 指标与判定顺序见 [`checkpoint/performance.viba.md`](../../checkpoint/performance.viba.md) 的 3.1 节。负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner`；开放问题见 [`checkpoint/checkpoint.viba.md`](../../checkpoint/checkpoint.viba.md) 的「开放问题」。
 
 这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

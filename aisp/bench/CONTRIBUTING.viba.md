@@ -31,28 +31,28 @@ RunChecks = contributing_api.RunChecks
 ContributingChangeKind =
   Oneof
   | "small_change" * { 可以小步改的内容：措辞、链接、排版、英文拼写；已有文档里补充例子、补充已知坑；修正事实错误，例如某个框架的接口已经改名。直接提改动即可，评审看两件事：是否与实际行为一致，是否与其它文档的口径冲突 }
-  | "must_review" * { 必须走评审的内容：修改任何指标口径、阈值、验收标准（metrics/、recipes/*/metrics.yaml）；新增或删除一个评估集配方（recipes/）；修改 checkpoint/methodology.md 中保真边界表或 IO pattern 度量项的定义；修改 schemas/；修改 meta-evaluation/playbook-metrics.yaml 的指标定义。改 methodology 那两处等于改三类评估集的共同定义，评审时要说明影响哪些配方、哪些历史结论失效 }
+  | "must_review" * { 必须走评审的内容：修改任何指标口径、阈值、验收标准（metrics/、recipes/*/metrics.yaml）；新增或删除一个评估集配方（recipes/）；修改 checkpoint/methodology.viba.md 中保真边界表或 IO pattern 度量项的定义；修改 schemas/；修改 meta-evaluation/playbook-metrics.yaml 的指标定义。改 methodology 那两处等于改三类评估集的共同定义，评审时要说明影响哪些配方、哪些历史结论失效 }
 
 ContributingReview =
   Object
   * $kind (ContributingChangeKind * { 这次改动属于哪一类；两类流程不同，小步改直接提，必须走评审的先评审再提 })
   * $metric_feasibility_confirmed (bool * { 是否已有一位熟悉存储侧的人确认口径可实现；只对必须走评审的改动要求 })
   * $threshold_calibration_confirmed (bool * { 是否已有一位实际跑过评估的人确认阈值有标定依据；只对必须走评审的改动要求 })
-  * $affected_recipes (list[str] * { 这次改动影响哪些配方；改 checkpoint/methodology.md 的保真边界表或 IO pattern 度量项定义时必须写 })
-  * $invalidated_conclusions (list[str] * { 这次改动让哪些历史结论失效；改 checkpoint/methodology.md 的保真边界表或 IO pattern 度量项定义时必须写 })
+  * $affected_recipes (list[str] * { 这次改动影响哪些配方；改 checkpoint/methodology.viba.md 的保真边界表或 IO pattern 度量项定义时必须写 })
+  * $invalidated_conclusions (list[str] * { 这次改动让哪些历史结论失效；改 checkpoint/methodology.viba.md 的保真边界表或 IO pattern 度量项定义时必须写 })
   * { 两位评审人的确认缺一项不算评审通过：至少一位熟悉存储侧的人确认口径可实现，至少一位实际跑过评估的人确认阈值有标定依据 }
 
 ContributingRecipeFileKind =
   Oneof
   | "recipe_yaml" * { recipes/<name>/recipe.yaml：bypass、fidelity_boundary、io_pattern_invariants、scaling_plan 四项不允许留空，理由写在 notes 里；目录从 recipes/_template/ 复制得到 }
   | "metrics_yaml" * { recipes/<name>/metrics.yaml：只选 metrics/registry.yaml 已登记的指标；阈值写在 tolerance，键必须是 check 支持的度量项名；需要新指标时先加文档与登记表，再走评审 }
-  | "readme" * { recipes/<name>/README.md：目标、输入、输出、步骤、验收标准、负责人；步骤要能照着做，不写"参考某某实现" }
+  | "readme" * { recipes/<name>/README.viba.md：目标、输入、输出、步骤、验收标准、负责人；步骤要能照着做，不写"参考某某实现" }
   | "checks" * { recipes/<name>/checks/：本配方专属校验，由该配方自己的 CI 任务运行；通用校验放 aisp/bench/checks/，scripts/run_checks.py 只跑通用校验 }
 
 ContributingRecipeFile =
   Object
   * $kind (ContributingRecipeFileKind * { 哪一份 })
-  * $path (str * { 位置：recipes/<name>/recipe.yaml、recipes/<name>/metrics.yaml、recipes/<name>/README.md、recipes/<name>/checks/ })
+  * $path (str * { 位置：recipes/<name>/recipe.yaml、recipes/<name>/metrics.yaml、recipes/<name>/README.viba.md、recipes/<name>/checks/ })
   * $content (str * { 这一份必须写清的内容；按 kind 的说明逐项写，写完再跑校验 })
 
 ContributingRecipeRequiredField =
@@ -65,7 +65,7 @@ ContributingRecipeRequiredField =
 ContributingRecipe =
   Object
   * $name (str * { 评估集名；目录名用小写连字符，例如 recipes/checkpoint/ })
-  * $files (list[ContributingRecipeFile] * { 配方的四份内容：recipe.yaml、metrics.yaml、README.md、checks/；从 recipes/_template/ 复制得到，逐份填写 })
+  * $files (list[ContributingRecipeFile] * { 配方的四份内容：recipe.yaml、metrics.yaml、README.viba.md、checks/；从 recipes/_template/ 复制得到，逐份填写 })
   * $required_fields (list[ContributingRecipeRequiredField] * { recipe.yaml 里不允许留空的四项；四项都要有取值 })
   * $notes (str * { recipe.yaml 的 notes：四项取值的理由写在这里 })
   * $changelog (str * { CHANGELOG.md：在 Unreleased 下加的一行 })
@@ -111,7 +111,7 @@ ContributingDecision =
   * $candidates (list[str] * { 候选：被考虑过的选项，一项一个 })
   * $decision (str * { 决定：选了哪个 })
   * $consequences (str * { 后果：这个决定带来什么 })
-  * { 模板见 decisions/README.md；写清楚背景、候选、决定、后果，不写过程流水账 }
+  * { 模板见 decisions/README.viba.md；写清楚背景、候选、决定、后果，不写过程流水账 }
 
 ContributingCheckScope =
   Oneof
@@ -137,7 +137,7 @@ ContributingCheckResult =
 
 ## 基本操作
 
-新增一个配方，先把 `recipes/_template/` 复制成 `recipes/<name>/`，目录名用小写连字符，例如 `recipes/checkpoint/`，然后填四份内容：`recipe.yaml` 的 `bypass`、`fidelity_boundary`、`io_pattern_invariants`、`scaling_plan` 四项不允许留空、理由写在 `notes` 里；`metrics.yaml` 只选 `metrics/registry.yaml` 已登记的指标，阈值写在 `tolerance`、键必须是 check 支持的度量项名；`README.md` 写目标、输入、输出、步骤、验收标准与负责人，步骤要能照着做，不写"参考某某实现"；本配方专属校验放 `recipes/<name>/checks/`，由该配方自己的 CI 任务运行，通用校验放 `aisp/bench/checks/`，`scripts/run_checks.py` 只跑通用校验。需要新指标时，先在 `metrics/` 写文档、在 `metrics/registry.yaml` 登记，再走评审；必须改旧口径时，在 `metrics/<name>.md` 里保留旧口径一节并标注弃用版本与原因，新口径用新版本号，同步更新所有引用该指标的 `recipes/*/metrics.yaml` 与配方的 `compatible_metrics`。会长期影响口径的取舍写成决策记录：编号递增，文件名 `NNNN-短描述.md`，写清背景、候选、决定、后果，不写过程流水账。最后在 `CHANGELOG.md` 的 `Unreleased` 下加一行，本地运行 `python3 scripts/run_checks.py`（含 `selftest` 负例），`examples/` 与 `examples/invalid/` 都要符合预期。
+新增一个配方，先把 `recipes/_template/` 复制成 `recipes/<name>/`，目录名用小写连字符，例如 `recipes/checkpoint/`，然后填四份内容：`recipe.yaml` 的 `bypass`、`fidelity_boundary`、`io_pattern_invariants`、`scaling_plan` 四项不允许留空、理由写在 `notes` 里；`metrics.yaml` 只选 `metrics/registry.yaml` 已登记的指标，阈值写在 `tolerance`、键必须是 check 支持的度量项名；`README.viba.md` 写目标、输入、输出、步骤、验收标准与负责人，步骤要能照着做，不写"参考某某实现"；本配方专属校验放 `recipes/<name>/checks/`，由该配方自己的 CI 任务运行，通用校验放 `aisp/bench/checks/`，`scripts/run_checks.py` 只跑通用校验。需要新指标时，先在 `metrics/` 写文档、在 `metrics/registry.yaml` 登记，再走评审；必须改旧口径时，在 `metrics/<name>.md` 里保留旧口径一节并标注弃用版本与原因，新口径用新版本号，同步更新所有引用该指标的 `recipes/*/metrics.yaml` 与配方的 `compatible_metrics`。会长期影响口径的取舍写成决策记录：编号递增，文件名 `NNNN-短描述.md`，写清背景、候选、决定、后果，不写过程流水账。最后在 `CHANGELOG.md` 的 `Unreleased` 下加一行，本地运行 `python3 scripts/run_checks.py`（含 `selftest` 负例），`examples/` 与 `examples/invalid/` 都要符合预期。
 
 ## apis.viba
 
@@ -147,7 +147,7 @@ import aisp.bench.contributing.types as contributing
 CreateRecipe =
      contributing.ContributingRecipe
   <- $name (str * { 评估集名；目录名用小写连字符，例如 recipes/checkpoint/ })
-  <- $files (list[contributing.ContributingRecipeFile] * { 四份内容：recipe.yaml、metrics.yaml、README.md、checks/ })
+  <- $files (list[contributing.ContributingRecipeFile] * { 四份内容：recipe.yaml、metrics.yaml、README.viba.md、checks/ })
   <- $notes (str * { recipe.yaml 里四项取值的理由 })
   <- { 建配方：把 recipes/_template/ 复制成 recipes/<name>/，写进四份内容，并在 CHANGELOG.md 的 Unreleased 下加一行；返回写好的配方。bypass、fidelity_boundary、io_pattern_invariants、scaling_plan 四项任何一项留空都不算建好配方 }
 
@@ -160,7 +160,7 @@ RegisterMetric =
 WriteDecision =
      contributing.ContributingDecision
   <- $decision (contributing.ContributingDecision * { 编号、短描述、类别、背景、候选、决定、后果 })
-  <- { 写决策：按 decisions/README.md 的模板写进 decisions/NNNN-短描述.md，编号递增；只有必须写 ADR 的四类情况才走这一步，日常改动不写 }
+  <- { 写决策：按 decisions/README.viba.md 的模板写进 decisions/NNNN-短描述.md，编号递增；只有必须写 ADR 的四类情况才走这一步，日常改动不写 }
 
 RunChecks =
      list[contributing.ContributingCheckResult]

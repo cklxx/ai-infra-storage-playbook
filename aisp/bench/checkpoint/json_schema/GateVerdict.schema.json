@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/GateVerdict.schema.json",
+  "title": "GateVerdict",
+  "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.GateVerdict",
+  "$defs": {
+    "aisp.bench.checkpoint.gates.types.GateVerdict": {
+      "type": "object",
+      "properties": {
+        "gate": {
+          "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
+        },
+        "passed": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "gate",
+        "passed",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.checkpoint.gates.types.Gate": {
+      "oneOf": [
+        {
+          "const": "G0"
+        },
+        {
+          "const": "G1"
+        },
+        {
+          "const": "G2"
+        },
+        {
+          "const": "G3"
+        },
+        {
+          "const": "G4"
+        }
+      ]
+    }
+  }
+}
