@@ -52,7 +52,7 @@ ProbeRunnable = model_code_collection_api.ProbeRunnable
 模型代码收集被形式化成一份清单：一个模型一条 `CollectionManifestEntry`。取值只能落在有限集合里的概念写成枚举：`CollectionSource` 是一个枚举，`hub_api` 与 `own_registry` 是它的取值，说明这个模型从哪类来源收进来；`CollectionFilter`、`CollectionLicenseState`、`CollectionCodeRole`、`CollectionDedupDecision`、`CollectionRunnableState`、`CollectionPairingKind` 同为枚举，分别表示筛选条件、许可证是否声明、代码角色、去重决定、可跑性结论与训练代码配对规则。抓取、去重、验证与配对各自的产出写成类型：`CollectionDownload` 由 `CollectionCodeFile` 组成，`CollectionFingerprint` 分成 `CollectionConfigFingerprint` 与 `CollectionCodeFingerprint` 两层，`CollectionDedupRecord`、`CollectionRunnableRecord`、`CollectionTrainingPairing` 依次承载去重、可跑性与训练代码配对的结论，并作为 `CollectionManifestEntry` 的字段。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.sample.public as sample
 
 CollectionSource =
   Oneof
@@ -70,7 +70,7 @@ CollectionFilter =
 
 CollectionManifestEntry =
   Object
-  * $model (ckpt_sample.Model * { 模型的标识与代码 commit；同一 model id 只留一个 revision })
+  * $model (sample.Model * { 模型的标识与代码 commit；同一 model id 只留一个 revision })
   * $source (CollectionSource * { 这个模型从哪个来源收进来 })
   * $license (CollectionLicense * { 许可证；决定代码能否入库、能否被下游使用 })
   * $params_b (float * { 参数量，单位 B，从配置里推断；要覆盖从 0.1B 到 1T 的多个量级 })
@@ -228,7 +228,7 @@ CollectionDedupRecord =
   Object
   * $group (str * { 去重分组：同一 architectures 且代码层关键调用序列一致的模型同组；去重只作用于同一评估集内部，训练侧与推理侧关心的结构维度不同，不能跨评估集删 })
   * $decision (CollectionDedupDecision * { 这个样本是保留还是丢弃 })
-  * $dropped_by ((ckpt_sample.Model | nil) * { 丢弃时指向代表样本；保留时给 nil })
+  * $dropped_by ((sample.Model | nil) * { 丢弃时指向代表样本；保留时给 nil })
 
 CollectionRunnableState =
   Oneof

@@ -6,16 +6,16 @@ bench 要回答一个问题：在一批真实的模型代码上，checkpoint 写
 
 ## public.viba
 
-先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Judge`、`Compare`、`FindGaps` 六个操作；样本与运行直接用 `ckpt_sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
+先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Judge`、`Compare`、`FindGaps` 六个操作；样本与运行直接用 `sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
 
 ```bash public
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.sample.public as sample
 import aisp.bench.checkpoint.readme.types as ckpt_bench
 import aisp.bench.checkpoint.readme.apis as ckpt_bench_api
 
 Bench = ckpt_bench.Bench
-RunSpec = ckpt_sample.RunSpec
-RunRecord = ckpt_sample.RunRecord
+RunSpec = sample.RunSpec
+RunRecord = sample.RunRecord
 Collect = ckpt_bench_api.Collect
 PickSamples = ckpt_bench_api.PickSamples
 Execute = ckpt_bench_api.Execute
@@ -29,14 +29,14 @@ FindGaps = ckpt_bench_api.FindGaps
 bench 由一个语料、一批样本、几套存储与它们跑出来的运行组成；一条样本是一条 `RunSpec`，一次运行是一条 `RunRecord`。这里只定义 bench 自己的东西：整体 `Bench` 与缺口 `Gap`。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.sample.public as sample
 
 Bench =
   Object
-  * $corpus (list[ckpt_sample.Model] * { 真实模型代码，从平台上收，按 id + commit 钉死 })
-  * $samples (list[ckpt_sample.RunSpec] * { 从语料里挑出的用例：模型代码 + 并行配置 + 负载 })
-  * $storages (list[ckpt_sample.StorageLayer] * { 被评的存储两层 })
-  * $runs (list[ckpt_sample.RunRecord] * { 每条样本在每个存储版本上跑一次 })
+  * $corpus (list[sample.Model] * { 真实模型代码，从平台上收，按 id + commit 钉死 })
+  * $samples (list[sample.RunSpec] * { 从语料里挑出的用例：模型代码 + 并行配置 + 负载 })
+  * $storages (list[sample.StorageLayer] * { 被评的存储两层 })
+  * $runs (list[sample.RunRecord] * { 每条样本在每个存储版本上跑一次 })
   * $gaps (list[Gap] * { 没覆盖到、需要补的地方 })
 
 Gap =
@@ -57,10 +57,10 @@ Gap =
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.sample.public as sample
 import aisp.bench.checkpoint.performance.public as sli
 import aisp.bench.checkpoint.readme.types as ckpt_bench
-import aisp.bench.checkpoint.checkpoint.public as checkpoint_api
+import aisp.bench.checkpoint.ckpt_bypass_plan.public as ckpt_bypass_plan_api
 import aisp.bench.checkpoint.measures.public as measures_api
 import aisp.bench.checkpoint.observation.public as observation_api
 import aisp.bench.checkpoint.scaling.public as scaling_api
@@ -68,7 +68,7 @@ import aisp.bench.checkpoint.model_code_collection.public as collection_api
 import aisp.bench.metrics.coverage.public as coverage_api
 
 Collect =
-     list[ckpt_sample.Model]
+     list[sample.Model]
   <- {
     从平台抓模型代码，按结构去重，跑一遍确认能跑
   }
@@ -77,8 +77,8 @@ Collect =
   <- $probe (collection_api.ProbeRunnable * { 跑一遍：留下的每条记录由它起单 rank 进程跑一次前向或一次预填充，跑不起来的在这里被剔掉；剩下的记录才作为 Model 交回 })
 
 PickSamples =
-     list[ckpt_sample.RunSpec]
-  <- $corpus (list[ckpt_sample.Model] * { 可用的模型代码 })
+     list[sample.RunSpec]
+  <- $corpus (list[sample.Model] * { 可用的模型代码 })
   <- $coverage (coverage_api.CoverageManifest * { 覆盖度清单：配方声明的轴与已有格子 })
   <- {
     按要覆盖的格子挑模型，配好并行与负载
@@ -87,15 +87,15 @@ PickSamples =
   <- $level (scaling_api.GetLevel * { 每条用例的拓扑交给它落到 S0 到 S5 的哪一级；并行配置与负载按它交回的档位配 })
 
 Execute =
-     ckpt_sample.RunRecord
-  <- $spec (ckpt_sample.RunSpec * { 一条用例 })
+     sample.RunRecord
+  <- $spec (sample.RunSpec * { 一条用例 })
   <- {
     旁路计算，保留 checkpoint 写入与读取，跑一次，记 IO 与 SLI
   }
-  <- $prepare (checkpoint_api.PrepareBypass * { 它交回的五步做法与四条约束决定这次怎么旁路：模型在 meta device 上建，反向与 optimizer 换占位，checkpoint 写入原样保留 })
+  <- $prepare (ckpt_bypass_plan_api.PrepareBypass * { 它交回的五步做法与四条约束决定这次怎么旁路：模型在 meta device 上建，反向与 optimizer 换占位，checkpoint 写入原样保留 })
   <- $collect (observation_api.Collect * { 开跑前先让它开观测，trace 才有来源；它交回实际开的层，少于两层这次运行就不算数 })
-  <- $measure (sli.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
-  <- $run (ckpt_sample.Execute * { 请求交给它同步跑到结束；它交回的四份产物就是这条运行记录的产物 })
+  <- $measure (sample.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
+  <- $run (sample.Execute * { 请求交给它同步跑到结束；它交回的四份产物就是这条运行记录的产物 })
 
 Judge =
      list[sli.CkptSlo]
@@ -108,8 +108,8 @@ Judge =
 
 Compare =
      str
-  <- $a (ckpt_sample.RunRecord * { 旧存储版本的运行 })
-  <- $b (ckpt_sample.RunRecord * { 新存储版本的运行 })
+  <- $a (sample.RunRecord * { 旧存储版本的运行 })
+  <- $b (sample.RunRecord * { 新存储版本的运行 })
   <- {
     同一份负载，逐指标比差值，只允许存储两层里有一层不同；返回比较结果的位置
   }
@@ -117,8 +117,8 @@ Compare =
 
 FindGaps =
      list[ckpt_bench.Gap]
-  <- $runs (list[ckpt_sample.RunRecord] * { 已有的运行 })
-  <- $corpus (list[ckpt_sample.Model] * { 语料 })
+  <- $runs (list[sample.RunRecord] * { 已有的运行 })
+  <- $corpus (list[sample.Model] * { 语料 })
   <- {
     看哪些模型族、规模、负载还没有样本，登记成缺口
   }

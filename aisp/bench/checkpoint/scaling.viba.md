@@ -36,12 +36,12 @@ Level =
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.sample.public as sample
 import aisp.bench.checkpoint.scaling.types as levels
 
 GetLevel =
      levels.Level
-  <- $config (ckpt_sample.SampleConfigBase * { 样本配置 })
+  <- $config (sample.SampleConfigBase * { 样本配置 })
   <- {
     导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给
   }

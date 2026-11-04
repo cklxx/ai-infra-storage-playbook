@@ -1,20 +1,20 @@
-# Checkpoint 存储评估
+# checkpoint 旁路方案
 
 ## 需求背景
 
-checkpoint 评估的特殊之处在旁路怎么接、并行怎么保持真实：五步做法与四条约束决定一次旁路是否可信。这套做法从这里发布，跑一次时按它执行。
+一次旁路能否代表真实运行，取决于怎么接、并行怎么保持真实：五步做法与四条约束决定这次旁路是否可信。这套做法从这里发布，跑一次时按它执行。
 
 ## public.viba
 
 ```bash public
-import aisp.bench.checkpoint.checkpoint.types as checkpoint
-import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
+import aisp.bench.checkpoint.ckpt_bypass_plan.types as ckpt_bypass_plan
+import aisp.bench.checkpoint.ckpt_bypass_plan.apis as ckpt_bypass_plan_api
 
-CheckpointParallel = checkpoint.CheckpointParallel
-CheckpointBypassStep = checkpoint.CheckpointBypassStep
-CheckpointBypassConstraint = checkpoint.CheckpointBypassConstraint
-CheckpointBypassPlan = checkpoint.CheckpointBypassPlan
-PrepareBypass = checkpoint_api.PrepareBypass
+CheckpointParallel = ckpt_bypass_plan.CheckpointParallel
+CheckpointBypassStep = ckpt_bypass_plan.CheckpointBypassStep
+CheckpointBypassConstraint = ckpt_bypass_plan.CheckpointBypassConstraint
+CheckpointBypassPlan = ckpt_bypass_plan.CheckpointBypassPlan
+PrepareBypass = ckpt_bypass_plan_api.PrepareBypass
 ```
 
 ## types.viba
@@ -57,16 +57,16 @@ CheckpointBypassPlan =
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.checkpoint.types as checkpoint
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.ckpt_bypass_plan.types as ckpt_bypass_plan
+import aisp.bench.checkpoint.sample.public as sample
 import aisp.bench.checkpoint.bypass.public as bypass_api
 import aisp.bench.checkpoint.gates.public as gates_api
 
 PrepareBypass =
-     checkpoint.CheckpointBypassPlan
-  <- $model (ckpt_sample.Component * { 模型代码；必须是训练侧可用的实现 })
-  <- $implementation (ckpt_sample.Component * { 训练框架的分布式检查点实现，记录名字与版本 })
-  <- $parallel (checkpoint.CheckpointParallel * { 并行策略 DP/TP/PP/EP 的度数，按真实配置设置；旁路只去掉计算，不去掉并行切分 })
+     ckpt_bypass_plan.CheckpointBypassPlan
+  <- $model (sample.Component * { 模型代码；必须是训练侧可用的实现 })
+  <- $implementation (sample.Component * { 训练框架的分布式检查点实现，记录名字与版本 })
+  <- $parallel (ckpt_bypass_plan.CheckpointParallel * { 并行策略 DP/TP/PP/EP 的度数，按真实配置设置；旁路只去掉计算，不去掉并行切分 })
   <- $dtype (str * { 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 })
   <- {
     准备旁路：先跑通一次不旁路的训练若干步（门 G0），再用 meta device 构建模型，前向照常执行，反向与 optimizer 换成占位实现，checkpoint 写入完全不改；返回五步做法与四条约束

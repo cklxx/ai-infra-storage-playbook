@@ -2,7 +2,7 @@
 
 ## 需求背景
 
-一次运行测出来的指标叫 SLI，按阈值判定叫 SLO。判定要有统一口径：一次运行测出哪六项指标，每项怎么和部署方给的阈值比较。运行记录、判定操作与读文档的人都按这一份走，所以 `CkptSli`、`CkptSlo` 与测量、判定两个操作从这里发布。
+一次运行测出来的指标叫 SLI，按阈值判定叫 SLO。判定要有统一口径：一次运行测出哪六项指标，每项怎么和部署方给的阈值比较。运行记录、判定操作与读文档的人都按这一份走，所以 `CkptSli`、`CkptSlo` 与判定操作从这里发布。
 
 ## public.viba
 
@@ -19,7 +19,6 @@ WriteThroughputMetric = performance.WriteThroughputMetric
 MetadataCommitMetric = performance.MetadataCommitMetric
 WriteLatencyP99Metric = performance.WriteLatencyP99Metric
 CkptSlo = slo.CkptSlo
-Measure = performance_api.Measure
 Judge = performance_api.Judge
 ```
 
@@ -80,22 +79,13 @@ MetricGE[Value] =
 
 ## 基本操作
 
-1. 测量：一次运行跑完，从它记下的观测里算出六个指标，每项一条 `CkptSli`。
-2. 判定：把每条指标的取值填进对应的 `CkptSlo`，与部署方给的阈值比较，答通过、失败或不可比。
+只有一个操作：判定。把每条指标的取值填进对应的 `CkptSlo`，与部署方给的阈值比较，答通过、失败或不可比。
 
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
 import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
-
-Measure =
-     list[sli.CkptSli]
-  <- $run (ckpt_sample.RunRecord * { 一次已经跑完、观测已开的运行 })
-  <- {
-    从这次运行记下的观测里算出六个指标：写入时长、训练停顿、恢复时长、写入吞吐、元数据提交、写请求 P99；返回每项一条，没有阈值
-  }
 
 Judge =
      list[slo.CkptSlo]

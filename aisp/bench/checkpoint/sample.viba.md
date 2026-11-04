@@ -7,23 +7,24 @@
 ## public.viba
 
 ```bash public
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
-import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
+import aisp.bench.checkpoint.sample.types as sample
+import aisp.bench.checkpoint.sample.apis as sample_api
 
-RunRecord = ckpt_sample.RunRecord
-RunSpec = ckpt_sample.RunSpec
-StorageLayer = ckpt_sample.StorageLayer
-Component = ckpt_sample.Component
-State = ckpt_sample.State
-QueueProgress = ckpt_sample.QueueProgress
-WorkProgress = ckpt_sample.WorkProgress
-Artifacts = ckpt_sample.Artifacts
-Failure = ckpt_sample.Failure
-Model = ckpt_sample.Model
-SampleConfigBase = ckpt_sample.SampleConfigBase
-Topology = ckpt_sample.Topology
-ObservationConfig = ckpt_sample.ObservationConfig
-Execute = ckpt_sample_api.Execute
+RunRecord = sample.RunRecord
+RunSpec = sample.RunSpec
+StorageLayer = sample.StorageLayer
+Component = sample.Component
+State = sample.State
+QueueProgress = sample.QueueProgress
+WorkProgress = sample.WorkProgress
+Artifacts = sample.Artifacts
+Failure = sample.Failure
+Model = sample.Model
+SampleConfigBase = sample.SampleConfigBase
+Topology = sample.Topology
+ObservationConfig = sample.ObservationConfig
+Execute = sample_api.Execute
+Measure = sample_api.Measure
 ```
 
 ## types.viba
@@ -115,17 +116,28 @@ ObservationConfig =
 
 ## 基本操作
 
-只有一个操作：执行一次。把同一份 `RunSpec` 交给样本进程跑到结束，拿到四份产物；旁路与观测由调用方接入。
+两个操作。
+
+1. 执行一次：把同一份 `RunSpec` 交给样本进程跑到结束，拿到四份产物；旁路与观测由调用方接入。
+2. 测量一次：一次运行跑完，从它记下的观测里算出六个指标，每项一条 `CkptSli`，填进 `Artifacts.metrics`。
 
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.sample.types as sample
+import aisp.bench.checkpoint.performance.public as sli
 
 Execute =
-     ckpt_sample.Artifacts
-  <- $spec (ckpt_sample.RunSpec * { 同一份运行请求 })
+     sample.Artifacts
+  <- $spec (sample.RunSpec * { 同一份运行请求 })
   <- {
     执行接口：同一份请求同步跑到结束，返回时四份产物已经写完；旁路与观测由调用方接入
+  }
+
+Measure =
+     list[sli.CkptSli]
+  <- $run (sample.RunRecord * { 一次已经跑完、观测已开的运行 })
+  <- {
+    测量接口：从这次运行记下的观测里算出六个指标，填进 Artifacts.metrics；返回每项一条，没有阈值
   }
 ```
