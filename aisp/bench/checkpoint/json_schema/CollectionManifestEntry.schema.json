@@ -8,7 +8,7 @@
       "type": "object",
       "properties": {
         "model": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
         },
         "source": {
           "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionSource"
@@ -87,7 +87,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -516,7 +516,7 @@
         "dropped_by": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
             },
             {
               "type": "null"

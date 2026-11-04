@@ -2,22 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/RunRecord.schema.json",
   "title": "RunRecord",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.RunRecord",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.RunRecord",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.RunRecord": {
+    "aisp.bench.checkpoint.ckpt_sample.types.RunRecord": {
       "type": "object",
       "properties": {
         "run_id": {
           "type": "string"
         },
         "state": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.State"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.State"
         },
         "progress": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.WorkProgress"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.WorkProgress"
         },
         "artifacts": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Artifacts"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Artifacts"
         }
       },
       "required": [
@@ -28,13 +28,13 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.State": {
+    "aisp.bench.checkpoint.ckpt_sample.types.State": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "queued": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.QueueProgress"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.QueueProgress"
             }
           },
           "required": [
@@ -70,7 +70,7 @@
           "type": "object",
           "properties": {
             "failed": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Failure"
             }
           },
           "required": [
@@ -82,7 +82,7 @@
           "type": "object",
           "properties": {
             "rejected": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Failure"
             }
           },
           "required": [
@@ -104,7 +104,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.QueueProgress": {
+    "aisp.bench.checkpoint.ckpt_sample.types.QueueProgress": {
       "type": "object",
       "properties": {
         "pos": {
@@ -120,7 +120,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Failure": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Failure": {
       "type": "object",
       "properties": {
         "kind": {
@@ -136,7 +136,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.WorkProgress": {
+    "aisp.bench.checkpoint.ckpt_sample.types.WorkProgress": {
       "type": "object",
       "properties": {
         "done": {
@@ -152,7 +152,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Artifacts": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Artifacts": {
       "type": "object",
       "properties": {
         "manifest": {

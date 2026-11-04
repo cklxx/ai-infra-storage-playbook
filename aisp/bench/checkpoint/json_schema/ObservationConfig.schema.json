@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ObservationConfig.schema.json",
   "title": "ObservationConfig",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.ObservationConfig",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.ObservationConfig",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.ObservationConfig": {
+    "aisp.bench.checkpoint.ckpt_sample.types.ObservationConfig": {
       "type": "object",
       "properties": {
         "enabled": {

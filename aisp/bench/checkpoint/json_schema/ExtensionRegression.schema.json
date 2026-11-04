@@ -35,7 +35,7 @@
           "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionCandidateSource"
         },
         "model": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
         },
         "config": {
           "type": "string"
@@ -71,7 +71,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Model": {
       "type": "object",
       "properties": {
         "id": {

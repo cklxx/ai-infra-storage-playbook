@@ -5,7 +5,7 @@
 只做转发：从 `## 问题` 的 `scaling` 模块与 `## 接口` 的 `scaling_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `ScalingRunPlan`、`ScalingInvariantSet`、`ScalingLevelRun`、`ScalingExtrapolation`，操作 `ChooseDimension`、`PickInvariant`、`ScaleUp`、`Extrapolate`；先看 `ScalingRunPlan` 与 `ChooseDimension`，再由 `PickInvariant` 交回 `ScalingInvariantSet`、由 `ScaleUp` 交回 `ScalingLevelRun`，逐级结果汇进 `Extrapolate` 交回的 `ScalingExtrapolation`。
 
 ```bash public
-import aisp.bench.checkpoint.scaling.types as scaling
+import aisp.bench.checkpoint.scaling.scale_types as scaling
 import aisp.bench.checkpoint.scaling.apis as scaling_api
 
 ScalingRunPlan = scaling.ScalingRunPlan
@@ -22,11 +22,11 @@ Extrapolate = scaling_api.Extrapolate
 
 三类评估集共用这套方法。它回答的问题是：在小规模上测出来的结论，凭什么能用到十万卡；评估集的上限按十万卡设计。放大过程中数据本身、系统与策略同时在变，不把哪些应该保持不变、哪些一定会变写清楚，放大之后测到的差异就无法区分是存储扛不住还是配置变了。
 
-## levels.viba
+## scale_types.viba
 
 问题形式化为 `scaling` 模块：取值只能落在有限集合里的概念写成 Oneof 枚举，`ScalingDimension` 是放大维度，`ScalingInvariantExample` 是不变量示例，`ScalingExtrapolationRule` 是外推规则，`ScalingWriteMode` 是写入模式，`ScalingNonlinearSource` 是放大中非线性变化的来源，`ScalingOpenQuestion` 是尚无答案的开放问题。需要成组记录的概念写成 Object 类型：`ScalingRunPlan` 的 `$dimension` 取这次放大的一个 `ScalingDimension`、`$fixed` 是其余四个维度的 `ScalingFixedDimension` 列表，`ScalingFixedDimension` 记一个被固定的维度与固定成的值。不变量这条链上，`ScalingInvariantCandidate` 是候选度量项，判断通过的写成 `ScalingInvariant`，`ScalingInvariantSet` 的 `$invariants` 收最终选定的 `ScalingInvariant` 列表，`$variables`、`$references` 与 `$unmeasurable` 分别记变量、参考项与测不到的候选。`ScalingLevelRun` 记一级放大的结果，其 `$level` 取 `levels.Level`、`$dimension` 取 `ScalingDimension`；`ScalingExtrapolation` 记一次外推，其 `$from_level` 与 `$to_level` 取 `levels.Level`、`$rules` 是 `ScalingExtrapolationRule` 的列表、`$timing` 是 `ScalingTiming`、`$nonlinear_sources` 是 `ScalingNonlinearSource` 的列表，`ScalingTiming` 的 `$mode` 取 `ScalingWriteMode`；`ScalingLevelReport` 记每一级的报告，其 `$level` 取 `levels.Level`。
 
-```bash types
+```bash scale_types
 import aisp.bench.checkpoint.scaling.types as levels
 
 ScalingDimension =
@@ -150,7 +150,9 @@ ScalingOpenQuestion =
 
 档位枚举保留在原有的 levels 模块；scaling 模块与其它文档都引用它。
 
-```bash levels
+## types.viba
+
+```bash types
 Level =
   Oneof
   | "S0" * { 单机，最小参数规模。对齐基准；度量项在容差内 }
@@ -174,7 +176,7 @@ Level =
 
 ```bash apis
 import aisp.bench.checkpoint.scaling.types as levels
-import aisp.bench.checkpoint.scaling.types as scaling
+import aisp.bench.checkpoint.scaling.scale_types as scaling
 
 ChooseDimension =
      scaling.ScalingRunPlan
@@ -210,7 +212,7 @@ scaling_flow 把维度、不变量、逐级验证、外推与报告串成一个�
 
 ```bash flow
 import aisp.bench.checkpoint.scaling.types as levels
-import aisp.bench.checkpoint.scaling.types as scaling
+import aisp.bench.checkpoint.scaling.scale_types as scaling
 import aisp.bench.checkpoint.scaling.apis as scaling_api
 
 ScalingChooseDuty =

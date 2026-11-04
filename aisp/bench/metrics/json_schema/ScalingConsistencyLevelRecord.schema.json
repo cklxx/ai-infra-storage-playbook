@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyLevelRecord.schema.json",
   "title": "ScalingConsistencyLevelRecord",
-  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLevelRecord",
+  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyLevelRecord",
   "$defs": {
-    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyLevelRecord": {
+    "aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyLevelRecord": {
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
         },
         "values": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyMeasurement"
+            "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyMeasurement"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.scaling.levels.Level": {
+    "aisp.bench.checkpoint.scaling.types.Level": {
       "oneOf": [
         {
           "const": "S0"
@@ -45,7 +45,7 @@
         }
       ]
     },
-    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyMeasurement": {
+    "aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyMeasurement": {
       "oneOf": [
         {
           "type": "object",

@@ -8,7 +8,7 @@
       "type": "object",
       "properties": {
         "level": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
         },
         "invariants_kept": {
           "type": "boolean"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.scaling.levels.Level": {
+    "aisp.bench.checkpoint.scaling.types.Level": {
       "oneOf": [
         {
           "const": "S0"

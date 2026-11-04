@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Failure.schema.json",
   "title": "Failure",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Failure",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Failure": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Failure": {
       "type": "object",
       "properties": {
         "kind": {

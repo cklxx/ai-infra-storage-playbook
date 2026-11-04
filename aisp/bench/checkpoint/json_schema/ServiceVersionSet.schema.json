@@ -27,10 +27,10 @@
           ]
         },
         "model": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
         },
         "storage": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.StorageLayer"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.StorageLayer"
         },
         "compatible_metrics": {
           "type": "array",
@@ -66,7 +66,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -82,14 +82,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.StorageLayer": {
+    "aisp.bench.checkpoint.ckpt_sample.types.StorageLayer": {
       "type": "object",
       "properties": {
         "backend": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Component"
         },
         "adapter": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Component"
         }
       },
       "required": [
@@ -98,7 +98,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Component": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Component": {
       "type": "object",
       "properties": {
         "name": {

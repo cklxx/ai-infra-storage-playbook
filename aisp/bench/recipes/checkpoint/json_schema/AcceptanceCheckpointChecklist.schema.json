@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/AcceptanceCheckpointChecklist.schema.json",
   "title": "AcceptanceCheckpointChecklist",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointChecklist",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointChecklist",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointChecklist": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointChecklist": {
       "type": "object",
       "properties": {
         "sections": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointSection"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointSection"
           }
         },
         "ladder": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointLadder"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointLadder"
         }
       },
       "required": [
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointSection": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointSection": {
       "type": "object",
       "properties": {
         "gate": {
@@ -32,7 +32,7 @@
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointItem"
           }
         }
       },
@@ -61,7 +61,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointItem": {
       "oneOf": [
         {
           "const": "g0_real_run"
@@ -137,13 +137,13 @@
         }
       ]
     },
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointLadder": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointLadder": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+        "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
       }
     },
-    "aisp.bench.checkpoint.scaling.levels.Level": {
+    "aisp.bench.checkpoint.scaling.types.Level": {
       "oneOf": [
         {
           "const": "S0"

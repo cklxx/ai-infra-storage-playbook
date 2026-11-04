@@ -16,7 +16,7 @@
         "dropped_by": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
             },
             {
               "type": "null"
@@ -41,7 +41,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Model": {
       "type": "object",
       "properties": {
         "id": {

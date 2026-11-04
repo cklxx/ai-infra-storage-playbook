@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointScalingRun.schema.json",
   "title": "CheckpointScalingRun",
-  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingRun",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointScalingRun",
   "$defs": {
-    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingRun": {
+    "aisp.bench.checkpoint.checkpoint.types.CheckpointScalingRun": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointScalingDimension"
         },
         "target": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+              "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
             },
             {
               "type": "null"
@@ -35,7 +35,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointScalingDimension": {
+    "aisp.bench.checkpoint.checkpoint.types.CheckpointScalingDimension": {
       "oneOf": [
         {
           "const": "parameter_count"
@@ -54,7 +54,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.scaling.levels.Level": {
+    "aisp.bench.checkpoint.scaling.types.Level": {
       "oneOf": [
         {
           "const": "S0"

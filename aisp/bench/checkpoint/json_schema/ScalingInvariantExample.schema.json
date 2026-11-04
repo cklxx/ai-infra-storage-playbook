@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingInvariantExample.schema.json",
   "title": "ScalingInvariantExample",
-  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.ScalingInvariantExample",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scale_types.ScalingInvariantExample",
   "$defs": {
-    "aisp.bench.checkpoint.scaling.types.ScalingInvariantExample": {
+    "aisp.bench.checkpoint.scaling.scale_types.ScalingInvariantExample": {
       "oneOf": [
         {
           "const": "per_rank_request_size"

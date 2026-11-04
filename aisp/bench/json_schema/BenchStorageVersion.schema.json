@@ -37,7 +37,7 @@
           "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayerKind"
         },
         "component": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Component"
         },
         "env": {
           "type": "string"
@@ -60,7 +60,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Component": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Component": {
       "type": "object",
       "properties": {
         "name": {

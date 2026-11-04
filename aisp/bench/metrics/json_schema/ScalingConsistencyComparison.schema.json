@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyComparison.schema.json",
   "title": "ScalingConsistencyComparison",
-  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparison",
+  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyComparison",
   "$defs": {
-    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyComparison": {
+    "aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyComparison": {
       "type": "object",
       "properties": {
         "invariant": {
           "type": "string"
         },
         "from": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
         },
         "to": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+          "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
         },
         "deviation": {
           "type": "number"
@@ -36,7 +36,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.scaling.levels.Level": {
+    "aisp.bench.checkpoint.scaling.types.Level": {
       "oneOf": [
         {
           "const": "S0"

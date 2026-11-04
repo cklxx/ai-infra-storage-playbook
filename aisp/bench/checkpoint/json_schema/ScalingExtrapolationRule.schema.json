@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingExtrapolationRule.schema.json",
   "title": "ScalingExtrapolationRule",
-  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.ScalingExtrapolationRule",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scale_types.ScalingExtrapolationRule",
   "$defs": {
-    "aisp.bench.checkpoint.scaling.types.ScalingExtrapolationRule": {
+    "aisp.bench.checkpoint.scaling.scale_types.ScalingExtrapolationRule": {
       "oneOf": [
         {
           "const": "aggregate_bandwidth"

@@ -63,7 +63,7 @@
       "type": "object",
       "properties": {
         "implementation": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Component"
         },
         "sharding": {
           "type": "string"
@@ -89,7 +89,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Component": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Component": {
       "type": "object",
       "properties": {
         "name": {

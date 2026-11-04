@@ -11,7 +11,7 @@
           "type": "string"
         },
         "state": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.State"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.State"
         },
         "artifacts": {
           "$ref": "#/$defs/aisp.bench.readme.types.BenchRunArtifacts"
@@ -28,13 +28,13 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.State": {
+    "aisp.bench.checkpoint.ckpt_sample.types.State": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "queued": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.QueueProgress"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.QueueProgress"
             }
           },
           "required": [
@@ -70,7 +70,7 @@
           "type": "object",
           "properties": {
             "failed": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Failure"
             }
           },
           "required": [
@@ -82,7 +82,7 @@
           "type": "object",
           "properties": {
             "rejected": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Failure"
             }
           },
           "required": [
@@ -104,7 +104,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.QueueProgress": {
+    "aisp.bench.checkpoint.ckpt_sample.types.QueueProgress": {
       "type": "object",
       "properties": {
         "pos": {
@@ -120,7 +120,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Failure": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Failure": {
       "type": "object",
       "properties": {
         "kind": {

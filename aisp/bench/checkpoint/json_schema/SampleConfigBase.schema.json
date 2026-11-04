@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/SampleConfigBase.schema.json",
   "title": "SampleConfigBase",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.SampleConfigBase",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.SampleConfigBase",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.SampleConfigBase": {
+    "aisp.bench.checkpoint.ckpt_sample.types.SampleConfigBase": {
       "type": "object",
       "properties": {
         "model": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
         },
         "topology": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Topology"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Topology"
         },
         "observe": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.ObservationConfig"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.ObservationConfig"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -40,7 +40,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Topology": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Topology": {
       "type": "object",
       "properties": {
         "nodes": {
@@ -64,7 +64,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.ObservationConfig": {
+    "aisp.bench.checkpoint.ckpt_sample.types.ObservationConfig": {
       "type": "object",
       "properties": {
         "enabled": {

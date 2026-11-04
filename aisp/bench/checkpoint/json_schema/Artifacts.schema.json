@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Artifacts.schema.json",
   "title": "Artifacts",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Artifacts",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Artifacts",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.types.Artifacts": {
+    "aisp.bench.checkpoint.ckpt_sample.types.Artifacts": {
       "type": "object",
       "properties": {
         "manifest": {

@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/AcceptanceCheckpointLadder.schema.json",
   "title": "AcceptanceCheckpointLadder",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointLadder",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointLadder",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointLadder": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointLadder": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/aisp.bench.checkpoint.scaling.levels.Level"
+        "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.Level"
       }
     },
-    "aisp.bench.checkpoint.scaling.levels.Level": {
+    "aisp.bench.checkpoint.scaling.types.Level": {
       "oneOf": [
         {
           "const": "S0"
