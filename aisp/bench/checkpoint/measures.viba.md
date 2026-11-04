@@ -10,17 +10,17 @@
 import aisp.bench.checkpoint.measures.types as measures
 import aisp.bench.checkpoint.measures.apis as measures_api
 
-MethodologyMetric = measures.MethodologyMetric
-MethodologyToleranceStatistic = measures.MethodologyToleranceStatistic
-MethodologyTolerance = measures.MethodologyTolerance
-MethodologyToleranceCalibration = measures.MethodologyToleranceCalibration
+Metric = measures.Metric
+ToleranceStatistic = measures.ToleranceStatistic
+Tolerance = measures.Tolerance
+ToleranceCalibration = measures.ToleranceCalibration
 CompareTolerance = measures_api.CompareTolerance
 ```
 
 ## types.viba
 
 ```bash types
-MethodologyMetric =
+Metric =
   Oneof
   | "request_size_distribution" * { 每个 IO 请求字节数的直方图，按 4 KiB 起对数分桶；采集方式：应用层 hook 或存储客户端日志 }
   | "read_write_ratio" * { 读写比，两个口径：按字节数、按请求数；采集方式：应用层 hook 或存储客户端日志 }
@@ -32,7 +32,7 @@ MethodologyMetric =
   | "lifetime" * { 同一数据块从首次写入到被读取或被驱逐的时长；采集方式：应用层 hook }
   | "cross_node_traffic" * { 每个 rank 的出/入字节数、对端节点分布、通信与存储的时间重叠；采集方式：网络计数器 + 应用层 hook }
 
-MethodologyToleranceStatistic =
+ToleranceStatistic =
   Oneof
   | "bucket_frequency_l1" * { 请求大小分布：分桶频率的 L1 距离，初始容差 ≤ 0.10 }
   | "byte_ratio_relative_error" * { 读写比：字节口径的相对误差，初始容差 ≤ 5% }
@@ -42,14 +42,14 @@ MethodologyToleranceStatistic =
   | "top_k_share_absolute_difference" * { 热度：Top-K 占比的绝对差，初始容差 ≤ 0.05 }
   | "sequential_request_share_absolute_difference" * { 顺序性：顺序请求占比的绝对差，初始容差 ≤ 0.05 }
 
-MethodologyTolerance =
+Tolerance =
   Object
-  * $metric (MethodologyMetric * { 这个容差对应哪个度量项，例如请求大小分布、读写比、并发度、时序、热度、顺序性 })
-  * $statistic (MethodologyToleranceStatistic * { 对齐指标：按哪个统计量判定；初始容差见取值说明 })
+  * $metric (Metric * { 这个容差对应哪个度量项，例如请求大小分布、读写比、并发度、时序、热度、顺序性 })
+  * $statistic (ToleranceStatistic * { 对齐指标：按哪个统计量判定；初始容差见取值说明 })
   * $initial (float * { 初始容差数值；标定前视为待验证，实际判定用配方 metrics.yaml 里的 tolerance })
-  * $calibration ((MethodologyToleranceCalibration | nil) * { 这一项容差的标定记录；标定前给 nil，实际判定前必须补上。checkpoint 写入的请求大小由分片策略决定，容差应更紧 })
+  * $calibration ((ToleranceCalibration | nil) * { 这一项容差的标定记录；标定前给 nil，实际判定前必须补上。checkpoint 写入的请求大小由分片策略决定，容差应更紧 })
 
-MethodologyToleranceCalibration =
+ToleranceCalibration =
   Object
   * $recipe (str * { 标定结果写进哪个配方的 metrics.yaml，例如 checkpoint 这个评估集 })
   * $date (str * { 标定日期 })
@@ -67,7 +67,7 @@ import aisp.bench.checkpoint.measures.types as measures
 
 CompareTolerance =
      bool
-  <- $tolerance (measures.MethodologyTolerance * { 这一项的统计量与容差 })
+  <- $tolerance (measures.Tolerance * { 这一项的统计量与容差 })
   <- $observed (float * { 旁路运行测得的数值 })
   <- $expected (float * { 真实运行测得的数值 })
   <- {

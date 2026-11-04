@@ -63,7 +63,7 @@ import aisp.bench.checkpoint.readme.types as ckpt_bench
 import aisp.bench.checkpoint.ckpt_bypass_plan.public as ckpt_bypass_plan_api
 import aisp.bench.checkpoint.measures.public as measures_api
 import aisp.bench.checkpoint.observation.public as observation_api
-import aisp.bench.checkpoint.scaling.public as scaling_api
+import aisp.bench.checkpoint.level.public as level_api
 import aisp.bench.checkpoint.model_code_collection.public as collection_api
 import aisp.bench.metrics.coverage.public as coverage_api
 
@@ -84,7 +84,7 @@ PickSamples =
     按要覆盖的格子挑模型，配好并行与负载
   }
   <- $compute (coverage_api.ComputeCoverage * { 清单交给它算出缺口清单与优先级；这次挑哪些模型，按它交回的缺口清单走 })
-  <- $level (scaling_api.GetLevel * { 每条用例的拓扑交给它落到 S0 到 S5 的哪一级；并行配置与负载按它交回的档位配 })
+  <- $level (level_api.GetLevel * { 每条用例的拓扑交给它落到 S0 到 S5 的哪一级；并行配置与负载按它交回的档位配 })
 
 Execute =
      sample.RunRecord
