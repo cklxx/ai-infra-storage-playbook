@@ -29,7 +29,7 @@ checkpoint 存储评估的形式化分成类型与枚举两类。`CheckpointSpec
 ```bash types
 import aisp.bench.checkpoint.fidelity.types as fidelity
 import aisp.bench.checkpoint.scaling.types as levels
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 CheckpointSpec =
   Object
@@ -173,7 +173,7 @@ CheckpointRegistration =
 import aisp.bench.checkpoint.checkpoint.types as checkpoint
 import aisp.bench.checkpoint.fidelity.types as fidelity
 import aisp.bench.checkpoint.scaling.types as levels
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 PrepareBypass =
      checkpoint.CheckpointBypassPlan

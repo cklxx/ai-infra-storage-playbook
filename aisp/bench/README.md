@@ -27,7 +27,7 @@ ExtendBench = bench_api.ExtendBench
 问题的形式化以 `BenchSpec` 这个 Object 类型为入口：评估对象、存储版本、评估集、指标与目录结构分别收进 `$subjects`（`BenchSubject` 的列表）、`$storage`（`BenchStorageVersion`）、`$eval_sets`（`BenchEvalSet` 的列表）、`$metrics`（`BenchMetricSet` 的列表）与 `$layout`（`BenchLayout`）五个字段。其中四项继续展开成 Object 类型：`BenchStorageVersion` 的 `$layers` 是 `BenchStorageLayer` 的列表，后者用 `$kind` 取 `BenchStorageLayerKind`、用 `$component` 取 `ckpt_sample.Component`；`BenchEvalSet` 的 `$subject` 取 `BenchSubject`，`$entry` 取 `BenchEvalSetEntry` 或 `nil`；`BenchMetricSet` 的 `$subject` 与 `$tier` 分取 `BenchSubject` 与 `BenchMetricTier`，`BenchLayout` 的 `$areas` 取 `BenchRepoArea` 的列表。`BenchRun` 与 `BenchCheckReport` 不在 `BenchSpec` 的字段里：前者由 `BenchRunArtifacts` 与 `BenchBacklink` 组成，后者收拢一次校验的结果。取值只能落在有限集合里的概念写成 Oneof 枚举：`BenchSubject` 表示评估对象，`BenchStorageLayerKind` 表示存储一层的种类，`BenchMetricTier` 表示指标层级，`BenchRepoArea` 表示仓库里要列出的目录与文件，`BenchCheckScope` 表示校验范围，`BenchGapKind` 表示覆盖缺口；`BenchStorageVersion` 的 `$changed_layers`、`BenchEvalSet` 与 `BenchMetricSet` 的 `$subject` 都引用这些枚举类型。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 BenchSpec =
   Object
@@ -105,7 +105,7 @@ BenchLayout =
   Object
   * $root (str * { 根目录 aisp/bench/，playbook 与 bench 评估集都在这一个目录下 })
   * $areas (list[BenchRepoArea] * { 根目录下的目录与文件；requirements.txt、CONTRIBUTING.md、CHANGELOG.md 是文件，其余是目录 })
-  * $method_docs (list[str] * { checkpoint/ 下的文档：principles.md、methodology.md、model_code_collection.md、checkpoint.md、ckpt_sample_interface.md、scaling.md、evaluation_service.md、extension.md、pitfalls.md、performance.md、appendix_glossary.md })
+  * $method_docs (list[str] * { checkpoint/ 下的文档：principles.md、methodology.md、model_code_collection.md、checkpoint.md、ckpt_sample.md、scaling.md、evaluation_service.md、extension.md、pitfalls.md、performance.md、appendix_glossary.md })
   * $recipe_dirs (list[str] * { recipes/ 下的目录：_template/、model_code_collection/、checkpoint/ })
 
 BenchRunArtifacts =
@@ -159,7 +159,7 @@ BenchGapKind =
 
 ```bash apis
 import aisp.bench.readme.types as bench
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 RunBench =
      bench.BenchRun

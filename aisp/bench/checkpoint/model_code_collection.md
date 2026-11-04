@@ -27,7 +27,7 @@ UpdateCoverage = collection_api.UpdateCoverage
 模型代码收集被形式化成一份清单：`CollectionManifest` 是清单本体，一个模型一条 `CollectionManifestEntry`。取值只能落在有限集合里的概念写成枚举：`CollectionSource` 是一个枚举，`hub_api` 与 `own_registry` 是它的取值，说明这个模型从哪类来源收进来；`CollectionFilter`、`CollectionLicenseState`、`CollectionCodeRole`、`CollectionDedupDecision`、`CollectionRunnableState`、`CollectionPairingKind` 同为枚举，分别表示筛选条件、许可证是否声明、代码角色、去重决定、可跑性结论与训练代码配对规则。抓取、去重、验证与配对各自的产出写成类型：`CollectionDownload` 由 `CollectionCodeFile` 组成，`CollectionFingerprint` 分成 `CollectionConfigFingerprint` 与 `CollectionCodeFingerprint` 两层，`CollectionDedupRecord`、`CollectionRunnableRecord`、`CollectionTrainingPairing` 依次承载去重、可跑性与训练代码配对的结论，并作为 `CollectionManifestEntry` 的字段。`CollectionCoverage` 用 `CollectionCoverageCell` 记覆盖矩阵的每个格子、用 `CollectionGap` 记缺口清单，`CollectionAcceptance` 汇总整批记录的验收指标。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 CollectionSource =
   Oneof

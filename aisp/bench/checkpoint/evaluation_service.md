@@ -27,7 +27,7 @@ Cancel = service_api.Cancel
 问题的形式化分成类型与枚举两类。配置与产物写成了类型：`RunRequest` 是一次运行的完整输入，`Framework` 与 `Load` 是它引用的两个类型，分别描述推理框架与负载；`ServiceManifest` 是运行清单，它的 `$request` 字段是 `RunRequest`，`$files` 字段是 `ServiceArtifactFile` 的列表；`ServiceRunDir` 直接取 `str` 类型，表示 `runs/<run-id>/` 这个运行目录；`ServiceBacklink` 是写回配方的回链，`ServiceVersionSet` 是必须同时记录的版本集合，`ServiceScheduling` 是排队与资源约束，`ServiceCiRun` 是一次 CI 运行。判定与分类写成了枚举：`ServiceRunVerdict` 是一次运行的结论，`passed`、`failed`、`invalid` 是它的三个取值；`ServiceFailureKind` 是失败分类，`ServicePriority` 是队列优先级，`ServiceInternalStage` 是执行中的内部阶段，`ServiceCiTrigger` 是 `ServiceCiRun` 的触发场景，`ServiceMetric` 是服务自身的观测指标，`ServiceOpenQuestion` 是尚未解决的问题。`ServiceBoundary` 的 `$does` 与 `$does_not` 都由枚举构成：`$does` 是 `ServiceResponsibility` 的列表，`$does_not` 是 `ServiceOutOfScope` 的列表；`ServiceBacklink` 的 `$status` 取 `ServiceRunVerdict`，`ServiceScheduling` 的 `$priority_order` 取 `ServicePriority` 的列表。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 import aisp.bench.checkpoint.scaling.types as levels
 
 RunRequest =
@@ -131,7 +131,7 @@ ServiceManifest =
   * $service_version (str * { 服务版本；执行方式变了它变 })
   * $started_at (str * { 开始时间戳 })
   * $finished_at (str * { 结束时间戳 })
-  * $state (ckpt_sample.State * { 结束时的状态；取值只用 ckpt_sample_interface.md 的 State })
+  * $state (ckpt_sample.State * { 结束时的状态；取值只用 ckpt_sample.md 的 State })
   * $files (list[ServiceArtifactFile] * { 产物文件与校验和；manifest.json 是回链的核心 })
 
 ServiceBacklink =
@@ -196,7 +196,7 @@ ServiceOpenQuestion =
 
 ```bash apis
 import aisp.bench.checkpoint.evaluation_service.types as service
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 Submit =
      ckpt_sample.RunRecord
@@ -226,7 +226,7 @@ Backlink =
   <- { 写回配方：把回链写进对应配方的 latest_run，只写 run_id、report_uri、metrics_uri、sha256、status、finished_at 六个字段；写回只能由服务执行，配方里的口径、阈值、流程无权修改 }
 ```
 
-接口返回的记录是 [ckpt_sample_interface.md](ckpt_sample_interface.md) 的 `RunRecord`：运行标识、状态、进度、产物位置；状态只用那份文档 `State` 的六个取值，本篇不另立状态类型。
+接口返回的记录是 [ckpt_sample.md](ckpt_sample.md) 的 `RunRecord`：运行标识、状态、进度、产物位置；状态只用那份文档 `State` 的六个取值，本篇不另立状态类型。
 
 命令行与 HTTP 是 Submit、Query、Collect、Cancel 四个操作的薄封装：命令行有 `eval run`、`eval status`、`eval result`、`eval cancel`，HTTP 有 `POST /v1/runs`、`GET /v1/runs/{run-id}`、`GET /v1/runs/{run-id}/artifacts`、`POST /v1/runs/{run-id}/cancel`，行为与接口一致；`Backlink` 由服务在运行结束后自己执行，不对外暴露。
 
@@ -235,7 +235,7 @@ Backlink =
 ```bash flow
 import aisp.bench.checkpoint.evaluation_service.types as service
 import aisp.bench.checkpoint.evaluation_service.apis as service_api
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 ServiceAdmitDuty =
   Object

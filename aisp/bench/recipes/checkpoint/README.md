@@ -28,7 +28,7 @@ Register = recipe_checkpoint_api.Register
 
 ```bash types
 import aisp.bench.checkpoint.fidelity.types as fidelity
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 RecipeCheckpointInput =
   Object
@@ -191,7 +191,7 @@ RecipeCheckpointSpec =
 
 ```bash apis
 import aisp.bench.recipes.checkpoint.readme.types as recipe_checkpoint
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 RunBaseline =
      ckpt_sample.RunRecord
@@ -235,7 +235,7 @@ Register =
 ```bash flow
 import aisp.bench.recipes.checkpoint.readme.types as recipe_checkpoint
 import aisp.bench.recipes.checkpoint.readme.apis as recipe_checkpoint_api
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 RecipeCheckpointBaselineDuty =
   Object

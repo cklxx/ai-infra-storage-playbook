@@ -7,8 +7,8 @@
 只做转发：从 ckpt_sample 与 ckpt_sample_api 里 import，再把要发布的名字重新绑定一次。具体定义在下面两节里。
 
 ```bash public
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
-import aisp.bench.checkpoint.ckpt_sample_interface.apis as ckpt_sample_api
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
 import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 
@@ -28,7 +28,7 @@ SampleConfigBase = ckpt_sample.SampleConfigBase
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 import aisp.bench.checkpoint.scaling.types as levels
 
 Start =

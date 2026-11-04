@@ -5,7 +5,7 @@
 先看 `Bench`，再看 `Execute`、`Judge`、`Compare` 三个操作；样本与运行直接用 `ckpt_sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
 
 ```bash public
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 import aisp.bench.checkpoint.readme.types as ckpt_bench
 import aisp.bench.checkpoint.readme.apis as ckpt_bench_api
 
@@ -26,7 +26,7 @@ Compare = ckpt_bench_api.Compare
 bench 由一个语料、一批样本、几套存储与它们跑出来的运行组成；一条样本是一条 `RunSpec`，一次运行是一条 `RunRecord`。这里只定义 bench 自己的东西：整体 `Bench` 与缺口 `Gap`。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 
 Bench =
   Object
@@ -54,7 +54,7 @@ Gap =
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 import aisp.bench.checkpoint.readme.types as ckpt_bench
