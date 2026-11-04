@@ -109,17 +109,23 @@ RegisterPitfall =
   <- $cause (str * { 原因：写已经查明的；没查明的写"原因未明"，并把条目同时挂成开放问题 })
   <- $disposition (str * { 处置：写当下实际执行的动作，不写"应该加强" })
   <- $status (pitfalls.PitfallStatus * { 状态：取自 PitfallStatus；已经解决的问题不删除条目，状态改为"已解决"并写明解决方式 })
-  <- { 登记接口：收下一条坑的现象、原因、处置与状态，按分类把条目补全后交回；新增条目按已有字段填写，不留空 }
+  <- {
+    登记接口：收下一条坑的现象、原因、处置与状态，按分类把条目补全后交回；新增条目按已有字段填写，不留空
+  }
 
 JudgeResolved =
      bool
   <- $entry (pitfalls.PitfallEntry * { 要判断的那条坑 })
-  <- { 判断接口：看这条坑的状态，只有状态为已解决才交回 true；其余状态都交回 false，条目继续留在表里 }
+  <- {
+    判断接口：看这条坑的状态，只有状态为已解决才交回 true；其余状态都交回 false，条目继续留在表里
+  }
 
 OpenQuestion =
      pitfalls.PitfallOpenQuestion
   <- $entry (pitfalls.PitfallEntry * { 已登记、且 JudgeResolved 判为未解决的那条坑 })
-  <- { 挂问题接口：把一条未解决的坑挂到它对应的开放问题上，交回那个问题的内容；PitfallOpenQuestion 里已有对应问题时取那一条，没有时按同样的写法加一个取值，写明影响范围与当前处置方式 }
+  <- {
+    挂问题接口：把一条未解决的坑挂到它对应的开放问题上，交回那个问题的内容；PitfallOpenQuestion 里已有对应问题时取那一条，没有时按同样的写法加一个取值，写明影响范围与当前处置方式
+  }
 ```
 
 ## flow.viba

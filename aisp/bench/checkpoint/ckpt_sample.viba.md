@@ -34,27 +34,37 @@ import aisp.bench.checkpoint.scaling.types as levels
 Start =
      ckpt_sample.RunRecord
   <- $spec (ckpt_sample.RunSpec * { 这次评估的运行请求 })
-  <- { 提交接口：请求交出去就返回，不等样本跑完。校验请求，按配置起一个样本进程，把运行标识与当前状态交回来；此时状态可能仍在排队或执行中，产物位置可能还缺 }
+  <- {
+    提交接口：请求交出去就返回，不等样本跑完。校验请求，按配置起一个样本进程，把运行标识与当前状态交回来；此时状态可能仍在排队或执行中，产物位置可能还缺
+  }
 
 Stop =
      ckpt_sample.RunRecord
   <- $run_id (str * { 要停的那次运行 })
-  <- { 取消接口：让服务停下这次运行，已经写完的产物保留。返回的记录状态为 cancelled；已经结束的运行原样交回，不报错 }
+  <- {
+    取消接口：让服务停下这次运行，已经写完的产物保留。返回的记录状态为 cancelled；已经结束的运行原样交回，不报错
+  }
 
 Query =
      ckpt_sample.RunRecord
   <- $run_id (str * { 要查的那次运行 })
-  <- { 查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度 }
+  <- {
+    查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度
+  }
 
 Execute =
      ckpt_sample.Artifacts
   <- $spec (ckpt_sample.RunSpec * { 同一份运行请求 })
-  <- { 执行接口：同一份请求同步跑到结束，返回时四份产物已经写完。它由 Start 在后台触发；Start 只拿到标识与状态，拿不到产物本身 }
+  <- {
+    执行接口：同一份请求同步跑到结束，返回时四份产物已经写完。它由 Start 在后台触发；Start 只拿到标识与状态，拿不到产物本身
+  }
 
 GetLevel =
      levels.Level
   <- $config (ckpt_sample.SampleConfigBase * { 样本配置 })
-  <- { 导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给 }
+  <- {
+    导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给
+  }
 ```
 
 ## types.viba

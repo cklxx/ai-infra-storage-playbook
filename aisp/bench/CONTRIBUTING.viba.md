@@ -143,30 +143,44 @@ ContributingCheckResult =
 
 ```bash apis
 import aisp.bench.contributing.types as contributing
+import aisp.bench.recipes._template.readme.apis as template_api
+import aisp.bench.metrics.readme.apis as metrics_api
+import aisp.bench.checks.readme.apis as checks_api
 
 CreateRecipe =
      contributing.ContributingRecipe
   <- $name (str * { 评估集名；目录名用小写连字符，例如 recipes/checkpoint/ })
   <- $files (list[contributing.ContributingRecipeFile] * { 四份内容：recipe.yaml、metrics.yaml、README.viba.md、checks/ })
   <- $notes (str * { recipe.yaml 里四项取值的理由 })
-  <- { 建配方：把 recipes/_template/ 复制成 recipes/<name>/，写进四份内容，并在 CHANGELOG.md 的 Unreleased 下加一行；返回写好的配方。bypass、fidelity_boundary、io_pattern_invariants、scaling_plan 四项任何一项留空都不算建好配方 }
+  <- {
+    建配方：把 recipes/_template/ 复制成 recipes/<name>/，写进四份内容，并在 CHANGELOG.md 的 Unreleased 下加一行；返回写好的配方。bypass、fidelity_boundary、io_pattern_invariants、scaling_plan 四项任何一项留空都不算建好配方
+  }
+  <- $scaffold (template_api.ScaffoldRecipe * { 名字交给它，它跑 new_recipe.py：复制本目录、替换基础占位、检查硬要求；复制出来的目录就是这一步的底稿，四份内容在这上面写 })
 
 RegisterMetric =
      contributing.ContributingMetricRegistration
   <- $metric (contributing.ContributingMetricRegistration * { 要登记或改口径的指标：指标名、文档位置、版本、弃用信息、阈值与 compatible_metrics })
   <- $registered (list[str] * { metrics/registry.yaml 里已登记的指标名；只有在这个列表里的指标才能选 })
-  <- { 登记指标：核对指标已在 metrics/registry.yaml 登记、阈值只写在 recipes/<name>/metrics.yaml 的 tolerance；改旧口径时保留旧口径一节并标注弃用版本与原因，新口径用新版本号；返回登记后的条目，并同步更新所有引用该指标的 recipes/*/metrics.yaml 与 compatible_metrics }
+  <- {
+    登记指标：核对指标已在 metrics/registry.yaml 登记、阈值只写在 recipes/<name>/metrics.yaml 的 tolerance；改旧口径时保留旧口径一节并标注弃用版本与原因，新口径用新版本号；返回登记后的条目，并同步更新所有引用该指标的 recipes/*/metrics.yaml 与 compatible_metrics
+  }
+  <- $register (metrics_api.RegisterMetric * { 新指标交给它写进 registry.yaml；它交回的条目就是配方引用的那个版本，阈值仍由配方自己写 })
 
 WriteDecision =
      contributing.ContributingDecision
   <- $decision (contributing.ContributingDecision * { 编号、短描述、类别、背景、候选、决定、后果 })
-  <- { 写决策：按 decisions/README.viba.md 的模板写进 decisions/NNNN-短描述.md，编号递增；只有必须写 ADR 的四类情况才走这一步，日常改动不写 }
+  <- {
+    写决策：按 decisions/README.viba.md 的模板写进 decisions/NNNN-短描述.md，编号递增；只有必须写 ADR 的四类情况才走这一步，日常改动不写
+  }
 
 RunChecks =
      list[contributing.ContributingCheckResult]
   <- $items (list[contributing.ContributingCheckItem] * { 这次要检查的项 })
   <- $scope (contributing.ContributingCheckScope * { 跑通用校验还是本配方专属校验 })
-  <- { 跑校验：逐项检查，含 selftest 负例，examples/ 与 examples/invalid/ 都要符合预期；返回没有通过的项，空列表表示全部通过 }
+  <- {
+    跑校验：逐项检查，含 selftest 负例，examples/ 与 examples/invalid/ 都要符合预期；返回没有通过的项，空列表表示全部通过
+  }
+  <- $run_all (checks_api.RunAllChecks * { 全部脚本交给它跑；它交回的输出、状态与退出码就是逐项检查的结果，没通过的项原样进返回值 })
 ```
 
 ## flow.viba

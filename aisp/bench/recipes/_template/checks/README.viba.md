@@ -96,23 +96,31 @@ import aisp.bench.recipes._template.checks.readme.types as check_template
 Place =
      check_template.CheckTemplatePlacement
   <- $only_for_this_recipe (bool * { 这条校验是否只对这个评估集成立 })
-  <- { 归属接口：只对这个评估集成立的校验交回 recipe，放本配方的 checks/；不成立的交回 bench，放 aisp/bench/checks/，不在配方里重复实现 }
+  <- {
+    归属接口：只对这个评估集成立的校验交回 recipe，放本配方的 checks/；不成立的交回 bench，放 aisp/bench/checks/，不在配方里重复实现
+  }
 
 Inspect =
      check_template.CheckTemplateRunDir
   <- $run_dir (str * { --run-dir 的取值：用例目录的路径 })
-  <- { 读入接口：确认用例目录里有 metrics.json 与 manifest.json，把目录路径与两份文件交回；缺任何一份按输入缺失处理，退出码 2 }
+  <- {
+    读入接口：确认用例目录里有 metrics.json 与 manifest.json，把目录路径与两份文件交回；缺任何一份按输入缺失处理，退出码 2
+  }
 
 Run =
      check_template.CheckTemplateReport
   <- $dir (check_template.CheckTemplateRunDir * { 读入接口交回的用例目录 })
   <- $name (str * { 这个 check 的名字，写进输出的 check 字段 })
-  <- { 运行接口：在用例目录上按这个 check 的判定核对，往标准输出写一行 JSON，交回 check、status 与 detail；status 只取 pass、fail、skip }
+  <- {
+    运行接口：在用例目录上按这个 check 的判定核对，往标准输出写一行 JSON，交回 check、status 与 detail；status 只取 pass、fail、skip
+  }
 
 Exit =
      check_template.CheckTemplateExitCode
   <- $status (check_template.CheckTemplateStatus * { 运行接口交回的状态 })
-  <- { 退出接口：按状态交回退出码，pass 交回 0，fail 交回 1；skip 表示缺依赖或输入缺失，交回 2 }
+  <- {
+    退出接口：按状态交回退出码，pass 交回 0，fail 交回 1；skip 表示缺依赖或输入缺失，交回 2
+  }
 ```
 
 ## flow.viba

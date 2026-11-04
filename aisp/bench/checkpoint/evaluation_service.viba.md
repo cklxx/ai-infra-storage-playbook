@@ -202,33 +202,43 @@ import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
 Submit =
      ckpt_sample.RunRecord
   <- $request (service.RunRequest * { 这次评估的运行请求：配方与版本、模型、框架、档位、拓扑、存储两层、负载、观测、种子 })
+  <- {
+    提交接口：校验请求与版本，配方、指标、服务三者不兼容直接拒绝，返回状态为 rejected 的记录；通过校验的请求按优先级入队，请求交出去就返回，不等样本跑完，返回的记录此时可能仍在排队或执行中
+  }
   <- $start (ckpt_sample_api.Start * { 校验通过的请求交给它起进程；它交回的那条记录就是 Submit 的返回值，排队还是执行中从这里读 })
-  <- { 提交接口：校验请求与版本，配方、指标、服务三者不兼容直接拒绝，返回状态为 rejected 的记录；通过校验的请求按优先级入队，请求交出去就返回，不等样本跑完，返回的记录此时可能仍在排队或执行中 }
 
 Query =
      ckpt_sample.RunRecord
   <- $run_id (str * { 要查的那次运行 })
+  <- {
+    查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度
+  }
   <- $query (ckpt_sample_api.Query * { 查询直接转给它，服务不再另存一份状态；它答什么就回什么 })
-  <- { 查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度 }
 
 Collect =
      ckpt_sample.Artifacts
   <- $run_id (str * { 要取产物的那次运行 })
+  <- {
+    取产物：交出运行清单与人读报告的位置，以及这次运行的 SLI 度量与 SLO 判定；原始 trace 按保留期清理
+  }
   <- $query (ckpt_sample_api.Query * { 先用它拿到这次运行的记录，再从记录的 Artifacts 里取清单、报告位置与度量 })
-  <- { 取产物：交出运行清单与人读报告的位置，以及这次运行的 SLI 度量与 SLO 判定；原始 trace 按保留期清理 }
 
 Cancel =
      ckpt_sample.RunRecord
   <- $run_id (str * { 要停的那次运行 })
+  <- {
+    取消接口：让服务停下这次运行，已经写完的产物保留，返回的记录状态为 cancelled；已经结束的运行原样交回，不报错
+  }
   <- $stop (ckpt_sample_api.Stop * { 取消直接转给它；它交回的状态就是 Cancel 的返回值 })
-  <- { 取消接口：让服务停下这次运行，已经写完的产物保留，返回的记录状态为 cancelled；已经结束的运行原样交回，不报错 }
 
 Backlink =
      service.ServiceBacklink
   <- $record (ckpt_sample.RunRecord * { 要写回的那次运行 })
   <- $request (service.RunRequest * { 这次运行的请求；配方标识与版本来自这里 })
   <- $status (service.ServiceRunVerdict * { 这次运行的结论；无效运行不能算通过，也不能算失败 })
-  <- { 写回配方：把回链写进对应配方的 latest_run，只写 run_id、report_uri、metrics_uri、sha256、status、finished_at 六个字段；写回只能由服务执行，配方里的口径、阈值、流程无权修改 }
+  <- {
+    写回配方：把回链写进对应配方的 latest_run，只写 run_id、report_uri、metrics_uri、sha256、status、finished_at 六个字段；写回只能由服务执行，配方里的口径、阈值、流程无权修改
+  }
 ```
 
 接口返回的记录是 [ckpt_sample.viba.md](ckpt_sample.viba.md) 的 `RunRecord`：运行标识、状态、进度、产物位置；状态只用那份文档 `State` 的六个取值，本篇不另立状态类型。

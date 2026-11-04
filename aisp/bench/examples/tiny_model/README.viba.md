@@ -77,22 +77,30 @@ import aisp.bench.examples.tiny_model.readme.types as tiny_model
 Inspect =
      tiny_model.TinyModelSample
   <- $dir (str * { 样例目录：examples/tiny_model })
-  <- { 读样例：返回用途、三个文件各是什么、清单条目遵循哪份 schema、有哪几条核对方法 }
+  <- {
+    读样例：返回用途、三个文件各是什么、清单条目遵循哪份 schema、有哪几条核对方法
+  }
 
 CheckConfig =
      tiny_model.TinyModelCheckStatus
   <- $file (str * { 要解析的配置文件：examples/tiny_model/config.json })
-  <- { 核对配置：用 python3 -m json.tool 解析 config.json；能解析返回 passed，不能解析返回 failed 并带具体原因 }
+  <- {
+    核对配置：用 python3 -m json.tool 解析 config.json；能解析返回 passed，不能解析返回 failed 并带具体原因
+  }
 
 CheckManifest =
      tiny_model.TinyModelCheckStatus
   <- $file (str * { 要解析的清单条目：examples/tiny_model/manifest-entry.json })
-  <- { 核对清单条目：用 json.load 解析 manifest-entry.json；能解析返回 passed，不能解析返回 failed 并带具体原因 }
+  <- {
+    核对清单条目：用 json.load 解析 manifest-entry.json；能解析返回 passed，不能解析返回 failed 并带具体原因
+  }
 
 RunForward =
      tiny_model.TinyModelCheckStatus
   <- $file (str * { 要运行的建模代码：examples/tiny_model/modeling_tiny.py })
-  <- { 跑一次前向：在 meta device 上执行 modeling_tiny.py；需要 PyTorch，没有安装时返回 skipped，不报错，这次跳过不写进任何结论 }
+  <- {
+    跑一次前向：在 meta device 上执行 modeling_tiny.py；需要 PyTorch，没有安装时返回 skipped，不报错，这次跳过不写进任何结论
+  }
 ```
 
 ## flow.viba

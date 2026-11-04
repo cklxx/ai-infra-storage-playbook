@@ -113,20 +113,27 @@ CheckItem =
   <- $record (acceptance_template.AcceptanceTemplateRecord * { 当前已登记的全部勾选记录 })
   <- $item (acceptance_template.AcceptanceTemplateItem * { 要勾的那一条验收项 })
   <- $evidence (acceptance_template.AcceptanceTemplateEvidence * { 勾选时附上的回链或证据位置 })
-  <- { 勾选一条验收项：把这一项记为已勾选，并附上回链或证据位置，写进勾选记录；返回更新后的勾选记录。所属门是否勾完由复核判定 }
+  <- {
+    勾选一条验收项：把这一项记为已勾选，并附上回链或证据位置，写进勾选记录；返回更新后的勾选记录。所属门是否勾完由复核判定
+  }
 
 ReviewGate =
      acceptance_template.AcceptanceTemplateGateReview
   <- $checklist (acceptance_template.AcceptanceTemplateGateChecklist * { 要复核的那道门与这道门的验收项 })
   <- $record (acceptance_template.AcceptanceTemplateRecord * { 当前已登记的全部勾选记录 })
-  <- { 复核一道门：对照这道门的验收项，列出已勾选与未勾选的项，并判定这道门是否全部勾选；有任意一条未勾选时 complete 为 false，不允许进入下一道门 }
+  <- {
+    复核一道门：对照这道门的验收项，列出已勾选与未勾选的项，并判定这道门是否全部勾选；有任意一条未勾选时 complete 为 false，不允许进入下一道门
+  }
 
 EnterGate =
      acceptance_template.AcceptanceTemplateAdmission
   <- $template (acceptance_template.AcceptanceTemplate * { 五道门与各自的验收项，按 G0 到 G4 排列 })
   <- $record (acceptance_template.AcceptanceTemplateRecord * { 当前已登记的全部勾选记录 })
   <- $gate (gates.Gate * { 要进入的那道门 })
-  <- { 进入一道门：G0 直接允许；其余门要求它前面的每一道门 complete，有未勾完的门就拒绝，并交回这些门的复核结果 }
+  <- {
+    进入一道门：G0 直接允许；其余门要求它前面的每一道门 complete，有未勾完的门就拒绝，并交回这些门的复核结果
+  }
+  <- $review (ReviewGate * { 前面的每道门交给它复核；有一道不 complete 就拒绝进入 })
 ```
 
 ## flow.viba

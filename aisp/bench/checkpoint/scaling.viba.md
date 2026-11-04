@@ -177,18 +177,23 @@ Level =
 ```bash apis
 import aisp.bench.checkpoint.scaling.types as levels
 import aisp.bench.checkpoint.scaling.scale_types as scaling
+import aisp.bench.checkpoint.performance.apis as perf_api
 
 ChooseDimension =
      scaling.ScalingRunPlan
   <- $dimension (scaling.ScalingDimension * { 这次要放大的维度；五个维度里选一个，其余四个固定并记录 })
   <- $fixed (list[scaling.ScalingFixedDimension] * { 其余四个维度的固定值；四个都要列，同时放大两个维度得到的结论无法归因 })
-  <- { 选维度：从模型规模、集群规模、并行策略、负载、存储后端五个维度里选一个放大，固定并记录其余四个；返回这次评估的放大计划 }
+  <- {
+    选维度：从模型规模、集群规模、并行策略、负载、存储后端五个维度里选一个放大，固定并记录其余四个；返回这次评估的放大计划
+  }
 
 PickInvariant =
      scaling.ScalingInvariantSet
   <- $dimension (scaling.ScalingDimension * { 目标维度；判断候选会不会随它变化 })
   <- $candidates (list[scaling.ScalingInvariantCandidate] * { 候选度量项：从 methodology.viba.md 的度量项里挑出与本次评估目标相关的项，每项带定义、三个判断与容差 })
-  <- { 定不变量：逐个候选判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差；会变的是变量，变了不影响结论的只是参考项；最终留下 3 到 6 条不变量，每条写进配方的 metrics.yaml，包含名称、定义、计算方式、容差、判定规则；返回不变量集合，以及变量、参考项与测不到的候选 }
+  <- {
+    定不变量：逐个候选判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差；会变的是变量，变了不影响结论的只是参考项；最终留下 3 到 6 条不变量，每条写进配方的 metrics.yaml，包含名称、定义、计算方式、容差、判定规则；返回不变量集合，以及变量、参考项与测不到的候选
+  }
 
 ScaleUp =
      scaling.ScalingLevelRun
@@ -196,14 +201,19 @@ ScaleUp =
   <- $plan (scaling.ScalingRunPlan * { 这次放大的维度与其余四个固定值；一次评估只沿这一个维度放大，其余四个保持固定 })
   <- $invariants (list[scaling.ScalingInvariant] * { 每一级都要重新验证的不变量 })
   <- $samples (int * { 这一级的采样点数量；不必与其它级相同 })
-  <- { 放大一级：不允许从最小规模直接跳到十万卡；这一级要拿到完整度量，不允许只测了带宽；验证不变量是否都在容差内，偏差要有归因；若存储后端在 S2 已饱和，S3 到 S5 的重点改为测排队与尾延迟，配方里要预先写明；返回这一级的结果 }
+  <- {
+    放大一级：不允许从最小规模直接跳到十万卡；这一级要拿到完整度量，不允许只测了带宽；验证不变量是否都在容差内，偏差要有归因；若存储后端在 S2 已饱和，S3 到 S5 的重点改为测排队与尾延迟，配方里要预先写明；返回这一级的结果
+  }
+  <- $measure (perf_api.Measure * { 这一级的运行交给它测出六项 SLI；只测带宽、没有完整度量的一级不算数 })
 
 Extrapolate =
      scaling.ScalingExtrapolation
   <- $runs (list[scaling.ScalingLevelRun] * { 已经跑过的逐级结果，至少四级 })
   <- $target (levels.Level * { 外推目标；十万卡是 S5 })
   <- $timing (scaling.ScalingTiming * { 时序折算：同步还是异步，以及真实计算时长中位数 })
-  <- { 外推：先看单 rank 带宽随 rank 数增长的曲线判断存储侧是否饱和，走平之后一律用排队模型；数据字节数与元数据操作数分开算、分开报告；按真实计算时长折算旁路窗口；P99 与 P999 不按平均值外推；放大中出现超线性变化时先排查七个非线性来源，再给下一级的预测值与预测依据；返回这次外推的结果 }
+  <- {
+    外推：先看单 rank 带宽随 rank 数增长的曲线判断存储侧是否饱和，走平之后一律用排队模型；数据字节数与元数据操作数分开算、分开报告；按真实计算时长折算旁路窗口；P99 与 P999 不按平均值外推；放大中出现超线性变化时先排查七个非线性来源，再给下一级的预测值与预测依据；返回这次外推的结果
+  }
 ```
 
 ## flow.viba

@@ -186,24 +186,36 @@ RecipeCheckpointSpec =
 ```bash apis
 import aisp.bench.recipes.checkpoint.readme.types as recipe_checkpoint
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
+import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
 
 RunBaseline =
      ckpt_sample.RunRecord
   <- $input (recipe_checkpoint.RecipeCheckpointInput * { 配方输入：模型代码、训练框架与版本、并行配置、数据集布局、storage.backend 与 storage.adapter })
   <- $config (recipe_checkpoint.RecipeCheckpointConfig * { 配置要求：并行策略覆盖、checkpoint 实现、写入方式、数据布局、预热 })
   <- $steps (int * { 这次要跑的训练步数；第 1 步要求跑通若干训练步 })
-  <- { 第 1 步选型与跑通：选一个最小可用模型（语料里参数量最小的一档），按真实并行配置跑若干训练步，不旁路；取得 G0，即跑完一次前向、一次反向、一次 optimizer.step 与一次 checkpoint 写入。返回这次运行的记录 }
+  <- {
+    第 1 步选型与跑通：选一个最小可用模型（语料里参数量最小的一档），按真实并行配置跑若干训练步，不旁路；取得 G0，即跑完一次前向、一次反向、一次 optimizer.step 与一次 checkpoint 写入。返回这次运行的记录
+  }
+  <- $execute (ckpt_sample_api.Execute * { 不旁路的训练交给它同步跑到结束：它跑前向、反向、optimizer.step 与一次 checkpoint 写入，交回的记录就是 G0 的凭据 })
 
 PrepareBypass =
      recipe_checkpoint.RecipeCheckpointBypass
   <- $baseline (ckpt_sample.RunRecord * { 第 1 步跑通的不旁路运行；G0 已通过 })
-  <- { 第 2 步接入旁路：模型用 torch.device("meta") 构建，前向用 meta 输入执行，反向用占位梯度保证 param.grad 存在且尺寸正确，optimizer 换成占位更新并保留 state_dict() 的键结构与分片，checkpoint 写入与读取不改。返回旁路做法、填完的保真边界表与这次旁路运行记录；取得 G1 }
+  <- {
+    第 2 步接入旁路：模型用 torch.device("meta") 构建，前向用 meta 输入执行，反向用占位梯度保证 param.grad 存在且尺寸正确，optimizer 换成占位更新并保留 state_dict() 的键结构与分片，checkpoint 写入与读取不改。返回旁路做法、填完的保真边界表与这次旁路运行记录；取得 G1
+  }
+  <- $prepare (checkpoint_api.PrepareBypass * { 模型、检查点实现、并行与 dtype 交给它，它给出五步做法与四条约束；配方的旁路实现按它走 })
+  <- $boundary (checkpoint_api.RecordBoundary * { 五条必填行交给它登记，它交回填好的保真边界表；缺一行 G1 就过不了 })
 
 Align =
      recipe_checkpoint.RecipeCheckpointAlignment
   <- $real (ckpt_sample.RunRecord * { 不做旁路的运行；与旁路运行同一配置，观测配置相同 })
   <- $bypass (ckpt_sample.RunRecord * { 旁路运行；与真实运行同一配置，观测配置相同 })
-  <- { 第 3 步小规模对齐：同一配置跑两遍，一次真实、一次旁路，观测配置相同；按 metrics.yaml 的容差判定分项，不通过的项按 checkpoint/methodology.viba.md 的归因顺序排查；全部在容差内或有条件通过取得 G2。返回分项对比与判定 }
+  <- {
+    第 3 步小规模对齐：同一配置跑两遍，一次真实、一次旁路，观测配置相同；按 metrics.yaml 的容差判定分项，不通过的项按 checkpoint/methodology.viba.md 的归因顺序排查；全部在容差内或有条件通过取得 G2。返回分项对比与判定
+  }
+  <- $align (checkpoint_api.Align * { 两次运行交给它，它按 metrics.yaml 的容差逐项判定并给归因；它交回的判定就是 G2 的结果 })
 
 Scale =
      recipe_checkpoint.RecipeCheckpointScaling
@@ -212,14 +224,20 @@ Scale =
   <- $alignment (recipe_checkpoint.RecipeCheckpointAlignment * { 通过 G2 的小规模对齐结果 })
   <- $parameter_target (str * { 第 4 步放大一级后的参数量目标；固定集群规模与并行策略 })
   <- $cluster_targets (list[str] * { 第 5 步的集群规模目标：先到万卡，再外推到十万卡；固定参数量 })
-  <- { 第 4、5 步逐级放大：先固定集群规模与并行策略把参数量放大一级，检查每 rank 写入请求大小分布、每参数字节数、分片数与每片大小的变化，取得 G3-a；再固定参数量把集群规模放到万卡、外推到十万卡，检查单 rank 请求大小与并发度、聚合带宽饱和拐点、元数据操作是否先于数据字节数饱和、尾延迟是否超线性增长，取得 G3-b，偏差要有归因。返回两级放大的结果 }
+  <- {
+    第 4、5 步逐级放大：先固定集群规模与并行策略把参数量放大一级，检查每 rank 写入请求大小分布、每参数字节数、分片数与每片大小的变化，取得 G3-a；再固定参数量把集群规模放到万卡、外推到十万卡，检查单 rank 请求大小与并发度、聚合带宽饱和拐点、元数据操作是否先于数据字节数饱和、尾延迟是否超线性增长，取得 G3-b，偏差要有归因。返回两级放大的结果
+  }
+  <- $scale (checkpoint_api.ScaleUp * { 这一级交给它跑：固定其余维度、放大一级、重新验证不变量；它交回的结果拼成两级放大报告 })
 
 Register =
      recipe_checkpoint.RecipeCheckpointRegistration
   <- $alignment (recipe_checkpoint.RecipeCheckpointAlignment * { 小规模对齐结果；G2 })
   <- $scaling (recipe_checkpoint.RecipeCheckpointScaling * { 两级放大结果；G3-a 与 G3-b })
   <- $products (recipe_checkpoint.RecipeCheckpointProducts * { 四份产出：IO pattern 记录、对齐报告、scaling 报告、回链 })
-  <- { 第 6 步登记：把回链写入 recipe.yaml 的 latest_run，更新覆盖度矩阵，未解决的偏差进坑表；取得 G4。返回登记结果 }
+  <- {
+    第 6 步登记：把回链写入 recipe.yaml 的 latest_run，更新覆盖度矩阵，未解决的偏差进坑表；取得 G4。返回登记结果
+  }
+  <- $register (checkpoint_api.Register * { 结论与回链交给它登记并更新覆盖矩阵；G4 是否通过以它交回的状态为准 })
 ```
 
 ## flow.viba

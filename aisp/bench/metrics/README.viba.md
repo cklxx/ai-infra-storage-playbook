@@ -91,18 +91,24 @@ import aisp.bench.metrics.readme.types as metrics_registry
 RegisterMetric =
      metrics_registry.MetricsRegistryEntry
   <- $entry (metrics_registry.MetricsRegistryEntry * { 要登记的指标条目：指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向 })
-  <- { 登记一个指标：把条目写进 metrics/registry.yaml；新增指标时文档、登记表、引用它的配方配置三者都要改；返回登记后的条目 }
+  <- {
+    登记一个指标：把条目写进 metrics/registry.yaml；新增指标时文档、登记表、引用它的配方配置三者都要改；返回登记后的条目
+  }
 
 LookupMetric =
      (metrics_registry.MetricsRegistryVersionInfo | nil)
   <- $name (metrics_registry.MetricsRegistryName * { 要查的指标名 })
-  <- { 查一个指标的版本：返回当前版本与支持的版本；配方使用的版本与 compatible_metrics 里列出的版本都必须在这个列表里；登记表里没有这个指标时给 nil }
+  <- {
+    查一个指标的版本：返回当前版本与支持的版本；配方使用的版本与 compatible_metrics 里列出的版本都必须在这个列表里；登记表里没有这个指标时给 nil
+  }
 
 ValidateRefs =
      list[metrics_registry.MetricsRegistryProblem]
   <- $refs (list[metrics_registry.MetricsRegistryRef] * { 配方里对指标的引用，一项一个指标；每项带指标名、配方使用的版本、声明的 gate、acceptance.gates 与 compatible_metrics 里的版本 })
   <- $registry (list[metrics_registry.MetricsRegistryEntry] * { 登记表：一项一个指标，提供该指标的版本、支持的版本与可服务的阶段门 })
-  <- { 校验引用：逐条检查指标是否已登记、版本是否受支持、gate 是否在登记表为该指标列出的 gate 里、该 gate 是否在配方的 acceptance.gates 里、该指标与版本是否在 compatible_metrics 里、compatible_metrics 里的版本是否都已发布；返回没有通过的项，空列表表示通过 }
+  <- {
+    校验引用：逐条检查指标是否已登记、版本是否受支持、gate 是否在登记表为该指标列出的 gate 里、该 gate 是否在配方的 acceptance.gates 里、该指标与版本是否在 compatible_metrics 里、compatible_metrics 里的版本是否都已发布；返回没有通过的项，空列表表示通过
+  }
 ```
 
 ## flow.viba

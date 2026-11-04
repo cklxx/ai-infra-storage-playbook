@@ -237,40 +237,61 @@ RecipeCollectionAcceptanceReport =
 
 ```bash apis
 import aisp.bench.recipes.model_code_collection.readme.types as recipe_collection
+import aisp.bench.checkpoint.model_code_collection.apis as collection_api
+import aisp.bench.metrics.coverage.apis as coverage_api
 
 CollectCandidates =
      recipe_collection.RecipeCollectionCandidateSet
   <- $target (int * { 目标可跑模型数；初始目标 1000，停止抓取的数量按它的 3 倍算 })
   <- $filters (list[recipe_collection.RecipeCollectionCandidateFilter] * { 抓取时用的筛选条件：pipeline_tag、library_name、下载量、创建时间 })
-  <- { 抓取候选并建立工作区：调用平台模型列表接口，按筛选条件过滤，每个候选记 model id、组织、许可证、tags、创建时间；候选数量达到目标数量的 3 倍后停止抓取，多抓的部分用于补偿下载失败与去重淘汰。按 transformers 主版本把候选分组，每组一个工作区镜像，工作区里放一套独立依赖、固定的磁盘配额与清理规则、一个按白名单取文件的下载器。返回候选清单与工作区 }
+  <- {
+    抓取候选并建立工作区：调用平台模型列表接口，按筛选条件过滤，每个候选记 model id、组织、许可证、tags、创建时间；候选数量达到目标数量的 3 倍后停止抓取，多抓的部分用于补偿下载失败与去重淘汰。按 transformers 主版本把候选分组，每组一个工作区镜像，工作区里放一套独立依赖、固定的磁盘配额与清理规则、一个按白名单取文件的下载器。返回候选清单与工作区
+  }
+  <- $fetch (collection_api.Fetch * { 来源与筛选条件交给它抓；它交回的清单记录是候选的来源，工作区按 transformers 主版本另建 })
 
 FetchCode =
      recipe_collection.RecipeCollectionCorpusEntry
   <- $candidate (recipe_collection.RecipeCollectionCandidate * { 要下载的候选 })
   <- $workspace (recipe_collection.RecipeCollectionWorkspace * { 这个候选所在 transformers 主版本的工作区；下载与判定都在里面做 })
-  <- { 下载代码与配置并判定代码角色：按方法文档「只取代码与配置」的白名单取文件，下载后计算每个文件的 sha256、记录仓库的当前 commit、校验文件数与清单一致；失败按网络、权限、不存在、许可未接受四类分别记录。对每个模型产出 code_role 与 code_role_evidence，证据不足时写 unknown，不要猜，unknown 计入覆盖缺口。返回一条语料条目，带上候选、下载结果、代码角色与证据 }
+  <- {
+    下载代码与配置并判定代码角色：按方法文档「只取代码与配置」的白名单取文件，下载后计算每个文件的 sha256、记录仓库的当前 commit、校验文件数与清单一致；失败按网络、权限、不存在、许可未接受四类分别记录。对每个模型产出 code_role 与 code_role_evidence，证据不足时写 unknown，不要猜，unknown 计入覆盖缺口。返回一条语料条目，带上候选、下载结果、代码角色与证据
+  }
+  <- $fetch (collection_api.Fetch * { 这个候选交给它下载并判代码角色；它交回的文件清单、sha256 与证据就是这条语料的内容 })
 
 DedupCorpus =
      list[recipe_collection.RecipeCollectionCorpusEntry]
   <- $entries (list[recipe_collection.RecipeCollectionCorpusEntry] * { 已经下载并判定过代码角色的语料条目 })
   <- $threshold (float * { 组内加权距离的阈值，初始值 0.15；标定前不对外引用去重率 })
-  <- { 结构指纹与去重：提取配置层与代码层特征，按架构族分组，组内计算加权距离，按最大边际覆盖保留代表样本；去重决定写进条目的 dedup 字段。返回同一批条目，每条写上指纹与去重决定；kept 的条目进入可跑性验证，dropped 的条目留在清单里 }
+  <- {
+    结构指纹与去重：提取配置层与代码层特征，按架构族分组，组内计算加权距离，按最大边际覆盖保留代表样本；去重决定写进条目的 dedup 字段。返回同一批条目，每条写上指纹与去重决定；kept 的条目进入可跑性验证，dropped 的条目留在清单里
+  }
+  <- $dedup (collection_api.Dedup * { 条目交给它按结构分组去重；它交回的 dedup 字段决定哪些进可跑性验证 })
 
 ProbeRunnable =
      recipe_collection.RecipeCollectionCorpusEntry
   <- $entry (recipe_collection.RecipeCollectionCorpusEntry * { 要验证的那条语料；去重丢弃的条目不再验证 })
-  <- { 可跑性验证：用固定 rank 数（默认 2）初始化 mock 的进程组，每个 rank 单独起进程、分时占用同一张卡、跑一次前向，输入维度用配置允许的小值；记录 yes / no / partial 与失败步骤、错误摘要，超时统一设为 10 分钟并单独归类。返回同一条语料，写上 runnable 结论 }
+  <- {
+    可跑性验证：用固定 rank 数（默认 2）初始化 mock 的进程组，每个 rank 单独起进程、分时占用同一张卡、跑一次前向，输入维度用配置允许的小值；记录 yes / no / partial 与失败步骤、错误摘要，超时统一设为 10 分钟并单独归类。返回同一条语料，写上 runnable 结论
+  }
+  <- $probe (collection_api.ProbeRunnable * { 条目交给它起 mock 进程组跑一次前向；它交回的 runnable 结论就是这条记录的结果 })
 
 PairTrainingCode =
      recipe_collection.RecipeCollectionCorpusEntry
   <- $entry (recipe_collection.RecipeCollectionCorpusEntry * { 要配对的语料条目；用它的 code_role 与结构指纹 })
-  <- { 训练代码配对：按方法文档的四条规则配对，产出 paired_training.status（paired / external / unpaired）与 ref；配对证据不足时一律 unpaired。返回同一条语料，写上 training 结论 }
+  <- {
+    训练代码配对：按方法文档的四条规则配对，产出 paired_training.status（paired / external / unpaired）与 ref；配对证据不足时一律 unpaired。返回同一条语料，写上 training 结论
+  }
+  <- $pair (collection_api.PairTrainingCode * { 条目交给它按四条规则配对；它交回的 status 与 ref 就是 training 字段 })
 
 CheckAcceptance =
      recipe_collection.RecipeCollectionAcceptanceReport
   <- $entries (list[recipe_collection.RecipeCollectionCorpusEntry] * { 已经下载、去重、验证、配对过的全部语料条目 })
   <- $acceptance (recipe_collection.RecipeCollectionAcceptance * { 验收口径：七项指标、覆盖度计算脚本、验收清单与负责人 })
-  <- { 覆盖度统计与验收：用 checks/check_coverage.py 计算覆盖矩阵与缺口清单，按验收清单逐项确认七项指标；返回每项指标的实际值与是否达标，以及覆盖矩阵与缺口清单，七项全部达标才算验收通过 }
+  <- {
+    覆盖度统计与验收：用 checks/check_coverage.py 计算覆盖矩阵与缺口清单，按验收清单逐项确认七项指标；返回每项指标的实际值与是否达标，以及覆盖矩阵与缺口清单，七项全部达标才算验收通过
+  }
+  <- $coverage (coverage_api.ComputeCoverage * { 清单交给它算覆盖率与缺口；七项指标里的覆盖度取它交回的数 })
+  <- $update (collection_api.UpdateCoverage * { 统计完的条目交给它登记覆盖矩阵；缺口清单由它写进覆盖度报告 })
 ```
 
 ## flow.viba

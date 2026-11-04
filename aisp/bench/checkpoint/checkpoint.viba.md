@@ -186,9 +186,11 @@ PrepareBypass =
   <- $implementation (ckpt_sample.Component * { 训练框架的分布式检查点实现，记录名字与版本 })
   <- $parallel (checkpoint.CheckpointParallel * { 并行策略 DP/TP/PP/EP 的度数，按真实配置设置；旁路只去掉计算，不去掉并行切分 })
   <- $dtype (str * { 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 })
+  <- {
+    准备旁路：先跑通一次不旁路的训练若干步（门 G0），再用 meta device 构建模型，前向照常执行，反向与 optimizer 换成占位实现，checkpoint 写入完全不改；返回五步做法与四条约束
+  }
   <- $choose (bypass_api.Choose * { 把要求的保真等级与可接受的成本交给它，它指定用哪种旁路手段；下面五步做法按它选的手段写 })
   <- $pass_g0 (gates_api.Pass * { 不旁路那次跑通之后拿产出判 G0；G0 不通过，旁路一步都不做 })
-  <- { 准备旁路：先跑通一次不旁路的训练若干步（门 G0），再用 meta device 构建模型，前向照常执行，反向与 optimizer 换成占位实现，checkpoint 写入完全不改；返回五步做法与四条约束 }
 
 RecordBoundary =
      checkpoint.CheckpointFidelity
@@ -197,31 +199,39 @@ RecordBoundary =
   <- $parallel_split (fidelity.FidelityBoundary * { 必填行并行切分与通信分组：分组与分片保持真实，通信被 mock 时登记同步丢失 })
   <- $checkpoint_write (fidelity.FidelityBoundary * { 必填行 checkpoint 写入与元数据提交：真实写入调用、真实文件系统或对象存储 })
   <- $checkpoint_read (fidelity.FidelityBoundary * { 必填行 checkpoint 读取与恢复：真实读取调用、真实校验 })
+  <- {
+    记录保真边界表：五条必填行一条不能少；IO 路径的保真等级不得是 L0，否则该路径的结论无效；返回填好的表
+  }
   <- $record (fidelity_api.Record * { 五条必填行逐条交给它登记；它交回的行拼成这张表，缺一行表就不完整 })
   <- $pass_g1 (gates_api.Pass * { 表填完判 G1；IO 路径的保真等级是 L0 时，G1 不能通过 })
-  <- { 记录保真边界表：五条必填行一条不能少；IO 路径的保真等级不得是 L0，否则该路径的结论无效；返回填好的表 }
 
 Align =
      checkpoint.CheckpointAlignment
   <- $real (ckpt_sample.RunRecord * { 不做旁路的同规模真实运行；用最小可用配置，开观测 })
   <- $bypass (ckpt_sample.RunRecord * { 与真实运行同规模的旁路运行，也开观测 })
+  <- {
+    小规模对齐：对比 methodology.viba.md 列出的度量项，按配方 metrics.yaml 标定的容差判定；差异超过容差时按 methodology.viba.md 的归因顺序排查；返回四个步骤与判定
+  }
   <- $compare (measures_api.CompareTolerance * { methodology 列的每个度量项各调它一次，真实值与旁路值一起给它；全部落在容差内才算对齐 })
   <- $pass_g2 (gates_api.Pass * { 对齐报告出来判 G2；有超差项且归因没写清，G2 不通过 })
-  <- { 小规模对齐：对比 methodology.viba.md 列出的度量项，按配方 metrics.yaml 标定的容差判定；差异超过容差时按 methodology.viba.md 的归因顺序排查；返回四个步骤与判定 }
 
 ScaleUp =
      checkpoint.CheckpointScalingRun
   <- $dimension (checkpoint.CheckpointScalingDimension * { 这一次放大的维度，取值见 CheckpointScalingDimension；一次只沿一个维度放大 })
   <- $target ((levels.Level | nil) * { 放大集群规模时的目标档位，先到万卡（S4），再外推到十万卡（S5）；只放大参数量时给 nil })
+  <- {
+    放大一级：先固定并行策略放大参数量，再固定参数量放大集群规模，两步不能合并；每一级都要验证不变量，偏差要有归因；返回这一级的结果
+  }
   <- $scale (scaling_api.ScaleUp * { 这一级的放大与不变量验证交给它跑；它交回的层级结果直接成为 CheckpointScalingRun })
   <- $pass_g3 (gates_api.Pass * { 每一级结果出来判 G3；哪一级不变量超差又没有归因，就停在哪一级 })
-  <- { 放大一级：先固定并行策略放大参数量，再固定参数量放大集群规模，两步不能合并；每一级都要验证不变量，偏差要有归因；返回这一级的结果 }
 
 Register =
      checkpoint.CheckpointRegistration
   <- $conclusion (checkpoint.CheckpointConclusion * { 要登记的结论：小规模对齐与逐级 scaling 的结果，按验收项判定，回链三要素齐全 })
+  <- {
+    登记结论与回链，更新覆盖矩阵；返回登记后的结论与覆盖矩阵的更新状态
+  }
   <- $pass_g4 (gates_api.Pass * { 结论与回链写好后判 G4；G4 通过才更新覆盖率矩阵 })
-  <- { 登记结论与回链，更新覆盖矩阵；返回登记后的结论与覆盖矩阵的更新状态 }
 ```
 
 ## flow.viba

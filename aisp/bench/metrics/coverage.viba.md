@@ -115,18 +115,24 @@ RecordCell =
      coverage.CoverageManifest
   <- $manifest (coverage.CoverageManifest * { 当前的覆盖度清单；记录配方声明的轴与已有格子；覆盖度清单的 JSON 结构见 schemas/coverage.schema.json，放对象存储，仓库里只放 schema 与计算脚本 })
   <- $cell (coverage.CoverageCell * { 要登记的那条格子：轴上的取值组合与状态；state 为 exempt 时还要带理由与复核日期 })
-  <- { 登记格子：按最近一次运行的结果把一条格子的状态写进覆盖度清单，清单由评估服务在每次运行后更新；返回更新后的清单 }
+  <- {
+    登记格子：按最近一次运行的结果把一条格子的状态写进覆盖度清单，清单由评估服务在每次运行后更新；返回更新后的清单
+  }
 
 ComputeCoverage =
      coverage.CoverageReport
   <- $manifest (coverage.CoverageManifest * { 要计算的覆盖度清单；记录配方声明的轴与已有格子 })
-  <- { 算覆盖率：按清单算覆盖度 = covered 格子数 / (covered + failed + stale + gap) 格子数，缺口率 = gap 格子数 / 分母；exempt 不进分母，豁免过期自动转为 gap；缺口按优先级排序。返回分母、已覆盖数、覆盖度、缺口率与缺口清单；清单缺轴或状态未知时返回不可比及原因 }
+  <- {
+    算覆盖率：按清单算覆盖度 = covered 格子数 / (covered + failed + stale + gap) 格子数，缺口率 = gap 格子数 / 分母；exempt 不进分母，豁免过期自动转为 gap；缺口按优先级排序。返回分母、已覆盖数、覆盖度、缺口率与缺口清单；清单缺轴或状态未知时返回不可比及原因
+  }
 
 JudgeCoverage =
      coverage.CoverageVerdict
   <- $report (coverage.CoverageReport * { 算覆盖率交回的清单结果；合法的统计与不可比的原因都收 })
   <- $threshold (coverage.CoverageThreshold * { 配方 metrics.yaml 的 tolerance 里的 coverage_ratio_min；唯一参与通过判定的阈值 })
-  <- { 判定是否够：覆盖度 ≥ coverage_ratio_min 判通过；低于阈值判不通过，缺口按优先级排序；豁免过期转为缺口后重新计算；清单非法（缺轴、状态未知）判不可比，重跑。阶段目标在 params.targets，不参与通过判定 }
+  <- {
+    判定是否够：覆盖度 ≥ coverage_ratio_min 判通过；低于阈值判不通过，缺口按优先级排序；豁免过期转为缺口后重新计算；清单非法（缺轴、状态未知）判不可比，重跑。阶段目标在 params.targets，不参与通过判定
+  }
 
 GrantExemption =
      coverage.CoverageManifest
@@ -134,7 +140,9 @@ GrantExemption =
   <- $key (coverage.CoverageCellKey * { 要豁免的格子：轴上的取值组合 })
   <- $reason (str * { 明确判定不需要覆盖的理由 })
   <- $review_due (str * { 复核日期；超过它豁免自动转为 gap })
-  <- { 登记豁免：明确判定这个格子不需要覆盖，记下理由与复核日期，把这条格子按 exempt 状态写进覆盖度清单；exempt 不进分母；超过复核日期后自动转为 gap。返回更新后的清单 }
+  <- {
+    登记豁免：明确判定这个格子不需要覆盖，记下理由与复核日期，把这条格子按 exempt 状态写进覆盖度清单；exempt 不进分母；超过复核日期后自动转为 gap。返回更新后的清单
+  }
 ```
 
 ## flow.viba

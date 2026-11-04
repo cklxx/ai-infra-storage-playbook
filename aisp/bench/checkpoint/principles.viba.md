@@ -230,24 +230,32 @@ PrinciplesGapRoute =
 
 ```bash apis
 import aisp.bench.checkpoint.principles.types as principles
+import aisp.bench.checkpoint.extension.apis as extension_api
 
 AcceptGate =
      principles.PrinciplesAcceptance
   <- $eval_set (principles.PrinciplesEvalSet * { 被判断是否算建成的评估集 })
   <- $satisfied (list[principles.PrinciplesSuccessCriterion] * { 已经满足的成功判据；未列出的判据视为未满足 })
-  <- { 验收：拿五条成功判据逐条对照。五条全部满足才算建成；返回结论与缺的判据 }
+  <- {
+    验收：拿五条成功判据逐条对照。五条全部满足才算建成；返回结论与缺的判据
+  }
 
 ReviewChange =
      principles.PrinciplesReviewVerdict
   <- $subject (principles.PrinciplesReviewSubject * { 要评审的改动：口径变更、阈值调整、任何会让历史结论不可比的改动 })
   <- $author (str * { 提出改动的人 })
   <- $reviewer (str * { 准备评审这次改动的人 })
-  <- { 评审：这次改动由评审者评审，并按 no_self_review 规则检查评审者是不是提出改动的人。同一个人提出又评审时返回 self_review_forbidden，否则返回 allowed，同时带上这次评审针对的改动与承担评审的角色 }
+  <- {
+    评审：这次改动由评审者评审，并按 no_self_review 规则检查评审者是不是提出改动的人。同一个人提出又评审时返回 self_review_forbidden，否则返回 allowed，同时带上这次评审针对的改动与承担评审的角色
+  }
 
 RouteGap =
      principles.PrinciplesGapRoute
   <- $gap (principles.PrinciplesGap * { 要回流的缺口：覆盖度矩阵上的空白格子，或新架构、新框架、新并行策略、未覆盖的 IO 特征 })
-  <- { 回流：把缺口交给闭环。缺口从缺口分析进入，经 playbook 生成新版本、回归，最后回到当前版本的评估集；返回缺口与它经过的阶段 }
+  <- {
+    回流：把缺口交给闭环。缺口从缺口分析进入，经 playbook 生成新版本、回归，最后回到当前版本的评估集；返回缺口与它经过的阶段
+  }
+  <- $regress (extension_api.Regress * { 新版本生成后交给它跑回归；回归结论决定这个缺口是回到评估集还是继续留在缺口清单 })
 ```
 
 ## flow.viba

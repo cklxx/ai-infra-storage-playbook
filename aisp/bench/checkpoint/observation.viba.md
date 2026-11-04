@@ -30,5 +30,7 @@ import aisp.bench.checkpoint.observation.types as observation
 Collect =
      list[observation.ObservationLayer]
   <- $wanted (list[observation.ObservationLayer] * { 想开的层 })
-  <- { 开观测：写清每层的采样率与统计口径；少于两层就不足以交叉核对，返回实际开起来的层 }
+  <- {
+    开观测：写清每层的采样率与统计口径；少于两层就不足以交叉核对，返回实际开起来的层
+  }
 ```

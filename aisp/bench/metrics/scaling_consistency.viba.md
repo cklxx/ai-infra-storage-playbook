@@ -150,21 +150,27 @@ RecordLevel =
      scaling_consistency.ScalingConsistencyLadder
   <- $ladder (scaling_consistency.ScalingConsistencyLadder * { 已经登记的逐级记录 })
   <- $record (scaling_consistency.ScalingConsistencyLevelRecord * { 这一级的档位与每条不变量的实测值 })
-  <- { 登记一级：把这一级的实测值追加到逐级记录里，按规模从小到大排；任一级缺数据判不可比。返回登记后的逐级记录 }
+  <- {
+    登记一级：把这一级的实测值追加到逐级记录里，按规模从小到大排；任一级缺数据判不可比。返回登记后的逐级记录
+  }
 
 CompareAdjacent =
      scaling_consistency.ScalingConsistencyComparisonSet
   <- $ladder (scaling_consistency.ScalingConsistencyLadder * { 已登记的逐级记录 })
   <- $invariants (list[scaling_consistency.ScalingConsistencyInvariant] * { 参与比较的不变量：名字、偏差口径、自己的容差 })
   <- $tolerance (scaling_consistency.ScalingConsistencyTolerance * { 默认容差：不变量没写 tolerance 时用 per_level，首末级用 first_last })
-  <- { 比较相邻级：对每条不变量算出每一对相邻级的偏差，落在它自己的容差或 per_level 内就记为在容差内；同时算出首末级总偏差，不小于三级时再给出最大相邻偏差。任一级缺数据或阈值缺失时记为不可比。返回这些偏差与可比性 }
+  <- {
+    比较相邻级：对每条不变量算出每一对相邻级的偏差，落在它自己的容差或 per_level 内就记为在容差内；同时算出首末级总偏差，不小于三级时再给出最大相邻偏差。任一级缺数据或阈值缺失时记为不可比。返回这些偏差与可比性
+  }
 
 Judge =
      scaling_consistency.ScalingConsistencyJudgement
   <- $ladder (scaling_consistency.ScalingConsistencyLadder * { 已登记的逐级记录；用来检查每一级是否朝同一方向漂移 })
   <- $comparisons (scaling_consistency.ScalingConsistencyComparisonSet * { 比较相邻级得到的偏差 })
   <- $attribution (list[scaling_consistency.ScalingConsistencyAttribution] * { 超出容差的不变量各自怎么归因；每条带不变量名与说明，归因不明时说明为 nil })
-  <- { 判定：按三件事判——每条不变量的相邻级偏差在它自己的容差内，首末级总偏差在 first_last 内，逐级值没有单调漂移；有不变量超出容差时看归因；任一级缺数据或阈值缺失时判不可比。返回五种结论之一、每条不变量的漂移检查与没通过的不变量 }
+  <- {
+    判定：按三件事判——每条不变量的相邻级偏差在它自己的容差内，首末级总偏差在 first_last 内，逐级值没有单调漂移；有不变量超出容差时看归因；任一级缺数据或阈值缺失时判不可比。返回五种结论之一、每条不变量的漂移检查与没通过的不变量
+  }
 
 Report =
      scaling_consistency.ScalingConsistencyReport
@@ -172,7 +178,9 @@ Report =
   <- $comparisons (scaling_consistency.ScalingConsistencyComparisonSet * { 相邻级偏差、首末级总偏差与最大相邻偏差 })
   <- $tolerance (scaling_consistency.ScalingConsistencyTolerance * { 这次判定使用的默认容差 })
   <- $judgement (scaling_consistency.ScalingConsistencyJudgement * { 判定结论、漂移检查与没通过的不变量 })
-  <- { 报告：汇总逐级记录、偏差、漂移检查与判定结论。返回一份报告 }
+  <- {
+    报告：汇总逐级记录、偏差、漂移检查与判定结论。返回一份报告
+  }
 ```
 
 ## flow.viba

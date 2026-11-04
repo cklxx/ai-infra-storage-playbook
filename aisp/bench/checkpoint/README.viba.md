@@ -62,44 +62,66 @@ import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
 import aisp.bench.checkpoint.measures.apis as measures_api
 import aisp.bench.checkpoint.observation.apis as observation_api
 import aisp.bench.checkpoint.performance.apis as perf_api
+import aisp.bench.checkpoint.model_code_collection.apis as collection_api
+import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
+import aisp.bench.metrics.coverage.apis as coverage_api
+import aisp.bench.metrics.coverage.types as coverage
 
 Collect =
      list[ckpt_sample.Model]
-  <- { 从平台抓模型代码，按结构去重，跑一遍确认能跑 }
+  <- {
+    从平台抓模型代码，按结构去重，跑一遍确认能跑
+  }
+  <- $fetch (collection_api.Fetch * { 抓取：它按来源与筛选条件取 model id，只下代码与配置，逐个文件记 sha256 与许可证；它交回的清单记录是这一批候选，去重与可跑性还是 nil })
+  <- $dedup (collection_api.Dedup * { 去重：候选清单交给它分组，同架构且代码层关键调用序列一致的只留一个代表，其余不再进可跑性验证 })
+  <- $probe (collection_api.ProbeRunnable * { 跑一遍：留下的每条记录由它起单 rank 进程跑一次前向或一次预填充，跑不起来的在这里被剔掉；剩下的记录才作为 Model 交回 })
 
 PickSamples =
      list[ckpt_sample.RunSpec]
   <- $corpus (list[ckpt_sample.Model] * { 可用的模型代码 })
-  <- $shape (str * { 这次要覆盖的结构与规模 })
-  <- { 按要覆盖的格子挑模型，配好并行与负载 }
+  <- $coverage (coverage.CoverageManifest * { 覆盖度清单：配方声明的轴与已有格子 })
+  <- {
+    按要覆盖的格子挑模型，配好并行与负载
+  }
+  <- $compute (coverage_api.ComputeCoverage * { 清单交给它算出缺口清单与优先级；这次挑哪些模型，按它交回的缺口清单走 })
+  <- $level (ckpt_sample_api.GetLevel * { 每条用例的拓扑交给它落到 S0 到 S5 的哪一级；并行配置与负载按它交回的档位配 })
 
 Execute =
      ckpt_sample.RunRecord
   <- $spec (ckpt_sample.RunSpec * { 一条用例 })
+  <- {
+    旁路计算，保留 checkpoint 写入与读取，跑一次，记 IO 与 SLI
+  }
   <- $prepare (checkpoint_api.PrepareBypass * { 它交回的五步做法与四条约束决定这次怎么旁路：模型在 meta device 上建，反向与 optimizer 换占位，checkpoint 写入原样保留 })
   <- $collect (observation_api.Collect * { 开跑前先让它开观测，trace 才有来源；它交回实际开的层，少于两层这次运行就不算数 })
   <- $measure (perf_api.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
-  <- { 旁路计算，保留 checkpoint 写入与读取，跑一次，记 IO 与 SLI }
 
 Judge =
      list[slo.CkptSlo]
   <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
   <- $policy (str * { 部署方给的阈值 })
+  <- {
+    逐指标对照阈值，给出通过 / 失败 / 不可比
+  }
   <- $judge (perf_api.Judge * { 把 Artifacts.metrics 交给它，它逐项配阈值判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
-  <- { 逐指标对照阈值，给出通过 / 失败 / 不可比 }
 
 Compare =
      str
   <- $a (ckpt_sample.RunRecord * { 旧存储版本的运行 })
   <- $b (ckpt_sample.RunRecord * { 新存储版本的运行 })
+  <- {
+    同一份负载，逐指标比差值，只允许存储两层里有一层不同；返回比较结果的位置
+  }
   <- $compare (measures_api.CompareTolerance * { 两个版本同名的每项指标各调它一次，它按这一项的统计量判定两个值是否落在容差内；有一项超差，两个版本就不可比 })
-  <- { 同一份负载，逐指标比差值，只允许存储两层里有一层不同；返回比较结果的位置 }
 
 FindGaps =
      list[ckpt_bench.Gap]
   <- $runs (list[ckpt_sample.RunRecord] * { 已有的运行 })
   <- $corpus (list[ckpt_sample.Model] * { 语料 })
-  <- { 看哪些模型族、规模、负载还没有样本，登记成缺口 }
+  <- {
+    看哪些模型族、规模、负载还没有样本，登记成缺口
+  }
+  <- $coverage (coverage_api.ComputeCoverage * { 算覆盖率：它交回的缺口清单已经按优先级排好；这里只把缺口转成 Gap 登记 })
 ```
 
 ## flow.viba

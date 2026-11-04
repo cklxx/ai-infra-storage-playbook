@@ -106,23 +106,31 @@ import aisp.bench.examples.readme.types as examples
 ListSamples =
      examples.ExampleSampleSet
   <- $root (str * { 样例根目录：examples/，所有样例路径都相对它 })
-  <- { 列样例：交回正向样例与负向样例；正向样例是校验脚本的合法输入，负向样例放在 invalid/ 下，必须被拒绝 }
+  <- {
+    列样例：交回正向样例与负向样例；正向样例是校验脚本的合法输入，负向样例放在 invalid/ 下，必须被拒绝
+  }
 
 RunAll =
      list[examples.ExampleRunResult]
   <- $plan (examples.ExampleAllRun * { 整套跑法：command 取 python3 scripts/run_checks.py })
-  <- { 整套跑：执行 command，一次跑完全部样例；返回每个样例的结果，正向样例期望 accepted，负向样例期望 rejected }
+  <- {
+    整套跑：执行 command，一次跑完全部样例；返回每个样例的结果，正向样例期望 accepted，负向样例期望 rejected
+  }
 
 RunOne =
      examples.ExampleRunResult
   <- $plan (examples.ExampleSingleRun * { 单项跑法：check、--real、--bypassed 与 --metrics 的取值 })
-  <- { 单项跑：只跑一个 check；单独跑一项时阈值从配方读取，示例取 recipes/checkpoint/metrics.yaml；返回这次跑法的结果 }
+  <- {
+    单项跑：只跑一个 check；单独跑一项时阈值从配方读取，示例取 recipes/checkpoint/metrics.yaml；返回这次跑法的结果
+  }
 
 Verify =
      examples.ExampleRunReport
   <- $set (examples.ExampleSampleSet * { 样例集：正向样例与负向样例，用来确认每个样例都有结果 })
   <- $results (list[examples.ExampleRunResult] * { 跑法交回的结果；整套跑时一条一个样例，单项跑时一次跑法一条 })
-  <- { 判结果：逐个样例比对 outcome 与 expected，并确认每个样例的 expected 与它在样例集里的正负一致、且都有结果；正向样例应当 accepted，负向样例应当 rejected。返回结果清单与不一致的样例路径 }
+  <- {
+    判结果：逐个样例比对 outcome 与 expected，并确认每个样例的 expected 与它在样例集里的正负一致、且都有结果；正向样例应当 accepted，负向样例应当 rejected。返回结果清单与不一致的样例路径
+  }
 ```
 
 ## flow.viba

@@ -89,37 +89,53 @@ import aisp.bench.recipes.model_code_collection.acceptance_checklist.types as ac
 import aisp.bench.checkpoint.model_code_collection.types as collection
 import aisp.bench.checkpoint.fidelity.types as fidelity
 import aisp.bench.checkpoint.scaling.types as levels
+import aisp.bench.checkpoint.gates.apis as gates_api
 
 CheckRunnable =
      acceptance_collection.AcceptanceCollectionGateResult
   <- $entries (list[collection.CollectionManifestEntry] * { 候选清单的全部记录；数量要达到目标数量的 3 倍 })
   <- $target_count (int * { 目标数量；候选数量要达到它的 3 倍 })
-  <- { 验收 G0 能跑：候选清单数量达到目标数量的 3 倍；至少一条记录同时有下载的文件与可跑性结论；每条记录的工作区都记下 transformers 主版本，分组完成。返回这三条验收项的逐条判定与门的结论 }
+  <- {
+    验收 G0 能跑：候选清单数量达到目标数量的 3 倍；至少一条记录同时有下载的文件与可跑性结论；每条记录的工作区都记下 transformers 主版本，分组完成。返回这三条验收项的逐条判定与门的结论
+  }
+  <- $pass (gates_api.Pass * { 这三条验收项的产出交给它判 G0；它交回的结论就是门的结论 })
 
 CheckBypass =
      acceptance_collection.AcceptanceCollectionGateResult
   <- $known_runnable (collection.CollectionManifestEntry * { 已知能跑的模型；用它跑一次 mock 进程组，核对 mock 返回值 })
   <- $mock (collection.CollectionRunnableRecord * { 这次 mock 进程组验证的记录；backend 为 mock，concurrency 标明为 1 })
   <- $boundary (list[fidelity.FidelityBoundary] * { fidelity_boundary 的全部边界行；通信路径那行的 fidelity 要标注为 L1 })
-  <- { 验收 G1 旁路可跑：mock 进程组已实现且用已知能跑的模型验证过返回值正确；fidelity_boundary 已填写且通信路径标注为 L1；分时占用的调度方式已记录且并发为 1。返回这三条验收项的逐条判定与门的结论 }
+  <- {
+    验收 G1 旁路可跑：mock 进程组已实现且用已知能跑的模型验证过返回值正确；fidelity_boundary 已填写且通信路径标注为 L1；分时占用的调度方式已记录且并发为 1。返回这三条验收项的逐条判定与门的结论
+  }
+  <- $pass (gates_api.Pass * { 这三条验收项的产出交给它判 G1；它交回的结论就是门的结论 })
 
 CheckAlignment =
      acceptance_collection.AcceptanceCollectionGateResult
   <- $metric_versions (dict[str, str] * { 下游配方引用时的指标版本；键是指标名，值是版本，要与本配方 metrics.yaml 里的一致 })
   <- $coverage (acceptance_collection.AcceptanceCollectionCoverageRun * { 覆盖度计算脚本这次运行：子集大小与是否跑通；子集取 50 个模型 })
-  <- { 验收 G2 小规模对齐：本配方不做 IO 对齐，只核对下游配方引用时的指标版本一致；覆盖度计算脚本在 50 个模型的子集上跑通。返回这两条验收项的逐条判定与门的结论 }
+  <- {
+    验收 G2 小规模对齐：本配方不做 IO 对齐，只核对下游配方引用时的指标版本一致；覆盖度计算脚本在 50 个模型的子集上跑通。返回这两条验收项的逐条判定与门的结论
+  }
+  <- $pass (gates_api.Pass * { 这两条验收项的产出交给它判 G2；它交回的结论就是门的结论 })
 
 CheckScaling =
      acceptance_collection.AcceptanceCollectionGateResult
   <- $plan_levels (list[levels.Level] * { scaling_plan 里覆盖语料规模扩展的档位；本配方要求是 S0 到 S2 })
-  <- { 验收 G3 逐级 scaling：本配方不适用，语料规模扩展由 scaling_plan 的 S0–S2 覆盖；传入的档位是 S0 到 S2 时这一条通过。返回这条验收项的判定与门的结论 }
+  <- {
+    验收 G3 逐级 scaling：本配方不适用，语料规模扩展由 scaling_plan 的 S0–S2 覆盖；传入的档位是 S0 到 S2 时这一条通过。返回这条验收项的判定与门的结论
+  }
+  <- $pass (gates_api.Pass * { 这条验收项交给它判 G3；档位不在 S0 到 S2 时它不能通过 })
 
 CheckRegistration =
      acceptance_collection.AcceptanceCollectionGateResult
   <- $manifest (collection.CollectionManifest * { 已上传的清单；sha256 已记录 })
   <- $coverage (collection.CollectionCoverage * { 覆盖度清单；缺口已按优先级排序，无法判定代码角色与未配对训练代码的样本已计入 })
   <- $rerun (collection.CollectionManifest * { 重跑一次得到的清单；文件集合与 sha256 要和上一次完全一致 })
-  <- { 验收 G4 结论登记：清单已上传且 sha256 已记录；覆盖度清单已生成且缺口按优先级排序；无法判定代码角色与未配对训练代码的样本都计入缺口；可跑率、架构族覆盖、规模覆盖、配对率均达到验收目标；重跑一次文件集合与 sha256 完全一致。返回这六条验收项的逐条判定与门的结论 }
+  <- {
+    验收 G4 结论登记：清单已上传且 sha256 已记录；覆盖度清单已生成且缺口按优先级排序；无法判定代码角色与未配对训练代码的样本都计入缺口；可跑率、架构族覆盖、规模覆盖、配对率均达到验收目标；重跑一次文件集合与 sha256 完全一致。返回这六条验收项的逐条判定与门的结论
+  }
+  <- $pass (gates_api.Pass * { 这六条验收项的产出交给它判 G4；它交回的结论就是门的结论 })
 ```
 
 ## flow.viba

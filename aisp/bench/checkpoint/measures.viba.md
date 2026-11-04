@@ -150,5 +150,7 @@ CompareTolerance =
   <- $tolerance (measures.MethodologyTolerance * { 这一项的统计量与容差 })
   <- $observed (float * { 旁路运行测得的数值 })
   <- $expected (float * { 真实运行测得的数值 })
-  <- { 按这一项的统计量比较两个数：落在容差内答 true；超出时按归因顺序逐项排除，归因结论写进配方的 README.viba.md }
+  <- {
+    按这一项的统计量比较两个数：落在容差内答 true；超出时按归因顺序逐项排除，归因结论写进配方的 README.viba.md
+  }
 ```

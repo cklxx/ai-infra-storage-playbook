@@ -98,28 +98,39 @@ AcceptanceCheckpointVerdict =
 ```bash apis
 import aisp.bench.recipes.checkpoint.acceptance_checklist.types as acceptance_checkpoint
 import aisp.bench.checkpoint.gates.types as gates
+import aisp.bench.checkpoint.gates.apis as gates_api
 
 Start =
      acceptance_checkpoint.AcceptanceCheckpointProgress
   <- $checklist (acceptance_checkpoint.AcceptanceCheckpointChecklist * { 要执行的验收清单：G0 到 G4 五个阶段共 24 条验收项，以及 G3 的逐级档位 })
-  <- { 开始验收：按清单把所有验收项记为未勾选，返回初始进度；勾选状态从这里开始累积 }
+  <- {
+    开始验收：按清单把所有验收项记为未勾选，返回初始进度；勾选状态从这里开始累积
+  }
 
 CheckItem =
      acceptance_checkpoint.AcceptanceCheckpointProgress
   <- $progress (acceptance_checkpoint.AcceptanceCheckpointProgress * { 当前进度：已勾选与未勾选的验收项 })
   <- $item (acceptance_checkpoint.AcceptanceCheckpointItem * { 要勾选的那条验收项 })
-  <- { 勾选：把一条验收项记为已勾选，返回更新后的进度；已经勾选的项重复勾选时进度不变 }
+  <- {
+    勾选：把一条验收项记为已勾选，返回更新后的进度；已经勾选的项重复勾选时进度不变
+  }
 
 JudgeGate =
      acceptance_checkpoint.AcceptanceCheckpointGateVerdict
   <- $gate (gates.Gate * { 要判定的阶段门，取值 G0 到 G4 })
   <- $progress (acceptance_checkpoint.AcceptanceCheckpointProgress * { 当前进度：已勾选与未勾选的验收项 })
-  <- { 判定一个阶段：该阶段的验收项全部已勾选时 passed 为 true；否则列出该阶段还没勾选的验收项，返回判定 }
+  <- {
+    判定一个阶段：该阶段的验收项全部已勾选时 passed 为 true；否则列出该阶段还没勾选的验收项，返回判定
+  }
+  <- $pass (gates_api.Pass * { 这一阶段的验收项与产出交给它判；它交回的 GateVerdict 就是这一阶段 passed 的来源 })
 
 JudgeChecklist =
      acceptance_checkpoint.AcceptanceCheckpointVerdict
   <- $progress (acceptance_checkpoint.AcceptanceCheckpointProgress * { 当前进度：已勾选与未勾选的验收项 })
-  <- { 判定整份清单：按 G0 到 G4 逐阶段判定，五个阶段的验收项全部已勾选时 passed 为 true；返回整份判定与每阶段一条判定 }
+  <- {
+    判定整份清单：按 G0 到 G4 逐阶段判定，五个阶段的验收项全部已勾选时 passed 为 true；返回整份判定与每阶段一条判定
+  }
+  <- $judge_gate (JudgeGate * { 每个阶段交给它判一次；五个阶段都 passed 才算整份清单通过 })
 ```
 
 ## flow.viba

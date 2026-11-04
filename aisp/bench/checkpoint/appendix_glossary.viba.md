@@ -86,12 +86,16 @@ import aisp.bench.checkpoint.appendix_glossary.types as glossary
 Lookup =
      glossary.GlossaryCategory
   <- $term (glossary.GlossaryTerm * { 要查的术语，GlossaryTerm 的一个取值 })
-  <- { 查类别接口：答这个术语属于四类里的哪一类，给 GlossaryCategory 的一个取值。只读，不改变术语表 }
+  <- {
+    查类别接口：答这个术语属于四类里的哪一类，给 GlossaryCategory 的一个取值。只读，不改变术语表
+  }
 
 Define =
      glossary.GlossaryDefinition
   <- $term (glossary.GlossaryTerm * { 要查的同一个术语 })
-  <- { 查定义接口：答这个术语的定义，就是它的取值上挂的那段说明。只读；与 Lookup 用同一个输入，两步可以先后走 }
+  <- {
+    查定义接口：答这个术语的定义，就是它的取值上挂的那段说明。只读；与 Lookup 用同一个输入，两步可以先后走
+  }
 ```
 
 ## flow.viba

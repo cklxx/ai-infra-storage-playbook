@@ -323,28 +323,38 @@ Fetch =
      list[collection.CollectionManifestEntry]
   <- $sources (list[collection.CollectionSource] * { 这次从哪几个来源收，按优先级从高到低：主来源是 HuggingFace Hub 的模型列表接口，组织主页、论文与发布公告、自有模型清单用来补齐 })
   <- $filters (list[collection.CollectionFilter] * { 这次用哪几条筛选条件；初始值固定，之后按覆盖度报告调整 })
-  <- { 抓取：按来源取 model id，按筛选条件过滤，只取代码与配置不取权重，逐个文件记 sha256，记录许可证；判定代码角色并留下证据，每个模型在独立工作区里下载并原样保留。返回每个模型一条清单记录，其中 dedup、runnable、training 还是 nil }
+  <- {
+    抓取：按来源取 model id，按筛选条件过滤，只取代码与配置不取权重，逐个文件记 sha256，记录许可证；判定代码角色并留下证据，每个模型在独立工作区里下载并原样保留。返回每个模型一条清单记录，其中 dedup、runnable、training 还是 nil
+  }
 
 Dedup =
      list[collection.CollectionManifestEntry]
   <- $entries (list[collection.CollectionManifestEntry] * { 抓取得到的全部清单记录；去重只在同一评估集内部做 })
   <- $policy (collection.CollectionDedupPolicy * { 组内距离的阈值、各维度的权重与保留策略 })
-  <- { 去重：同一 architectures 且代码层关键调用序列一致的记录分为一组，组内按配置向量算加权距离；距离小于阈值的只留一个代表。返回同一批记录，每条写上 dedup；dropped 的记录留在清单里，只是不再进入可跑性验证 }
+  <- {
+    去重：同一 architectures 且代码层关键调用序列一致的记录分为一组，组内按配置向量算加权距离；距离小于阈值的只留一个代表。返回同一批记录，每条写上 dedup；dropped 的记录留在清单里，只是不再进入可跑性验证
+  }
 
 ProbeRunnable =
      collection.CollectionRunnableRecord
   <- $entry (collection.CollectionManifestEntry * { 要验证的那条记录；dropped 的记录不跑 })
-  <- { 跑一遍：初始化真实的分布式环境但把后端换成 mock，每个 rank 单独起进程、分时占用同一张 GPU，每个 rank 只跑一次前向或一次预填充；每步设超时，失败按超时、OOM、断言失败、依赖缺失分开归类。返回这条记录的可跑性结论，结论里标明并发为 1 }
+  <- {
+    跑一遍：初始化真实的分布式环境但把后端换成 mock，每个 rank 单独起进程、分时占用同一张 GPU，每个 rank 只跑一次前向或一次预填充；每步设超时，失败按超时、OOM、断言失败、依赖缺失分开归类。返回这条记录的可跑性结论，结论里标明并发为 1
+  }
 
 PairTrainingCode =
      collection.CollectionTrainingPairing
   <- $entry (collection.CollectionManifestEntry * { 要判定的那条记录；需要它的代码角色证据与配置里的 architectures })
-  <- { 判定：同组织下有同架构族的预训练实现，优先配对；architectures 相同的按组织与发布时间就近配对；README 或模型卡引用了别处的训练仓库，记为外链；都找不到时记为 unpaired。返回配对结论，unpaired 的写进缺口清单 }
+  <- {
+    判定：同组织下有同架构族的预训练实现，优先配对；architectures 相同的按组织与发布时间就近配对；README 或模型卡引用了别处的训练仓库，记为外链；都找不到时记为 unpaired。返回配对结论，unpaired 的写进缺口清单
+  }
 
 UpdateCoverage =
      collection.CollectionCoverage
   <- $entries (list[collection.CollectionManifestEntry] * { 已经去重、验证、配对过的全部清单记录 })
-  <- { 登记覆盖：按架构族、规模、框架版本统计覆盖矩阵，空白格子、code_role 为 unknown 的记录、没有配对训练代码的记录一起写进缺口清单。返回覆盖度报告 }
+  <- {
+    登记覆盖：按架构族、规模、框架版本统计覆盖矩阵，空白格子、code_role 为 unknown 的记录、没有配对训练代码的记录一起写进缺口清单。返回覆盖度报告
+  }
 ```
 
 ## flow.viba

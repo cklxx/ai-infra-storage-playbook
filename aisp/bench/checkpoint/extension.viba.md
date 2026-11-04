@@ -123,32 +123,47 @@ ExtensionTrigger =
 ```bash apis
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
 import aisp.bench.checkpoint.extension.types as extension
+import aisp.bench.metrics.coverage.apis as coverage_api
+import aisp.bench.checkpoint.model_code_collection.apis as collection_api
+import aisp.bench.checks.readme.apis as checks_api
 
 FindGap =
      list[extension.ExtensionGap]
   <- $coverage (extension.ExtensionCoverage * { 覆盖度矩阵：轴与格子；缺口从空白格子里来 })
   <- $failures (list[str] * { 失败模式：评估服务里已有的失败分类 })
   <- $signals (list[str] * { 外部信号：模型清单、框架发布与基础设施变更 })
-  <- { 发现缺口：扫描覆盖度矩阵的空白格子，结合失败模式与外部信号，把应该有但没有的格子登记为缺口，按覆盖权重 × 结构新颖度 × 规模重要性 / 预计成本排序；返回带优先级的缺口清单。分数只用于排序，不用于自动决定入集 }
+  <- {
+    发现缺口：扫描覆盖度矩阵的空白格子，结合失败模式与外部信号，把应该有但没有的格子登记为缺口，按覆盖权重 × 结构新颖度 × 规模重要性 / 预计成本排序；返回带优先级的缺口清单。分数只用于排序，不用于自动决定入集
+  }
+  <- $compute (coverage_api.ComputeCoverage * { 清单交给它算出覆盖率与缺口，缺口已按优先级排好；这里只在它交回的缺口上加结构新颖度与成本权重 })
 
 ProposeCandidate =
      list[extension.ExtensionCandidate]
   <- $gaps (list[extension.ExtensionGap] * { 上一步产出的缺口清单 })
   <- $models (list[ckpt_sample.Model] * { 模型清单里的模型；新增项按结构距离挑选，避免与现有样本重复 })
   <- $frameworks (list[str] * { 框架发布信息；框架新版本引入的缓存/传输能力用来构造对应用例 })
-  <- { 生成候选：按缺口与候选来源返回模型、配置、负载齐全的候选用例；生成出来但不能跑的候选不算候选。自动生成，入集需要人工确认 }
+  <- {
+    生成候选：按缺口与候选来源返回模型、配置、负载齐全的候选用例；生成出来但不能跑的候选不算候选。自动生成，入集需要人工确认
+  }
+  <- $probe (collection_api.ProbeRunnable * { 生成的候选逐条交给它跑一遍；跑不起来的在它那里就判掉，进不了候选清单 })
 
 Regress =
      list[extension.ExtensionRegression]
   <- $candidates (list[extension.ExtensionCandidate] * { 上一步产出的候选用例 })
   <- $baseline (str * { 现有基线：上次通过版本的结果，不是上一次的结果 })
   <- $scope (extension.ExtensionRegressionScope * { 这次回归跑多大范围：冒烟、常规或全量 })
-  <- { 回归验证：按范围跑候选用例，与基线比较；返回每个候选的通过、不可比、不通过或无结论。通过更新基线与覆盖矩阵的最近一次通过时间，不通过冻结相关结论并生成排查任务，无结论保留原基线不覆盖 }
+  <- {
+    回归验证：按范围跑候选用例，与基线比较；返回每个候选的通过、不可比、不通过或无结论。通过更新基线与覆盖矩阵的最近一次通过时间，不通过冻结相关结论并生成排查任务，无结论保留原基线不覆盖
+  }
+  <- $run (checks_api.RunCheck * { 每个候选交给它跑校验；它交回的通过项才有资格更新基线 })
+  <- $record (coverage_api.RecordCell * { 通过的候选由它把覆盖矩阵里对应格子的最近一次通过时间写新 })
 
 Converge =
      extension.ExtensionVersion
   <- $regressions (list[extension.ExtensionRegression] * { 上一步产出的回归结论 })
-  <- { 版本收敛：把回归结论收进新版本，按配方版本、用例集版本、指标版本三部分递增；返回新评估集版本，更新回链，并把变更写进 CHANGELOG.md，注明影响的历史结论范围。人工确认 }
+  <- {
+    版本收敛：把回归结论收进新版本，按配方版本、用例集版本、指标版本三部分递增；返回新评估集版本，更新回链，并把变更写进 CHANGELOG.md，注明影响的历史结论范围。人工确认
+  }
 ```
 
 ## flow.viba

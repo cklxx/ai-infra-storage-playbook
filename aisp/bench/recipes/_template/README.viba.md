@@ -141,24 +141,35 @@ CopyTemplate =
      recipe_template.RecipeTemplateDirectory
   <- $template (recipe_template.RecipeTemplateDirectory * { 模板目录：六个文件各自的内容与读者 })
   <- $name (str * { 评估集名；对应 recipes/<评估集名>/，复制后不要保留尖括号 })
-  <- { 复制本目录到 recipes/<评估集名>/；返回复制出的目录。此时 recipe.yaml 与 metrics.yaml 仍是模板内容，需要逐项替换尖括号内的占位内容 }
+  <- {
+    复制本目录到 recipes/<评估集名>/；返回复制出的目录。此时 recipe.yaml 与 metrics.yaml 仍是模板内容，需要逐项替换尖括号内的占位内容
+  }
 
 FillPlaceholders =
      recipe_template.RecipeTemplateDirectory
   <- $directory (recipe_template.RecipeTemplateDirectory * { 复制出的配方目录；尖括号占位内容还没替换 })
   <- $values (dict[str, str] * { 尖括号占位符到实际内容的映射；逐项替换 })
-  <- { 逐项替换尖括号内的占位内容；复制后不要保留尖括号；返回替换完成的配方目录 }
+  <- {
+    逐项替换尖括号内的占位内容；复制后不要保留尖括号；返回替换完成的配方目录
+  }
 
 CheckRequirements =
      recipe_template.RecipeTemplateCheckReport
   <- $recipe (recipe_template.RecipeTemplateRecipeYaml * { 待检查的 recipe.yaml })
   <- $metrics (recipe_template.RecipeTemplateMetricsYaml * { 待检查的 metrics.yaml；阈值只写在这里的 tolerance })
-  <- { 按填写的硬要求逐条检查 recipe.yaml 与 metrics.yaml；返回已满足与未满足的条目，未满足列表为空才算通过 }
+  <- {
+    按填写的硬要求逐条检查 recipe.yaml 与 metrics.yaml；返回已满足与未满足的条目，未满足列表为空才算通过
+  }
 
 ScaffoldRecipe =
      recipe_template.RecipeTemplateScaffold
   <- $name (str * { 评估集名；脚本用它替换 recipes/<评估集名>/ 里的尖括号 })
-  <- { 运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求；返回复制出的配方目录与检查结果 }
+  <- {
+    运行 python3 scripts/new_recipe.py <评估集名>；脚本完成复制与基础替换，并检查新目录是否满足硬要求；返回复制出的配方目录与检查结果
+  }
+  <- $copy (CopyTemplate * { 名字交给它复制模板；复制出来的目录是后面两步的底稿 })
+  <- $fill (FillPlaceholders * { 占位值交给它逐项替换；替换完不能剩尖括号 })
+  <- $check (CheckRequirements * { 替换完的目录交给它按硬要求逐条检查；未满足列表就是这里返回的检查结果 })
 ```
 
 ## flow.viba

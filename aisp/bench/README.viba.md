@@ -167,24 +167,30 @@ import aisp.bench.checks.readme.apis as checks_api
 RunBench =
      bench.BenchRun
   <- $spec (ckpt_sample.RunSpec * { 一份运行请求：跑哪个样本、用哪份配置、评哪两层存储、用什么随机种子 })
+  <- {
+    跑一次评估：把请求交给评估服务，按配方执行；产出 runs/<run-id>/ 下的运行清单、SLI、度量值、对齐结果与人读报告；仓库里只在配方的 latest_run 留回链。返回运行标识与状态、五份产物与回链
+  }
   <- $submit (service_api.Submit * { 请求交给它入队，它交回的运行标识是后面取产物的钥匙 })
   <- $collect (service_api.Collect * { 运行结束后用它取回五份产物与回链；回链原样写进配方的 latest_run })
-  <- { 跑一次评估：把请求交给评估服务，按配方执行；产出 runs/<run-id>/ 下的运行清单、SLI、度量值、对齐结果与人读报告；仓库里只在配方的 latest_run 留回链。返回运行标识与状态、五份产物与回链 }
 
 CheckRepo =
      bench.BenchCheckReport
   <- $scope (bench.BenchCheckScope * { 校验范围：repo 只检查配方、指标登记表与 schema 的一致性；full 在这之外加 selftest 与 examples/ 样例 })
+  <- {
+    校验仓库：scope 为 repo 时跑 scripts/validate_repo.py，检查配方、指标登记表与 schema 的一致性；scope 为 full 时跑 scripts/run_checks.py，在前面那项之外加上 selftest 与 examples/ 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过；阈值只从 recipes/*/metrics.yaml 读。返回退出码、没有通过的检查项与缺的依赖
+  }
   <- $run (checks_api.RunCheck * { scope 为 repo 时只跑 validate_repo 一个脚本，它的输出与退出码就是这次校验的结果 })
   <- $run_all (checks_api.RunAllChecks * { scope 为 full 时跑全部脚本；任一脚本不通过，这次校验就不通过 })
-  <- { 校验仓库：scope 为 repo 时跑 scripts/validate_repo.py，检查配方、指标登记表与 schema 的一致性；scope 为 full 时跑 scripts/run_checks.py，在前面那项之外加上 selftest 与 examples/ 样例；退出码 0 通过、1 不通过、2 缺依赖，缺依赖不算通过；阈值只从 recipes/*/metrics.yaml 读。返回退出码、没有通过的检查项与缺的依赖 }
 
 ExtendBench =
      bench.BenchEvalSet
   <- $current (bench.BenchEvalSet * { 当前版本的评估集 })
   <- $gaps (list[bench.BenchGapKind] * { 这次发现的覆盖缺口：新模型、新框架、新并行策略 })
+  <- {
+    扩展评估集：评估集是静态产物，不会自己变化；由 playbook 发现覆盖缺口并生成新版本。返回新版本的评估集
+  }
   <- $find_gap (extension_api.FindGap * { 空白格子交给它扫，它交回带优先级的缺口清单；新版本评估集按这份清单补格子 })
   <- $propose (extension_api.ProposeCandidate * { 缺口交给它生成候选用例；跑得起来的候选才进新版本 })
-  <- { 扩展评估集：评估集是静态产物，不会自己变化；由 playbook 发现覆盖缺口并生成新版本。返回新版本的评估集 }
 ```
 
 ## flow.viba

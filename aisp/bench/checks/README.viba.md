@@ -193,12 +193,17 @@ RunCheck =
      checks.CheckRun
   <- $script (checks.CheckScript * { 要跑哪一个脚本；五个脚本里选一个 })
   <- $args (checks.CheckArgs * { 这个脚本的输入；变体与 script 一一对应 })
-  <- { 跑一个检查：按脚本执行，标准输出按脚本的约定写，check_*.py 与 selftest.py 写一行 JSON，validate_repo.py 写人读结果；交回输出、状态与退出码。缺依赖、输入非法或缺阈值时状态为 skip、退出码 2，不假装通过 }
+  <- {
+    跑一个检查：按脚本执行，标准输出按脚本的约定写，check_*.py 与 selftest.py 写一行 JSON，validate_repo.py 写人读结果；交回输出、状态与退出码。缺依赖、输入非法或缺阈值时状态为 skip、退出码 2，不假装通过
+  }
 
 RunAllChecks =
      checks.CheckBatch
   <- $spec (checks.CheckSpec * { 问题定义：五个脚本、阈值来源、目录约定与指标文档对应关系 })
-  <- { 跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码；每个脚本按自己的约定判定 }
+  <- {
+    跑全部：依次跑这五个脚本，逐个交回输出、状态与退出码；每个脚本按自己的约定判定
+  }
+  <- $run (RunCheck * { 每个脚本交给它跑一次；它交回的输出、状态与退出码原样进这批结果 })
 ```
 
 ## flow.viba
