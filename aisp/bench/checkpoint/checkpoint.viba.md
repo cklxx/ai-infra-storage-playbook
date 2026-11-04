@@ -23,7 +23,7 @@ CheckpointBypassStep =
 
 CheckpointBypassConstraint =
   Oneof
-  | "model_code_source" * { 模型代码必须来自 recipes/model_code_collection，且是训练侧可用的实现；推理代码不能直接拿来跑预训练 }
+  | "model_code_source" * { 模型代码必须是训练侧可用的实现，不能拿推理代码来跑预训练；推理代码不能直接拿来跑预训练 }
   | "parallel_strategy" * { 并行策略（DP/TP/PP/EP）必须按真实配置设置；旁路只去掉计算，不去掉并行切分 }
   | "parameter_init" * { 参数初始化：meta device 不需要真实初始化，但若框架在初始化阶段就写盘（例如初始化检查点），该路径必须保留 }
   | "mixed_precision" * { 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 }
@@ -48,7 +48,7 @@ import aisp.bench.checkpoint.gates.apis as gates_api
 
 PrepareBypass =
      checkpoint.CheckpointBypassPlan
-  <- $model (ckpt_sample.Component * { 模型代码；必须来自 recipes/model_code_collection，且是训练侧可用的实现 })
+  <- $model (ckpt_sample.Component * { 模型代码；必须是训练侧可用的实现 })
   <- $implementation (ckpt_sample.Component * { 训练框架的分布式检查点实现，记录名字与版本 })
   <- $parallel (checkpoint.CheckpointParallel * { 并行策略 DP/TP/PP/EP 的度数，按真实配置设置；旁路只去掉计算，不去掉并行切分 })
   <- $dtype (str * { 混合精度：dtype 必须与真实训练一致，否则写入字节数直接错 })

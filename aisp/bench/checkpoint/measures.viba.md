@@ -34,7 +34,7 @@ MethodologyTolerance =
 
 MethodologyToleranceCalibration =
   Object
-  * $recipe (str * { 标定结果写进哪个配方的 metrics.yaml，例如 recipes/checkpoint })
+  * $recipe (str * { 标定结果写进哪个配方的 metrics.yaml，例如 checkpoint 这个评估集 })
   * $date (str * { 标定日期 })
   * $baseline (str * { 所用基准 })
 ```

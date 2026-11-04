@@ -86,5 +86,3 @@ Judge =
     逐指标填进对应的 CkptSlo，与阈值比较：落在阈值内答通过，否则答失败；阈值缺失时答不可比
   }
 ```
-
-这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下。
