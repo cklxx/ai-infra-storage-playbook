@@ -1,5 +1,20 @@
 # 阶段门
 
+## 需求背景
+
+一次评估分五道门走，每道门要有明确的产出才允许进入下一道。门的取值与判定结果从这里发布，准备旁路用它判 G0。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.gates.types as gates
+import aisp.bench.checkpoint.gates.apis as gates_api
+
+Gate = gates.Gate
+GateVerdict = gates.GateVerdict
+Pass = gates_api.Pass
+```
+
 ## types.viba
 
 ```bash types

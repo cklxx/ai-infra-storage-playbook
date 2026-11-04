@@ -1,11 +1,27 @@
 # Checkpoint 存储评估
 
+## 需求背景
+
+checkpoint 评估的特殊之处在旁路怎么接、并行怎么保持真实：五步做法与四条约束决定一次旁路是否可信。这套做法从这里发布，跑一次时按它执行。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.checkpoint.types as checkpoint
+import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
+
+CheckpointParallel = checkpoint.CheckpointParallel
+CheckpointBypassStep = checkpoint.CheckpointBypassStep
+CheckpointBypassConstraint = checkpoint.CheckpointBypassConstraint
+CheckpointBypassPlan = checkpoint.CheckpointBypassPlan
+PrepareBypass = checkpoint_api.PrepareBypass
+```
+
 ## types.viba
 
 checkpoint 存储评估的形式化：`CheckpointBypassPlan` 是旁路的入口，把五步做法与四条约束分别收成 `$steps` 与 `$constraints`，`CheckpointBypassStep` 是五步之一的取值，`CheckpointBypassConstraint` 是四条约束之一的取值；`CheckpointParallel` 记 DP/TP/PP/EP 四个度数，旁路按它保持真实的并行切分。
 
 ```bash types
-
 CheckpointParallel =
   Object
   * $dp (int * { 数据并行的度数，按真实配置设置 })
@@ -42,9 +58,9 @@ CheckpointBypassPlan =
 
 ```bash apis
 import aisp.bench.checkpoint.checkpoint.types as checkpoint
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
-import aisp.bench.checkpoint.bypass.apis as bypass_api
-import aisp.bench.checkpoint.gates.apis as gates_api
+import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.bypass.public as bypass_api
+import aisp.bench.checkpoint.gates.public as gates_api
 
 PrepareBypass =
      checkpoint.CheckpointBypassPlan

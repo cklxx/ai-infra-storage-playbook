@@ -1,5 +1,20 @@
 # 旁路手段与保真等级
 
+## 需求背景
+
+测量 IO 之前要先决定怎么旁路：用哪种手段，请求序列能保真到什么等级。准备旁路的操作按这两个取值选型，别的文档也从这里取，所以本篇发布 `BypassMethod`、`FidelityLevel` 与选型操作。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.bypass.types as bypass
+import aisp.bench.checkpoint.bypass.apis as bypass_api
+
+BypassMethod = bypass.BypassMethod
+FidelityLevel = bypass.FidelityLevel
+Choose = bypass_api.Choose
+```
+
 ## types.viba
 
 ```bash types

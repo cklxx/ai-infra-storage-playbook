@@ -1,11 +1,15 @@
 # checkpoint bench
 
+## 需求背景
+
+bench 要回答一个问题：在一批真实的模型代码上，checkpoint 写入与读取对存储提出什么要求。回答它需要一条完整的链：收代码、挑样本、跑一次、判阈值、比版本、补缺口。这条链上的名字都从这里发布，别的文档只从这里取。
+
 ## public.viba
 
 先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Judge`、`Compare`、`FindGaps` 六个操作；样本与运行直接用 `ckpt_sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
 
 ```bash public
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
 import aisp.bench.checkpoint.readme.types as ckpt_bench
 import aisp.bench.checkpoint.readme.apis as ckpt_bench_api
 
@@ -20,16 +24,12 @@ Compare = ckpt_bench_api.Compare
 FindGaps = ckpt_bench_api.FindGaps
 ```
 
-## 背景
-
-在一批真实的模型代码上，测量 checkpoint 写入与读取对存储的要求，并把结论从单机外推到十万卡。
-
 ## types.viba
 
 bench 由一个语料、一批样本、几套存储与它们跑出来的运行组成；一条样本是一条 `RunSpec`，一次运行是一条 `RunRecord`。这里只定义 bench 自己的东西：整体 `Bench` 与缺口 `Gap`。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
 
 Bench =
   Object
@@ -57,18 +57,15 @@ Gap =
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
-import aisp.bench.checkpoint.performance.types as sli
-import aisp.bench.checkpoint.performance.slo as slo
+import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
+import aisp.bench.checkpoint.performance.public as sli
 import aisp.bench.checkpoint.readme.types as ckpt_bench
-import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
-import aisp.bench.checkpoint.measures.apis as measures_api
-import aisp.bench.checkpoint.observation.apis as observation_api
-import aisp.bench.checkpoint.performance.apis as perf_api
-import aisp.bench.checkpoint.model_code_collection.apis as collection_api
-import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
-import aisp.bench.metrics.coverage.apis as coverage_api
-import aisp.bench.metrics.coverage.types as coverage
+import aisp.bench.checkpoint.checkpoint.public as checkpoint_api
+import aisp.bench.checkpoint.measures.public as measures_api
+import aisp.bench.checkpoint.observation.public as observation_api
+import aisp.bench.checkpoint.scaling.public as scaling_api
+import aisp.bench.checkpoint.model_code_collection.public as collection_api
+import aisp.bench.metrics.coverage.public as coverage_api
 
 Collect =
      list[ckpt_sample.Model]
@@ -82,12 +79,12 @@ Collect =
 PickSamples =
      list[ckpt_sample.RunSpec]
   <- $corpus (list[ckpt_sample.Model] * { 可用的模型代码 })
-  <- $coverage (coverage.CoverageManifest * { 覆盖度清单：配方声明的轴与已有格子 })
+  <- $coverage (coverage_api.CoverageManifest * { 覆盖度清单：配方声明的轴与已有格子 })
   <- {
     按要覆盖的格子挑模型，配好并行与负载
   }
   <- $compute (coverage_api.ComputeCoverage * { 清单交给它算出缺口清单与优先级；这次挑哪些模型，按它交回的缺口清单走 })
-  <- $level (ckpt_sample_api.GetLevel * { 每条用例的拓扑交给它落到 S0 到 S5 的哪一级；并行配置与负载按它交回的档位配 })
+  <- $level (scaling_api.GetLevel * { 每条用例的拓扑交给它落到 S0 到 S5 的哪一级；并行配置与负载按它交回的档位配 })
 
 Execute =
      ckpt_sample.RunRecord
@@ -97,16 +94,17 @@ Execute =
   }
   <- $prepare (checkpoint_api.PrepareBypass * { 它交回的五步做法与四条约束决定这次怎么旁路：模型在 meta device 上建，反向与 optimizer 换占位，checkpoint 写入原样保留 })
   <- $collect (observation_api.Collect * { 开跑前先让它开观测，trace 才有来源；它交回实际开的层，少于两层这次运行就不算数 })
-  <- $measure (perf_api.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
+  <- $measure (sli.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
+  <- $run (ckpt_sample.Execute * { 请求交给它同步跑到结束；它交回的四份产物就是这条运行记录的产物 })
 
 Judge =
-     list[slo.CkptSlo]
+     list[sli.CkptSlo]
   <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
   <- $policy (str * { 部署方给的阈值 })
   <- {
     逐指标对照阈值，给出通过 / 失败 / 不可比
   }
-  <- $judge (perf_api.Judge * { 把 Artifacts.metrics 交给它，它逐项配阈值判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
+  <- $judge (sli.Judge * { 把 Artifacts.metrics 交给它，它逐项配阈值判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
 
 Compare =
      str

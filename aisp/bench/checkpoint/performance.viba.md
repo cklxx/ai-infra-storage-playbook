@@ -1,8 +1,27 @@
 # 存储表现：SLI 与 SLO
 
-## 背景
+## 需求背景
 
-一次运行测出来的指标叫 SLI，按阈值判定叫 SLO；这里定义这两类记录，样本接口用这一份。
+一次运行测出来的指标叫 SLI，按阈值判定叫 SLO。判定要有统一口径：一次运行测出哪六项指标，每项怎么和部署方给的阈值比较。运行记录、判定操作与读文档的人都按这一份走，所以 `CkptSli`、`CkptSlo` 与测量、判定两个操作从这里发布。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.performance.types as performance
+import aisp.bench.checkpoint.performance.slo as slo
+import aisp.bench.checkpoint.performance.apis as performance_api
+
+CkptSli = performance.CkptSli
+CheckPointDurationMetric = performance.CheckPointDurationMetric
+TrainingStallMetric = performance.TrainingStallMetric
+RestoreDurationMetric = performance.RestoreDurationMetric
+WriteThroughputMetric = performance.WriteThroughputMetric
+MetadataCommitMetric = performance.MetadataCommitMetric
+WriteLatencyP99Metric = performance.WriteLatencyP99Metric
+CkptSlo = slo.CkptSlo
+Measure = performance_api.Measure
+Judge = performance_api.Judge
+```
 
 ## types.viba
 
@@ -67,7 +86,7 @@ MetricGE[Value] =
 ## apis.viba
 
 ```bash apis
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
 import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 

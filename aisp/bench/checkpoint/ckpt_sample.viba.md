@@ -1,13 +1,36 @@
 # checkpoint 样本接口
 
-一份 RunSpec 进，一条 RunRecord 出。一次运行 = 一条样本 × 一个存储版本。
+## 需求背景
+
+一次运行要能被描述、被执行、被记录：进的是一份 `RunSpec`，出的是一条 `RunRecord`。样本用哪个模型、什么并行与观测设置，运行到哪一步、产物有哪些，这些字段是所有下游文档共用的词汇，所以本篇把它们发布成 public。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
+
+RunRecord = ckpt_sample.RunRecord
+RunSpec = ckpt_sample.RunSpec
+StorageLayer = ckpt_sample.StorageLayer
+Component = ckpt_sample.Component
+State = ckpt_sample.State
+QueueProgress = ckpt_sample.QueueProgress
+WorkProgress = ckpt_sample.WorkProgress
+Artifacts = ckpt_sample.Artifacts
+Failure = ckpt_sample.Failure
+Model = ckpt_sample.Model
+SampleConfigBase = ckpt_sample.SampleConfigBase
+Topology = ckpt_sample.Topology
+ObservationConfig = ckpt_sample.ObservationConfig
+Execute = ckpt_sample_api.Execute
+```
 
 ## types.viba
 
 ```bash types
-import aisp.bench.checkpoint.performance.types as sli
-import aisp.bench.checkpoint.performance.slo as slo
-import aisp.bench.checkpoint.observation.types as observation
+import aisp.bench.checkpoint.performance.public as sli
+import aisp.bench.checkpoint.observation.public as observation
 
 RunRecord =
   Object
@@ -57,7 +80,7 @@ Artifacts =
   Object
   * $manifest (str * { 运行清单：输入、版本、拓扑、观测配置，运行时写 })
   * $metrics (list[sli.CkptSli] * { 这次运行的 SLI：每项一条，没有阈值 })
-  * $slo (list[slo.CkptSlo] * { 每个 SLI 指标的判定，阈值由部署方给 })
+  * $slo (list[sli.CkptSlo] * { 每个 SLI 指标的判定，阈值由部署方给 })
   * $report (str * { 人读报告的位置 })
 
 Failure =
@@ -94,13 +117,11 @@ ObservationConfig =
 
 ```bash apis
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
-import aisp.bench.checkpoint.scaling.types as levels
 
-GetLevel =
-     levels.Level
-  <- $config (ckpt_sample.SampleConfigBase * { 样本配置 })
+Execute =
+     ckpt_sample.Artifacts
+  <- $spec (ckpt_sample.RunSpec * { 同一份运行请求 })
   <- {
-    导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给
+    执行接口：同一份请求同步跑到结束，返回时四份产物已经写完；旁路与观测由调用方接入
   }
 ```
-

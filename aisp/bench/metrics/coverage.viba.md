@@ -1,5 +1,28 @@
 # 覆盖度
 
+## 需求背景
+
+挑样本按覆盖缺口走：清单里哪些格子已经覆盖、哪些还空着。覆盖度清单、覆盖率与缺口清单由本篇定义，挑样本与补缺口都从这里取。
+
+## public.viba
+
+```bash public
+import aisp.bench.metrics.coverage.types as coverage
+import aisp.bench.metrics.coverage.apis as coverage_api
+
+CoverageAxis = coverage.CoverageAxis
+CoverageAxisValue = coverage.CoverageAxisValue
+CoverageCellKey = coverage.CoverageCellKey
+CoverageCellState = coverage.CoverageCellState
+CoverageExemption = coverage.CoverageExemption
+CoverageCell = coverage.CoverageCell
+CoverageGap = coverage.CoverageGap
+CoverageManifest = coverage.CoverageManifest
+CoverageStats = coverage.CoverageStats
+CoverageReport = coverage.CoverageReport
+ComputeCoverage = coverage_api.ComputeCoverage
+```
+
 ## types.viba
 
 问题形式化为 `coverage` 模块：枚举 `CoverageAxis` 的九个取值是覆盖矩阵的九条轴，枚举 `CoverageCellState` 的五个取值是格子所处的五种状态，其中 `exempt` 状态要配一条 `CoverageExemption`。对象 `CoverageAxisValue` 把一条轴与这条轴上的一个取值配成一对，`$axis` 取 `CoverageAxis` 的一个取值，`$value` 是这条轴上的取值字符串；别名 `CoverageCellKey` 是 `CoverageAxisValue` 的列表，也就是一个格子的坐标。对象 `CoverageCell` 由坐标、状态与可选的 `CoverageExemption` 组成，别名 `CoverageGap` 就是 `CoverageCellKey`，指应有但没有的格子；对象 `CoverageManifest` 收配方声明的轴与全部格子。对象 `CoverageStats` 是计算产物，收分母、已覆盖数、覆盖度、缺口率与 `CoverageGap` 清单；Oneof `CoverageReport` 的两个分支分别携带 `CoverageStats` 与清单非法的原因。

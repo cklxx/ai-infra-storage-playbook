@@ -1,5 +1,22 @@
 # 度量项与容差
 
+## 需求背景
+
+对齐要有尺子：度量项、统计量与容差。判定两个数是否落在容差内要用这一份定义，所以本篇发布度量项、容差与比较操作。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.measures.types as measures
+import aisp.bench.checkpoint.measures.apis as measures_api
+
+MethodologyMetric = measures.MethodologyMetric
+MethodologyToleranceStatistic = measures.MethodologyToleranceStatistic
+MethodologyTolerance = measures.MethodologyTolerance
+MethodologyToleranceCalibration = measures.MethodologyToleranceCalibration
+CompareTolerance = measures_api.CompareTolerance
+```
+
 ## types.viba
 
 ```bash types

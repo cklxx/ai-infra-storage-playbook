@@ -1,5 +1,19 @@
 # 采集层
 
+## 需求背景
+
+trace 有没有来源，取决于开跑前开了哪几层观测。采集层的取值决定数据的口径与观测开销，运行与判定都从这里取，所以本篇把它发布成 public。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.observation.types as observation
+import aisp.bench.checkpoint.observation.apis as observation_api
+
+ObservationLayer = observation.ObservationLayer
+Collect = observation_api.Collect
+```
+
 ## types.viba
 
 ```bash types

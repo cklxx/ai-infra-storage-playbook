@@ -1,11 +1,58 @@
 # 模型代码收集
 
+## 需求背景
+
+样本来自真实模型代码：怎么抓、怎么去重、怎么确认能跑。这三步的结论构成语料，挑样本从这里取，所以本篇发布抓取、去重与可跑性验证三个操作及其类型。
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.model_code_collection.types as model_code_collection
+import aisp.bench.checkpoint.model_code_collection.apis as model_code_collection_api
+
+CollectionSource = model_code_collection.CollectionSource
+CollectionFilter = model_code_collection.CollectionFilter
+CollectionManifestEntry = model_code_collection.CollectionManifestEntry
+CollectionLicense = model_code_collection.CollectionLicense
+CollectionLicenseState = model_code_collection.CollectionLicenseState
+CollectionDownload = model_code_collection.CollectionDownload
+CollectionCodeFile = model_code_collection.CollectionCodeFile
+CollectionFileKind = model_code_collection.CollectionFileKind
+CollectionFetchFailure = model_code_collection.CollectionFetchFailure
+CollectionCodeRole = model_code_collection.CollectionCodeRole
+CollectionCodeRoleEvidence = model_code_collection.CollectionCodeRoleEvidence
+CollectionWorkspace = model_code_collection.CollectionWorkspace
+CollectionFingerprint = model_code_collection.CollectionFingerprint
+CollectionConfigFingerprint = model_code_collection.CollectionConfigFingerprint
+CollectionMoeSpec = model_code_collection.CollectionMoeSpec
+CollectionPositionalEncoding = model_code_collection.CollectionPositionalEncoding
+CollectionAttentionVariant = model_code_collection.CollectionAttentionVariant
+CollectionCodeFingerprint = model_code_collection.CollectionCodeFingerprint
+CollectionKeyCall = model_code_collection.CollectionKeyCall
+CollectionSpecialOp = model_code_collection.CollectionSpecialOp
+CollectionDedupPolicy = model_code_collection.CollectionDedupPolicy
+CollectionVarietyAxis = model_code_collection.CollectionVarietyAxis
+CollectionDedupDecision = model_code_collection.CollectionDedupDecision
+CollectionDedupRecord = model_code_collection.CollectionDedupRecord
+CollectionRunnableState = model_code_collection.CollectionRunnableState
+CollectionRankWorkload = model_code_collection.CollectionRankWorkload
+CollectionRunnableFailureKind = model_code_collection.CollectionRunnableFailureKind
+CollectionRunnableFailure = model_code_collection.CollectionRunnableFailure
+CollectionRunnableRecord = model_code_collection.CollectionRunnableRecord
+CollectionPairingKind = model_code_collection.CollectionPairingKind
+CollectionPairingTarget = model_code_collection.CollectionPairingTarget
+CollectionTrainingPairing = model_code_collection.CollectionTrainingPairing
+Fetch = model_code_collection_api.Fetch
+Dedup = model_code_collection_api.Dedup
+ProbeRunnable = model_code_collection_api.ProbeRunnable
+```
+
 ## types.viba
 
 模型代码收集被形式化成一份清单：一个模型一条 `CollectionManifestEntry`。取值只能落在有限集合里的概念写成枚举：`CollectionSource` 是一个枚举，`hub_api` 与 `own_registry` 是它的取值，说明这个模型从哪类来源收进来；`CollectionFilter`、`CollectionLicenseState`、`CollectionCodeRole`、`CollectionDedupDecision`、`CollectionRunnableState`、`CollectionPairingKind` 同为枚举，分别表示筛选条件、许可证是否声明、代码角色、去重决定、可跑性结论与训练代码配对规则。抓取、去重、验证与配对各自的产出写成类型：`CollectionDownload` 由 `CollectionCodeFile` 组成，`CollectionFingerprint` 分成 `CollectionConfigFingerprint` 与 `CollectionCodeFingerprint` 两层，`CollectionDedupRecord`、`CollectionRunnableRecord`、`CollectionTrainingPairing` 依次承载去重、可跑性与训练代码配对的结论，并作为 `CollectionManifestEntry` 的字段。
 
 ```bash types
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample.public as ckpt_sample
 
 CollectionSource =
   Oneof
