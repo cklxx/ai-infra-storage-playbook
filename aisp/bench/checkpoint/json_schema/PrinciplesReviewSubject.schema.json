@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesReviewSubject.schema.json",
   "title": "PrinciplesReviewSubject",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesReviewSubject",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesReviewSubject": {
       "oneOf": [
         {
           "const": "metric_change"

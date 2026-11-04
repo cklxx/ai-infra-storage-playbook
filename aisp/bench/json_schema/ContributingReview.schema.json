@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingReview.schema.json",
   "title": "ContributingReview",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingReview",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingReview",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingReview": {
+    "aisp.bench.contributing.types.ContributingReview": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingChangeKind"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingChangeKind"
         },
         "metric_feasibility_confirmed": {
           "type": "boolean"
@@ -38,7 +38,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.contributing.contributing.ContributingChangeKind": {
+    "aisp.bench.contributing.types.ContributingChangeKind": {
       "oneOf": [
         {
           "const": "small_change"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyFailureMode.schema.json",
   "title": "MethodologyFailureMode",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyFailureMode",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyFailureMode",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyFailureMode": {
+    "aisp.bench.checkpoint.measures.types.MethodologyFailureMode": {
       "oneOf": [
         {
           "const": "observation_overhead"

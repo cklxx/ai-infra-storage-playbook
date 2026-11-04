@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageExemption.schema.json",
   "title": "CoverageExemption",
-  "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageExemption",
+  "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageExemption",
   "$defs": {
-    "aisp.bench.metrics.coverage.coverage.CoverageExemption": {
+    "aisp.bench.metrics.coverage.types.CoverageExemption": {
       "type": "object",
       "properties": {
         "reason": {

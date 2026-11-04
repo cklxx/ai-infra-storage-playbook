@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionRunnableRecord.schema.json",
   "title": "RecipeCollectionRunnableRecord",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableRecord",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableRecord",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableRecord": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableRecord": {
       "type": "object",
       "properties": {
         "state": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableState"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableState"
         },
         "ranks": {
           "type": "integer"
@@ -19,7 +19,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableFailure"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableFailure"
           }
         }
       },
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableState": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableState": {
       "oneOf": [
         {
           "const": "yes"
@@ -44,7 +44,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableFailure": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableFailure": {
       "type": "object",
       "properties": {
         "kind": {

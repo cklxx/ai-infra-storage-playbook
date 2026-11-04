@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesIncludedWork.schema.json",
   "title": "PrinciplesIncludedWork",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesIncludedWork",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesIncludedWork",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesIncludedWork": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesIncludedWork": {
       "oneOf": [
         {
           "const": "model_code"

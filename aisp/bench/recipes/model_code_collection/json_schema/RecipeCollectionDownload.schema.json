@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionDownload.schema.json",
   "title": "RecipeCollectionDownload",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDownload",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDownload",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDownload": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDownload": {
       "type": "object",
       "properties": {
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeFile"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeFile"
           }
         },
         "commit": {
@@ -19,7 +19,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailure"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailure"
           }
         }
       },
@@ -30,7 +30,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeFile": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeFile": {
       "type": "object",
       "properties": {
         "path": {
@@ -46,11 +46,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailure": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailure": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailureKind"
         },
         "detail": {
           "type": "string"
@@ -62,7 +62,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailureKind": {
       "oneOf": [
         {
           "const": "network"

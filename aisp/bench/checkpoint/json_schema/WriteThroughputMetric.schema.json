@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/WriteThroughputMetric.schema.json",
   "title": "WriteThroughputMetric",
-  "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.WriteThroughputMetric",
   "$defs": {
-    "aisp.bench.checkpoint.performance.sli.WriteThroughputMetric": {
+    "aisp.bench.checkpoint.performance.types.WriteThroughputMetric": {
       "type": "number"
     }
   }

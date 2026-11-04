@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckJsonLine.schema.json",
   "title": "CheckJsonLine",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckJsonLine",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckJsonLine",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckJsonLine": {
+    "aisp.bench.checks.readme.types.CheckJsonLine": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckStatus"
         }
       },
       "required": [
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckStatus": {
+    "aisp.bench.checks.readme.types.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"

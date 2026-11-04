@@ -4,23 +4,23 @@
 
 一次运行测出来的指标叫 SLI，按阈值判定叫 SLO；这里定义这两类记录，样本接口与评估服务都用这一份。
 
-## public
+## public.viba
 
 先看 `CkptSli` 与 `CkptSlo` 两个枚举。
 
-```bash performance_public
-import aisp.bench.checkpoint.performance.sli as sli
+```bash public
+import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 
 CkptSli = sli.CkptSli
 CkptSlo = slo.CkptSlo
 ```
 
-## sli
+## types.viba
 
 一条运行量出来的指标，每个指标一个具名类型，`CkptSli` 把它们收成一个取值一个的枚举。
 
-```bash sli
+```bash types
 CkptSli =
   Oneof
   | $check_point_duration_sli (CheckPointDurationMetric * { 一次 checkpoint 从开始写到元数据可见的时长，秒 })
@@ -44,12 +44,12 @@ WriteLatencyP99Metric = float * { 单个写请求的 P99，毫秒 }
 
 ```
 
-## slo
+## slo.viba
 
 阈值判定，`MetricLE` / `MetricGE` 是对照方式，`CkptSlo` 把六个指标各收一个取值。
 
 ```bash slo
-import aisp.bench.checkpoint.performance.sli as sli
+import aisp.bench.checkpoint.performance.types as sli
 
 CkptSlo =
   Oneof

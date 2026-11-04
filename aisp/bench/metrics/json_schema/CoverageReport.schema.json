@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageReport.schema.json",
   "title": "CoverageReport",
-  "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageReport",
+  "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageReport",
   "$defs": {
-    "aisp.bench.metrics.coverage.coverage.CoverageReport": {
+    "aisp.bench.metrics.coverage.types.CoverageReport": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "computed": {
-              "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageStats"
+              "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageStats"
             }
           },
           "required": [
@@ -32,7 +32,7 @@
         }
       ]
     },
-    "aisp.bench.metrics.coverage.coverage.CoverageStats": {
+    "aisp.bench.metrics.coverage.types.CoverageStats": {
       "type": "object",
       "properties": {
         "denominator": {
@@ -50,7 +50,7 @@
         "gaps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageGap"
+            "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageGap"
           }
         }
       },
@@ -63,20 +63,20 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.metrics.coverage.coverage.CoverageGap": {
-      "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageCellKey"
+    "aisp.bench.metrics.coverage.types.CoverageGap": {
+      "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageCellKey"
     },
-    "aisp.bench.metrics.coverage.coverage.CoverageCellKey": {
+    "aisp.bench.metrics.coverage.types.CoverageCellKey": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxisValue"
+        "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageAxisValue"
       }
     },
-    "aisp.bench.metrics.coverage.coverage.CoverageAxisValue": {
+    "aisp.bench.metrics.coverage.types.CoverageAxisValue": {
       "type": "object",
       "properties": {
         "axis": {
-          "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxis"
+          "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageAxis"
         },
         "value": {
           "type": "string"
@@ -88,7 +88,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.metrics.coverage.coverage.CoverageAxis": {
+    "aisp.bench.metrics.coverage.types.CoverageAxis": {
       "oneOf": [
         {
           "const": "arch_family"

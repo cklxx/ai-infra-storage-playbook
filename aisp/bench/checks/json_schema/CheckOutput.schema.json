@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckOutput.schema.json",
   "title": "CheckOutput",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutput",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckOutput",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckOutput": {
+    "aisp.bench.checks.readme.types.CheckOutput": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "json_line": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckJsonLine"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckJsonLine"
             }
           },
           "required": [
@@ -22,7 +22,7 @@
           "type": "object",
           "properties": {
             "readable": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckReadableOutput"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckReadableOutput"
             }
           },
           "required": [
@@ -32,14 +32,14 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckJsonLine": {
+    "aisp.bench.checks.readme.types.CheckJsonLine": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckStatus"
         }
       },
       "required": [
@@ -48,7 +48,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckStatus": {
+    "aisp.bench.checks.readme.types.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -61,7 +61,7 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckReadableOutput": {
+    "aisp.bench.checks.readme.types.CheckReadableOutput": {
       "type": "object",
       "properties": {
         "items": {

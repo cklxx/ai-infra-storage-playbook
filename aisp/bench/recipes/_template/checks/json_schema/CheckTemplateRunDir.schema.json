@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateRunDir.schema.json",
   "title": "CheckTemplateRunDir",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateRunDir",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateRunDir",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateRunDir": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateRunDir": {
       "type": "object",
       "properties": {
         "path": {
@@ -13,7 +13,7 @@
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateCaseFile"
+            "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateCaseFile"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateCaseFile": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateCaseFile": {
       "oneOf": [
         {
           "const": "metrics.json"

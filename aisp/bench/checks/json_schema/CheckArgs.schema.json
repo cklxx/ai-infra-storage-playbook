@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckArgs.schema.json",
   "title": "CheckArgs",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckArgs",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckArgs",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckArgs": {
+    "aisp.bench.checks.readme.types.CheckArgs": {
       "oneOf": [
         {
           "type": "object",
@@ -34,7 +34,7 @@
           "type": "object",
           "properties": {
             "check_io_pattern": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckIoPatternArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckIoPatternArgs"
             }
           },
           "required": [
@@ -46,7 +46,7 @@
           "type": "object",
           "properties": {
             "check_coverage": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckCoverageArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckCoverageArgs"
             }
           },
           "required": [
@@ -58,7 +58,7 @@
           "type": "object",
           "properties": {
             "check_scaling_consistency": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingArgs"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckScalingArgs"
             }
           },
           "required": [
@@ -68,7 +68,7 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckIoPatternArgs": {
+    "aisp.bench.checks.readme.types.CheckIoPatternArgs": {
       "type": "object",
       "properties": {
         "real": {
@@ -99,7 +99,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckCoverageArgs": {
+    "aisp.bench.checks.readme.types.CheckCoverageArgs": {
       "type": "object",
       "properties": {
         "manifest": {
@@ -126,7 +126,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckScalingArgs": {
+    "aisp.bench.checks.readme.types.CheckScalingArgs": {
       "type": "object",
       "properties": {
         "input": {

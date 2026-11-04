@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionFilter.schema.json",
   "title": "CollectionFilter",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFilter",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionFilter",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFilter": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionFilter": {
       "oneOf": [
         {
           "const": "text_generation"

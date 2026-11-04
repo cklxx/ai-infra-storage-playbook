@@ -1,12 +1,12 @@
 # 评估服务
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `service` 模块与 `## 接口` 的 `service_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `RunRequest`、`ServiceManifest`、`ServiceRunVerdict`、`ServiceBacklink`，操作 `Submit`、`Query`、`Collect`、`Cancel`。先看 `RunRequest` 与 `Submit`，再顺着 `Query`、`Collect`、`Cancel` 读到 `ServiceRunVerdict` 与 `ServiceBacklink`；`ServiceManifest` 是运行清单，回链与历史可比性都从它出发。
 
-```bash service_public
-import aisp.bench.checkpoint.evaluation_service.service as service
-import aisp.bench.checkpoint.evaluation_service.service_api as service_api
+```bash public
+import aisp.bench.checkpoint.evaluation_service.types as service
+import aisp.bench.checkpoint.evaluation_service.apis as service_api
 
 RunRequest = service.RunRequest
 ServiceManifest = service.ServiceManifest
@@ -22,13 +22,13 @@ Cancel = service_api.Cancel
 
 评估集不能只是一堆配方：配方解决"怎么测"，服务解决"谁来跑、跑完放哪、结论怎么回到配方上"。这份文档定义评估服务受理运行请求、执行与调度、出产物与回链所需的类型与操作，让评估集能被持续运行。
 
-## service
+## types.viba
 
 问题的形式化分成类型与枚举两类。配置与产物写成了类型：`RunRequest` 是一次运行的完整输入，`Framework` 与 `Load` 是它引用的两个类型，分别描述推理框架与负载；`ServiceManifest` 是运行清单，它的 `$request` 字段是 `RunRequest`，`$files` 字段是 `ServiceArtifactFile` 的列表；`ServiceRunDir` 直接取 `str` 类型，表示 `runs/<run-id>/` 这个运行目录；`ServiceBacklink` 是写回配方的回链，`ServiceVersionSet` 是必须同时记录的版本集合，`ServiceScheduling` 是排队与资源约束，`ServiceCiRun` 是一次 CI 运行。判定与分类写成了枚举：`ServiceRunVerdict` 是一次运行的结论，`passed`、`failed`、`invalid` 是它的三个取值；`ServiceFailureKind` 是失败分类，`ServicePriority` 是队列优先级，`ServiceInternalStage` 是执行中的内部阶段，`ServiceCiTrigger` 是 `ServiceCiRun` 的触发场景，`ServiceMetric` 是服务自身的观测指标，`ServiceOpenQuestion` 是尚未解决的问题。`ServiceBoundary` 的 `$does` 与 `$does_not` 都由枚举构成：`$does` 是 `ServiceResponsibility` 的列表，`$does_not` 是 `ServiceOutOfScope` 的列表；`ServiceBacklink` 的 `$status` 取 `ServiceRunVerdict`，`ServiceScheduling` 的 `$priority_order` 取 `ServicePriority` 的列表。
 
-```bash service
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
-import aisp.bench.checkpoint.scaling.levels as levels
+```bash types
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.scaling.types as levels
 
 RunRequest =
   Object
@@ -192,11 +192,11 @@ ServiceOpenQuestion =
 
 服务需要五个操作：提交、查询、取消、取产物、写回。提交校验请求与配方、指标、服务三者的版本兼容，不兼容直接拒绝，通过校验的请求按优先级入队，请求交出去就返回，不等样本跑完。查询答一次运行当前的状态、进度与产物位置，只读，完成与否只看状态不看进度。取消让服务停下这次运行，已经写完的产物保留。取产物交出运行清单与人读报告的位置，以及这次运行的度量值与判定。写回把回链写进对应配方的 `latest_run`，只写六个字段，且只能由服务执行。
 
-## service_api
+## apis.viba
 
-```bash service_api
-import aisp.bench.checkpoint.evaluation_service.service as service
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
+```bash apis
+import aisp.bench.checkpoint.evaluation_service.types as service
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
 
 Submit =
      ckpt_sample.RunRecord
@@ -230,12 +230,12 @@ Backlink =
 
 命令行与 HTTP 是 Submit、Query、Collect、Cancel 四个操作的薄封装：命令行有 `eval run`、`eval status`、`eval result`、`eval cancel`，HTTP 有 `POST /v1/runs`、`GET /v1/runs/{run-id}`、`GET /v1/runs/{run-id}/artifacts`、`POST /v1/runs/{run-id}/cancel`，行为与接口一致；`Backlink` 由服务在运行结束后自己执行，不对外暴露。
 
-## service_flow
+## flow.viba
 
-```bash service_flow
-import aisp.bench.checkpoint.evaluation_service.service as service
-import aisp.bench.checkpoint.evaluation_service.service_api as service_api
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
+```bash flow
+import aisp.bench.checkpoint.evaluation_service.types as service
+import aisp.bench.checkpoint.evaluation_service.apis as service_api
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
 
 ServiceAdmitDuty =
   Object

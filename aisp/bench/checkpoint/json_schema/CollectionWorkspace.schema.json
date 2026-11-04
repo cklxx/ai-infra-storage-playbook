@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionWorkspace.schema.json",
   "title": "CollectionWorkspace",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionWorkspace",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionWorkspace",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionWorkspace": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionWorkspace": {
       "type": "object",
       "properties": {
         "id": {

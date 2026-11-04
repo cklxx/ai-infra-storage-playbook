@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServicePriority.schema.json",
   "title": "ServicePriority",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServicePriority",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServicePriority",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServicePriority": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServicePriority": {
       "oneOf": [
         {
           "const": "regression"

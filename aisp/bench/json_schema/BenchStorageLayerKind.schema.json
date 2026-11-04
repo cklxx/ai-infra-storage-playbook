@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchStorageLayerKind.schema.json",
   "title": "BenchStorageLayerKind",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayerKind",
   "$defs": {
-    "aisp.bench.readme.bench.BenchStorageLayerKind": {
+    "aisp.bench.readme.types.BenchStorageLayerKind": {
       "oneOf": [
         {
           "const": "backend"

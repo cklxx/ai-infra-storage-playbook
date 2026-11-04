@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchLayout.schema.json",
   "title": "BenchLayout",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchLayout",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchLayout",
   "$defs": {
-    "aisp.bench.readme.bench.BenchLayout": {
+    "aisp.bench.readme.types.BenchLayout": {
       "type": "object",
       "properties": {
         "root": {
@@ -13,7 +13,7 @@
         "areas": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchRepoArea"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchRepoArea"
           }
         },
         "method_docs": {
@@ -37,7 +37,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchRepoArea": {
+    "aisp.bench.readme.types.BenchRepoArea": {
       "oneOf": [
         {
           "const": "playbook"

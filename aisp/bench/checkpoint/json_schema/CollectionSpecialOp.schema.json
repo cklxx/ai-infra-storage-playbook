@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionSpecialOp.schema.json",
   "title": "CollectionSpecialOp",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionSpecialOp",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionSpecialOp",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionSpecialOp": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionSpecialOp": {
       "oneOf": [
         {
           "const": "custom_kernel"

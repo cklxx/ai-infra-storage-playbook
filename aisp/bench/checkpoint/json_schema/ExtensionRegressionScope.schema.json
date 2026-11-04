@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionRegressionScope.schema.json",
   "title": "ExtensionRegressionScope",
-  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionRegressionScope",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionRegressionScope",
   "$defs": {
-    "aisp.bench.checkpoint.extension.extension.ExtensionRegressionScope": {
+    "aisp.bench.checkpoint.extension.types.ExtensionRegressionScope": {
       "oneOf": [
         {
           "const": "smoke"

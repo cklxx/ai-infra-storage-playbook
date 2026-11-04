@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/RunSpec.schema.json",
   "title": "RunSpec",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.RunSpec",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.RunSpec",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.RunSpec": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.RunSpec": {
       "type": "object",
       "properties": {
         "sample": {
@@ -14,7 +14,7 @@
           "type": "string"
         },
         "storage": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.StorageLayer"
         },
         "seed": {
           "type": "integer"
@@ -28,14 +28,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.StorageLayer": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.StorageLayer": {
       "type": "object",
       "properties": {
         "backend": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
         },
         "adapter": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
         }
       },
       "required": [
@@ -44,7 +44,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.Component": {
       "type": "object",
       "properties": {
         "name": {

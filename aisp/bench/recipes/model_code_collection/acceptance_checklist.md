@@ -1,12 +1,12 @@
 # 模型代码收集：验收清单
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `acceptance_collection` 模块与 `## 接口` 的 `acceptance_collection_api` 模块 import，对外发布八个名字：类型 `AcceptanceCollectionChecklist`、`AcceptanceCollectionItem`、`AcceptanceCollectionGateResult`，操作 `CheckRunnable`、`CheckBypass`、`CheckAlignment`、`CheckScaling`、`CheckRegistration`。先看 `AcceptanceCollectionItem` 里列出的 15 条验收项，再看 `AcceptanceCollectionChecklist` 怎么按 G0 到 G4 分门，然后按门的顺序看五个操作各自核对什么。
 
-```bash acceptance_collection_public
-import aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection as acceptance_collection
-import aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection_api as acceptance_collection_api
+```bash public
+import aisp.bench.recipes.model_code_collection.acceptance_checklist.types as acceptance_collection
+import aisp.bench.recipes.model_code_collection.acceptance_checklist.apis as acceptance_collection_api
 
 AcceptanceCollectionChecklist = acceptance_collection.AcceptanceCollectionChecklist
 AcceptanceCollectionItem = acceptance_collection.AcceptanceCollectionItem
@@ -22,12 +22,12 @@ CheckRegistration = acceptance_collection_api.CheckRegistration
 
 这份文档是模型代码收集配方的验收清单，按 G0 能跑、G1 旁路可跑、G2 小规模对齐、G3 逐级 scaling、G4 结论登记五道门列出 15 条验收项。它回答这套配方在每个阶段要满足什么条件才算完成，验收时按门逐条核对。
 
-## acceptance_collection
+## types.viba
 
 问题形式化为一个模块 `acceptance_collection`：取值落在有限集合里的概念写成 `Oneof` 枚举，`AcceptanceCollectionItem` 把每条验收项列成一个带字符串标签的分支，阶段门则由 `gates` 模块的枚举 `gates.Gate` 定义，本模块只引用它。其余概念写成对象类型：`AcceptanceCollectionGate` 表示一道门与它的验收项，`AcceptanceCollectionChecklist` 表示整份清单，`AcceptanceCollectionCoverageRun` 表示覆盖度脚本的一次运行，`AcceptanceCollectionItemResult` 与 `AcceptanceCollectionGateResult` 分别表示单条验收项和一道门的判定结果。这些类型逐层嵌套：`AcceptanceCollectionChecklist` 的 `$gates` 是 `list[AcceptanceCollectionGate]`，`AcceptanceCollectionGate` 的 `$items` 是 `list[AcceptanceCollectionItem]`，`AcceptanceCollectionGateResult` 的 `$items` 是 `list[AcceptanceCollectionItemResult]`。`AcceptanceCollectionGate` 与 `AcceptanceCollectionGateResult` 的 `$gate` 都取一个 `gates.Gate` 值，`AcceptanceCollectionItem` 每个分支的标签前缀标出它属于哪道门，验收项与门由此对应起来。
 
-```bash acceptance_collection
-import aisp.bench.checkpoint.methodology.gates as gates
+```bash types
+import aisp.bench.checkpoint.gates.types as gates
 
 AcceptanceCollectionItem =
   Oneof
@@ -82,13 +82,13 @@ AcceptanceCollectionGateResult =
 2. G2 只核对两件事：本配方不做 IO 对齐、下游配方引用时的指标版本一致，覆盖度计算脚本在 50 个模型的子集上跑通。
 3. 最后验收 G4 结论登记：清单上传并记下 sha256，覆盖度清单的缺口按优先级排好，无法判定代码角色与未配对训练代码的样本都计入缺口，可跑率、架构族覆盖、规模覆盖、配对率达标，重跑一次文件集合与 sha256 完全一致。
 
-## acceptance_collection_api
+## apis.viba
 
-```bash acceptance_collection_api
-import aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection as acceptance_collection
-import aisp.bench.checkpoint.model_code_collection.collection as collection
-import aisp.bench.checkpoint.methodology.fidelity as fidelity
-import aisp.bench.checkpoint.scaling.levels as levels
+```bash apis
+import aisp.bench.recipes.model_code_collection.acceptance_checklist.types as acceptance_collection
+import aisp.bench.checkpoint.model_code_collection.types as collection
+import aisp.bench.checkpoint.fidelity.types as fidelity
+import aisp.bench.checkpoint.scaling.types as levels
 
 CheckRunnable =
      acceptance_collection.AcceptanceCollectionGateResult
@@ -122,11 +122,11 @@ CheckRegistration =
   <- { 验收 G4 结论登记：清单已上传且 sha256 已记录；覆盖度清单已生成且缺口按优先级排序；无法判定代码角色与未配对训练代码的样本都计入缺口；可跑率、架构族覆盖、规模覆盖、配对率均达到验收目标；重跑一次文件集合与 sha256 完全一致。返回这六条验收项的逐条判定与门的结论 }
 ```
 
-## acceptance_collection_flow
+## flow.viba
 
-```bash acceptance_collection_flow
-import aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection as acceptance_collection
-import aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection_api as acceptance_collection_api
+```bash flow
+import aisp.bench.recipes.model_code_collection.acceptance_checklist.types as acceptance_collection
+import aisp.bench.recipes.model_code_collection.acceptance_checklist.apis as acceptance_collection_api
 
 AcceptanceCollectionStep =
   Oneof

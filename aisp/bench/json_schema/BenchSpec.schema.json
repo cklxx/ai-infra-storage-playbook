@@ -2,34 +2,34 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchSpec.schema.json",
   "title": "BenchSpec",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchSpec",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchSpec",
   "$defs": {
-    "aisp.bench.readme.bench.BenchSpec": {
+    "aisp.bench.readme.types.BenchSpec": {
       "type": "object",
       "properties": {
         "subjects": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchSubject"
           }
         },
         "storage": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageVersion"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageVersion"
         },
         "eval_sets": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSet"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchEvalSet"
           }
         },
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricSet"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchMetricSet"
           }
         },
         "layout": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchLayout"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchLayout"
         }
       },
       "required": [
@@ -41,7 +41,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchSubject": {
+    "aisp.bench.readme.types.BenchSubject": {
       "oneOf": [
         {
           "const": "model_code_collection"
@@ -57,13 +57,13 @@
         }
       ]
     },
-    "aisp.bench.readme.bench.BenchStorageVersion": {
+    "aisp.bench.readme.types.BenchStorageVersion": {
       "type": "object",
       "properties": {
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayer"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayer"
           }
         },
         "manifest": {
@@ -72,7 +72,7 @@
         "changed_layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayerKind"
           }
         }
       },
@@ -83,14 +83,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchStorageLayer": {
+    "aisp.bench.readme.types.BenchStorageLayer": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayerKind"
         },
         "component": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
         },
         "env": {
           "type": "string"
@@ -103,7 +103,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchStorageLayerKind": {
+    "aisp.bench.readme.types.BenchStorageLayerKind": {
       "oneOf": [
         {
           "const": "backend"
@@ -113,7 +113,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.Component": {
       "type": "object",
       "properties": {
         "name": {
@@ -140,16 +140,16 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchEvalSet": {
+    "aisp.bench.readme.types.BenchEvalSet": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchSubject"
         },
         "entry": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.readme.bench.BenchEvalSetEntry"
+              "$ref": "#/$defs/aisp.bench.readme.types.BenchEvalSetEntry"
             },
             {
               "type": "null"
@@ -163,7 +163,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchEvalSetEntry": {
+    "aisp.bench.readme.types.BenchEvalSetEntry": {
       "type": "object",
       "properties": {
         "version": {
@@ -194,14 +194,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchMetricSet": {
+    "aisp.bench.readme.types.BenchMetricSet": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchSubject"
         },
         "tier": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricTier"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchMetricTier"
         },
         "metrics": {
           "type": "array",
@@ -217,7 +217,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchMetricTier": {
+    "aisp.bench.readme.types.BenchMetricTier": {
       "oneOf": [
         {
           "const": "sli"
@@ -227,7 +227,7 @@
         }
       ]
     },
-    "aisp.bench.readme.bench.BenchLayout": {
+    "aisp.bench.readme.types.BenchLayout": {
       "type": "object",
       "properties": {
         "root": {
@@ -236,7 +236,7 @@
         "areas": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.readme.bench.BenchRepoArea"
+            "$ref": "#/$defs/aisp.bench.readme.types.BenchRepoArea"
           }
         },
         "method_docs": {
@@ -260,7 +260,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchRepoArea": {
+    "aisp.bench.readme.types.BenchRepoArea": {
       "oneOf": [
         {
           "const": "playbook"

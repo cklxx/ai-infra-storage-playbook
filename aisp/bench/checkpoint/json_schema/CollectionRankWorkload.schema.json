@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionRankWorkload.schema.json",
   "title": "CollectionRankWorkload",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRankWorkload",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRankWorkload",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRankWorkload": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRankWorkload": {
       "oneOf": [
         {
           "const": "forward"

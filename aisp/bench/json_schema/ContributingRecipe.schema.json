@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipe.schema.json",
   "title": "ContributingRecipe",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipe",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingRecipe",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingRecipe": {
+    "aisp.bench.contributing.types.ContributingRecipe": {
       "type": "object",
       "properties": {
         "name": {
@@ -13,13 +13,13 @@
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFile"
+            "$ref": "#/$defs/aisp.bench.contributing.types.ContributingRecipeFile"
           }
         },
         "required_fields": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeRequiredField"
+            "$ref": "#/$defs/aisp.bench.contributing.types.ContributingRecipeRequiredField"
           }
         },
         "notes": {
@@ -38,11 +38,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.contributing.contributing.ContributingRecipeFile": {
+    "aisp.bench.contributing.types.ContributingRecipeFile": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFileKind"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingRecipeFileKind"
         },
         "path": {
           "type": "string"
@@ -58,7 +58,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.contributing.contributing.ContributingRecipeFileKind": {
+    "aisp.bench.contributing.types.ContributingRecipeFileKind": {
       "oneOf": [
         {
           "const": "recipe_yaml"
@@ -74,7 +74,7 @@
         }
       ]
     },
-    "aisp.bench.contributing.contributing.ContributingRecipeRequiredField": {
+    "aisp.bench.contributing.types.ContributingRecipeRequiredField": {
       "oneOf": [
         {
           "const": "bypass"

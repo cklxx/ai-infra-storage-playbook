@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceScheduling.schema.json",
   "title": "ServiceScheduling",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceScheduling",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceScheduling",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceScheduling": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceScheduling": {
       "type": "object",
       "properties": {
         "priority_order": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServicePriority"
+            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServicePriority"
           }
         },
         "time_slice_single_rank": {
@@ -25,7 +25,7 @@
         "preemptible": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServicePriority"
+            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServicePriority"
           }
         },
         "high_bandwidth_parallel": {
@@ -42,7 +42,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.evaluation_service.service.ServicePriority": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServicePriority": {
       "oneOf": [
         {
           "const": "regression"

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionRunnableFailure.schema.json",
   "title": "CollectionRunnableFailure",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailure",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailure",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailure": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailure": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailureKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailureKind"
         },
         "step": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailureKind": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailureKind": {
       "oneOf": [
         {
           "const": "timeout"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/WorkProgress.schema.json",
   "title": "WorkProgress",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.WorkProgress",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.WorkProgress",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.WorkProgress": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.WorkProgress": {
       "type": "object",
       "properties": {
         "done": {

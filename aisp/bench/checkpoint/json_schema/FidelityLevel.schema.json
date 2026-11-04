@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/FidelityLevel.schema.json",
   "title": "FidelityLevel",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.FidelityLevel",
+  "$ref": "#/$defs/aisp.bench.checkpoint.bypass.types.FidelityLevel",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.bypass.FidelityLevel": {
+    "aisp.bench.checkpoint.bypass.types.FidelityLevel": {
       "oneOf": [
         {
           "const": "L0"

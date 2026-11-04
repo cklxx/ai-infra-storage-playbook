@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceMetric.schema.json",
   "title": "ServiceMetric",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceMetric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceMetric",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceMetric": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceMetric": {
       "oneOf": [
         {
           "const": "success_rate"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateInvariant.schema.json",
   "title": "RecipeTemplateInvariant",
-  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateInvariant",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateInvariant",
   "$defs": {
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateInvariant": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateInvariant": {
       "type": "object",
       "properties": {
         "definition": {

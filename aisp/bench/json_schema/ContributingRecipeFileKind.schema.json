@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipeFileKind.schema.json",
   "title": "ContributingRecipeFileKind",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeFileKind",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingRecipeFileKind",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingRecipeFileKind": {
+    "aisp.bench.contributing.types.ContributingRecipeFileKind": {
       "oneOf": [
         {
           "const": "recipe_yaml"

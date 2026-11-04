@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/AcceptanceCheckpointVerdict.schema.json",
   "title": "AcceptanceCheckpointVerdict",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointVerdict",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointVerdict",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointVerdict": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointVerdict": {
       "type": "object",
       "properties": {
         "passed": {
@@ -13,7 +13,7 @@
         "gates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointGateVerdict"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointGateVerdict"
           }
         }
       },
@@ -23,11 +23,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointGateVerdict": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointGateVerdict": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
         },
         "passed": {
           "type": "boolean"
@@ -35,7 +35,7 @@
         "pending": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointItem"
           }
         }
       },
@@ -46,7 +46,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.gates.Gate": {
+    "aisp.bench.checkpoint.gates.types.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -65,7 +65,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.checkpoint.acceptance_checklist.acceptance_checkpoint.AcceptanceCheckpointItem": {
+    "aisp.bench.recipes.checkpoint.acceptance_checklist.types.AcceptanceCheckpointItem": {
       "oneOf": [
         {
           "const": "g0_real_run"

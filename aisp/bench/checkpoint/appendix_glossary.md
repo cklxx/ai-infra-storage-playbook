@@ -1,12 +1,12 @@
 # 附录 A：基础术语
 
-## public
+## public.viba
 
 本文对外发布 5 个名字，全部是转发：类型 `GlossaryTerm`、`GlossaryCategory`、`GlossaryDefinition` 来自 glossary，操作 `Lookup`、`Define` 来自 glossary_api。先看 `GlossaryTerm` 与 `GlossaryCategory` 弄清一个词归哪一类，再看 `Lookup` 与 `Define` 怎么查到它的定义。
 
-```bash glossary_public
-import aisp.bench.checkpoint.appendix_glossary.glossary as glossary
-import aisp.bench.checkpoint.appendix_glossary.glossary_api as glossary_api
+```bash public
+import aisp.bench.checkpoint.appendix_glossary.types as glossary
+import aisp.bench.checkpoint.appendix_glossary.apis as glossary_api
 
 GlossaryCategory = glossary.GlossaryCategory
 GlossaryTerm = glossary.GlossaryTerm
@@ -19,11 +19,11 @@ Define = glossary_api.Define
 
 本附录解释各篇文档里反复出现、但属于存储与推理领域而非本项目的词，按并行策略、模型结构、存储与 IO、旁路相关四类组织。项目自造词（评估集、配方、旁路、保真、回链）在 [`README.md`](../README.md) 的「术语」里，本附录不重复。读到不认识的词先查本附录，本附录没有的再去 README 查；两处都没有，就是文档的缺口，补进来。
 
-## glossary
+## types.viba
 
 术语表分成「分类」与「术语」两层，都写成枚举：`GlossaryCategory` 是分类枚举，四个取值分别对应并行策略、模型结构、存储与 IO、旁路相关；每一类术语各有一个术语枚举，即 `ParallelStrategyTerm`、`ModelStructureTerm`、`StorageIoTerm`、`BypassTerm`，枚举中的每个取值就是一个术语。`GlossaryTerm` 把四个术语枚举收进同一个枚举，四个变体各携带其中一个取值，因此一个 `GlossaryTerm` 取值同时确定术语本身与它所属的 `GlossaryCategory`。术语的定义单独写成 `GlossaryDefinition`，类型是 `str`，与 `GlossaryTerm` 的取值一一对应。
 
-```bash glossary
+```bash types
 GlossaryCategory =
   Oneof
   | "parallel_strategy" * { 并行策略：把模型与 batch 切到多个 rank 上的四种方式。四种可以组合（例如 DP × TP × PP），组合方式直接改变 checkpoint 的分片与每 rank 的写入量，因此 scaling 一章把并行策略列为独立维度 }
@@ -78,10 +78,10 @@ GlossaryDefinition = str * { 一个术语的定义，内容就是该术语取值
 
 查一个词要两个操作：Lookup 查它属于哪一类，Define 查它的定义。Lookup 收一个 GlossaryTerm 取值，答一个 GlossaryCategory 取值，也就是并行策略、模型结构、存储与 IO、旁路相关四类里的哪一类。Define 收同一个 GlossaryTerm 取值，答一个 GlossaryDefinition，也就是这个词在「问题」里挂的那段说明。两个操作都只读：不修改术语表，也不新增词。附录里没列的词说明它属于项目自造词，按「背景」说的去 [`README.md`](../README.md) 的「术语」里查。
 
-## glossary_api
+## apis.viba
 
-```bash glossary_api
-import aisp.bench.checkpoint.appendix_glossary.glossary as glossary
+```bash apis
+import aisp.bench.checkpoint.appendix_glossary.types as glossary
 
 Lookup =
      glossary.GlossaryCategory
@@ -94,11 +94,11 @@ Define =
   <- { 查定义接口：答这个术语的定义，就是它的取值上挂的那段说明。只读；与 Lookup 用同一个输入，两步可以先后走 }
 ```
 
-## glossary_flow
+## flow.viba
 
-```bash glossary_flow
-import aisp.bench.checkpoint.appendix_glossary.glossary as glossary
-import aisp.bench.checkpoint.appendix_glossary.glossary_api as glossary_api
+```bash flow
+import aisp.bench.checkpoint.appendix_glossary.types as glossary
+import aisp.bench.checkpoint.appendix_glossary.apis as glossary_api
 
 GlossaryOp =
   Object

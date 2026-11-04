@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionCoverageDimension.schema.json",
   "title": "CollectionCoverageDimension",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageDimension",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCoverageDimension",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageDimension": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"

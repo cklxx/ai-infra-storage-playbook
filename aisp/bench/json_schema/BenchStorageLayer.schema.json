@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchStorageLayer.schema.json",
   "title": "BenchStorageLayer",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayer",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayer",
   "$defs": {
-    "aisp.bench.readme.bench.BenchStorageLayer": {
+    "aisp.bench.readme.types.BenchStorageLayer": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchStorageLayerKind"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchStorageLayerKind"
         },
         "component": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Component"
         },
         "env": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchStorageLayerKind": {
+    "aisp.bench.readme.types.BenchStorageLayerKind": {
       "oneOf": [
         {
           "const": "backend"
@@ -34,7 +34,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Component": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.Component": {
       "type": "object",
       "properties": {
         "name": {

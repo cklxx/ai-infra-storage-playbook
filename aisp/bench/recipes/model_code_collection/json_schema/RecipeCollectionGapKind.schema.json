@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionGapKind.schema.json",
   "title": "RecipeCollectionGapKind",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGapKind",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGapKind": {
       "oneOf": [
         {
           "const": "empty_cell"

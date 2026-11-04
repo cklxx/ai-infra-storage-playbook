@@ -1,12 +1,12 @@
 # Scaling：不变量、逐级验证与外推
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `scaling` 模块与 `## 接口` 的 `scaling_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `ScalingRunPlan`、`ScalingInvariantSet`、`ScalingLevelRun`、`ScalingExtrapolation`，操作 `ChooseDimension`、`PickInvariant`、`ScaleUp`、`Extrapolate`；先看 `ScalingRunPlan` 与 `ChooseDimension`，再由 `PickInvariant` 交回 `ScalingInvariantSet`、由 `ScaleUp` 交回 `ScalingLevelRun`，逐级结果汇进 `Extrapolate` 交回的 `ScalingExtrapolation`。
 
-```bash scaling_public
-import aisp.bench.checkpoint.scaling.scaling as scaling
-import aisp.bench.checkpoint.scaling.scaling_api as scaling_api
+```bash public
+import aisp.bench.checkpoint.scaling.types as scaling
+import aisp.bench.checkpoint.scaling.apis as scaling_api
 
 ScalingRunPlan = scaling.ScalingRunPlan
 ScalingInvariantSet = scaling.ScalingInvariantSet
@@ -22,12 +22,12 @@ Extrapolate = scaling_api.Extrapolate
 
 三类评估集共用这套方法。它回答的问题是：在小规模上测出来的结论，凭什么能用到十万卡；评估集的上限按十万卡设计。放大过程中数据本身、系统与策略同时在变，不把哪些应该保持不变、哪些一定会变写清楚，放大之后测到的差异就无法区分是存储扛不住还是配置变了。
 
-## scaling
+## levels.viba
 
 问题形式化为 `scaling` 模块：取值只能落在有限集合里的概念写成 Oneof 枚举，`ScalingDimension` 是放大维度，`ScalingInvariantExample` 是不变量示例，`ScalingExtrapolationRule` 是外推规则，`ScalingWriteMode` 是写入模式，`ScalingNonlinearSource` 是放大中非线性变化的来源，`ScalingOpenQuestion` 是尚无答案的开放问题。需要成组记录的概念写成 Object 类型：`ScalingRunPlan` 的 `$dimension` 取这次放大的一个 `ScalingDimension`、`$fixed` 是其余四个维度的 `ScalingFixedDimension` 列表，`ScalingFixedDimension` 记一个被固定的维度与固定成的值。不变量这条链上，`ScalingInvariantCandidate` 是候选度量项，判断通过的写成 `ScalingInvariant`，`ScalingInvariantSet` 的 `$invariants` 收最终选定的 `ScalingInvariant` 列表，`$variables`、`$references` 与 `$unmeasurable` 分别记变量、参考项与测不到的候选。`ScalingLevelRun` 记一级放大的结果，其 `$level` 取 `levels.Level`、`$dimension` 取 `ScalingDimension`；`ScalingExtrapolation` 记一次外推，其 `$from_level` 与 `$to_level` 取 `levels.Level`、`$rules` 是 `ScalingExtrapolationRule` 的列表、`$timing` 是 `ScalingTiming`、`$nonlinear_sources` 是 `ScalingNonlinearSource` 的列表，`ScalingTiming` 的 `$mode` 取 `ScalingWriteMode`；`ScalingLevelReport` 记每一级的报告，其 `$level` 取 `levels.Level`。
 
-```bash scaling
-import aisp.bench.checkpoint.scaling.levels as levels
+```bash types
+import aisp.bench.checkpoint.scaling.types as levels
 
 ScalingDimension =
   Oneof
@@ -170,11 +170,11 @@ Level =
 3. 逐级验证：按 S0 到 S5 的阶梯一级一级跑，至少四级，每级都要拿到完整度量、重新验证不变量并给偏差归因，不允许从最小规模直接跳到十万卡。
 4. 外推：先判断存储侧是否饱和，数据与元数据分开算，处理时序与重叠，也就是同步或异步写入的时间折算，再处理 P99、P999 尾延迟，给出下一级的预测值与预测依据。
 
-## scaling_api
+## apis.viba
 
-```bash scaling_api
-import aisp.bench.checkpoint.scaling.levels as levels
-import aisp.bench.checkpoint.scaling.scaling as scaling
+```bash apis
+import aisp.bench.checkpoint.scaling.types as levels
+import aisp.bench.checkpoint.scaling.types as scaling
 
 ChooseDimension =
      scaling.ScalingRunPlan
@@ -204,14 +204,14 @@ Extrapolate =
   <- { 外推：先看单 rank 带宽随 rank 数增长的曲线判断存储侧是否饱和，走平之后一律用排队模型；数据字节数与元数据操作数分开算、分开报告；按真实计算时长折算旁路窗口；P99 与 P999 不按平均值外推；放大中出现超线性变化时先排查七个非线性来源，再给下一级的预测值与预测依据；返回这次外推的结果 }
 ```
 
-## scaling_flow
+## flow.viba
 
 scaling_flow 把维度、不变量、逐级验证、外推与报告串成一个整体：一份放大计划贯穿所有级，一组不变量在每一级重新验证，逐级结果汇到一次外推，每一级的结果写成一份报告。
 
-```bash scaling_flow
-import aisp.bench.checkpoint.scaling.levels as levels
-import aisp.bench.checkpoint.scaling.scaling as scaling
-import aisp.bench.checkpoint.scaling.scaling_api as scaling_api
+```bash flow
+import aisp.bench.checkpoint.scaling.types as levels
+import aisp.bench.checkpoint.scaling.types as scaling
+import aisp.bench.checkpoint.scaling.apis as scaling_api
 
 ScalingChooseDuty =
   Object

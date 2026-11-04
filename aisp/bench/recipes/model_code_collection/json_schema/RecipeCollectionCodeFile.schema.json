@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCodeFile.schema.json",
   "title": "RecipeCollectionCodeFile",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeFile",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeFile",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeFile": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeFile": {
       "type": "object",
       "properties": {
         "path": {

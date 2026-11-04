@@ -252,7 +252,7 @@
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.observation.ObservationLayer"
+            "$ref": "#/$defs/aisp.bench.checkpoint.observation.types.ObservationLayer"
           }
         }
       },
@@ -263,7 +263,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.observation.ObservationLayer": {
+    "aisp.bench.checkpoint.observation.types.ObservationLayer": {
       "oneOf": [
         {
           "const": "app"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckCoverageArgs.schema.json",
   "title": "CheckCoverageArgs",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckCoverageArgs",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckCoverageArgs",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckCoverageArgs": {
+    "aisp.bench.checks.readme.types.CheckCoverageArgs": {
       "type": "object",
       "properties": {
         "manifest": {

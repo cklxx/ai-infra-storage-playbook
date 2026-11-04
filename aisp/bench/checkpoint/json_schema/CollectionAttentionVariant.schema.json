@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionAttentionVariant.schema.json",
   "title": "CollectionAttentionVariant",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionAttentionVariant",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionAttentionVariant": {
       "oneOf": [
         {
           "const": "mha"

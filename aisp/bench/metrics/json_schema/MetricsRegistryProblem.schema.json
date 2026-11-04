@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/MetricsRegistryProblem.schema.json",
   "title": "MetricsRegistryProblem",
-  "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryProblem",
+  "$ref": "#/$defs/aisp.bench.metrics.readme.types.MetricsRegistryProblem",
   "$defs": {
-    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryProblem": {
+    "aisp.bench.metrics.readme.types.MetricsRegistryProblem": {
       "type": "object",
       "properties": {
         "metric": {
-          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryName"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.types.MetricsRegistryName"
         },
         "kind": {
-          "$ref": "#/$defs/aisp.bench.metrics.readme.metrics_registry.MetricsRegistryProblemKind"
+          "$ref": "#/$defs/aisp.bench.metrics.readme.types.MetricsRegistryProblemKind"
         },
         "detail": {
           "type": "string"
@@ -24,10 +24,10 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryName": {
+    "aisp.bench.metrics.readme.types.MetricsRegistryName": {
       "type": "string"
     },
-    "aisp.bench.metrics.readme.metrics_registry.MetricsRegistryProblemKind": {
+    "aisp.bench.metrics.readme.types.MetricsRegistryProblemKind": {
       "oneOf": [
         {
           "const": "not_registered"

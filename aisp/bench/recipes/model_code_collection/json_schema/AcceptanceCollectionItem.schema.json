@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/AcceptanceCollectionItem.schema.json",
   "title": "AcceptanceCollectionItem",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionItem",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.types.AcceptanceCollectionItem",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionItem": {
+    "aisp.bench.recipes.model_code_collection.acceptance_checklist.types.AcceptanceCollectionItem": {
       "oneOf": [
         {
           "const": "g0_candidate_manifest_at_three_times_target"

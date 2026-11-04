@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Load.schema.json",
   "title": "Load",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.Load",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.Load",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.Load": {
+    "aisp.bench.checkpoint.evaluation_service.types.Load": {
       "type": "object",
       "properties": {
         "concurrency": {

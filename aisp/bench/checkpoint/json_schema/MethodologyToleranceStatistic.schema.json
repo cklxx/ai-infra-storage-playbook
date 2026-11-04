@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyToleranceStatistic.schema.json",
   "title": "MethodologyToleranceStatistic",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceStatistic",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyToleranceStatistic",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceStatistic": {
+    "aisp.bench.checkpoint.measures.types.MethodologyToleranceStatistic": {
       "oneOf": [
         {
           "const": "bucket_frequency_l1"

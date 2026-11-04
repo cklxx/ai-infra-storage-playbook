@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchMetricTier.schema.json",
   "title": "BenchMetricTier",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricTier",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchMetricTier",
   "$defs": {
-    "aisp.bench.readme.bench.BenchMetricTier": {
+    "aisp.bench.readme.types.BenchMetricTier": {
       "oneOf": [
         {
           "const": "sli"

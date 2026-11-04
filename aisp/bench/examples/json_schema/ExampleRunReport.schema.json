@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleRunReport.schema.json",
   "title": "ExampleRunReport",
-  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleRunReport",
+  "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleRunReport",
   "$defs": {
-    "aisp.bench.examples.readme.examples.ExampleRunReport": {
+    "aisp.bench.examples.readme.types.ExampleRunReport": {
       "type": "object",
       "properties": {
         "results": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleRunResult"
+            "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleRunResult"
           }
         },
         "mismatches": {
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.examples.readme.examples.ExampleRunResult": {
+    "aisp.bench.examples.readme.types.ExampleRunResult": {
       "type": "object",
       "properties": {
         "samples": {
@@ -36,10 +36,10 @@
           }
         },
         "expected": {
-          "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExamplePolarity"
+          "$ref": "#/$defs/aisp.bench.examples.readme.types.ExamplePolarity"
         },
         "outcome": {
-          "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleOutcome"
+          "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleOutcome"
         }
       },
       "required": [
@@ -49,7 +49,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.examples.readme.examples.ExamplePolarity": {
+    "aisp.bench.examples.readme.types.ExamplePolarity": {
       "oneOf": [
         {
           "const": "positive"
@@ -59,7 +59,7 @@
         }
       ]
     },
-    "aisp.bench.examples.readme.examples.ExampleOutcome": {
+    "aisp.bench.examples.readme.types.ExampleOutcome": {
       "oneOf": [
         {
           "const": "accepted"

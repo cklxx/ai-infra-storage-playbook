@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionCodeFile.schema.json",
   "title": "CollectionCodeFile",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFile",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFile",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFile": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFile": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "kind": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionFileKind"
         },
         "sha256": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionFileKind": {
       "oneOf": [
         {
           "const": "config"

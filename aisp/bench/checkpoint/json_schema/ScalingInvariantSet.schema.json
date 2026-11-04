@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingInvariantSet.schema.json",
   "title": "ScalingInvariantSet",
-  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingInvariantSet",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.ScalingInvariantSet",
   "$defs": {
-    "aisp.bench.checkpoint.scaling.scaling.ScalingInvariantSet": {
+    "aisp.bench.checkpoint.scaling.types.ScalingInvariantSet": {
       "type": "object",
       "properties": {
         "invariants": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingInvariant"
+            "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.ScalingInvariant"
           }
         },
         "variables": {
@@ -40,7 +40,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.scaling.scaling.ScalingInvariant": {
+    "aisp.bench.checkpoint.scaling.types.ScalingInvariant": {
       "type": "object",
       "properties": {
         "name": {

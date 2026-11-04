@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingCheckItem.schema.json",
   "title": "ContributingCheckItem",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingCheckItem",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingCheckItem",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingCheckItem": {
+    "aisp.bench.contributing.types.ContributingCheckItem": {
       "oneOf": [
         {
           "const": "required_fields_not_empty"

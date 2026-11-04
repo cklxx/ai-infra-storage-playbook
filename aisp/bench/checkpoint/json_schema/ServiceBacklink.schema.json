@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceBacklink.schema.json",
   "title": "ServiceBacklink",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceBacklink",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceBacklink",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceBacklink": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceBacklink": {
       "type": "object",
       "properties": {
         "run_id": {
@@ -20,7 +20,7 @@
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceRunVerdict"
+          "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceRunVerdict"
         },
         "finished_at": {
           "type": "string"
@@ -36,7 +36,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceRunVerdict": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceRunVerdict": {
       "oneOf": [
         {
           "const": "passed"

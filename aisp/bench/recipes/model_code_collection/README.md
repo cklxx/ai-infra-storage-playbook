@@ -1,12 +1,12 @@
 # 模型代码收集配方
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `recipe_collection` 模块与 `## 接口` 的 `recipe_collection_api` 模块 import，对外发布八个名字：类型 `RecipeCollectionCorpusEntry` 与 `RecipeCollectionAcceptanceReport`，操作 `CollectCandidates`、`FetchCode`、`DedupCorpus`、`ProbeRunnable`、`PairTrainingCode`、`CheckAcceptance`。先看 `RecipeCollectionCorpusEntry`：一条语料一个模型，`FetchCode` 造出它，`DedupCorpus`、`ProbeRunnable`、`PairTrainingCode` 依次在它上面写上指纹、去重决定、可跑性结论与训练代码配对，`CheckAcceptance` 再把整批条目算成 `RecipeCollectionAcceptanceReport`。
 
-```bash recipe_collection_public
-import aisp.bench.recipes.model_code_collection.readme.recipe_collection as recipe_collection
-import aisp.bench.recipes.model_code_collection.readme.recipe_collection_api as recipe_collection_api
+```bash public
+import aisp.bench.recipes.model_code_collection.readme.types as recipe_collection
+import aisp.bench.recipes.model_code_collection.readme.apis as recipe_collection_api
 
 RecipeCollectionCorpusEntry = recipe_collection.RecipeCollectionCorpusEntry
 RecipeCollectionAcceptanceReport = recipe_collection.RecipeCollectionAcceptanceReport
@@ -22,11 +22,11 @@ CheckAcceptance = recipe_collection_api.CheckAcceptance
 
 本配方收集 1000 个以上可跑的推理模型代码、尽量配对训练代码，生产另外两个配方的原料：一份可复现、去重后、验证过能跑的 LLM 模型代码语料。给定清单与 commit，语料要能在新机器上重建出同样的文件集合；结构族、规模量级、注意力变体的覆盖矩阵要能计算。方法说明见 [`checkpoint/model_code_collection.md`](../../checkpoint/model_code_collection.md)，开放问题见同一篇文档的「开放问题」。
 
-## recipe_collection
+## types.viba
 
 这个问题被形式化成一组 viba 类型与枚举：要记录的数据写成 `Object` 类型，取值封闭的概念写成 `Oneof` 枚举，字段声明把两者接起来。输入与产物的种类由 `RecipeCollectionInputKind`、`RecipeCollectionOutputKind` 给出，`RecipeCollectionInput`、`RecipeCollectionOutput` 各用一个 `$kind` 字段引用它们；候选筛选、下载失败、代码角色、去重、可跑性、训练代码配对以及覆盖度与验收指标同样写成枚举，分别是 `RecipeCollectionCandidateFilter`、`RecipeCollectionFetchFailureKind`、`RecipeCollectionCodeRole`、`RecipeCollectionDedupDecision`、`RecipeCollectionRunnableState`、`RecipeCollectionTrainingStatus`、`RecipeCollectionCoverageDimension`、`RecipeCollectionGapKind`、`RecipeCollectionAcceptanceMetric`。类型之间靠字段嵌套：`RecipeCollectionCandidate` 与 `RecipeCollectionWorkspace` 由 `RecipeCollectionCandidateSet` 收拢，`RecipeCollectionCorpusEntry` 把一条语料的候选、下载、指纹、去重、可跑性与训练代码配对串起来，`RecipeCollectionAcceptanceReport` 汇总 `RecipeCollectionAcceptanceItem` 与 `RecipeCollectionCoverage`，`RecipeCollectionAcceptance` 则给出这些验收项的口径。
 
-```bash recipe_collection
+```bash types
 RecipeCollectionInputKind =
   Oneof
   | "platform_model_list" * { 平台模型列表，来源是 HuggingFace Hub 模型接口；必需 }
@@ -233,10 +233,10 @@ RecipeCollectionAcceptanceReport =
 2. 再做可跑性验证：用固定 rank 数（默认 2）初始化 mock 的进程组，每个 rank 单独起进程、分时占用同一张卡、跑一次前向，输入维度用配置允许的小值；记录 `yes` / `no` / `partial` 与失败步骤、错误摘要，超时统一设为 10 分钟并单独归类。
 3. 最后统计覆盖度并验收：用 `checks/check_coverage.py` 计算覆盖矩阵与缺口清单，按 [`acceptance_checklist.md`](acceptance_checklist.md) 逐项确认可跑模型数、可跑率、架构族覆盖、规模覆盖、注意力变体覆盖、训练代码配对率、语料可复现七项指标；语料版本升级前必须由负责人确认覆盖缺口清单，负责人见 [`recipe.yaml`](recipe.yaml) 的 `owner` 字段。
 
-## recipe_collection_api
+## apis.viba
 
-```bash recipe_collection_api
-import aisp.bench.recipes.model_code_collection.readme.recipe_collection as recipe_collection
+```bash apis
+import aisp.bench.recipes.model_code_collection.readme.types as recipe_collection
 
 CollectCandidates =
      recipe_collection.RecipeCollectionCandidateSet
@@ -273,11 +273,11 @@ CheckAcceptance =
   <- { 覆盖度统计与验收：用 checks/check_coverage.py 计算覆盖矩阵与缺口清单，按验收清单逐项确认七项指标；返回每项指标的实际值与是否达标，以及覆盖矩阵与缺口清单，七项全部达标才算验收通过 }
 ```
 
-## recipe_collection_flow
+## flow.viba
 
-```bash recipe_collection_flow
-import aisp.bench.recipes.model_code_collection.readme.recipe_collection as recipe_collection
-import aisp.bench.recipes.model_code_collection.readme.recipe_collection_api as recipe_collection_api
+```bash flow
+import aisp.bench.recipes.model_code_collection.readme.types as recipe_collection
+import aisp.bench.recipes.model_code_collection.readme.apis as recipe_collection_api
 
 RecipeCollectionFlow =
   Object

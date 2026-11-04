@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionCandidateSource.schema.json",
   "title": "ExtensionCandidateSource",
-  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCandidateSource",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionCandidateSource",
   "$defs": {
-    "aisp.bench.checkpoint.extension.extension.ExtensionCandidateSource": {
+    "aisp.bench.checkpoint.extension.types.ExtensionCandidateSource": {
       "oneOf": [
         {
           "const": "model_list_new_item"

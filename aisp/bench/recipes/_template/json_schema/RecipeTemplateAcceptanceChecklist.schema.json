@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateAcceptanceChecklist.schema.json",
   "title": "RecipeTemplateAcceptanceChecklist",
-  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateAcceptanceChecklist",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateAcceptanceChecklist",
   "$defs": {
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateAcceptanceChecklist": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateAcceptanceChecklist": {
       "type": "object",
       "properties": {
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateChecklistItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateChecklistItem"
           }
         }
       },
@@ -19,11 +19,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateChecklistItem": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateChecklistItem": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
         },
         "checked": {
           "type": "boolean"
@@ -35,7 +35,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.gates.Gate": {
+    "aisp.bench.checkpoint.gates.types.Gate": {
       "oneOf": [
         {
           "const": "G0"

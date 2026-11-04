@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckBatch.schema.json",
   "title": "CheckBatch",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckBatch",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckBatch",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckBatch": {
+    "aisp.bench.checks.readme.types.CheckBatch": {
       "type": "object",
       "properties": {
         "runs": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckRun"
+            "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckRun"
           }
         }
       },
@@ -19,17 +19,17 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckRun": {
+    "aisp.bench.checks.readme.types.CheckRun": {
       "type": "object",
       "properties": {
         "script": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScript"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckScript"
         },
         "output": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutput"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckOutput"
         },
         "outcome": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckOutcome"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckOutcome"
         }
       },
       "required": [
@@ -39,7 +39,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckScript": {
+    "aisp.bench.checks.readme.types.CheckScript": {
       "oneOf": [
         {
           "const": "validate_repo"
@@ -58,13 +58,13 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckOutput": {
+    "aisp.bench.checks.readme.types.CheckOutput": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "json_line": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckJsonLine"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckJsonLine"
             }
           },
           "required": [
@@ -76,7 +76,7 @@
           "type": "object",
           "properties": {
             "readable": {
-              "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckReadableOutput"
+              "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckReadableOutput"
             }
           },
           "required": [
@@ -86,14 +86,14 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckJsonLine": {
+    "aisp.bench.checks.readme.types.CheckJsonLine": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckStatus"
         }
       },
       "required": [
@@ -102,7 +102,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckStatus": {
+    "aisp.bench.checks.readme.types.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -115,7 +115,7 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckReadableOutput": {
+    "aisp.bench.checks.readme.types.CheckReadableOutput": {
       "type": "object",
       "properties": {
         "items": {
@@ -137,14 +137,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckOutcome": {
+    "aisp.bench.checks.readme.types.CheckOutcome": {
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckStatus"
         },
         "exit_code": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckExitCode"
         }
       },
       "required": [
@@ -153,7 +153,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckExitCode": {
+    "aisp.bench.checks.readme.types.CheckExitCode": {
       "oneOf": [
         {
           "const": 0

@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateContract.schema.json",
   "title": "CheckTemplateContract",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateContract",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateContract",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateContract": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateContract": {
       "type": "object",
       "properties": {
         "input": {
-          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateRunDir"
+          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateRunDir"
         },
         "output": {
-          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateReport"
+          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateReport"
         },
         "exit_code": {
-          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateExitCode"
+          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateExitCode"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateRunDir": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateRunDir": {
       "type": "object",
       "properties": {
         "path": {
@@ -33,7 +33,7 @@
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateCaseFile"
+            "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateCaseFile"
           }
         }
       },
@@ -43,7 +43,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateCaseFile": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateCaseFile": {
       "oneOf": [
         {
           "const": "metrics.json"
@@ -53,14 +53,14 @@
         }
       ]
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateReport": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateReport": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateStatus"
+          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateStatus"
         },
         "detail": {
           "type": "string"
@@ -73,7 +73,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateStatus": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -86,7 +86,7 @@
         }
       ]
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateExitCode": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateExitCode": {
       "oneOf": [
         {
           "const": 0

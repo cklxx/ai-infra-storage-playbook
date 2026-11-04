@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricRegistration.schema.json",
   "title": "ContributingMetricRegistration",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricRegistration",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricRegistration",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingMetricRegistration": {
+    "aisp.bench.contributing.types.ContributingMetricRegistration": {
       "type": "object",
       "properties": {
         "name": {
@@ -14,12 +14,12 @@
           "type": "string"
         },
         "version": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion"
         },
         "deprecation": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricDeprecation"
+              "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricDeprecation"
             },
             {
               "type": "null"
@@ -29,13 +29,13 @@
         "tolerance": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingTolerance"
+            "$ref": "#/$defs/aisp.bench.contributing.types.ContributingTolerance"
           }
         },
         "compatible_metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
+            "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion"
           }
         }
       },
@@ -49,20 +49,20 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.contributing.contributing.ContributingMetricVersion": {
+    "aisp.bench.contributing.types.ContributingMetricVersion": {
       "type": "string"
     },
-    "aisp.bench.contributing.contributing.ContributingMetricDeprecation": {
+    "aisp.bench.contributing.types.ContributingMetricDeprecation": {
       "type": "object",
       "properties": {
         "deprecated_version": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion"
         },
         "reason": {
           "type": "string"
         },
         "replacement_version": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion"
         }
       },
       "required": [
@@ -72,7 +72,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.contributing.contributing.ContributingTolerance": {
+    "aisp.bench.contributing.types.ContributingTolerance": {
       "type": "object",
       "properties": {
         "key": {

@@ -1,13 +1,13 @@
 # checkpoint bench
 
-## public
+## public.viba
 
 先看 `Bench`，再看 `Execute`、`Judge`、`Compare` 三个操作；样本与运行直接用 `ckpt_sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
 
-```bash ckpt_bench_public
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
-import aisp.bench.checkpoint.readme.ckpt_bench as ckpt_bench
-import aisp.bench.checkpoint.readme.ckpt_bench_api as ckpt_bench_api
+```bash public
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.readme.types as ckpt_bench
+import aisp.bench.checkpoint.readme.apis as ckpt_bench_api
 
 Bench = ckpt_bench.Bench
 RunSpec = ckpt_sample.RunSpec
@@ -21,12 +21,12 @@ Compare = ckpt_bench_api.Compare
 
 在一批真实的模型代码上，测量 checkpoint 写入与读取对存储的要求，并把结论从单机外推到十万卡。
 
-## ckpt_bench
+## types.viba
 
 bench 由一个语料、一批样本、几套存储与它们跑出来的运行组成；一条样本是一条 `RunSpec`，一次运行是一条 `RunRecord`。这里只定义 bench 自己的东西：整体 `Bench` 与缺口 `Gap`。
 
-```bash ckpt_bench
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
+```bash types
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
 
 Bench =
   Object
@@ -51,13 +51,13 @@ Gap =
 5. 比版本：同一份负载换一个存储版本，逐指标比差值，只允许存储两层里有一层不同。
 6. 补缺口：看哪些模型族、规模、负载还没有样本，登记成 `Gap`。
 
-## ckpt_bench_api
+## apis.viba
 
-```bash ckpt_bench_api
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
-import aisp.bench.checkpoint.performance.sli as sli
+```bash apis
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
-import aisp.bench.checkpoint.readme.ckpt_bench as ckpt_bench
+import aisp.bench.checkpoint.readme.types as ckpt_bench
 
 Collect =
      list[ckpt_sample.Model]
@@ -93,10 +93,10 @@ FindGaps =
   <- { 看哪些模型族、规模、负载还没有样本，登记成缺口 }
 ```
 
-## ckpt_bench_flow
+## flow.viba
 
-```bash ckpt_bench_flow
-import aisp.bench.checkpoint.readme.ckpt_bench_api as api
+```bash flow
+import aisp.bench.checkpoint.readme.apis as api
 
 Duty =
   Object

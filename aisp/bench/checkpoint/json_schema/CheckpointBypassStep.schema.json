@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointBypassStep.schema.json",
   "title": "CheckpointBypassStep",
-  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassStep",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointBypassStep",
   "$defs": {
-    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointBypassStep": {
+    "aisp.bench.checkpoint.checkpoint.types.CheckpointBypassStep": {
       "oneOf": [
         {
           "const": "meta_model"

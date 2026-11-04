@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckScalingInvariant.schema.json",
   "title": "CheckScalingInvariant",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckScalingInvariant",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckScalingInvariant",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckScalingInvariant": {
+    "aisp.bench.checks.readme.types.CheckScalingInvariant": {
       "type": "object",
       "properties": {
         "values": {

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionInput.schema.json",
   "title": "RecipeCollectionInput",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionInput",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionInput",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionInput": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionInput": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionInputKind"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionInputKind"
         },
         "required": {
           "type": "boolean"
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionInputKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionInputKind": {
       "oneOf": [
         {
           "const": "platform_model_list"

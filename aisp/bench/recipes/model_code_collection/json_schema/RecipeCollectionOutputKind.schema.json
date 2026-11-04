@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionOutputKind.schema.json",
   "title": "RecipeCollectionOutputKind",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionOutputKind",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionOutputKind",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionOutputKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionOutputKind": {
       "oneOf": [
         {
           "const": "model_code"

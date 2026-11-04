@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointClusterScalingCheck.schema.json",
   "title": "RecipeCheckpointClusterScalingCheck",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointClusterScalingCheck",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointClusterScalingCheck",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointClusterScalingCheck": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointClusterScalingCheck": {
       "oneOf": [
         {
           "const": "single_rank_request_size_and_concurrency"

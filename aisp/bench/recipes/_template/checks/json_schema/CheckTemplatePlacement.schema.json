@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplatePlacement.schema.json",
   "title": "CheckTemplatePlacement",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplatePlacement",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplatePlacement",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplatePlacement": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplatePlacement": {
       "oneOf": [
         {
           "const": "recipe"

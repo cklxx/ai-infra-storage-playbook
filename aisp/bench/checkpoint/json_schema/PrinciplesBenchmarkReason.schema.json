@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesBenchmarkReason.schema.json",
   "title": "PrinciplesBenchmarkReason",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesBenchmarkReason",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesBenchmarkReason",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesBenchmarkReason": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesBenchmarkReason": {
       "oneOf": [
         {
           "const": "coverage"

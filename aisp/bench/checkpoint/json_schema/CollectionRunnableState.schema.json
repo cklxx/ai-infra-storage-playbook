@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionRunnableState.schema.json",
   "title": "CollectionRunnableState",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableState",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableState",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableState": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableState": {
       "oneOf": [
         {
           "const": "yes"

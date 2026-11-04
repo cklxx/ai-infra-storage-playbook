@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ObservationConfig.schema.json",
   "title": "ObservationConfig",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.ObservationConfig",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.ObservationConfig",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.ObservationConfig": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.ObservationConfig": {
       "type": "object",
       "properties": {
         "enabled": {
@@ -16,7 +16,7 @@
         "layers": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.observation.ObservationLayer"
+            "$ref": "#/$defs/aisp.bench.checkpoint.observation.types.ObservationLayer"
           }
         }
       },
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.observation.ObservationLayer": {
+    "aisp.bench.checkpoint.observation.types.ObservationLayer": {
       "oneOf": [
         {
           "const": "app"

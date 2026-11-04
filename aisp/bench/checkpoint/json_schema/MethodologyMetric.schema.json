@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyMetric.schema.json",
   "title": "MethodologyMetric",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyMetric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyMetric",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyMetric": {
+    "aisp.bench.checkpoint.measures.types.MethodologyMetric": {
       "oneOf": [
         {
           "const": "request_size_distribution"

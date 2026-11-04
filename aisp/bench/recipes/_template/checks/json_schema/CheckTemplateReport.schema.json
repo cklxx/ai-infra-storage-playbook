@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateReport.schema.json",
   "title": "CheckTemplateReport",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateReport",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateReport",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateReport": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateReport": {
       "type": "object",
       "properties": {
         "check": {
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateStatus"
+          "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateStatus"
         },
         "detail": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateStatus": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateStatus": {
       "oneOf": [
         {
           "const": "pass"

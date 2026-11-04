@@ -2,14 +2,14 @@
 
 一份 RunSpec 进，一条 RunRecord 出。一次运行 = 一条样本 × 一个存储版本。
 
-## public
+## public.viba
 
 只做转发：从 ckpt_sample 与 ckpt_sample_api 里 import，再把要发布的名字重新绑定一次。具体定义在下面两节里。
 
 ```bash public
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample_api as ckpt_sample_api
-import aisp.bench.checkpoint.performance.sli as sli
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.ckpt_sample_interface.apis as ckpt_sample_api
+import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 
 Start = ckpt_sample_api.Start
@@ -25,11 +25,11 @@ CkptSlo = slo.CkptSlo
 SampleConfigBase = ckpt_sample.SampleConfigBase
 ```
 
-## ckpt_sample_api
+## apis.viba
 
-```bash ckpt_sample_api
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
-import aisp.bench.checkpoint.scaling.levels as levels
+```bash apis
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
+import aisp.bench.checkpoint.scaling.types as levels
 
 Start =
      ckpt_sample.RunRecord
@@ -57,13 +57,13 @@ GetLevel =
   <- { 导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给 }
 ```
 
-## ckpt_sample
+## types.viba
 
-```bash ckpt_sample
-import aisp.bench.checkpoint.performance.sli as sli
+```bash types
+import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 
-import aisp.bench.checkpoint.methodology.observation as observation
+import aisp.bench.checkpoint.observation.types as observation
 
 RunRecord =
   Object

@@ -1,12 +1,12 @@
 # Checkpoint 存储评估
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `checkpoint` 模块与 `## 接口` 的 `checkpoint_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `CheckpointSpec`、`CheckpointFidelity` 与 `CheckpointConclusion`，操作 `PrepareBypass`、`RecordBoundary`、`Align`、`ScaleUp` 与 `Register`；先看 `CheckpointSpec` 与 `PrepareBypass`，再按 `RecordBoundary`、`Align`、`ScaleUp`、`Register` 的顺序读到 `CheckpointFidelity` 与 `CheckpointConclusion`。
 
-```bash checkpoint_public
-import aisp.bench.checkpoint.checkpoint.checkpoint as checkpoint
-import aisp.bench.checkpoint.checkpoint.checkpoint_api as checkpoint_api
+```bash public
+import aisp.bench.checkpoint.checkpoint.types as checkpoint
+import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
 
 CheckpointSpec = checkpoint.CheckpointSpec
 CheckpointFidelity = checkpoint.CheckpointFidelity
@@ -22,14 +22,14 @@ Register = checkpoint_api.Register
 
 训练侧的存储评估，评估对象是 checkpoint 的写入与读取。目标是在真实存储与传输路径上测出训练任务产生的 IO 行为，并把结论从单卡、小参数规模外推到十万卡。本篇只写这两条路径的特殊之处，旁路与保真的总则见 [`methodology.md`](methodology.md)。
 
-## checkpoint
+## types.viba
 
 checkpoint 存储评估的形式化分成类型与枚举两类。`CheckpointSpec` 是入口的 Object 类型，把评估对象 `CheckpointSubject`、旁路方案 `CheckpointBypassPlan` 与保真边界 `CheckpointFidelity` 分别收成 `$subject`、`$bypass` 与 `$fidelity` 三个字段，把阶段门、小规模对齐、放大维度、外推规则与验收项收成 `$gates`、`$alignment`、`$scaling`、`$extrapolation`、`$acceptance` 五个列表字段；`CheckpointFidelity` 的每一行是 `fidelity.FidelityBoundary`。可选项写成 Oneof 枚举：`CheckpointGate`、`CheckpointAlignmentStep`、`CheckpointScalingDimension`、`CheckpointExtrapolationRule` 与 `CheckpointAcceptanceItem` 依次是 `CheckpointSpec` 的 `$gates`、`$alignment`、`$scaling`、`$extrapolation` 与 `$acceptance` 的元素类型；`CheckpointWriteFeature` 与 `CheckpointReadFeature` 是写入侧与读取侧要记录的特征，`CheckpointBypassStep` 与 `CheckpointBypassConstraint` 是旁路的一个步骤与一条约束，分别构成 `CheckpointSubject` 的 `$write_features`、`$read_features` 与 `CheckpointBypassPlan` 的 `$steps`、`$constraints`。对齐、放大、结论、登记与并行配置各有自己的类型：`CheckpointAlignment` 记对齐步骤与容差判定，`CheckpointScalingRun` 记逐级放大的每一级，其中 `$dimension` 取 `CheckpointScalingDimension` 的一个取值，`CheckpointConclusion` 的 `$alignment` 取 `CheckpointAlignment`、`$scaling` 取 `CheckpointScalingRun` 的列表，另收验收项与回链，`CheckpointRegistration` 记结论与覆盖矩阵的更新状态，`CheckpointParallel` 记 DP/TP/PP/EP 四个度数。
 
-```bash checkpoint
-import aisp.bench.checkpoint.methodology.fidelity as fidelity
-import aisp.bench.checkpoint.scaling.levels as levels
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
+```bash types
+import aisp.bench.checkpoint.fidelity.types as fidelity
+import aisp.bench.checkpoint.scaling.types as levels
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
 
 CheckpointSpec =
   Object
@@ -167,13 +167,13 @@ CheckpointRegistration =
 
 先跑通一次不旁路的训练若干步，再准备旁路：用 meta device 构建模型，前向照常执行，反向与 optimizer 换成占位实现，checkpoint 写入完全不改。旁路跑通后记录保真边界表，五条必填行一条不能少，IO 路径的保真等级不得是 L0。再取最小可用配置做一次真实运行和一次旁路运行，两次都开观测，对比 `methodology.md` 列出的度量项，按配方 `metrics.yaml` 里标定的容差判定是否对齐。对齐通过后逐级放大：先固定并行策略放大参数量，再固定参数量放大集群规模，每一级都要验证不变量并给偏差归因。最后登记结论与回链，更新覆盖矩阵。
 
-## checkpoint_api
+## apis.viba
 
-```bash checkpoint_api
-import aisp.bench.checkpoint.checkpoint.checkpoint as checkpoint
-import aisp.bench.checkpoint.methodology.fidelity as fidelity
-import aisp.bench.checkpoint.scaling.levels as levels
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
+```bash apis
+import aisp.bench.checkpoint.checkpoint.types as checkpoint
+import aisp.bench.checkpoint.fidelity.types as fidelity
+import aisp.bench.checkpoint.scaling.types as levels
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
 
 PrepareBypass =
      checkpoint.CheckpointBypassPlan
@@ -210,11 +210,11 @@ Register =
   <- { 登记结论与回链，更新覆盖矩阵；返回登记后的结论与覆盖矩阵的更新状态 }
 ```
 
-## checkpoint_flow
+## flow.viba
 
-```bash checkpoint_flow
-import aisp.bench.checkpoint.checkpoint.checkpoint as checkpoint
-import aisp.bench.checkpoint.checkpoint.checkpoint_api as checkpoint_api
+```bash flow
+import aisp.bench.checkpoint.checkpoint.types as checkpoint
+import aisp.bench.checkpoint.checkpoint.apis as checkpoint_api
 
 CheckpointPrepareDuty =
   Object

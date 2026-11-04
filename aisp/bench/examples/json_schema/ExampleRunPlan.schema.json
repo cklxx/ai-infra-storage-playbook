@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleRunPlan.schema.json",
   "title": "ExampleRunPlan",
-  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleRunPlan",
+  "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleRunPlan",
   "$defs": {
-    "aisp.bench.examples.readme.examples.ExampleRunPlan": {
+    "aisp.bench.examples.readme.types.ExampleRunPlan": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "all": {
-              "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleAllRun"
+              "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleAllRun"
             }
           },
           "required": [
@@ -22,7 +22,7 @@
           "type": "object",
           "properties": {
             "single": {
-              "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleSingleRun"
+              "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleSingleRun"
             }
           },
           "required": [
@@ -32,7 +32,7 @@
         }
       ]
     },
-    "aisp.bench.examples.readme.examples.ExampleAllRun": {
+    "aisp.bench.examples.readme.types.ExampleAllRun": {
       "type": "object",
       "properties": {
         "command": {
@@ -44,7 +44,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.examples.readme.examples.ExampleSingleRun": {
+    "aisp.bench.examples.readme.types.ExampleSingleRun": {
       "type": "object",
       "properties": {
         "check": {

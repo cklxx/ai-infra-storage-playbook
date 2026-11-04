@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExampleSingleRun.schema.json",
   "title": "ExampleSingleRun",
-  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExampleSingleRun",
+  "$ref": "#/$defs/aisp.bench.examples.readme.types.ExampleSingleRun",
   "$defs": {
-    "aisp.bench.examples.readme.examples.ExampleSingleRun": {
+    "aisp.bench.examples.readme.types.ExampleSingleRun": {
       "type": "object",
       "properties": {
         "check": {

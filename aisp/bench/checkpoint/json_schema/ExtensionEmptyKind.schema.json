@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionEmptyKind.schema.json",
   "title": "ExtensionEmptyKind",
-  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionEmptyKind",
   "$defs": {
-    "aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind": {
+    "aisp.bench.checkpoint.extension.types.ExtensionEmptyKind": {
       "oneOf": [
         {
           "const": "should_exist"
@@ -13,7 +13,7 @@
           "type": "object",
           "properties": {
             "not_needed": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionExemption"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionExemption"
             }
           },
           "required": [
@@ -23,7 +23,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.extension.extension.ExtensionExemption": {
+    "aisp.bench.checkpoint.extension.types.ExtensionExemption": {
       "type": "object",
       "properties": {
         "reason": {

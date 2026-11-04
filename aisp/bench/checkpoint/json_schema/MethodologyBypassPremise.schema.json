@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyBypassPremise.schema.json",
   "title": "MethodologyBypassPremise",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyBypassPremise",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyBypassPremise",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyBypassPremise": {
+    "aisp.bench.checkpoint.measures.types.MethodologyBypassPremise": {
       "type": "object",
       "properties": {
         "io_path_unchanged": {

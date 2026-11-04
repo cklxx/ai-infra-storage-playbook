@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesAcceptance.schema.json",
   "title": "PrinciplesAcceptance",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAcceptance",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesAcceptance",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesAcceptance": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesAcceptance": {
       "type": "object",
       "properties": {
         "eval_set": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesEvalSet"
         },
         "verdict": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAcceptVerdict"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesAcceptVerdict"
         },
         "missing": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesSuccessCriterion"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesSuccessCriterion"
           }
         }
       },
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesEvalSet": {
       "oneOf": [
         {
           "const": "checkpoint"
@@ -40,7 +40,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesAcceptVerdict": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesAcceptVerdict": {
       "oneOf": [
         {
           "const": "built"
@@ -50,7 +50,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesSuccessCriterion": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesSuccessCriterion": {
       "oneOf": [
         {
           "const": "reproducible"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCandidateSet.schema.json",
   "title": "RecipeCollectionCandidateSet",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidateSet",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCandidateSet",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidateSet": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCandidateSet": {
       "type": "object",
       "properties": {
         "target": {
@@ -16,13 +16,13 @@
         "candidates": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidate"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCandidate"
           }
         },
         "workspaces": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionWorkspace"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionWorkspace"
           }
         }
       },
@@ -34,7 +34,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidate": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCandidate": {
       "type": "object",
       "properties": {
         "model_id": {
@@ -65,7 +65,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionWorkspace": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionWorkspace": {
       "type": "object",
       "properties": {
         "framework_major": {

@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/FidelityBoundary.schema.json",
   "title": "FidelityBoundary",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary",
+  "$ref": "#/$defs/aisp.bench.checkpoint.fidelity.types.FidelityBoundary",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.fidelity.FidelityBoundary": {
+    "aisp.bench.checkpoint.fidelity.types.FidelityBoundary": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "bypassed": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.fidelity.Bypassed"
+          "$ref": "#/$defs/aisp.bench.checkpoint.fidelity.types.Bypassed"
         },
         "method": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.BypassMethod"
+              "$ref": "#/$defs/aisp.bench.checkpoint.bypass.types.BypassMethod"
             },
             {
               "type": "null"
@@ -24,7 +24,7 @@
           ]
         },
         "fidelity": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.bypass.FidelityLevel"
+          "$ref": "#/$defs/aisp.bench.checkpoint.bypass.types.FidelityLevel"
         },
         "kept": {
           "type": "string"
@@ -43,7 +43,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.fidelity.Bypassed": {
+    "aisp.bench.checkpoint.fidelity.types.Bypassed": {
       "oneOf": [
         {
           "const": "yes"
@@ -56,7 +56,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.methodology.bypass.BypassMethod": {
+    "aisp.bench.checkpoint.bypass.types.BypassMethod": {
       "oneOf": [
         {
           "const": "meta_device"
@@ -72,7 +72,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.methodology.bypass.FidelityLevel": {
+    "aisp.bench.checkpoint.bypass.types.FidelityLevel": {
       "oneOf": [
         {
           "const": "L0"

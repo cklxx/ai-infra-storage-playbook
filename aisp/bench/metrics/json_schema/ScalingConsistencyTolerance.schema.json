@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyTolerance.schema.json",
   "title": "ScalingConsistencyTolerance",
-  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyTolerance",
+  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyTolerance",
   "$defs": {
-    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyTolerance": {
+    "aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyTolerance": {
       "type": "object",
       "properties": {
         "per_level": {

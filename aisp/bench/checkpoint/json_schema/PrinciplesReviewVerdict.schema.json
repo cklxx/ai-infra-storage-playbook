@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesReviewVerdict.schema.json",
   "title": "PrinciplesReviewVerdict",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewVerdict",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesReviewVerdict",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewVerdict": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesReviewVerdict": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesReviewSubject"
         },
         "role": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRole"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesRole"
         },
         "decision": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewDecision"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesReviewDecision"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesReviewSubject": {
       "oneOf": [
         {
           "const": "metric_change"
@@ -37,7 +37,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesRole": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesRole": {
       "oneOf": [
         {
           "const": "recipe_maintainer"
@@ -53,7 +53,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewDecision": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesReviewDecision": {
       "oneOf": [
         {
           "const": "allowed"

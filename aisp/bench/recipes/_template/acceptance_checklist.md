@@ -1,12 +1,12 @@
 # 验收清单模板
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `acceptance_template` 模块与 `## 接口` 的 `acceptance_template_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布八个名字：类型 `AcceptanceTemplate`、`AcceptanceTemplateItem`、`AcceptanceTemplateRecord`、`AcceptanceTemplateGateReview` 与 `AcceptanceTemplateAdmission`，操作 `CheckItem`、`ReviewGate` 与 `EnterGate`；先看 `AcceptanceTemplate` 与 `AcceptanceTemplateItem`，再看 `CheckItem` 与 `AcceptanceTemplateRecord`，最后看 `ReviewGate`、`AcceptanceTemplateGateReview`、`EnterGate` 与 `AcceptanceTemplateAdmission`。
 
-```bash acceptance_template_public
-import aisp.bench.recipes._template.acceptance_checklist.acceptance_template as acceptance_template
-import aisp.bench.recipes._template.acceptance_checklist.acceptance_template_api as acceptance_template_api
+```bash public
+import aisp.bench.recipes._template.acceptance_checklist.types as acceptance_template
+import aisp.bench.recipes._template.acceptance_checklist.apis as acceptance_template_api
 
 AcceptanceTemplate = acceptance_template.AcceptanceTemplate
 AcceptanceTemplateItem = acceptance_template.AcceptanceTemplateItem
@@ -22,12 +22,12 @@ EnterGate = acceptance_template_api.EnterGate
 
 这份文档是验收清单模板，按 G0 到 G4 五道门逐条列出要勾的验收项。每道门都要勾，未勾选的门不允许进入下一道门；勾选时附上回链或证据位置。
 
-## acceptance_template
+## types.viba
 
 问题形式化为 `acceptance_template` 模块，概念分成类型与枚举两类。清单结构写成 Object 类型：`AcceptanceTemplate` 是整份验收清单，`$gates` 收按 G0 到 G4 排列的 `AcceptanceTemplateGateChecklist`，每个 `AcceptanceTemplateGateChecklist` 把 `gates.Gate` 的一个取值与这道门的 `AcceptanceTemplateItem` 的列表配成一对；`AcceptanceTemplateRecord` 的 `$checks` 收已经勾过的 `AcceptanceTemplateCheck`，`AcceptanceTemplateGateReview` 汇总某道门里已勾选与未勾选的验收项，并给出这道门是否勾完的判定。取值只能落在有限集合里的概念写成 Oneof 枚举：`AcceptanceTemplateItem` 是可勾的验收项，`AcceptanceTemplateCheckState` 是未勾选与已勾选两种状态，`AcceptanceTemplateEvidence` 是回链或证据位置，`AcceptanceTemplateAdmission` 是进入某道门的结果。关联落在字段上：`AcceptanceTemplateCheck` 的 `$item` 取 `AcceptanceTemplateItem`、`$state` 取 `AcceptanceTemplateCheckState`，`AcceptanceTemplateCheckState` 的 `$checked` 分支携带一个 `AcceptanceTemplateEvidence`；`AcceptanceTemplateAdmission` 的 `$allowed` 分支携带允许进入的那道 `gates.Gate`，`$blocked` 分支携带造成拒绝的 `AcceptanceTemplateGateReview` 列表。
 
-```bash acceptance_template
-import aisp.bench.checkpoint.methodology.gates as gates
+```bash types
+import aisp.bench.checkpoint.gates.types as gates
 
 AcceptanceTemplateItem =
   Oneof
@@ -102,11 +102,11 @@ AcceptanceTemplateAdmission =
 2. 复核（ReviewGate）：对照某道门的验收项，列出已勾选与未勾选的项，并判定这道门是否全部勾选。
 3. 进入（EnterGate）：按 G0 到 G4 的顺序申请进入一道门，G0 直接允许，其余门要求前面的每一道门都已勾完，有未勾完的门就拒绝并交回这些门的复核结果。
 
-## acceptance_template_api
+## apis.viba
 
-```bash acceptance_template_api
-import aisp.bench.recipes._template.acceptance_checklist.acceptance_template as acceptance_template
-import aisp.bench.checkpoint.methodology.gates as gates
+```bash apis
+import aisp.bench.recipes._template.acceptance_checklist.types as acceptance_template
+import aisp.bench.checkpoint.gates.types as gates
 
 CheckItem =
      acceptance_template.AcceptanceTemplateRecord
@@ -129,11 +129,11 @@ EnterGate =
   <- { 进入一道门：G0 直接允许；其余门要求它前面的每一道门 complete，有未勾完的门就拒绝，并交回这些门的复核结果 }
 ```
 
-## acceptance_template_flow
+## flow.viba
 
-```bash acceptance_template_flow
-import aisp.bench.recipes._template.acceptance_checklist.acceptance_template as acceptance_template
-import aisp.bench.recipes._template.acceptance_checklist.acceptance_template_api as acceptance_template_api
+```bash flow
+import aisp.bench.recipes._template.acceptance_checklist.types as acceptance_template
+import aisp.bench.recipes._template.acceptance_checklist.apis as acceptance_template_api
 
 AcceptanceTemplateCheckStep =
   Object

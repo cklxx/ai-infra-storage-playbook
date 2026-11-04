@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/Model.schema.json",
   "title": "Model",
-  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model",
+  "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model",
   "$defs": {
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
       "type": "object",
       "properties": {
         "id": {

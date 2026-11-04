@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/ScalingConsistencyInvariant.schema.json",
   "title": "ScalingConsistencyInvariant",
-  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyInvariant",
+  "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyInvariant",
   "$defs": {
-    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyInvariant": {
+    "aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyInvariant": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
         },
         "mode": {
-          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyDeviationMode"
+          "$ref": "#/$defs/aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyDeviationMode"
         },
         "tolerance": {
           "oneOf": [
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.metrics.scaling_consistency.scaling_consistency.ScalingConsistencyDeviationMode": {
+    "aisp.bench.metrics.scaling_consistency.types.ScalingConsistencyDeviationMode": {
       "oneOf": [
         {
           "const": "relative"

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionFetchFailureKind.schema.json",
   "title": "RecipeCollectionFetchFailureKind",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailureKind",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailureKind": {
       "oneOf": [
         {
           "const": "network"

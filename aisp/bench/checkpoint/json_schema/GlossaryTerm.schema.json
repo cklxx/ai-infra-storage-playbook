@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/GlossaryTerm.schema.json",
   "title": "GlossaryTerm",
-  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryTerm",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.GlossaryTerm",
   "$defs": {
-    "aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.types.GlossaryTerm": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "parallel_strategy": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.ParallelStrategyTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.ParallelStrategyTerm"
             }
           },
           "required": [
@@ -22,7 +22,7 @@
           "type": "object",
           "properties": {
             "model_structure": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.ModelStructureTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.ModelStructureTerm"
             }
           },
           "required": [
@@ -34,7 +34,7 @@
           "type": "object",
           "properties": {
             "storage_io": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.StorageIoTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.StorageIoTerm"
             }
           },
           "required": [
@@ -46,7 +46,7 @@
           "type": "object",
           "properties": {
             "bypass": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.BypassTerm"
+              "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.BypassTerm"
             }
           },
           "required": [
@@ -56,7 +56,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.appendix_glossary.glossary.ParallelStrategyTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.types.ParallelStrategyTerm": {
       "oneOf": [
         {
           "const": "DP"
@@ -72,7 +72,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.appendix_glossary.glossary.ModelStructureTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.types.ModelStructureTerm": {
       "oneOf": [
         {
           "const": "MoE"
@@ -94,7 +94,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.appendix_glossary.glossary.StorageIoTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.types.StorageIoTerm": {
       "oneOf": [
         {
           "const": "shard"
@@ -119,7 +119,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.appendix_glossary.glossary.BypassTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.types.BypassTerm": {
       "oneOf": [
         {
           "const": "meta_device"

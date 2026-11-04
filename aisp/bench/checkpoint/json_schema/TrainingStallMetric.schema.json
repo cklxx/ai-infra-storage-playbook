@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/TrainingStallMetric.schema.json",
   "title": "TrainingStallMetric",
-  "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric",
+  "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.TrainingStallMetric",
   "$defs": {
-    "aisp.bench.checkpoint.performance.sli.TrainingStallMetric": {
+    "aisp.bench.checkpoint.performance.types.TrainingStallMetric": {
       "type": "number"
     }
   }

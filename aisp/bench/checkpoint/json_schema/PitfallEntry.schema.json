@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PitfallEntry.schema.json",
   "title": "PitfallEntry",
-  "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.PitfallEntry",
+  "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.types.PitfallEntry",
   "$defs": {
-    "aisp.bench.checkpoint.pitfalls.pitfalls.PitfallEntry": {
+    "aisp.bench.checkpoint.pitfalls.types.PitfallEntry": {
       "type": "object",
       "properties": {
         "category": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.PitfallCategory"
+          "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.types.PitfallCategory"
         },
         "pitfall": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.Pitfall"
+          "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.types.Pitfall"
         },
         "symptom": {
           "type": "string"
@@ -23,7 +23,7 @@
           "type": "string"
         },
         "status": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.pitfalls.PitfallStatus"
+          "$ref": "#/$defs/aisp.bench.checkpoint.pitfalls.types.PitfallStatus"
         }
       },
       "required": [
@@ -36,7 +36,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.pitfalls.pitfalls.PitfallCategory": {
+    "aisp.bench.checkpoint.pitfalls.types.PitfallCategory": {
       "oneOf": [
         {
           "const": "methodology"
@@ -55,7 +55,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.pitfalls.pitfalls.Pitfall": {
+    "aisp.bench.checkpoint.pitfalls.types.Pitfall": {
       "oneOf": [
         {
           "const": "observation_overhead"
@@ -119,7 +119,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.pitfalls.pitfalls.PitfallStatus": {
+    "aisp.bench.checkpoint.pitfalls.types.PitfallStatus": {
       "oneOf": [
         {
           "const": "resolved"

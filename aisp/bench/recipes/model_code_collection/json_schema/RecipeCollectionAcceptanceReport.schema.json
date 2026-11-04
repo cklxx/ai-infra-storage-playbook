@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionAcceptanceReport.schema.json",
   "title": "RecipeCollectionAcceptanceReport",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceReport",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceReport",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceReport": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceReport": {
       "type": "object",
       "properties": {
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceItem"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceItem"
           }
         },
         "coverage": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverage"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverage"
         },
         "passed": {
           "type": "boolean"
@@ -27,11 +27,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceItem": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceItem": {
       "type": "object",
       "properties": {
         "metric": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceMetric"
         },
         "actual": {
           "type": "string"
@@ -47,7 +47,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceMetric": {
       "oneOf": [
         {
           "const": "runnable_model_count"
@@ -72,19 +72,19 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverage": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverage": {
       "type": "object",
       "properties": {
         "cells": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageCell"
           }
         },
         "gaps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGap"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGap"
           }
         }
       },
@@ -94,11 +94,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageCell": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension"
         },
         "bucket": {
           "type": "string"
@@ -114,7 +114,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"
@@ -127,11 +127,11 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGap": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGap": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGapKind"
         },
         "detail": {
           "type": "string"
@@ -143,7 +143,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGapKind": {
       "oneOf": [
         {
           "const": "empty_cell"

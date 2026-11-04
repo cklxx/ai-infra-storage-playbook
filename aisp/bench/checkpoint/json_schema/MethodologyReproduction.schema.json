@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyReproduction.schema.json",
   "title": "MethodologyReproduction",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyReproduction",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyReproduction",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyReproduction": {
+    "aisp.bench.checkpoint.measures.types.MethodologyReproduction": {
       "type": "object",
       "properties": {
         "fixed": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyReproducibilityItem"
+            "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyReproducibilityItem"
           }
         },
         "missing": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyReproducibilityItem"
+            "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyReproducibilityItem"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyReproducibilityItem": {
+    "aisp.bench.checkpoint.measures.types.MethodologyReproducibilityItem": {
       "oneOf": [
         {
           "const": "model_code"

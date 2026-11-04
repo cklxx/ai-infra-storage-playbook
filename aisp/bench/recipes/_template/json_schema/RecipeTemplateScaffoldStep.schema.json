@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateScaffoldStep.schema.json",
   "title": "RecipeTemplateScaffoldStep",
-  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateScaffoldStep",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateScaffoldStep",
   "$defs": {
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateScaffoldStep": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateScaffoldStep": {
       "oneOf": [
         {
           "const": "copy_directory"

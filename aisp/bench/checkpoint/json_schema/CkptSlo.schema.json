@@ -84,10 +84,10 @@
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.CheckPointDurationMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.CheckPointDurationMetric"
         }
       },
       "required": [
@@ -96,17 +96,17 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.performance.sli.CheckPointDurationMetric": {
+    "aisp.bench.checkpoint.performance.types.CheckPointDurationMetric": {
       "type": "number"
     },
     "aisp.bench.checkpoint.performance.slo.MetricLE@c27f7a91": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.TrainingStallMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.TrainingStallMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.TrainingStallMetric"
         }
       },
       "required": [
@@ -115,17 +115,17 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.performance.sli.TrainingStallMetric": {
+    "aisp.bench.checkpoint.performance.types.TrainingStallMetric": {
       "type": "number"
     },
     "aisp.bench.checkpoint.performance.slo.MetricLE@4e8638b8": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.RestoreDurationMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.RestoreDurationMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.RestoreDurationMetric"
         }
       },
       "required": [
@@ -134,17 +134,17 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.performance.sli.RestoreDurationMetric": {
+    "aisp.bench.checkpoint.performance.types.RestoreDurationMetric": {
       "type": "number"
     },
     "aisp.bench.checkpoint.performance.slo.MetricGE@57c89cb9": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.WriteThroughputMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteThroughputMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.WriteThroughputMetric"
         }
       },
       "required": [
@@ -153,17 +153,17 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.performance.sli.WriteThroughputMetric": {
+    "aisp.bench.checkpoint.performance.types.WriteThroughputMetric": {
       "type": "number"
     },
     "aisp.bench.checkpoint.performance.slo.MetricLE@f1d06d27": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.MetadataCommitMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.MetadataCommitMetric"
         },
         "threshold": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.MetadataCommitMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.MetadataCommitMetric"
         }
       },
       "required": [
@@ -172,17 +172,17 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.performance.sli.MetadataCommitMetric": {
+    "aisp.bench.checkpoint.performance.types.MetadataCommitMetric": {
       "type": "number"
     },
     "aisp.bench.checkpoint.performance.slo.MetricLE@fdcaa9d0": {
       "type": "object",
       "properties": {
         "actual": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.WriteLatencyP99Metric"
         },
         "threshold": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.performance.types.WriteLatencyP99Metric"
         }
       },
       "required": [
@@ -191,7 +191,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.performance.sli.WriteLatencyP99Metric": {
+    "aisp.bench.checkpoint.performance.types.WriteLatencyP99Metric": {
       "type": "number"
     }
   }

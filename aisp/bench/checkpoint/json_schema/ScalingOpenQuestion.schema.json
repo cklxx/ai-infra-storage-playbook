@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ScalingOpenQuestion.schema.json",
   "title": "ScalingOpenQuestion",
-  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.scaling.ScalingOpenQuestion",
+  "$ref": "#/$defs/aisp.bench.checkpoint.scaling.types.ScalingOpenQuestion",
   "$defs": {
-    "aisp.bench.checkpoint.scaling.scaling.ScalingOpenQuestion": {
+    "aisp.bench.checkpoint.scaling.types.ScalingOpenQuestion": {
       "oneOf": [
         {
           "const": "sample_points"

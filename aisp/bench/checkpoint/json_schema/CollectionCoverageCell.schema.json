@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionCoverageCell.schema.json",
   "title": "CollectionCoverageCell",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageCell",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCoverageCell",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageCell": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCoverageCell": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageDimension"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCoverageDimension"
         },
         "bucket": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCoverageDimension": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"

@@ -2,28 +2,28 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointInput.schema.json",
   "title": "RecipeCheckpointInput",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointInput",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointInput",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointInput": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointInput": {
       "type": "object",
       "properties": {
         "model_code": {
           "type": "string"
         },
         "framework": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointVersionedName"
         },
         "parallel": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallel"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointParallel"
         },
         "dataset_layout": {
           "type": "string"
         },
         "storage_backend": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointVersionedName"
         },
         "storage_adapter": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointVersionedName"
         }
       },
       "required": [
@@ -36,7 +36,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointVersionedName": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointVersionedName": {
       "type": "object",
       "properties": {
         "name": {
@@ -52,7 +52,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointParallel": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointParallel": {
       "type": "object",
       "properties": {
         "dp": {

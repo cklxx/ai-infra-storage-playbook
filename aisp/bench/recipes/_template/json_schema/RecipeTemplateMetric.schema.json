@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateMetric.schema.json",
   "title": "RecipeTemplateMetric",
-  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetric",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateMetric",
   "$defs": {
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetric": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateMetric": {
       "type": "object",
       "properties": {
         "name": {

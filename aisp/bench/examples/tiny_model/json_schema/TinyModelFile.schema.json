@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/tiny_model/json_schema/TinyModelFile.schema.json",
   "title": "TinyModelFile",
-  "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelFile",
+  "$ref": "#/$defs/aisp.bench.examples.tiny_model.readme.types.TinyModelFile",
   "$defs": {
-    "aisp.bench.examples.tiny_model.readme.tiny_model.TinyModelFile": {
+    "aisp.bench.examples.tiny_model.readme.types.TinyModelFile": {
       "oneOf": [
         {
           "const": "config"

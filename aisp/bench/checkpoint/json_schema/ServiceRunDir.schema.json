@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceRunDir.schema.json",
   "title": "ServiceRunDir",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceRunDir",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceRunDir",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceRunDir": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceRunDir": {
       "type": "string"
     }
   }

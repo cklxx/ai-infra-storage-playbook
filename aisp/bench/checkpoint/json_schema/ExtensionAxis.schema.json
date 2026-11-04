@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionAxis.schema.json",
   "title": "ExtensionAxis",
-  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionAxis",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionAxis",
   "$defs": {
-    "aisp.bench.checkpoint.extension.extension.ExtensionAxis": {
+    "aisp.bench.checkpoint.extension.types.ExtensionAxis": {
       "oneOf": [
         {
           "const": "arch_family"

@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateMetricsYaml.schema.json",
   "title": "RecipeTemplateMetricsYaml",
-  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetricsYaml",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateMetricsYaml",
   "$defs": {
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetricsYaml": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateMetricsYaml": {
       "type": "object",
       "properties": {
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetric"
+            "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateMetric"
           }
         }
       },
@@ -19,7 +19,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateMetric": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateMetric": {
       "type": "object",
       "properties": {
         "name": {

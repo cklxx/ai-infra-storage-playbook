@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointExtrapolationRule.schema.json",
   "title": "CheckpointExtrapolationRule",
-  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointExtrapolationRule",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointExtrapolationRule",
   "$defs": {
-    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointExtrapolationRule": {
+    "aisp.bench.checkpoint.checkpoint.types.CheckpointExtrapolationRule": {
       "oneOf": [
         {
           "const": "aggregate_bandwidth"

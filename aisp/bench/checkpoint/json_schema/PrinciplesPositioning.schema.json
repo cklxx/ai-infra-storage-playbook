@@ -2,24 +2,24 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesPositioning.schema.json",
   "title": "PrinciplesPositioning",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesPositioning",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesPositioning",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesPositioning": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesPositioning": {
       "type": "object",
       "properties": {
         "parts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesPart"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesPart"
           }
         },
         "output": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesEvalSet"
         },
         "questions": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesQuestion"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesQuestion"
           }
         }
       },
@@ -30,7 +30,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesPart": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesPart": {
       "oneOf": [
         {
           "const": "recipes"
@@ -43,7 +43,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesEvalSet": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesEvalSet": {
       "oneOf": [
         {
           "const": "checkpoint"
@@ -56,7 +56,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesQuestion": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesQuestion": {
       "oneOf": [
         {
           "const": "what"

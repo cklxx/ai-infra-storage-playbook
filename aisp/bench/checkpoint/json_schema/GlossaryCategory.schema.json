@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/GlossaryCategory.schema.json",
   "title": "GlossaryCategory",
-  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryCategory",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.GlossaryCategory",
   "$defs": {
-    "aisp.bench.checkpoint.appendix_glossary.glossary.GlossaryCategory": {
+    "aisp.bench.checkpoint.appendix_glossary.types.GlossaryCategory": {
       "oneOf": [
         {
           "const": "parallel_strategy"

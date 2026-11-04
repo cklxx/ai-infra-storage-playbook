@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesSuccessCriterion.schema.json",
   "title": "PrinciplesSuccessCriterion",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesSuccessCriterion",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesSuccessCriterion",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesSuccessCriterion": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesSuccessCriterion": {
       "oneOf": [
         {
           "const": "reproducible"

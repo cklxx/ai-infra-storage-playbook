@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceBoundary.schema.json",
   "title": "ServiceBoundary",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceBoundary",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceBoundary",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceBoundary": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceBoundary": {
       "type": "object",
       "properties": {
         "does": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceResponsibility"
+            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceResponsibility"
           }
         },
         "does_not": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceOutOfScope"
+            "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceOutOfScope"
           }
         },
         "rule": {
@@ -30,7 +30,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceResponsibility": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceResponsibility": {
       "oneOf": [
         {
           "const": "accept_and_validate"
@@ -49,7 +49,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceOutOfScope": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceOutOfScope": {
       "oneOf": [
         {
           "const": "decide_coverage"

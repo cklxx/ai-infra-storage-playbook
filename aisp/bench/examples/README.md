@@ -1,12 +1,12 @@
 # 样例
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `examples` 模块与 `## 接口` 的 `examples_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `ExampleSampleSet`、`ExampleRunPlan` 与 `ExampleRunResult`，操作 `ListSamples`、`RunAll`、`RunOne` 与 `Verify`；先看 `ExampleSampleSet` 与 `ExampleRunPlan` 这两个输入类型，再按 `ListSamples`、`RunAll`、`RunOne`、`Verify` 的顺序读到 `ExampleRunResult`。
 
-```bash examples_public
-import aisp.bench.examples.readme.examples as examples
-import aisp.bench.examples.readme.examples_api as examples_api
+```bash public
+import aisp.bench.examples.readme.types as examples
+import aisp.bench.examples.readme.apis as examples_api
 
 ExampleSampleSet = examples.ExampleSampleSet
 ExampleRunPlan = examples.ExampleRunPlan
@@ -21,11 +21,11 @@ Verify = examples_api.Verify
 
 `examples/` 下的文件让校验脚本有可跑通的输入，也让新同学看到各类清单长什么样。所有内容都是样例，不代表任何真实运行。这份文档给出每个样例的用途、正向与负向样例的划分，以及整套和单项的跑法。
 
-## examples
+## types.viba
 
 问题形式化为 `examples` 模块，概念分成类型与枚举两类。样例路径与极性写成枚举：正向样例的每条路径是 `ExamplePositiveSample` 的一个取值，负向样例的每条路径是 `ExampleNegativeSample` 的一个取值，`ExamplePolarity` 只有 positive 与 negative 两个取值，三者都是 Oneof 枚举。承载字段的结构写成对象类型：`ExampleSampleSet` 的 `$positive` 与 `$negative` 分别是 `ExamplePositiveSample` 与 `ExampleNegativeSample` 的列表，`ExampleAllRun` 与 `ExampleSingleRun` 各收下一种跑法要用的取值，`ExampleRunPlan` 再用 `$all` 与 `$single` 两个分支把这两个对象类型合成一个 Oneof 枚举。判结果的部分同样有类型：`ExampleOutcome` 是只有 accepted 与 rejected 两个取值的 Oneof 枚举，`ExampleRunResult` 由样例路径列表、期望的 `ExamplePolarity` 与实际给出的 `ExampleOutcome` 组成，`ExampleRunReport` 再收下 `ExampleRunResult` 的列表与不一致的样例路径。
 
-```bash examples
+```bash types
 ExamplePolarity =
   Oneof
   | "positive" * { 正向样例：校验脚本应当接受，让检查有可跑通的输入 }
@@ -98,10 +98,10 @@ ExampleRunReport =
 3. 单项跑：执行 `python3 checks/check_io_pattern.py`，用 `--real`、`--bypassed` 与 `--metrics` 指定输入；单独跑一项时阈值从配方读取，示例里取 `recipes/checkpoint/metrics.yaml`。
 4. 判结果：正向样例应当被接受，负向样例应当被拒绝；负向样例由 `checks/selftest.py` 使用，证明检查不只会通过。
 
-## examples_api
+## apis.viba
 
-```bash examples_api
-import aisp.bench.examples.readme.examples as examples
+```bash apis
+import aisp.bench.examples.readme.types as examples
 
 ListSamples =
      examples.ExampleSampleSet
@@ -125,11 +125,11 @@ Verify =
   <- { 判结果：逐个样例比对 outcome 与 expected，并确认每个样例的 expected 与它在样例集里的正负一致、且都有结果；正向样例应当 accepted，负向样例应当 rejected。返回结果清单与不一致的样例路径 }
 ```
 
-## examples_flow
+## flow.viba
 
-```bash examples_flow
-import aisp.bench.examples.readme.examples as examples
-import aisp.bench.examples.readme.examples_api as examples_api
+```bash flow
+import aisp.bench.examples.readme.types as examples
+import aisp.bench.examples.readme.apis as examples_api
 
 ExampleStep =
   Oneof

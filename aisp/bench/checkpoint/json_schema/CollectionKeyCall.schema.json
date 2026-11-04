@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionKeyCall.schema.json",
   "title": "CollectionKeyCall",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionKeyCall",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionKeyCall",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionKeyCall": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionKeyCall": {
       "oneOf": [
         {
           "const": "attention"

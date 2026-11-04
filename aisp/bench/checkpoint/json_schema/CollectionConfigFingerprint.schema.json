@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionConfigFingerprint.schema.json",
   "title": "CollectionConfigFingerprint",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionConfigFingerprint",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionConfigFingerprint",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionConfigFingerprint": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionConfigFingerprint": {
       "type": "object",
       "properties": {
         "architectures": {
@@ -43,7 +43,7 @@
         "moe": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionMoeSpec"
             },
             {
               "type": "null"
@@ -51,10 +51,10 @@
           ]
         },
         "positional_encoding": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPositionalEncoding"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionPositionalEncoding"
         },
         "attention": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionAttentionVariant"
         }
       },
       "required": [
@@ -74,7 +74,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionMoeSpec": {
       "type": "object",
       "properties": {
         "num_experts": {
@@ -94,7 +94,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPositionalEncoding": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionPositionalEncoding": {
       "oneOf": [
         {
           "const": "rope"
@@ -107,7 +107,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionAttentionVariant": {
       "oneOf": [
         {
           "const": "mha"

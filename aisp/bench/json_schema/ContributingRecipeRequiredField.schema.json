@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingRecipeRequiredField.schema.json",
   "title": "ContributingRecipeRequiredField",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingRecipeRequiredField",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingRecipeRequiredField",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingRecipeRequiredField": {
+    "aisp.bench.contributing.types.ContributingRecipeRequiredField": {
       "oneOf": [
         {
           "const": "bypass"

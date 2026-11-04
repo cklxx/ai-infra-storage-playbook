@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckThreshold.schema.json",
   "title": "CheckThreshold",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckThreshold",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckThreshold",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckThreshold": {
+    "aisp.bench.checks.readme.types.CheckThreshold": {
       "type": "object",
       "properties": {
         "source": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckThresholdSource"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckThresholdSource"
         },
         "tolerance": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckToleranceValue"
+            "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckToleranceValue"
           }
         },
         "items": {
@@ -37,7 +37,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckThresholdSource": {
+    "aisp.bench.checks.readme.types.CheckThresholdSource": {
       "oneOf": [
         {
           "const": "metrics_yaml"
@@ -47,7 +47,7 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckToleranceValue": {
+    "aisp.bench.checks.readme.types.CheckToleranceValue": {
       "oneOf": [
         {
           "type": "object",

@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/RecipeTemplateChecklistItem.schema.json",
   "title": "RecipeTemplateChecklistItem",
-  "$ref": "#/$defs/aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateChecklistItem",
+  "$ref": "#/$defs/aisp.bench.recipes._template.readme.types.RecipeTemplateChecklistItem",
   "$defs": {
-    "aisp.bench.recipes._template.readme.recipe_template.RecipeTemplateChecklistItem": {
+    "aisp.bench.recipes._template.readme.types.RecipeTemplateChecklistItem": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
         },
         "checked": {
           "type": "boolean"
@@ -20,7 +20,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.gates.Gate": {
+    "aisp.bench.checkpoint.gates.types.Gate": {
       "oneOf": [
         {
           "const": "G0"

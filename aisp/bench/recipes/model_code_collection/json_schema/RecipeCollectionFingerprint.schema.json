@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionFingerprint.schema.json",
   "title": "RecipeCollectionFingerprint",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFingerprint",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFingerprint",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFingerprint": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFingerprint": {
       "type": "object",
       "properties": {
         "config": {

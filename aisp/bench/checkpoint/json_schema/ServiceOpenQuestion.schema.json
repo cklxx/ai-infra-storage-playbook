@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceOpenQuestion.schema.json",
   "title": "ServiceOpenQuestion",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceOpenQuestion",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceOpenQuestion",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceOpenQuestion": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceOpenQuestion": {
       "oneOf": [
         {
           "const": "gpu_memory_cleanup"

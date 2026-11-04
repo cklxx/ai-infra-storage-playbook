@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesLoopStage.schema.json",
   "title": "PrinciplesLoopStage",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesLoopStage",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesLoopStage",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesLoopStage": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesLoopStage": {
       "oneOf": [
         {
           "const": "current_set"

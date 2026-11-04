@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionDedupPolicy.schema.json",
   "title": "CollectionDedupPolicy",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupPolicy",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionDedupPolicy",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupPolicy": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionDedupPolicy": {
       "type": "object",
       "properties": {
         "threshold": {
@@ -19,7 +19,7 @@
         "variety": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionVarietyAxis"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionVarietyAxis"
           }
         }
       },
@@ -30,7 +30,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionVarietyAxis": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionVarietyAxis": {
       "oneOf": [
         {
           "const": "scale"

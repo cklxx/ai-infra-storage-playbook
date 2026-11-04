@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCoverageDimension.schema.json",
   "title": "RecipeCollectionCoverageDimension",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"

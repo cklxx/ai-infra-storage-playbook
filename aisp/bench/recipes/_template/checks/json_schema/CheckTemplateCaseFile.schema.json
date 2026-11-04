@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateCaseFile.schema.json",
   "title": "CheckTemplateCaseFile",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateCaseFile",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateCaseFile",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateCaseFile": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateCaseFile": {
       "oneOf": [
         {
           "const": "metrics.json"

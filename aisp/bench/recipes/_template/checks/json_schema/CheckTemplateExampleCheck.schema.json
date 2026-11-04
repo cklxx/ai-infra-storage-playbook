@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateExampleCheck.schema.json",
   "title": "CheckTemplateExampleCheck",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateExampleCheck",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateExampleCheck",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateExampleCheck": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateExampleCheck": {
       "oneOf": [
         {
           "const": "shard_key_structure"

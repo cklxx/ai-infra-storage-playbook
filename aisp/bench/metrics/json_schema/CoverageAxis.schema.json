@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/metrics/json_schema/CoverageAxis.schema.json",
   "title": "CoverageAxis",
-  "$ref": "#/$defs/aisp.bench.metrics.coverage.coverage.CoverageAxis",
+  "$ref": "#/$defs/aisp.bench.metrics.coverage.types.CoverageAxis",
   "$defs": {
-    "aisp.bench.metrics.coverage.coverage.CoverageAxis": {
+    "aisp.bench.metrics.coverage.types.CoverageAxis": {
       "oneOf": [
         {
           "const": "arch_family"

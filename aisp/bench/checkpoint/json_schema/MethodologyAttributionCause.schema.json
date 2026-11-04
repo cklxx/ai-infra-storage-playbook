@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyAttributionCause.schema.json",
   "title": "MethodologyAttributionCause",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyAttributionCause",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyAttributionCause",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyAttributionCause": {
+    "aisp.bench.checkpoint.measures.types.MethodologyAttributionCause": {
       "oneOf": [
         {
           "const": "observation_overhead"

@@ -1,12 +1,12 @@
 # 模型代码收集
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `collection` 模块与 `## 接口` 的 `collection_api` 模块 import，对外发布八个名字：类型 `CollectionManifest`、`CollectionManifestEntry`、`CollectionCoverage`，操作 `Fetch`、`Dedup`、`ProbeRunnable`、`PairTrainingCode`、`UpdateCoverage`。先看 `CollectionManifest` 与 `CollectionManifestEntry` 的字段，再按调用顺序看 `Fetch`、`Dedup`、`ProbeRunnable`、`PairTrainingCode`、`UpdateCoverage` 各做什么。
 
-```bash collection_public
-import aisp.bench.checkpoint.model_code_collection.collection as collection
-import aisp.bench.checkpoint.model_code_collection.collection_api as collection_api
+```bash public
+import aisp.bench.checkpoint.model_code_collection.types as collection
+import aisp.bench.checkpoint.model_code_collection.apis as collection_api
 
 CollectionManifest = collection.CollectionManifest
 CollectionManifestEntry = collection.CollectionManifestEntry
@@ -22,12 +22,12 @@ UpdateCoverage = collection_api.UpdateCoverage
 
 模型代码是另外两类评估集的原料：收集要足够多、足够多样，并且确认拿到的代码确实能跑。本篇定义怎么从 HuggingFace 等公开平台收集这些代码、怎么去重、怎么验证能跑、训练代码怎么配对，以及按什么口径验收；产出不是一份装满代码的目录，而是清单、可复现的下载与验证流程、覆盖度报告三样东西。代码本身与清单放在对象存储，本项目只放配方、schema 与一份最小样例 [`examples/tiny_model/`](../examples/tiny_model/)，清单字段见 [`recipes/model_code_collection/README.md`](../recipes/model_code_collection/README.md)，schema 见 [`schemas/model-manifest.schema.json`](../schemas/model-manifest.schema.json)。
 
-## collection
+## types.viba
 
 模型代码收集被形式化成一份清单：`CollectionManifest` 是清单本体，一个模型一条 `CollectionManifestEntry`。取值只能落在有限集合里的概念写成枚举：`CollectionSource` 是一个枚举，`hub_api` 与 `own_registry` 是它的取值，说明这个模型从哪类来源收进来；`CollectionFilter`、`CollectionLicenseState`、`CollectionCodeRole`、`CollectionDedupDecision`、`CollectionRunnableState`、`CollectionPairingKind` 同为枚举，分别表示筛选条件、许可证是否声明、代码角色、去重决定、可跑性结论与训练代码配对规则。抓取、去重、验证与配对各自的产出写成类型：`CollectionDownload` 由 `CollectionCodeFile` 组成，`CollectionFingerprint` 分成 `CollectionConfigFingerprint` 与 `CollectionCodeFingerprint` 两层，`CollectionDedupRecord`、`CollectionRunnableRecord`、`CollectionTrainingPairing` 依次承载去重、可跑性与训练代码配对的结论，并作为 `CollectionManifestEntry` 的字段。`CollectionCoverage` 用 `CollectionCoverageCell` 记覆盖矩阵的每个格子、用 `CollectionGap` 记缺口清单，`CollectionAcceptance` 汇总整批记录的验收指标。
 
-```bash collection
-import aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample as ckpt_sample
+```bash types
+import aisp.bench.checkpoint.ckpt_sample_interface.types as ckpt_sample
 
 CollectionSource =
   Oneof
@@ -314,10 +314,10 @@ CollectionAcceptanceMetric =
 3. 第四步判定：按同组织、同 architectures、外链三条规则配对训练代码，都找不到的记为 unpaired。
 4. 第五步登记覆盖：按架构族、规模、框架版本统计覆盖矩阵，空白格子、unknown 与 unpaired 一起写进缺口清单。
 
-## collection_api
+## apis.viba
 
-```bash collection_api
-import aisp.bench.checkpoint.model_code_collection.collection as collection
+```bash apis
+import aisp.bench.checkpoint.model_code_collection.types as collection
 
 Fetch =
      list[collection.CollectionManifestEntry]
@@ -347,11 +347,11 @@ UpdateCoverage =
   <- { 登记覆盖：按架构族、规模、框架版本统计覆盖矩阵，空白格子、code_role 为 unknown 的记录、没有配对训练代码的记录一起写进缺口清单。返回覆盖度报告 }
 ```
 
-## collection_flow
+## flow.viba
 
-```bash collection_flow
-import aisp.bench.checkpoint.model_code_collection.collection as collection
-import aisp.bench.checkpoint.model_code_collection.collection_api as collection_api
+```bash flow
+import aisp.bench.checkpoint.model_code_collection.types as collection
+import aisp.bench.checkpoint.model_code_collection.apis as collection_api
 
 CollectionFlow =
   Object

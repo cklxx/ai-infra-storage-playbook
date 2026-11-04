@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/AcceptanceCollectionGate.schema.json",
   "title": "AcceptanceCollectionGate",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionGate",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.types.AcceptanceCollectionGate",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionGate": {
+    "aisp.bench.recipes.model_code_collection.acceptance_checklist.types.AcceptanceCollectionGate": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
         },
         "items": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionItem"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.acceptance_checklist.types.AcceptanceCollectionItem"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.gates.Gate": {
+    "aisp.bench.checkpoint.gates.types.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -42,7 +42,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.acceptance_checklist.acceptance_collection.AcceptanceCollectionItem": {
+    "aisp.bench.recipes.model_code_collection.acceptance_checklist.types.AcceptanceCollectionItem": {
       "oneOf": [
         {
           "const": "g0_candidate_manifest_at_three_times_target"

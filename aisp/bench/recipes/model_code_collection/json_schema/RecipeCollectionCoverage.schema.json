@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCoverage.schema.json",
   "title": "RecipeCollectionCoverage",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverage",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverage",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverage": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverage": {
       "type": "object",
       "properties": {
         "cells": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageCell"
           }
         },
         "gaps": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGap"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGap"
           }
         }
       },
@@ -26,11 +26,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageCell": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension"
         },
         "bucket": {
           "type": "string"
@@ -46,7 +46,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"
@@ -59,11 +59,11 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGap": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGap": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGapKind"
         },
         "detail": {
           "type": "string"
@@ -75,7 +75,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionGapKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionGapKind": {
       "oneOf": [
         {
           "const": "empty_cell"

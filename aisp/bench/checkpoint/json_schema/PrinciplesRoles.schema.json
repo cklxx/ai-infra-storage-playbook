@@ -2,21 +2,21 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesRoles.schema.json",
   "title": "PrinciplesRoles",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRoles",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesRoles",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesRoles": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesRoles": {
       "type": "object",
       "properties": {
         "roles": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRole"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesRole"
           }
         },
         "rules": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesRoleRule"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesRoleRule"
           }
         }
       },
@@ -26,7 +26,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesRole": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesRole": {
       "oneOf": [
         {
           "const": "recipe_maintainer"
@@ -42,7 +42,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesRoleRule": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesRoleRule": {
       "oneOf": [
         {
           "const": "allow_concurrent"

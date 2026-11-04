@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplateAdmission.schema.json",
   "title": "AcceptanceTemplateAdmission",
-  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateAdmission",
+  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateAdmission",
   "$defs": {
-    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateAdmission": {
+    "aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateAdmission": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "allowed": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
+              "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
             }
           },
           "required": [
@@ -24,7 +24,7 @@
             "blocked": {
               "type": "array",
               "items": {
-                "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateGateReview"
+                "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateGateReview"
               }
             }
           },
@@ -35,7 +35,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.methodology.gates.Gate": {
+    "aisp.bench.checkpoint.gates.types.Gate": {
       "oneOf": [
         {
           "const": "G0"
@@ -54,22 +54,22 @@
         }
       ]
     },
-    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateGateReview": {
+    "aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateGateReview": {
       "type": "object",
       "properties": {
         "gate": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.gates.Gate"
+          "$ref": "#/$defs/aisp.bench.checkpoint.gates.types.Gate"
         },
         "checked": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateItem"
           }
         },
         "unchecked": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem"
+            "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateItem"
           }
         },
         "complete": {
@@ -84,7 +84,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem": {
+    "aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateItem": {
       "oneOf": [
         {
           "const": "g0_runs_without_bypass"

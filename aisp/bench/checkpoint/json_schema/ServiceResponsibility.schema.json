@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceResponsibility.schema.json",
   "title": "ServiceResponsibility",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceResponsibility",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceResponsibility",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceResponsibility": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceResponsibility": {
       "oneOf": [
         {
           "const": "accept_and_validate"

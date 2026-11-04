@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionTrainingPairing.schema.json",
   "title": "RecipeCollectionTrainingPairing",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingPairing",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingPairing",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingPairing": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingPairing": {
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingStatus"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingStatus"
         },
         "ref": {
           "oneOf": [
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingStatus": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingStatus": {
       "oneOf": [
         {
           "const": "paired"

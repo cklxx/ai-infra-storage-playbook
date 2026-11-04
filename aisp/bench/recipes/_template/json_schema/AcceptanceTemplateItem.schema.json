@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/json_schema/AcceptanceTemplateItem.schema.json",
   "title": "AcceptanceTemplateItem",
-  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem",
+  "$ref": "#/$defs/aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateItem",
   "$defs": {
-    "aisp.bench.recipes._template.acceptance_checklist.acceptance_template.AcceptanceTemplateItem": {
+    "aisp.bench.recipes._template.acceptance_checklist.types.AcceptanceTemplateItem": {
       "oneOf": [
         {
           "const": "g0_runs_without_bypass"

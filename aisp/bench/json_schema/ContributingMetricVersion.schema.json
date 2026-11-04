@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricVersion.schema.json",
   "title": "ContributingMetricVersion",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingMetricVersion": {
+    "aisp.bench.contributing.types.ContributingMetricVersion": {
       "type": "string"
     }
   }

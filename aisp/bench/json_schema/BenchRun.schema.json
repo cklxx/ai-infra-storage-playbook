@@ -2,22 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchRun.schema.json",
   "title": "BenchRun",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchRun",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchRun",
   "$defs": {
-    "aisp.bench.readme.bench.BenchRun": {
+    "aisp.bench.readme.types.BenchRun": {
       "type": "object",
       "properties": {
         "run_id": {
           "type": "string"
         },
         "state": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.State"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.State"
         },
         "artifacts": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchRunArtifacts"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchRunArtifacts"
         },
         "backlink": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchBacklink"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchBacklink"
         }
       },
       "required": [
@@ -28,13 +28,13 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.State": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.State": {
       "oneOf": [
         {
           "type": "object",
           "properties": {
             "queued": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.QueueProgress"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.QueueProgress"
             }
           },
           "required": [
@@ -70,7 +70,7 @@
           "type": "object",
           "properties": {
             "failed": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure"
             }
           },
           "required": [
@@ -82,7 +82,7 @@
           "type": "object",
           "properties": {
             "rejected": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Failure"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Failure"
             }
           },
           "required": [
@@ -104,7 +104,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.QueueProgress": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.QueueProgress": {
       "type": "object",
       "properties": {
         "pos": {
@@ -120,7 +120,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Failure": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.Failure": {
       "type": "object",
       "properties": {
         "kind": {
@@ -136,7 +136,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchRunArtifacts": {
+    "aisp.bench.readme.types.BenchRunArtifacts": {
       "type": "object",
       "properties": {
         "manifest": {
@@ -164,7 +164,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchBacklink": {
+    "aisp.bench.readme.types.BenchBacklink": {
       "type": "object",
       "properties": {
         "uri": {

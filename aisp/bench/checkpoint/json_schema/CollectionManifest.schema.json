@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionManifest.schema.json",
   "title": "CollectionManifest",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionManifest",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionManifest",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionManifest": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionManifest": {
       "type": "object",
       "properties": {
         "version": {
@@ -16,7 +16,7 @@
         "entries": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionManifestEntry"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionManifestEntry"
           }
         }
       },
@@ -27,46 +27,46 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionManifestEntry": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionManifestEntry": {
       "type": "object",
       "properties": {
         "model": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
         },
         "source": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionSource"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionSource"
         },
         "license": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionLicense"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionLicense"
         },
         "params_b": {
           "type": "number"
         },
         "code_role": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeRole"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCodeRole"
         },
         "code_role_evidence": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeRoleEvidence"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCodeRoleEvidence"
           }
         },
         "download": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDownload"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionDownload"
         },
         "fingerprint": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFingerprint"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionFingerprint"
         },
         "workspaces": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionWorkspace"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionWorkspace"
           }
         },
         "dedup": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupRecord"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionDedupRecord"
             },
             {
               "type": "null"
@@ -76,7 +76,7 @@
         "runnable": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableRecord"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableRecord"
             },
             {
               "type": "null"
@@ -86,7 +86,7 @@
         "training": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionTrainingPairing"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionTrainingPairing"
             },
             {
               "type": "null"
@@ -110,7 +110,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model": {
+    "aisp.bench.checkpoint.ckpt_sample_interface.types.Model": {
       "type": "object",
       "properties": {
         "id": {
@@ -126,7 +126,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionSource": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionSource": {
       "oneOf": [
         {
           "const": "hub_api"
@@ -142,7 +142,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionLicense": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionLicense": {
       "type": "object",
       "properties": {
         "id": {
@@ -156,7 +156,7 @@
           ]
         },
         "state": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionLicenseState"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionLicenseState"
         }
       },
       "required": [
@@ -165,7 +165,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionLicenseState": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionLicenseState": {
       "oneOf": [
         {
           "const": "declared"
@@ -175,7 +175,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeRole": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCodeRole": {
       "oneOf": [
         {
           "const": "inference"
@@ -191,7 +191,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeRoleEvidence": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCodeRoleEvidence": {
       "oneOf": [
         {
           "const": "repo_structure"
@@ -210,13 +210,13 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDownload": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionDownload": {
       "type": "object",
       "properties": {
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFile"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFile"
           }
         },
         "oversized": {
@@ -228,7 +228,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFetchFailure"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionFetchFailure"
           }
         },
         "resumed": {
@@ -243,14 +243,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFile": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFile": {
       "type": "object",
       "properties": {
         "path": {
           "type": "string"
         },
         "kind": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionFileKind"
         },
         "sha256": {
           "type": "string"
@@ -263,7 +263,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFileKind": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionFileKind": {
       "oneOf": [
         {
           "const": "config"
@@ -285,7 +285,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFetchFailure": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionFetchFailure": {
       "oneOf": [
         {
           "const": "network"
@@ -301,14 +301,14 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFingerprint": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionFingerprint": {
       "type": "object",
       "properties": {
         "config": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionConfigFingerprint"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionConfigFingerprint"
         },
         "code": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFingerprint"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFingerprint"
         }
       },
       "required": [
@@ -317,7 +317,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionConfigFingerprint": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionConfigFingerprint": {
       "type": "object",
       "properties": {
         "architectures": {
@@ -356,7 +356,7 @@
         "moe": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionMoeSpec"
             },
             {
               "type": "null"
@@ -364,10 +364,10 @@
           ]
         },
         "positional_encoding": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPositionalEncoding"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionPositionalEncoding"
         },
         "attention": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionAttentionVariant"
         }
       },
       "required": [
@@ -387,7 +387,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionMoeSpec": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionMoeSpec": {
       "type": "object",
       "properties": {
         "num_experts": {
@@ -407,7 +407,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPositionalEncoding": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionPositionalEncoding": {
       "oneOf": [
         {
           "const": "rope"
@@ -420,7 +420,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionAttentionVariant": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionAttentionVariant": {
       "oneOf": [
         {
           "const": "mha"
@@ -442,7 +442,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFingerprint": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFingerprint": {
       "type": "object",
       "properties": {
         "module_classes": {
@@ -454,13 +454,13 @@
         "calls": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionKeyCall"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionKeyCall"
           }
         },
         "special": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionSpecialOp"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionSpecialOp"
           }
         }
       },
@@ -471,7 +471,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionKeyCall": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionKeyCall": {
       "oneOf": [
         {
           "const": "attention"
@@ -490,7 +490,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionSpecialOp": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionSpecialOp": {
       "oneOf": [
         {
           "const": "custom_kernel"
@@ -503,7 +503,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionWorkspace": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionWorkspace": {
       "type": "object",
       "properties": {
         "id": {
@@ -527,19 +527,19 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupRecord": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionDedupRecord": {
       "type": "object",
       "properties": {
         "group": {
           "type": "string"
         },
         "decision": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupDecision"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionDedupDecision"
         },
         "dropped_by": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.ckpt_sample.Model"
+              "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample_interface.types.Model"
             },
             {
               "type": "null"
@@ -554,7 +554,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionDedupDecision": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionDedupDecision": {
       "oneOf": [
         {
           "const": "kept"
@@ -564,14 +564,14 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableRecord": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableRecord": {
       "type": "object",
       "properties": {
         "state": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableState"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableState"
         },
         "workload": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRankWorkload"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRankWorkload"
         },
         "ranks": {
           "type": "integer"
@@ -585,7 +585,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailure"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailure"
           }
         }
       },
@@ -599,7 +599,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableState": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableState": {
       "oneOf": [
         {
           "const": "yes"
@@ -612,7 +612,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRankWorkload": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRankWorkload": {
       "oneOf": [
         {
           "const": "forward"
@@ -622,11 +622,11 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailure": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailure": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailureKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailureKind"
         },
         "step": {
           "type": "string"
@@ -642,7 +642,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionRunnableFailureKind": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionRunnableFailureKind": {
       "oneOf": [
         {
           "const": "timeout"
@@ -658,16 +658,16 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionTrainingPairing": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionTrainingPairing": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingKind"
+          "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionPairingKind"
         },
         "target": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingTarget"
+              "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionPairingTarget"
             },
             {
               "type": "null"
@@ -681,7 +681,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingKind": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionPairingKind": {
       "oneOf": [
         {
           "const": "same_org"
@@ -697,7 +697,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionPairingTarget": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionPairingTarget": {
       "type": "object",
       "properties": {
         "repo": {

@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyAlignment.schema.json",
   "title": "MethodologyAlignment",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyAlignment",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyAlignment",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyAlignment": {
+    "aisp.bench.checkpoint.measures.types.MethodologyAlignment": {
       "type": "object",
       "properties": {
         "within_tolerance": {
@@ -13,7 +13,7 @@
         "attribution": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyAttributionCause"
+            "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyAttributionCause"
           }
         }
       },
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyAttributionCause": {
+    "aisp.bench.checkpoint.measures.types.MethodologyAttributionCause": {
       "oneOf": [
         {
           "const": "observation_overhead"

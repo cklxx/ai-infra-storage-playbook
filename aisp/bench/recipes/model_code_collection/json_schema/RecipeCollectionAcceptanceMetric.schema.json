@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionAcceptanceMetric.schema.json",
   "title": "RecipeCollectionAcceptanceMetric",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceMetric",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceMetric": {
       "oneOf": [
         {
           "const": "runnable_model_count"

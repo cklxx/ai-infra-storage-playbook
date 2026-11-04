@@ -2,15 +2,15 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionAcceptance.schema.json",
   "title": "RecipeCollectionAcceptance",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptance",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptance",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptance": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptance": {
       "type": "object",
       "properties": {
         "metrics": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceMetric"
           }
         },
         "checker": {
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionAcceptanceMetric": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionAcceptanceMetric": {
       "oneOf": [
         {
           "const": "runnable_model_count"

@@ -1,12 +1,12 @@
 # 指标定义
 
-## public
+## public.viba
 
 只做转发：从 `## 问题` 的 `metrics_registry` 模块与 `## 接口` 的 `metrics_registry_api` 模块 import，再把要发布的名字重新绑定一次。本文对外发布七个名字：类型 `MetricsRegistryEntry`、`MetricsRegistryRef`、`MetricsRegistryVersionInfo` 与 `MetricsRegistryProblem`，操作 `RegisterMetric`、`LookupMetric` 与 `ValidateRefs`；先看 `MetricsRegistryEntry` 与 `MetricsRegistryRef` 的字段，再看 `ValidateRefs` 怎么用登记表把引用逐项比对，`MetricsRegistryProblem` 是比对没有通过时的返回项，`LookupMetric` 按指标名给出 `MetricsRegistryVersionInfo`。
 
-```bash metrics_registry_public
-import aisp.bench.metrics.readme.metrics_registry as metrics_registry
-import aisp.bench.metrics.readme.metrics_registry_api as metrics_registry_api
+```bash public
+import aisp.bench.metrics.readme.types as metrics_registry
+import aisp.bench.metrics.readme.apis as metrics_registry_api
 
 MetricsRegistryEntry = metrics_registry.MetricsRegistryEntry
 MetricsRegistryRef = metrics_registry.MetricsRegistryRef
@@ -21,12 +21,12 @@ ValidateRefs = metrics_registry_api.ValidateRefs
 
 指标登记表是校验脚本的输入。任何进入 `recipes/*/metrics.yaml` 的指标，必须先在 `metrics/` 有口径定义，并在 `metrics/registry.yaml` 登记；同一个指标名口径不同，算出来的数就不同，历史结果就不可比，回归全部失效。本目录剩下的两个指标衡量评估集自身是否可信：[覆盖度](coverage.md) 判断评估集是否覆盖目标维度，[scaling 一致性](scaling_consistency.md) 判断外推依据是否成立；被测对象在一个样本上的 SLI 与 SLO 不在本目录，见 [`checkpoint/performance.md`](../checkpoint/performance.md)。
 
-## metrics_registry
+## types.viba
 
 指标登记表的形式化分成类型与枚举两类。登记记录、配方引用、查询结果与校验未通过项写成了类型：`MetricsRegistryEntry` 是一条登记记录，七个字段收下指标名、文档位置、当前版本、支持的版本、可服务的阶段门、单位与方向；`MetricsRegistryRef` 是配方对指标的一次引用，`$gate` 取 `gates.Gate` 的一个取值，`$acceptance_gates` 与 `$compatible_versions` 收下配方在 `acceptance.gates` 与 `compatible_metrics` 里为该指标列出的门与版本；`MetricsRegistryVersionInfo` 是查询结果，收下当前版本与支持的版本；`MetricsRegistryProblem` 是校验未通过的一项，收下出问题的指标名、未通过的那条检查与具体说明。指标名、版本、单位与方向各自写成 `str` 上的类型别名 `MetricsRegistryName`、`MetricsRegistryVersion`、`MetricsRegistryUnit` 与 `MetricsRegistryDirection`，`MetricsRegistryEntry` 与 `MetricsRegistryRef` 的对应字段都取这些别名；校验一个 `MetricsRegistryRef` 就是把它与登记表中的 `MetricsRegistryEntry` 逐项比对。未通过的检查种类写成了枚举：`MetricsRegistryProblemKind` 是 Oneof 枚举，六个取值各对应一条检查，`MetricsRegistryProblem` 的 `$kind` 字段取其中一个取值。
 
-```bash metrics_registry
-import aisp.bench.checkpoint.methodology.gates as gates
+```bash types
+import aisp.bench.checkpoint.gates.types as gates
 
 MetricsRegistryName = str * { 指标名；配方的 compatible_metrics 与 metrics.yaml 按这个名字引用指标 }
 
@@ -83,10 +83,10 @@ MetricsRegistryVersionInfo =
 1. 把指标登记进 `metrics/registry.yaml`：写当前版本、支持的版本、可服务的阶段门与文档位置，单位与方向随口径一起核对。
 2. 配方写好后用登记表校验引用：指标要已登记，版本要受支持，配方声明的 gate 要是登记表为该指标列出的 gate，该 gate 还要出现在配方的 `acceptance.gates` 里，指标与版本必须出现在 `compatible_metrics` 里。
 
-## metrics_registry_api
+## apis.viba
 
-```bash metrics_registry_api
-import aisp.bench.metrics.readme.metrics_registry as metrics_registry
+```bash apis
+import aisp.bench.metrics.readme.types as metrics_registry
 
 RegisterMetric =
      metrics_registry.MetricsRegistryEntry
@@ -105,11 +105,11 @@ ValidateRefs =
   <- { 校验引用：逐条检查指标是否已登记、版本是否受支持、gate 是否在登记表为该指标列出的 gate 里、该 gate 是否在配方的 acceptance.gates 里、该指标与版本是否在 compatible_metrics 里、compatible_metrics 里的版本是否都已发布；返回没有通过的项，空列表表示通过 }
 ```
 
-## metrics_registry_flow
+## flow.viba
 
-```bash metrics_registry_flow
-import aisp.bench.metrics.readme.metrics_registry as metrics_registry
-import aisp.bench.metrics.readme.metrics_registry_api as metrics_registry_api
+```bash flow
+import aisp.bench.metrics.readme.types as metrics_registry
+import aisp.bench.metrics.readme.apis as metrics_registry_api
 
 MetricsRegistryFlow =
   Object

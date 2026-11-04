@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/examples/json_schema/ExamplePolarity.schema.json",
   "title": "ExamplePolarity",
-  "$ref": "#/$defs/aisp.bench.examples.readme.examples.ExamplePolarity",
+  "$ref": "#/$defs/aisp.bench.examples.readme.types.ExamplePolarity",
   "$defs": {
-    "aisp.bench.examples.readme.examples.ExamplePolarity": {
+    "aisp.bench.examples.readme.types.ExamplePolarity": {
       "oneOf": [
         {
           "const": "positive"

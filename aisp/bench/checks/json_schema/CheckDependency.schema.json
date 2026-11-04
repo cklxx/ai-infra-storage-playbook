@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckDependency.schema.json",
   "title": "CheckDependency",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckDependency",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckDependency",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckDependency": {
+    "aisp.bench.checks.readme.types.CheckDependency": {
       "type": "object",
       "properties": {
         "install": {
           "type": "string"
         },
         "missing_status": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckStatus"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckStatus"
         },
         "missing_exit_code": {
-          "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckExitCode"
+          "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckExitCode"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checks.readme.checks.CheckStatus": {
+    "aisp.bench.checks.readme.types.CheckStatus": {
       "oneOf": [
         {
           "const": "pass"
@@ -37,7 +37,7 @@
         }
       ]
     },
-    "aisp.bench.checks.readme.checks.CheckExitCode": {
+    "aisp.bench.checks.readme.types.CheckExitCode": {
       "oneOf": [
         {
           "const": 0

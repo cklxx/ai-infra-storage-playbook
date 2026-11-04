@@ -1,0 +1,21 @@
+# 采集层
+
+## public.viba
+
+```bash public
+import aisp.bench.checkpoint.observation.types as observation
+
+ObservationLayer = observation.ObservationLayer
+```
+
+## types.viba
+
+```bash types
+ObservationLayer =
+  Oneof
+  | "app" * { 在数据加载器、写入器、block manager 外面包一层。拿得到请求的逻辑含义、偏移、大小、调用栈；看不到合并后的真实请求 }
+  | "sys" * { 块设备 trace、文件系统客户端统计、网络计数器。拿得到真实下发的请求、排队、重传；丢失逻辑归属，难以按 rank 拆分 }
+  | "storage" * { 存储服务端的请求日志与指标。拿得到服务端视角的吞吐、尾延迟、元数据操作；采样率与聚合粒度受限 }
+```
+
+## apis.viba

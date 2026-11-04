@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CheckpointAcceptanceItem.schema.json",
   "title": "CheckpointAcceptanceItem",
-  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAcceptanceItem",
+  "$ref": "#/$defs/aisp.bench.checkpoint.checkpoint.types.CheckpointAcceptanceItem",
   "$defs": {
-    "aisp.bench.checkpoint.checkpoint.checkpoint.CheckpointAcceptanceItem": {
+    "aisp.bench.checkpoint.checkpoint.types.CheckpointAcceptanceItem": {
       "oneOf": [
         {
           "const": "io_pattern_alignment"

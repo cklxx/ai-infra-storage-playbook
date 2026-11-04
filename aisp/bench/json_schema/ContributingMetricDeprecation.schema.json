@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/ContributingMetricDeprecation.schema.json",
   "title": "ContributingMetricDeprecation",
-  "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricDeprecation",
+  "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricDeprecation",
   "$defs": {
-    "aisp.bench.contributing.contributing.ContributingMetricDeprecation": {
+    "aisp.bench.contributing.types.ContributingMetricDeprecation": {
       "type": "object",
       "properties": {
         "deprecated_version": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion"
         },
         "reason": {
           "type": "string"
         },
         "replacement_version": {
-          "$ref": "#/$defs/aisp.bench.contributing.contributing.ContributingMetricVersion"
+          "$ref": "#/$defs/aisp.bench.contributing.types.ContributingMetricVersion"
         }
       },
       "required": [
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.contributing.contributing.ContributingMetricVersion": {
+    "aisp.bench.contributing.types.ContributingMetricVersion": {
       "type": "string"
     }
   }

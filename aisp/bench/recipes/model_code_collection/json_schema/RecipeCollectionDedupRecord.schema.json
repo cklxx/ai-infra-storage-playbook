@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionDedupRecord.schema.json",
   "title": "RecipeCollectionDedupRecord",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupRecord",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupRecord",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupRecord": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupRecord": {
       "type": "object",
       "properties": {
         "group": {
           "type": "string"
         },
         "decision": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupDecision"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupDecision"
         },
         "dropped_by": {
           "oneOf": [
@@ -31,7 +31,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupDecision": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupDecision": {
       "oneOf": [
         {
           "const": "kept"

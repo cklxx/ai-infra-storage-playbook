@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointBypassStep.schema.json",
   "title": "RecipeCheckpointBypassStep",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointBypassStep",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointBypassStep",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointBypassStep": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointBypassStep": {
       "oneOf": [
         {
           "const": "meta_model"

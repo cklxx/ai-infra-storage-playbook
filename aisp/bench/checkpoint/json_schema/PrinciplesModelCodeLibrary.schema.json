@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesModelCodeLibrary.schema.json",
   "title": "PrinciplesModelCodeLibrary",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesModelCodeLibrary",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesModelCodeLibrary",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesModelCodeLibrary": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesModelCodeLibrary": {
       "type": "object",
       "properties": {
         "inference_models": {

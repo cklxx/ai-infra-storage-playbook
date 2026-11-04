@@ -2,22 +2,22 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/checkpoint/json_schema/RecipeCheckpointClusterScaling.schema.json",
   "title": "RecipeCheckpointClusterScaling",
-  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointClusterScaling",
+  "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointClusterScaling",
   "$defs": {
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointClusterScaling": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointClusterScaling": {
       "type": "object",
       "properties": {
         "checks": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointClusterScalingCheck"
+            "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointClusterScalingCheck"
           }
         },
         "attribution": {
           "type": "string"
         },
         "gate": {
-          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointGate"
+          "$ref": "#/$defs/aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointGate"
         }
       },
       "required": [
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointClusterScalingCheck": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointClusterScalingCheck": {
       "oneOf": [
         {
           "const": "single_rank_request_size_and_concurrency"
@@ -43,7 +43,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.checkpoint.readme.recipe_checkpoint.RecipeCheckpointGate": {
+    "aisp.bench.recipes.checkpoint.readme.types.RecipeCheckpointGate": {
       "oneOf": [
         {
           "const": "G0"

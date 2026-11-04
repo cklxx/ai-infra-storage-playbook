@@ -2,16 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyTolerance.schema.json",
   "title": "MethodologyTolerance",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyTolerance",
+  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.public.MethodologyTolerance",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyTolerance": {
+    "aisp.bench.checkpoint.methodology.public.MethodologyTolerance": {
+      "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyTolerance"
+    },
+    "aisp.bench.checkpoint.measures.types.MethodologyTolerance": {
       "type": "object",
       "properties": {
         "metric": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyMetric"
+          "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyMetric"
         },
         "statistic": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceStatistic"
+          "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyToleranceStatistic"
         },
         "initial": {
           "type": "number"
@@ -19,7 +22,7 @@
         "calibration": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceCalibration"
+              "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyToleranceCalibration"
             },
             {
               "type": "null"
@@ -35,7 +38,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyMetric": {
+    "aisp.bench.checkpoint.measures.types.MethodologyMetric": {
       "oneOf": [
         {
           "const": "request_size_distribution"
@@ -66,7 +69,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceStatistic": {
+    "aisp.bench.checkpoint.measures.types.MethodologyToleranceStatistic": {
       "oneOf": [
         {
           "const": "bucket_frequency_l1"
@@ -91,7 +94,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.methodology.methodology.MethodologyToleranceCalibration": {
+    "aisp.bench.checkpoint.measures.types.MethodologyToleranceCalibration": {
       "type": "object",
       "properties": {
         "recipe": {

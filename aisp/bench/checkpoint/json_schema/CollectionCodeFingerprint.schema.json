@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionCodeFingerprint.schema.json",
   "title": "CollectionCodeFingerprint",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFingerprint",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFingerprint",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionCodeFingerprint": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionCodeFingerprint": {
       "type": "object",
       "properties": {
         "module_classes": {
@@ -16,13 +16,13 @@
         "calls": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionKeyCall"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionKeyCall"
           }
         },
         "special": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionSpecialOp"
+            "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionSpecialOp"
           }
         }
       },
@@ -33,7 +33,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionKeyCall": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionKeyCall": {
       "oneOf": [
         {
           "const": "attention"
@@ -52,7 +52,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionSpecialOp": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionSpecialOp": {
       "oneOf": [
         {
           "const": "custom_kernel"

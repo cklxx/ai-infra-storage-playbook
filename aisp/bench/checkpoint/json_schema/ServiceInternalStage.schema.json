@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ServiceInternalStage.schema.json",
   "title": "ServiceInternalStage",
-  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.service.ServiceInternalStage",
+  "$ref": "#/$defs/aisp.bench.checkpoint.evaluation_service.types.ServiceInternalStage",
   "$defs": {
-    "aisp.bench.checkpoint.evaluation_service.service.ServiceInternalStage": {
+    "aisp.bench.checkpoint.evaluation_service.types.ServiceInternalStage": {
       "oneOf": [
         {
           "const": "validate"

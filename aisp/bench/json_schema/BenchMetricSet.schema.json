@@ -2,16 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchMetricSet.schema.json",
   "title": "BenchMetricSet",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricSet",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchMetricSet",
   "$defs": {
-    "aisp.bench.readme.bench.BenchMetricSet": {
+    "aisp.bench.readme.types.BenchMetricSet": {
       "type": "object",
       "properties": {
         "subject": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchSubject"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchSubject"
         },
         "tier": {
-          "$ref": "#/$defs/aisp.bench.readme.bench.BenchMetricTier"
+          "$ref": "#/$defs/aisp.bench.readme.types.BenchMetricTier"
         },
         "metrics": {
           "type": "array",
@@ -27,7 +27,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.readme.bench.BenchSubject": {
+    "aisp.bench.readme.types.BenchSubject": {
       "oneOf": [
         {
           "const": "model_code_collection"
@@ -43,7 +43,7 @@
         }
       ]
     },
-    "aisp.bench.readme.bench.BenchMetricTier": {
+    "aisp.bench.readme.types.BenchMetricTier": {
       "oneOf": [
         {
           "const": "sli"

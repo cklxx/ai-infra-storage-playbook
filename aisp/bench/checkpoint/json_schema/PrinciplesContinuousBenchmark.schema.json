@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesContinuousBenchmark.schema.json",
   "title": "PrinciplesContinuousBenchmark",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesContinuousBenchmark",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesContinuousBenchmark",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesContinuousBenchmark": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesContinuousBenchmark": {
       "type": "object",
       "properties": {
         "reasons": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesBenchmarkReason"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesBenchmarkReason"
           }
         },
         "loop": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesClosedLoop"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesClosedLoop"
         }
       },
       "required": [
@@ -23,7 +23,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesBenchmarkReason": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesBenchmarkReason": {
       "oneOf": [
         {
           "const": "coverage"
@@ -36,23 +36,23 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesClosedLoop": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesClosedLoop": {
       "type": "object",
       "properties": {
         "parts": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesLoopPart"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesLoopPart"
           }
         },
         "stages": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesLoopStage"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesLoopStage"
           }
         },
         "human": {
-          "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesHumanInLoop"
+          "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesHumanInLoop"
         }
       },
       "required": [
@@ -62,7 +62,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesLoopPart": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesLoopPart": {
       "oneOf": [
         {
           "const": "eval_set"
@@ -75,7 +75,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesLoopStage": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesLoopStage": {
       "oneOf": [
         {
           "const": "current_set"
@@ -94,19 +94,19 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesHumanInLoop": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesHumanInLoop": {
       "type": "object",
       "properties": {
         "automatic": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesAutomatedStep"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesAutomatedStep"
           }
         },
         "reviewed": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject"
+            "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesReviewSubject"
           }
         }
       },
@@ -116,7 +116,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesAutomatedStep": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesAutomatedStep": {
       "oneOf": [
         {
           "const": "find_gaps"
@@ -129,7 +129,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewSubject": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesReviewSubject": {
       "oneOf": [
         {
           "const": "metric_change"

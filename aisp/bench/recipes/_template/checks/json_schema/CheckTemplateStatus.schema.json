@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/_template/checks/json_schema/CheckTemplateStatus.schema.json",
   "title": "CheckTemplateStatus",
-  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateStatus",
+  "$ref": "#/$defs/aisp.bench.recipes._template.checks.readme.types.CheckTemplateStatus",
   "$defs": {
-    "aisp.bench.recipes._template.checks.readme.check_template.CheckTemplateStatus": {
+    "aisp.bench.recipes._template.checks.readme.types.CheckTemplateStatus": {
       "oneOf": [
         {
           "const": "pass"

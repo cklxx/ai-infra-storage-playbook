@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checks/json_schema/CheckToleranceValue.schema.json",
   "title": "CheckToleranceValue",
-  "$ref": "#/$defs/aisp.bench.checks.readme.checks.CheckToleranceValue",
+  "$ref": "#/$defs/aisp.bench.checks.readme.types.CheckToleranceValue",
   "$defs": {
-    "aisp.bench.checks.readme.checks.CheckToleranceValue": {
+    "aisp.bench.checks.readme.types.CheckToleranceValue": {
       "oneOf": [
         {
           "type": "object",

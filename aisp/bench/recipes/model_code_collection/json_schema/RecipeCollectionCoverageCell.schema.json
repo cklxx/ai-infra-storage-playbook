@@ -2,13 +2,13 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCoverageCell.schema.json",
   "title": "RecipeCollectionCoverageCell",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageCell",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageCell": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageCell": {
       "type": "object",
       "properties": {
         "dimension": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension"
         },
         "bucket": {
           "type": "string"
@@ -24,7 +24,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCoverageDimension": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCoverageDimension": {
       "oneOf": [
         {
           "const": "architecture_family"

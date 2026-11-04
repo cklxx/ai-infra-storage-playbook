@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/CollectionFetchFailure.schema.json",
   "title": "CollectionFetchFailure",
-  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.collection.CollectionFetchFailure",
+  "$ref": "#/$defs/aisp.bench.checkpoint.model_code_collection.types.CollectionFetchFailure",
   "$defs": {
-    "aisp.bench.checkpoint.model_code_collection.collection.CollectionFetchFailure": {
+    "aisp.bench.checkpoint.model_code_collection.types.CollectionFetchFailure": {
       "oneOf": [
         {
           "const": "network"

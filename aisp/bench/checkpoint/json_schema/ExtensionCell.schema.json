@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/ExtensionCell.schema.json",
   "title": "ExtensionCell",
-  "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionCell",
+  "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionCell",
   "$defs": {
-    "aisp.bench.checkpoint.extension.extension.ExtensionCell": {
+    "aisp.bench.checkpoint.extension.types.ExtensionCell": {
       "type": "object",
       "properties": {
         "axes": {
@@ -39,7 +39,7 @@
         "empty": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionEmptyKind"
             },
             {
               "type": "null"
@@ -56,7 +56,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.checkpoint.extension.extension.ExtensionEmptyKind": {
+    "aisp.bench.checkpoint.extension.types.ExtensionEmptyKind": {
       "oneOf": [
         {
           "const": "should_exist"
@@ -65,7 +65,7 @@
           "type": "object",
           "properties": {
             "not_needed": {
-              "$ref": "#/$defs/aisp.bench.checkpoint.extension.extension.ExtensionExemption"
+              "$ref": "#/$defs/aisp.bench.checkpoint.extension.types.ExtensionExemption"
             }
           },
           "required": [
@@ -75,7 +75,7 @@
         }
       ]
     },
-    "aisp.bench.checkpoint.extension.extension.ExtensionExemption": {
+    "aisp.bench.checkpoint.extension.types.ExtensionExemption": {
       "type": "object",
       "properties": {
         "reason": {

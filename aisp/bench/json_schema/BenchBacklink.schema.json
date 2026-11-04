@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/json_schema/BenchBacklink.schema.json",
   "title": "BenchBacklink",
-  "$ref": "#/$defs/aisp.bench.readme.bench.BenchBacklink",
+  "$ref": "#/$defs/aisp.bench.readme.types.BenchBacklink",
   "$defs": {
-    "aisp.bench.readme.bench.BenchBacklink": {
+    "aisp.bench.readme.types.BenchBacklink": {
       "type": "object",
       "properties": {
         "uri": {

@@ -2,18 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/recipes/model_code_collection/json_schema/RecipeCollectionCorpusEntry.schema.json",
   "title": "RecipeCollectionCorpusEntry",
-  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCorpusEntry",
+  "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCorpusEntry",
   "$defs": {
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCorpusEntry": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCorpusEntry": {
       "type": "object",
       "properties": {
         "candidate": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidate"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCandidate"
         },
         "download": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDownload"
+              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDownload"
             },
             {
               "type": "null"
@@ -23,7 +23,7 @@
         "code_role": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeRole"
+              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeRole"
             },
             {
               "type": "null"
@@ -36,7 +36,7 @@
         "fingerprint": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFingerprint"
+              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFingerprint"
             },
             {
               "type": "null"
@@ -46,7 +46,7 @@
         "dedup": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupRecord"
+              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupRecord"
             },
             {
               "type": "null"
@@ -56,7 +56,7 @@
         "runnable": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableRecord"
+              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableRecord"
             },
             {
               "type": "null"
@@ -66,7 +66,7 @@
         "training": {
           "oneOf": [
             {
-              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingPairing"
+              "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingPairing"
             },
             {
               "type": "null"
@@ -86,7 +86,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCandidate": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCandidate": {
       "type": "object",
       "properties": {
         "model_id": {
@@ -117,13 +117,13 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDownload": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDownload": {
       "type": "object",
       "properties": {
         "files": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeFile"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeFile"
           }
         },
         "commit": {
@@ -132,7 +132,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailure"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailure"
           }
         }
       },
@@ -143,7 +143,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeFile": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeFile": {
       "type": "object",
       "properties": {
         "path": {
@@ -159,11 +159,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailure": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailure": {
       "type": "object",
       "properties": {
         "kind": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailureKind"
         },
         "detail": {
           "type": "string"
@@ -175,7 +175,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFetchFailureKind": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFetchFailureKind": {
       "oneOf": [
         {
           "const": "network"
@@ -191,7 +191,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionCodeRole": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionCodeRole": {
       "oneOf": [
         {
           "const": "inference"
@@ -207,7 +207,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionFingerprint": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionFingerprint": {
       "type": "object",
       "properties": {
         "config": {
@@ -229,14 +229,14 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupRecord": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupRecord": {
       "type": "object",
       "properties": {
         "group": {
           "type": "string"
         },
         "decision": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupDecision"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupDecision"
         },
         "dropped_by": {
           "oneOf": [
@@ -256,7 +256,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionDedupDecision": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionDedupDecision": {
       "oneOf": [
         {
           "const": "kept"
@@ -266,11 +266,11 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableRecord": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableRecord": {
       "type": "object",
       "properties": {
         "state": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableState"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableState"
         },
         "ranks": {
           "type": "integer"
@@ -281,7 +281,7 @@
         "failures": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableFailure"
+            "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableFailure"
           }
         }
       },
@@ -293,7 +293,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableState": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableState": {
       "oneOf": [
         {
           "const": "yes"
@@ -306,7 +306,7 @@
         }
       ]
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionRunnableFailure": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionRunnableFailure": {
       "type": "object",
       "properties": {
         "kind": {
@@ -326,11 +326,11 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingPairing": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingPairing": {
       "type": "object",
       "properties": {
         "status": {
-          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingStatus"
+          "$ref": "#/$defs/aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingStatus"
         },
         "ref": {
           "oneOf": [
@@ -349,7 +349,7 @@
       ],
       "additionalProperties": false
     },
-    "aisp.bench.recipes.model_code_collection.readme.recipe_collection.RecipeCollectionTrainingStatus": {
+    "aisp.bench.recipes.model_code_collection.readme.types.RecipeCollectionTrainingStatus": {
       "oneOf": [
         {
           "const": "paired"

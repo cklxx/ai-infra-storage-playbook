@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/StorageIoTerm.schema.json",
   "title": "StorageIoTerm",
-  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.glossary.StorageIoTerm",
+  "$ref": "#/$defs/aisp.bench.checkpoint.appendix_glossary.types.StorageIoTerm",
   "$defs": {
-    "aisp.bench.checkpoint.appendix_glossary.glossary.StorageIoTerm": {
+    "aisp.bench.checkpoint.appendix_glossary.types.StorageIoTerm": {
       "oneOf": [
         {
           "const": "shard"

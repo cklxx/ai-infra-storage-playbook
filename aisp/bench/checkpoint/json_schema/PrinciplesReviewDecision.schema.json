@@ -2,9 +2,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/PrinciplesReviewDecision.schema.json",
   "title": "PrinciplesReviewDecision",
-  "$ref": "#/$defs/aisp.bench.checkpoint.principles.principles.PrinciplesReviewDecision",
+  "$ref": "#/$defs/aisp.bench.checkpoint.principles.types.PrinciplesReviewDecision",
   "$defs": {
-    "aisp.bench.checkpoint.principles.principles.PrinciplesReviewDecision": {
+    "aisp.bench.checkpoint.principles.types.PrinciplesReviewDecision": {
       "oneOf": [
         {
           "const": "allowed"
