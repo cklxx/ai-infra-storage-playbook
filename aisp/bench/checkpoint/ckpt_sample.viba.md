@@ -113,6 +113,10 @@ ObservationConfig =
 
 ```
 
+## 基本操作
+
+只有一个操作：执行一次。把同一份 `RunSpec` 交给样本进程跑到结束，拿到四份产物；旁路与观测由调用方接入。
+
 ## apis.viba
 
 ```bash apis
