@@ -2,7 +2,7 @@
 
 ## public.viba
 
-先看 `Bench`，再看 `Execute`、`Judge`、`Compare` 三个操作；样本与运行直接用 `ckpt_sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
+先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Judge`、`Compare`、`FindGaps` 六个操作；样本与运行直接用 `ckpt_sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
 
 ```bash public
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
@@ -12,9 +12,12 @@ import aisp.bench.checkpoint.readme.apis as ckpt_bench_api
 Bench = ckpt_bench.Bench
 RunSpec = ckpt_sample.RunSpec
 RunRecord = ckpt_sample.RunRecord
+Collect = ckpt_bench_api.Collect
+PickSamples = ckpt_bench_api.PickSamples
 Execute = ckpt_bench_api.Execute
 Judge = ckpt_bench_api.Judge
 Compare = ckpt_bench_api.Compare
+FindGaps = ckpt_bench_api.FindGaps
 ```
 
 ## 背景
@@ -123,20 +126,3 @@ FindGaps =
   }
   <- $coverage (coverage_api.ComputeCoverage * { 算覆盖率：它交回的缺口清单已经按优先级排好；这里只把缺口转成 Gap 登记 })
 ```
-
-## flow.viba
-
-```bash flow
-import aisp.bench.checkpoint.readme.apis as api
-
-Duty =
-  Object
-  * $collect (api.Collect * { 收代码 })
-  * $pick (api.PickSamples * { 选样本 })
-  * $execute (api.Execute * { 跑一次 })
-  * $judge (api.Judge * { 判阈值 })
-  * $compare (api.Compare * { 比版本 })
-  * $find_gaps (api.FindGaps * { 补缺口 })
-```
-
-这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

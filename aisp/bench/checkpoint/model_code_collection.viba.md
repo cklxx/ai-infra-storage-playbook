@@ -1,30 +1,8 @@
 # 模型代码收集
 
-## public.viba
-
-只做转发：从 `## 问题` 的 `collection` 模块与 `## 接口` 的 `collection_api` 模块 import，对外发布八个名字：类型 `CollectionManifest`、`CollectionManifestEntry`、`CollectionCoverage`，操作 `Fetch`、`Dedup`、`ProbeRunnable`、`PairTrainingCode`、`UpdateCoverage`。先看 `CollectionManifest` 与 `CollectionManifestEntry` 的字段，再按调用顺序看 `Fetch`、`Dedup`、`ProbeRunnable`、`PairTrainingCode`、`UpdateCoverage` 各做什么。
-
-```bash public
-import aisp.bench.checkpoint.model_code_collection.types as collection
-import aisp.bench.checkpoint.model_code_collection.apis as collection_api
-
-CollectionManifest = collection.CollectionManifest
-CollectionManifestEntry = collection.CollectionManifestEntry
-CollectionCoverage = collection.CollectionCoverage
-Fetch = collection_api.Fetch
-Dedup = collection_api.Dedup
-ProbeRunnable = collection_api.ProbeRunnable
-PairTrainingCode = collection_api.PairTrainingCode
-UpdateCoverage = collection_api.UpdateCoverage
-```
-
-## 背景
-
-模型代码是另外两类评估集的原料：收集要足够多、足够多样，并且确认拿到的代码确实能跑。本篇定义怎么从 HuggingFace 等公开平台收集这些代码、怎么去重、怎么验证能跑、训练代码怎么配对，以及按什么口径验收；产出不是一份装满代码的目录，而是清单、可复现的下载与验证流程、覆盖度报告三样东西。代码本身与清单放在对象存储，本项目只放配方与 schema；清单字段见本篇的 `CollectionManifestEntry`，schema 见 [`schemas/model-manifest.schema.json`](../schemas/model-manifest.schema.json)。
-
 ## types.viba
 
-模型代码收集被形式化成一份清单：`CollectionManifest` 是清单本体，一个模型一条 `CollectionManifestEntry`。取值只能落在有限集合里的概念写成枚举：`CollectionSource` 是一个枚举，`hub_api` 与 `own_registry` 是它的取值，说明这个模型从哪类来源收进来；`CollectionFilter`、`CollectionLicenseState`、`CollectionCodeRole`、`CollectionDedupDecision`、`CollectionRunnableState`、`CollectionPairingKind` 同为枚举，分别表示筛选条件、许可证是否声明、代码角色、去重决定、可跑性结论与训练代码配对规则。抓取、去重、验证与配对各自的产出写成类型：`CollectionDownload` 由 `CollectionCodeFile` 组成，`CollectionFingerprint` 分成 `CollectionConfigFingerprint` 与 `CollectionCodeFingerprint` 两层，`CollectionDedupRecord`、`CollectionRunnableRecord`、`CollectionTrainingPairing` 依次承载去重、可跑性与训练代码配对的结论，并作为 `CollectionManifestEntry` 的字段。`CollectionCoverage` 用 `CollectionCoverageCell` 记覆盖矩阵的每个格子、用 `CollectionGap` 记缺口清单，`CollectionAcceptance` 汇总整批记录的验收指标。
+模型代码收集被形式化成一份清单：一个模型一条 `CollectionManifestEntry`。取值只能落在有限集合里的概念写成枚举：`CollectionSource` 是一个枚举，`hub_api` 与 `own_registry` 是它的取值，说明这个模型从哪类来源收进来；`CollectionFilter`、`CollectionLicenseState`、`CollectionCodeRole`、`CollectionDedupDecision`、`CollectionRunnableState`、`CollectionPairingKind` 同为枚举，分别表示筛选条件、许可证是否声明、代码角色、去重决定、可跑性结论与训练代码配对规则。抓取、去重、验证与配对各自的产出写成类型：`CollectionDownload` 由 `CollectionCodeFile` 组成，`CollectionFingerprint` 分成 `CollectionConfigFingerprint` 与 `CollectionCodeFingerprint` 两层，`CollectionDedupRecord`、`CollectionRunnableRecord`、`CollectionTrainingPairing` 依次承载去重、可跑性与训练代码配对的结论，并作为 `CollectionManifestEntry` 的字段。
 
 ```bash types
 import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
@@ -42,12 +20,6 @@ CollectionFilter =
   | "transformers_or_modeling_file" * { library_name 为 transformers，或仓库内有独立的 modeling_*.py }
   | "param_scale" * { 参数量从配置里推断，覆盖从 0.1B 到 1T 的多个量级 }
   | "one_revision_per_model" * { 同一 model id 的不同 revision 只保留一个，默认取 main 分支的最新 commit，并在清单里记下 commit }
-
-CollectionManifest =
-  Object
-  * $version (str * { 每次收集一个版本；照着配方能在新机器上重建这份清单 })
-  * $sha256 (str * { 这份清单的 sha256，随清单一起发布 })
-  * $entries (list[CollectionManifestEntry] * { 每个模型一条记录；去重后推理模型代码的目标是 1000 个以上 })
 
 CollectionManifestEntry =
   Object
@@ -260,59 +232,13 @@ CollectionTrainingPairing =
   Object
   * $kind (CollectionPairingKind * { 按哪条规则配上的；配对率是验收指标之一，不允许只统计配对成功的那部分 })
   * $target ((CollectionPairingTarget | nil) * { 配上的训练代码；unpaired 时给 nil })
-
-CollectionCoverage =
-  Object
-  * $cells (list[CollectionCoverageCell] * { 覆盖矩阵：按架构族、规模、框架版本统计的每一格 })
-  * $gaps (list[CollectionGap] * { 缺口清单：空白格子、code_role 为 unknown 的模型、没有配上训练代码的模型，都在这里 })
-
-CollectionCoverageCell =
-  Object
-  * $dimension (CollectionCoverageDimension * { 这一格按哪个维度分 })
-  * $bucket (str * { 这一格是哪个桶：架构族名、参数量的量级、或 transformers 主版本 })
-  * $count (int * { 这个桶里有几个模型 })
-
-CollectionCoverageDimension =
-  Oneof
-  | "architecture_family" * { 架构族：同一 architectures 且代码层关键调用序列一致 }
-  | "scale" * { 规模：参数量落在哪个量级分桶 }
-  | "framework_version" * { 框架版本：按 transformers 主版本分 }
-
-CollectionGap =
-  Object
-  * $kind (CollectionGapKind * { 缺的是哪一类 })
-  * $detail (str * { 具体缺什么 })
-
-CollectionGapKind =
-  Oneof
-  | "unknown_code_role" * { code_role 为 unknown 的模型；允许存在，但要计入覆盖率缺口 }
-  | "unpaired_training" * { 训练代码没配上的模型；写进缺口清单 }
-  | "empty_cell" * { 覆盖矩阵里的空白格子 }
-
-CollectionAcceptance =
-  Object
-  * $metrics (list[CollectionAcceptanceMetric] * { 验收的全部指标，一项一条 })
-  * $checker (str * { 所有指标的计算脚本：checks/check_coverage.py；输入是清单文件，输出是覆盖矩阵与缺口清单 })
-
-CollectionAcceptanceMetric =
-  Oneof
-  | "inference_code_count" * { 推理模型代码数量：去重后、可跑的独立模型数；初始目标 ≥ 1000 }
-  | "runnable_rate" * { 可跑率：runnable=yes 的占比；初始目标 ≥ 85% }
-  | "architecture_family_coverage" * { 架构族覆盖：有至少 3 个样本的架构族数；初始目标 ≥ 20 }
-  | "scale_coverage" * { 规模覆盖：参数量落在 6 个量级分桶，每桶 ≥ 10 个；初始目标全部满足 }
-  | "attention_variant_coverage" * { 注意力变体覆盖：MHA / GQA / MQA / MLA / 线性注意力 / 滑动窗口各 ≥ 5 个；初始目标全部满足 }
-  | "training_pairing_rate" * { 训练代码配对率：pretrain 或 both 的占比；初始目标 ≥ 40%，不允许只统计配对成功的那部分 }
-  | "dedup_ratio" * { 去重有效率：去重后数量 / 去重前数量，用于观察重复程度；只记录，不设目标 }
 ```
 
 ## 基本操作
 
-第一步抓取：按来源的优先级取 model id，用筛选条件过滤，只下载代码与配置并逐个文件记 sha256，同时记下许可证、参数量、代码角色与判定证据。
-
-1. 第二步去重：按结构指纹分架构族，组内算加权距离，决定每条记录是 kept 还是 dropped，重复的只留一个代表。
-2. 第三步跑一遍：在 mock 的分布式环境里，每个 rank 单独起进程、分时占用同一张 GPU，只跑一次前向或预填充，超时、OOM、断言失败、依赖缺失分开记。
-3. 第四步判定：按同组织、同 architectures、外链三条规则配对训练代码，都找不到的记为 unpaired。
-4. 第五步登记覆盖：按架构族、规模、框架版本统计覆盖矩阵，空白格子、unknown 与 unpaired 一起写进缺口清单。
+1. 抓取：按来源的优先级取 model id，用筛选条件过滤，只下载代码与配置并逐个文件记 sha256，同时记下许可证、参数量、代码角色与判定证据。
+2. 去重：按结构指纹分架构族，组内算加权距离，决定每条记录是 kept 还是 dropped，重复的只留一个代表。
+3. 跑一遍：在 mock 的分布式环境里，每个 rank 单独起进程、分时占用同一张 GPU，只跑一次前向或预填充，超时、OOM、断言失败、依赖缺失分开记。
 
 ## apis.viba
 
@@ -341,39 +267,4 @@ ProbeRunnable =
   <- {
     跑一遍：初始化真实的分布式环境但把后端换成 mock，每个 rank 单独起进程、分时占用同一张 GPU，每个 rank 只跑一次前向或一次预填充；每步设超时，失败按超时、OOM、断言失败、依赖缺失分开归类。返回这条记录的可跑性结论，结论里标明并发为 1
   }
-
-PairTrainingCode =
-     collection.CollectionTrainingPairing
-  <- $entry (collection.CollectionManifestEntry * { 要判定的那条记录；需要它的代码角色证据与配置里的 architectures })
-  <- {
-    判定：同组织下有同架构族的预训练实现，优先配对；architectures 相同的按组织与发布时间就近配对；README 或模型卡引用了别处的训练仓库，记为外链；都找不到时记为 unpaired。返回配对结论，unpaired 的写进缺口清单
-  }
-
-UpdateCoverage =
-     collection.CollectionCoverage
-  <- $entries (list[collection.CollectionManifestEntry] * { 已经去重、验证、配对过的全部清单记录 })
-  <- {
-    登记覆盖：按架构族、规模、框架版本统计覆盖矩阵，空白格子、code_role 为 unknown 的记录、没有配对训练代码的记录一起写进缺口清单。返回覆盖度报告
-  }
 ```
-
-## flow.viba
-
-```bash flow
-import aisp.bench.checkpoint.model_code_collection.types as collection
-import aisp.bench.checkpoint.model_code_collection.apis as collection_api
-
-CollectionFlow =
-  Object
-  * $fetch (collection_api.Fetch * { 第 1 步，抓取：按来源取 model id，按筛选条件过滤，只取代码与配置，逐个文件记 sha256；判定代码角色并留下证据。产出是清单记录，dedup、runnable、training 还是 nil })
-  * $dedup (collection_api.Dedup * { 第 2 步，去重：按结构指纹分架构族、组内算加权距离，产出带 dedup 的记录；kept 的进入下一步，dropped 的留在清单里但不跑 })
-  * $probe_runnable (collection_api.ProbeRunnable * { 第 3 步，跑一遍：给 kept 的记录在 mock 的分布式环境里跑一次前向或预填充，产出 runnable 结论，补进这条记录；这不是性能验证，并发固定为 1 })
-  * $pair_training_code (collection_api.PairTrainingCode * { 第 4 步，判定：按四条规则给每条记录配对训练代码，产出 training 结论，配不上的记为 unpaired 并进缺口清单 })
-  * $update_coverage (collection_api.UpdateCoverage * { 第 5 步，登记覆盖：汇总全部记录，统计覆盖矩阵与缺口清单，产出覆盖度报告 })
-  * $manifest (collection.CollectionManifest * { 清单：前四步的产出，每个模型一条记录，每次收集一个版本并带 sha256 })
-  * $coverage (collection.CollectionCoverage * { 覆盖度报告：第五步的产出，按架构族、规模、框架版本统计的矩阵与缺口清单 })
-  * $acceptance (collection.CollectionAcceptance * { 验收：按清单算这些指标，初始目标见 CollectionAcceptanceMetric 的取值说明 })
-  * { 五步按字段顺序走：前四步逐条处理清单记录，第五步汇总；清单是前四步的产出，覆盖度报告是第五步的产出，两者都放对象存储，验收指标从清单算出来 }
-```
-
-这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。

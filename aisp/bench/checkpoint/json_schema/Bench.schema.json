@@ -70,7 +70,7 @@
           "type": "string"
         },
         "config": {
-          "type": "string"
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.SampleConfigBase"
         },
         "storage": {
           "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.StorageLayer"
@@ -86,6 +86,86 @@
         "seed"
       ],
       "additionalProperties": false
+    },
+    "aisp.bench.checkpoint.ckpt_sample.types.SampleConfigBase": {
+      "type": "object",
+      "properties": {
+        "model": {
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Model"
+        },
+        "topology": {
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.Topology"
+        },
+        "observe": {
+          "$ref": "#/$defs/aisp.bench.checkpoint.ckpt_sample.types.ObservationConfig"
+        }
+      },
+      "required": [
+        "model",
+        "topology",
+        "observe"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.checkpoint.ckpt_sample.types.Topology": {
+      "type": "object",
+      "properties": {
+        "nodes": {
+          "type": "integer"
+        },
+        "gpus_per_node": {
+          "type": "integer"
+        },
+        "network": {
+          "type": "string"
+        },
+        "mount": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "nodes",
+        "gpus_per_node",
+        "network",
+        "mount"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.checkpoint.ckpt_sample.types.ObservationConfig": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "sample_rate": {
+          "type": "number"
+        },
+        "layers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/aisp.bench.checkpoint.observation.types.ObservationLayer"
+          }
+        }
+      },
+      "required": [
+        "enabled",
+        "sample_rate",
+        "layers"
+      ],
+      "additionalProperties": false
+    },
+    "aisp.bench.checkpoint.observation.types.ObservationLayer": {
+      "oneOf": [
+        {
+          "const": "app"
+        },
+        {
+          "const": "sys"
+        },
+        {
+          "const": "storage"
+        }
+      ]
     },
     "aisp.bench.checkpoint.ckpt_sample.types.StorageLayer": {
       "type": "object",

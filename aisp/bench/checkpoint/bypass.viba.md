@@ -1,14 +1,5 @@
 # 旁路手段与保真等级
 
-## public.viba
-
-```bash public
-import aisp.bench.checkpoint.bypass.types as bypass
-
-BypassMethod = bypass.BypassMethod
-FidelityLevel = bypass.FidelityLevel
-```
-
 ## types.viba
 
 ```bash types

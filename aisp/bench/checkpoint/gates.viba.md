@@ -1,14 +1,5 @@
 # 阶段门
 
-## public.viba
-
-```bash public
-import aisp.bench.checkpoint.gates.types as gates
-
-Gate = gates.Gate
-GateVerdict = gates.GateVerdict
-```
-
 ## types.viba
 
 ```bash types

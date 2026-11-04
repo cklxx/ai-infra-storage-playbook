@@ -2,19 +2,7 @@
 
 ## 背景
 
-一次运行测出来的指标叫 SLI，按阈值判定叫 SLO；这里定义这两类记录，样本接口与评估服务都用这一份。
-
-## public.viba
-
-先看 `CkptSli` 与 `CkptSlo` 两个枚举。
-
-```bash public
-import aisp.bench.checkpoint.performance.types as sli
-import aisp.bench.checkpoint.performance.slo as slo
-
-CkptSli = sli.CkptSli
-CkptSlo = slo.CkptSlo
-```
+一次运行测出来的指标叫 SLI，按阈值判定叫 SLO；这里定义这两类记录，样本接口用这一份。
 
 ## types.viba
 

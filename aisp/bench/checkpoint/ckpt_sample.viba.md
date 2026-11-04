@@ -2,82 +2,16 @@
 
 一份 RunSpec 进，一条 RunRecord 出。一次运行 = 一条样本 × 一个存储版本。
 
-## public.viba
-
-只做转发：从 ckpt_sample 与 ckpt_sample_api 里 import，再把要发布的名字重新绑定一次。具体定义在下面两节里。
-
-```bash public
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
-import aisp.bench.checkpoint.ckpt_sample.apis as ckpt_sample_api
-import aisp.bench.checkpoint.performance.types as sli
-import aisp.bench.checkpoint.performance.slo as slo
-
-Start = ckpt_sample_api.Start
-Stop = ckpt_sample_api.Stop
-Query = ckpt_sample_api.Query
-Execute = ckpt_sample_api.Execute
-GetLevel = ckpt_sample_api.GetLevel
-RunSpec = ckpt_sample.RunSpec
-RunRecord = ckpt_sample.RunRecord
-Artifacts = ckpt_sample.Artifacts
-CkptSli = sli.CkptSli
-CkptSlo = slo.CkptSlo
-SampleConfigBase = ckpt_sample.SampleConfigBase
-```
-
-## apis.viba
-
-```bash apis
-import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
-import aisp.bench.checkpoint.scaling.types as levels
-
-Start =
-     ckpt_sample.RunRecord
-  <- $spec (ckpt_sample.RunSpec * { 这次评估的运行请求 })
-  <- {
-    提交接口：请求交出去就返回，不等样本跑完。校验请求，按配置起一个样本进程，把运行标识与当前状态交回来；此时状态可能仍在排队或执行中，产物位置可能还缺
-  }
-
-Stop =
-     ckpt_sample.RunRecord
-  <- $run_id (str * { 要停的那次运行 })
-  <- {
-    取消接口：让服务停下这次运行，已经写完的产物保留。返回的记录状态为 cancelled；已经结束的运行原样交回，不报错
-  }
-
-Query =
-     ckpt_sample.RunRecord
-  <- $run_id (str * { 要查的那次运行 })
-  <- {
-    查一次运行：答当前状态、进度与产物位置。只读，不改变运行；完成与否只看状态，不看进度
-  }
-
-Execute =
-     ckpt_sample.Artifacts
-  <- $spec (ckpt_sample.RunSpec * { 同一份运行请求 })
-  <- {
-    执行接口：同一份请求同步跑到结束，返回时四份产物已经写完。它由 Start 在后台触发；Start 只拿到标识与状态，拿不到产物本身
-  }
-
-GetLevel =
-     levels.Level
-  <- $config (ckpt_sample.SampleConfigBase * { 样本配置 })
-  <- {
-    导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给
-  }
-```
-
 ## types.viba
 
 ```bash types
 import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
-
 import aisp.bench.checkpoint.observation.types as observation
 
 RunRecord =
   Object
-  * $run_id (str * { 服务分配的运行标识，查状态、取产物都用它 })
+  * $run_id (str * { 运行标识，查状态、取产物都用它 })
   * $state (State * { 这次运行现在在哪一步 })
   * $progress (WorkProgress * { 已完成的工作量占总量的多少，单位由配置定 })
   * $artifacts (Artifacts * { 产物的位置；没跑完时相应字段缺 })
@@ -85,7 +19,7 @@ RunRecord =
 RunSpec =
   Object
   * $sample (str * { 跑哪个样本程序，写 name@version })
-  * $config (str * { 样本 repo 里那份配置的名字；那份配置必须含 SampleConfigBase 的字段 })
+  * $config (SampleConfigBase * { 样本 repo 里那份配置；下方列出的字段必须写全 })
   * $storage (StorageLayer * { 这次要评的存储两层 })
   * $seed (int * { 随机种子，决定同一请求重跑的一致性 })
 
@@ -121,7 +55,7 @@ WorkProgress =
 
 Artifacts =
   Object
-  * $manifest (str * { 运行清单：输入、版本、拓扑、观测配置，服务写 })
+  * $manifest (str * { 运行清单：输入、版本、拓扑、观测配置，运行时写 })
   * $metrics (list[sli.CkptSli] * { 这次运行的 SLI：每项一条，没有阈值 })
   * $slo (list[slo.CkptSlo] * { 每个 SLI 指标的判定，阈值由部署方给 })
   * $report (str * { 人读报告的位置 })
@@ -130,16 +64,16 @@ Failure =
   Object
   * $kind (str * { 失败分类：environment、dependency、timeout、observation、assertion 等 })
   * $detail (str * { 具体说明 })
+Model =
+  Object
+  * $id (str * { 模型标识，例如 HuggingFace 的 repo id })
+  * $git_commit_id (str * { 代码 commit，钉死到具体一份代码 })
+
 SampleConfigBase =
   Object
   * $model (Model * { 被评估的模型 })
   * $topology (Topology * { 节点、卡、网络、挂载 })
   * $observe (ObservationConfig * { 观测设置 })
-
-Model =
-  Object
-  * $id (str * { 模型标识，例如 HuggingFace 的 repo id })
-  * $git_commit_id (str * { 代码 commit，钉死到具体一份代码 })
 
 Topology =
   Object
@@ -154,6 +88,20 @@ ObservationConfig =
   * $sample_rate (float * { 采样率，0 到 1 })
   * $layers (list[observation.ObservationLayer] * { 采集层；至少两层，其中必须含 sys })
 
+```
+
+## apis.viba
+
+```bash apis
+import aisp.bench.checkpoint.ckpt_sample.types as ckpt_sample
+import aisp.bench.checkpoint.scaling.types as levels
+
+GetLevel =
+     levels.Level
+  <- $config (ckpt_sample.SampleConfigBase * { 样本配置 })
+  <- {
+    导出属性：按节点数与每节点卡数落到 S0 到 S5 的哪一级，阈值由配方的 scaling 阶梯给
+  }
 ```
 
 ## json schema

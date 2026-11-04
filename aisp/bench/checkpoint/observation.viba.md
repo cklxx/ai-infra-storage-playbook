@@ -1,13 +1,5 @@
 # 采集层
 
-## public.viba
-
-```bash public
-import aisp.bench.checkpoint.observation.types as observation
-
-ObservationLayer = observation.ObservationLayer
-```
-
 ## types.viba
 
 ```bash types
