@@ -2,11 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyBypassPlan.schema.json",
   "title": "MethodologyBypassPlan",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.public.MethodologyBypassPlan",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyBypassPlan",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.public.MethodologyBypassPlan": {
-      "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyBypassPlan"
-    },
     "aisp.bench.checkpoint.measures.types.MethodologyBypassPlan": {
       "type": "object",
       "properties": {

@@ -2,11 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologySpec.schema.json",
   "title": "MethodologySpec",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.public.MethodologySpec",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologySpec",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.public.MethodologySpec": {
-      "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologySpec"
-    },
     "aisp.bench.checkpoint.measures.types.MethodologySpec": {
       "type": "object",
       "properties": {

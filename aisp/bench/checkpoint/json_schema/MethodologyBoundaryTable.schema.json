@@ -2,11 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyBoundaryTable.schema.json",
   "title": "MethodologyBoundaryTable",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.public.MethodologyBoundaryTable",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyBoundaryTable",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.public.MethodologyBoundaryTable": {
-      "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyBoundaryTable"
-    },
     "aisp.bench.checkpoint.measures.types.MethodologyBoundaryTable": {
       "type": "object",
       "properties": {

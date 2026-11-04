@@ -24,7 +24,7 @@ Extrapolate = scaling_api.Extrapolate
 
 ## scale_types.viba
 
-问题形式化为 `scaling` 模块：取值只能落在有限集合里的概念写成 Oneof 枚举，`ScalingDimension` 是放大维度，`ScalingInvariantExample` 是不变量示例，`ScalingExtrapolationRule` 是外推规则，`ScalingWriteMode` 是写入模式，`ScalingNonlinearSource` 是放大中非线性变化的来源，`ScalingOpenQuestion` 是尚无答案的开放问题。需要成组记录的概念写成 Object 类型：`ScalingRunPlan` 的 `$dimension` 取这次放大的一个 `ScalingDimension`、`$fixed` 是其余四个维度的 `ScalingFixedDimension` 列表，`ScalingFixedDimension` 记一个被固定的维度与固定成的值。不变量这条链上，`ScalingInvariantCandidate` 是候选度量项，判断通过的写成 `ScalingInvariant`，`ScalingInvariantSet` 的 `$invariants` 收最终选定的 `ScalingInvariant` 列表，`$variables`、`$references` 与 `$unmeasurable` 分别记变量、参考项与测不到的候选。`ScalingLevelRun` 记一级放大的结果，其 `$level` 取 `levels.Level`、`$dimension` 取 `ScalingDimension`；`ScalingExtrapolation` 记一次外推，其 `$from_level` 与 `$to_level` 取 `levels.Level`、`$rules` 是 `ScalingExtrapolationRule` 的列表、`$timing` 是 `ScalingTiming`、`$nonlinear_sources` 是 `ScalingNonlinearSource` 的列表，`ScalingTiming` 的 `$mode` 取 `ScalingWriteMode`；`ScalingLevelReport` 记每一级的报告，其 `$level` 取 `levels.Level`。
+问题形式化为 `scaling` 模块：取值只能落在有限集合里的概念写成 Oneof 枚举，`ScalingDimension` 是放大维度，`ScalingExtrapolationRule` 是外推规则，`ScalingWriteMode` 是写入模式，`ScalingNonlinearSource` 是放大中非线性变化的来源，`ScalingOpenQuestion` 是尚无答案的开放问题。需要成组记录的概念写成 Object 类型：`ScalingRunPlan` 的 `$dimension` 取这次放大的一个 `ScalingDimension`、`$fixed` 是其余四个维度的 `ScalingFixedDimension` 列表，`ScalingFixedDimension` 记一个被固定的维度与固定成的值。不变量这条链上，`ScalingInvariantCandidate` 是候选度量项，判断通过的写成 `ScalingInvariant`，`ScalingInvariantSet` 的 `$invariants` 收最终选定的 `ScalingInvariant` 列表，`$variables`、`$references` 与 `$unmeasurable` 分别记变量、参考项与测不到的候选。`ScalingLevelRun` 记一级放大的结果，其 `$level` 取 `levels.Level`、`$dimension` 取 `ScalingDimension`；`ScalingExtrapolation` 记一次外推，其 `$from_level` 与 `$to_level` 取 `levels.Level`、`$rules` 是 `ScalingExtrapolationRule` 的列表、`$timing` 是 `ScalingTiming`、`$nonlinear_sources` 是 `ScalingNonlinearSource` 的列表，`ScalingTiming` 的 `$mode` 取 `ScalingWriteMode`；`ScalingLevelReport` 记每一级的报告，其 `$level` 取 `levels.Level`。
 
 ```bash scale_types
 import aisp.bench.checkpoint.scaling.types as levels
@@ -49,7 +49,7 @@ ScalingRunPlan =
 
 ScalingInvariantCandidate =
   Object
-  * $metric (str * { 候选度量项的名字，从 methodology.viba.md 的度量项里挑出与本次评估目标相关的项 })
+  * $metric (str * { 候选度量项的名字，从 measures.viba.md 的度量项里挑出与本次评估目标相关的项 })
   * $definition (str * { 这个度量项怎么算，写清分子、分母或统计口径 })
   * $varies_with_dimension (bool * { 是否随目标维度变化；会变的量是变量，不是不变量 })
   * $measurable (bool * { 是否能被测量；测不到的不能当不变量 })
@@ -63,12 +63,6 @@ ScalingInvariant =
   * $computation (str * { 计算方式：从哪些原始数据、按什么公式算出来 })
   * $tolerance (str * { 容差：允许的波动范围，必须可计算 })
   * $verdict (str * { 判定规则：实测值在什么条件下判为保持，什么条件下判为失效 })
-
-ScalingInvariantExample =
-  Oneof
-  | "per_rank_request_size" * { checkpoint 评估集示例：每 rank 请求大小分布，即该 rank 单次 checkpoint 内所有写请求的字节数直方图；容差 L1 距离不超过 0.1；由分片策略决定，参数规模放大时每片大小按比例放大，直方图的相对分布稳定 }
-  | "bytes_per_parameter" * { checkpoint 评估集示例：每参数字节数，即一次 checkpoint 写入总字节除以参数量；容差相对误差不超过 2%；由精度、优化器状态与分片冗余决定，与规模无关 }
-  | "per_rank_write_concurrency" * { checkpoint 评估集示例：单 rank 写入并发度，即单 rank 同时在途的写请求数；容差中位数相对误差不超过 15%；由框架的写入并发配置决定 }
 
 ScalingInvariantSet =
   Object
@@ -168,7 +162,7 @@ Level =
 需要四个操作。
 
 1. 选维度：从模型规模、集群规模、并行策略、负载、存储后端里选一个放大，其余四个固定并记录，同时放大两个维度得到的结论无法归因。
-2. 定不变量：从 [`methodology.viba.md`](methodology.viba.md) 的度量项里挑候选，逐个判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差，最终留下 3 到 6 条。
+2. 定不变量：从 [`measures.viba.md`](measures.viba.md) 的度量项里挑候选，逐个判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差，最终留下 3 到 6 条。
 3. 逐级验证：按 S0 到 S5 的阶梯一级一级跑，至少四级，每级都要拿到完整度量、重新验证不变量并给偏差归因，不允许从最小规模直接跳到十万卡。
 4. 外推：先判断存储侧是否饱和，数据与元数据分开算，处理时序与重叠，也就是同步或异步写入的时间折算，再处理 P99、P999 尾延迟，给出下一级的预测值与预测依据。
 
@@ -190,7 +184,7 @@ ChooseDimension =
 PickInvariant =
      scaling.ScalingInvariantSet
   <- $dimension (scaling.ScalingDimension * { 目标维度；判断候选会不会随它变化 })
-  <- $candidates (list[scaling.ScalingInvariantCandidate] * { 候选度量项：从 methodology.viba.md 的度量项里挑出与本次评估目标相关的项，每项带定义、三个判断与容差 })
+  <- $candidates (list[scaling.ScalingInvariantCandidate] * { 候选度量项：从 measures.viba.md 的度量项里挑出与本次评估目标相关的项，每项带定义、三个判断与容差 })
   <- {
     定不变量：逐个候选判断会不会随目标维度变化、能不能被测量、变了是否意味着结论失效，再定可计算的容差；会变的是变量，变了不影响结论的只是参考项；最终留下 3 到 6 条不变量，每条写进配方的 metrics.yaml，包含名称、定义、计算方式、容差、判定规则；返回不变量集合，以及变量、参考项与测不到的候选
   }

@@ -20,7 +20,7 @@ UpdateCoverage = collection_api.UpdateCoverage
 
 ## 背景
 
-模型代码是另外两类评估集的原料：收集要足够多、足够多样，并且确认拿到的代码确实能跑。本篇定义怎么从 HuggingFace 等公开平台收集这些代码、怎么去重、怎么验证能跑、训练代码怎么配对，以及按什么口径验收；产出不是一份装满代码的目录，而是清单、可复现的下载与验证流程、覆盖度报告三样东西。代码本身与清单放在对象存储，本项目只放配方、schema 与一份最小样例 [`examples/tiny_model/`](../examples/tiny_model/)，清单字段见 [`recipes/model_code_collection/README.viba.md`](../recipes/model_code_collection/README.viba.md)，schema 见 [`schemas/model-manifest.schema.json`](../schemas/model-manifest.schema.json)。
+模型代码是另外两类评估集的原料：收集要足够多、足够多样，并且确认拿到的代码确实能跑。本篇定义怎么从 HuggingFace 等公开平台收集这些代码、怎么去重、怎么验证能跑、训练代码怎么配对，以及按什么口径验收；产出不是一份装满代码的目录，而是清单、可复现的下载与验证流程、覆盖度报告三样东西。代码本身与清单放在对象存储，本项目只放配方与 schema；清单字段见本篇的 `CollectionManifestEntry`，schema 见 [`schemas/model-manifest.schema.json`](../schemas/model-manifest.schema.json)。
 
 ## types.viba
 

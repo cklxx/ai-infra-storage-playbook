@@ -2,11 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://example.com/ai-infra-storage-playbook/aisp/bench/checkpoint/json_schema/MethodologyTolerance.schema.json",
   "title": "MethodologyTolerance",
-  "$ref": "#/$defs/aisp.bench.checkpoint.methodology.public.MethodologyTolerance",
+  "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyTolerance",
   "$defs": {
-    "aisp.bench.checkpoint.methodology.public.MethodologyTolerance": {
-      "$ref": "#/$defs/aisp.bench.checkpoint.measures.types.MethodologyTolerance"
-    },
     "aisp.bench.checkpoint.measures.types.MethodologyTolerance": {
       "type": "object",
       "properties": {
