@@ -87,4 +87,4 @@ Judge =
   }
 ```
 
-这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下，由 scripts/export_json_schema.py 生成。
+这些类型的 JSON Schema 在 [`json_schema/`](json_schema/) 下。

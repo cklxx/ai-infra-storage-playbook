@@ -107,5 +107,3 @@ GetLevel =
 ## json schema
 
 接口里的每个类型各有一份 JSON Schema，放在 [`json_schema/`](json_schema/) 下，文件名是类型名加 `.schema.json`。函数没有对应的 JSON 值，不生成文件。
-
-这些文件由 `scripts/export_json_schema.py` 从文档里的 viba 代码块生成，不要手改。
