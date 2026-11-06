@@ -18,6 +18,7 @@ WriteLatencyP99Metric = performance.WriteLatencyP99Metric
 CkptSlo = slo.CkptSlo
 CkptSloPolicy = slo.CkptSloPolicy
 Judge = performance_api.Judge
+JudgePolicy = performance_api.JudgePolicy
 ```
 
 ## types.viba
@@ -66,7 +67,7 @@ CkptSloPolicy =
 
 ## 基本操作
 
-只有一个操作：判定。把每项指标的取值填进对应的 `CkptSlo`，与部署方给的阈值比较：落在阈值内答通过，否则答失败；阈值缺失的指标不出现在结果里，读作不可比。只有通过运行校验的运行才进入这一步。
+两个操作。`Judge` 是原动作：`$policy` 仍是字符串，按部署方给的阈值表名字判。`JudgePolicy` 是新增动作：直接接 `CkptSloPolicy`，三项阈值逐项给。两者都只有通过运行校验的运行才进。
 
 ## apis.viba
 
@@ -75,6 +76,14 @@ import aisp.bench.checkpoint.performance.types as sli
 import aisp.bench.checkpoint.performance.slo as slo
 
 Judge =
+     list[slo.CkptSlo]
+  <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
+  <- $policy (str * { 部署方给的阈值；每个指标一个，缺哪个就判不了哪个 })
+  <- {
+    逐指标填进对应的 CkptSlo，与阈值比较：落在阈值内 passed 为 true，否则为 false；阈值缺失的指标不进返回列表，读作不可比
+  }
+
+JudgePolicy =
      list[slo.CkptSlo]
   <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
   <- $policy (slo.CkptSloPolicy * { 部署方给的阈值；某个指标没给阈值，这一项就不进返回列表，读作不可比 })

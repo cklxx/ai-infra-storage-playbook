@@ -6,7 +6,7 @@ bench 要回答一个问题：在一批真实的模型代码上，checkpoint 写
 
 ## public.viba
 
-先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Validate`、`Judge`、`Compare`、`FindGaps` 七个操作；样本与运行直接用 `sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
+先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Validate`、`JudgePolicy`、`Compare`、`CompareGroups`、`FindGaps` 八个操作。`Compare` 是原动作，比两条运行；`CompareGroups` 是新增动作，比两个重复组。`Judge` 也保留原签名，按阈值表名字判；本链用新增的 `JudgePolicy`。
 
 ```bash public
 import aisp.bench.checkpoint.sample.public as sample
@@ -25,7 +25,9 @@ PickSamples = ckpt_bench_api.PickSamples
 Execute = ckpt_bench_api.Execute
 Validate = ckpt_bench_api.Validate
 Judge = ckpt_bench_api.Judge
+JudgePolicy = ckpt_bench_api.JudgePolicy
 Compare = ckpt_bench_api.Compare
+CompareGroups = ckpt_bench_api.CompareGroups
 FindGaps = ckpt_bench_api.FindGaps
 ```
 
@@ -59,8 +61,16 @@ Gap =
 3. 跑一次：旁路计算，保留 checkpoint 写入与读取，跑完拿到一条 `RunRecord`。
 4. 校验：按协议逐条核对这次运行留下的证据；不合规或证据不足的运行不进判定与比较。
 5. 判阈值：用 `CkptSli` 的指标对照部署方给的阈值，得出通过、失败或不可比。
-6. 比版本：同一份负载换一个存储版本，逐指标取两边的中位数比差值，只允许存储两层里有一层不同；两边都要凑齐重复次数并通过校验。
-7. 补缺口：看哪些模型族、规模、负载还没有样本，登记成 `Gap`。
+6. 单次对比：`Compare` 比两条运行，逐指标比差值，只允许存储两层里有一层不同。
+7. 重复组对比：`CompareGroups` 比两个重复组，先按协议取中位数，再逐指标比差值。
+8. 补缺口：看哪些模型族、规模、负载还没有样本，登记成 `Gap`。
+
+## 新增与变更
+
+- 新增操作：`Validate`（按协议校验一次运行）、`CompareGroups`（比两个重复组）、`JudgePolicy`（接结构化阈值判定）。
+- 保留原动作：`Judge`（按阈值表名字判）、`Compare`（比两条运行），签名不变。
+- 新增字段：`Bench.$protocol`、`Artifacts.$trace`、`RunSpec.$warmup_steps` / `$timeout_s` / `$parallel` / `$protocol_version`、`RunRecord.$protocol_version`。
+- 变更类型：`CkptSli` 由六项减为三项（删 `training_stall`、`write_throughput`、`metadata_commit`），`CkptSlo` 随之只留三项；`MetricLE` 增 `$passed`。这不是新增动作，是 SLI 收敛带来的类型变更。
 
 ## apis.viba
 
@@ -120,13 +130,31 @@ Validate =
 Judge =
      list[sli.CkptSlo]
   <- $sli (list[sli.CkptSli] * { 这次测得的指标；只判通过校验的运行 })
-  <- $policy (sli.CkptSloPolicy * { 部署方给的阈值 })
+  <- $policy (str * { 部署方给的阈值表名字；按名字查三项阈值 })
   <- {
     逐指标对照阈值，给出通过 / 失败 / 不可比
   }
-  <- $judge (sli.Judge * { 把 Artifacts.metrics 交给它，它逐项配阈值判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
+  <- $judge (sli.Judge * { 把指标与阈值表名字交给它，它逐项判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
+
+JudgePolicy =
+     list[sli.CkptSlo]
+  <- $sli (list[sli.CkptSli] * { 这次测得的指标；只判通过校验的运行 })
+  <- $policy (sli.CkptSloPolicy * { 部署方给的阈值；没给的项不进返回列表，读作不可比 })
+  <- {
+    逐指标对照阈值，给出通过 / 失败 / 不可比
+  }
+  <- $judge (sli.JudgePolicy * { 把指标与结构化阈值交给它，它逐项判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
 
 Compare =
+     str
+  <- $a (sample.RunRecord * { 旧存储版本的运行；已通过 Validate })
+  <- $b (sample.RunRecord * { 新存储版本的运行；已通过 Validate })
+  <- {
+    同一份负载，逐指标比差值，只允许存储两层里有一层不同；两次运行都要通过校验，返回比较结果的位置
+  }
+  <- $compare (measures_api.CompareTolerance * { 两个版本同名的每项指标各调它一次，它按这一项的统计量判定两个值是否落在容差内；有一项超差，两个版本就不可比 })
+
+CompareGroups =
      str
   <- $a (list[sample.RunRecord] * { 旧存储版本的重复组；至少 repeat 条，全部已通过 Validate })
   <- $b (list[sample.RunRecord] * { 新存储版本的重复组；至少 repeat 条，全部已通过 Validate })
