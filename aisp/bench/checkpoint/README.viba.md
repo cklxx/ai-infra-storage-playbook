@@ -46,7 +46,7 @@ Bench =
   * $protocol (protocol.RunProtocol * { 这次评测所有运行共用的协议 })
   * $storages (list[sample.StorageLayer] * { 被评的存储两层 })
   * $runs (list[sample.RunRecord] * { 执行得到的运行记录 })
-  * $validated_runs (list[sample.RunRecord] * { 通过 Validate 的运行 })
+  * $validated_runs (list[sample.RunRecord] * { 由 $runs 经 Validate 筛出的子集 })
   * $gaps (list[Gap] * { 没覆盖到、需要补的地方 })
 
 Gap =
@@ -161,7 +161,7 @@ CompareGroups =
   <- $a (list[sample.RunRecord] * { 旧存储版本的重复组；来自 Bench.validated_runs，至少 repeat 条 })
   <- $b (list[sample.RunRecord] * { 新存储版本的重复组；来自 Bench.validated_runs，至少 repeat 条 })
   <- {
-    同一份负载，逐指标取两边的中位数再比差值，只允许存储两层里有一层不同；两边都要凑齐重复次数并通过校验，返回比较结果的位置
+    同一份负载，逐指标取两边的中位数再比差值，只允许存储两层里有一层不同；返回比较结果的位置
   }
   <- $compare (measures_api.CompareTolerance * { 两个版本同名的每项指标各调它一次，它按这一项的统计量判定两个值是否落在容差内；有一项超差，两个版本就不可比 })
 
