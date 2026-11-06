@@ -2,7 +2,7 @@
 
 ## 需求背景
 
-同一个 checkpoint，换一种跑法就得到另一组数。两次运行要能比，前提是都按同一份协议执行：前置条件一致、步骤固定、计时点固定、证据留全。运行、校验与判定都按这一份走，所以 `RunProtocol`、`ProtocolRule`、`ProtocolEvidence` 与定协议的操作从这里发布。
+同一个 checkpoint，换一种跑法就得到另一组数。两次运行要能比，前提是都按同一份协议执行：前置条件一致、步骤固定、计时点固定、证据留全。运行、校验与判定都按这一份走，所以 `RunProtocol`、`ProtocolRule` 与定协议的操作从这里发布；证据与判定归 Validator，不在这里定义。
 
 ## public.viba
 
@@ -12,7 +12,6 @@ import aisp.bench.checkpoint.protocol.apis as protocol_api
 
 RunProtocol = protocol.RunProtocol
 ProtocolRule = protocol.ProtocolRule
-ProtocolEvidence = protocol.ProtocolEvidence
 Adopt = protocol_api.Adopt
 ```
 
@@ -32,15 +31,7 @@ ProtocolRule =
   | "all_ranks_committed" * { 每个 rank 都写完自己的分片并收到提交确认；缺一个 rank 这次运行就不完整。证据：rank 级完成记录 }
   | "isolated_window" * { 测量窗口内这套存储没有别的负载共用。证据：集群作业记录或存储侧基线 }
   | "within_timeout" * { 单次运行没有超过协议给的超时；超时的运行不产生结论。证据：trace 的首条与末条时间戳 }
-  | "protocol_version_match" * { 运行记录的协议版本与当前协议一致；版本不同，历史结果不参与比较。证据：RunRecord.protocol_version }
   | "artifacts_complete" * { manifest、trace、三项 SLI 与人读报告齐全；slo 由判定填，不在校验时要求。证据：Artifacts 的 manifest、trace、metrics、report }
-
-ProtocolEvidence =
-  Object
-  * $rule (ProtocolRule * { 对应哪条规则 })
-  * $ok (bool * { 这条规则是否满足 })
-  * $where (str * { 证据在哪：清单字段、trace 文件、计数器或日志的位置 })
-  * $detail (str * { 观察到什么；不满足时写清差在哪 })
 
 RunProtocol =
   Object
@@ -56,7 +47,7 @@ RunProtocol =
 
 只有一个操作：定协议。按评测目标列出规则、重复次数、预热步数、字节容差与超时，形成一个带版本号的 `RunProtocol`；规则缺一条，协议就不完整，这次评测的结果不进结论。
 
-首版协议固定为：`version` 取 `ckpt-bench-v1`，`rules` 取上面十一条，`repeat` 取 3，`byte_tolerance` 取 0.01；`warmup_steps` 按模型规模与并行配置定，`timeout_s` 按同类运行实测时长的两倍定。改规则或改其中任一数值都要换 `version`，旧版本的结果不参与新版本的比较。
+首版协议固定为：`version` 取 `ckpt-bench-v1`，`rules` 取上面十条，`repeat` 取 3，`byte_tolerance` 取 0.01；`warmup_steps` 按模型规模与并行配置定，`timeout_s` 按同类运行实测时长的两倍定。改规则或改其中任一数值都要换 `version`，旧版本的结果不参与新版本的比较。
 
 ## apis.viba
 
