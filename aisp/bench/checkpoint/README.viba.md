@@ -2,41 +2,51 @@
 
 ## 需求背景
 
-bench 要回答一个问题：在一批真实的模型代码上，checkpoint 写入与读取对存储提出什么要求。回答它需要一条完整的链：收代码、挑样本、跑一次、判阈值、比版本、补缺口。这条链上的名字都从这里发布，别的文档只从这里取。
+bench 要回答一个问题：在一批真实的模型代码上，checkpoint 写入与读取对存储提出什么要求。回答它需要一条完整的链：收代码、挑样本、跑一次、校验、判阈值、比版本、补缺口。这条链上的名字都从这里发布，别的文档只从这里取。
 
 ## public.viba
 
-先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Judge`、`Compare`、`FindGaps` 六个操作；样本与运行直接用 `sample` 的 `RunSpec` 与 `RunRecord`，这里不另立一份。
+先看 `Bench`，再看 `Collect`、`PickSamples`、`Execute`、`Validate`、`JudgePolicy`、`Compare`、`CompareGroups`、`FindGaps` 八个操作。`Compare` 是原动作，比两条运行；`CompareGroups` 是新增动作，比两个重复组。`Judge` 也保留原签名，按阈值表名字判；本链用新增的 `JudgePolicy`。
 
 ```bash public
 import aisp.bench.checkpoint.sample.public as sample
+import aisp.bench.checkpoint.protocol.public as protocol
+import aisp.bench.checkpoint.validator.public as validator
 import aisp.bench.checkpoint.readme.types as ckpt_bench
 import aisp.bench.checkpoint.readme.apis as ckpt_bench_api
 
 Bench = ckpt_bench.Bench
 RunSpec = sample.RunSpec
 RunRecord = sample.RunRecord
+RunProtocol = protocol.RunProtocol
+ValidationVerdict = validator.ValidationVerdict
 Collect = ckpt_bench_api.Collect
 PickSamples = ckpt_bench_api.PickSamples
 Execute = ckpt_bench_api.Execute
+Validate = ckpt_bench_api.Validate
 Judge = ckpt_bench_api.Judge
+JudgePolicy = ckpt_bench_api.JudgePolicy
 Compare = ckpt_bench_api.Compare
+CompareGroups = ckpt_bench_api.CompareGroups
 FindGaps = ckpt_bench_api.FindGaps
 ```
 
 ## types.viba
 
-bench 由一个语料、一批样本、几套存储与它们跑出来的运行组成；一条样本是一条 `RunSpec`，一次运行是一条 `RunRecord`。这里只定义 bench 自己的东西：整体 `Bench` 与缺口 `Gap`。
+bench 由一个语料、一批样本、一份协议、几套存储与它们跑出来的运行组成；一条样本是一条 `RunSpec`，一次运行是一条 `RunRecord`。这里只定义 bench 自己的东西：整体 `Bench` 与缺口 `Gap`。
 
 ```bash types
 import aisp.bench.checkpoint.sample.public as sample
+import aisp.bench.checkpoint.protocol.public as protocol
 
 Bench =
   Object
-  * $corpus (list[sample.Model] * { 真实模型代码，从平台上收，按 id + commit 钉死 })
-  * $samples (list[sample.RunSpec] * { 从语料里挑出的用例：模型代码 + 并行配置 + 负载 })
+  * $corpus (list[sample.Model] * { 真实模型代码，按 id + commit 钉死 })
+  * $samples (list[sample.RunSpec] * { 从语料里挑出的用例 })
+  * $protocol (protocol.RunProtocol * { 这次评测所有运行共用的协议 })
   * $storages (list[sample.StorageLayer] * { 被评的存储两层 })
-  * $runs (list[sample.RunRecord] * { 每条样本在每个存储版本上跑一次 })
+  * $runs (list[sample.RunRecord] * { 执行得到的运行记录 })
+  * $validated_runs (list[sample.RunRecord] * { 由 $runs 经 Validate 筛出的子集 })
   * $gaps (list[Gap] * { 没覆盖到、需要补的地方 })
 
 Gap =
@@ -49,16 +59,29 @@ Gap =
 
 1. 收代码：从平台抓模型代码，按结构去重，跑一遍确认能跑。
 2. 选样本：按要覆盖的格子挑模型，配好并行与负载，形成 `RunSpec`。
-3. 跑一次：旁路计算，保留 checkpoint 写入与读取，跑完拿到一条 `RunRecord`。
-4. 判阈值：用 `CkptSli` 的指标对照部署方给的阈值，得出通过、失败或不可比。
-5. 比版本：同一份负载换一个存储版本，逐指标比差值，只允许存储两层里有一层不同。
-6. 补缺口：看哪些模型族、规模、负载还没有样本，登记成 `Gap`。
+3. 跑一次：旁路计算，保留 checkpoint 写入与读取，跑完拿到一条 `RunRecord`；同一配置按协议 `repeat` 次。
+4. 校验：按协议逐条核对这次运行留下的证据；不合规或证据不足的运行不进判定与比较。
+5. 判阈值：用 `CkptSli` 的指标对照部署方给的阈值，得出通过、失败或不可比。
+6. 单次对比：`Compare` 比两条运行，逐指标比差值，只允许存储两层里有一层不同。
+7. 重复组对比：`CompareGroups` 比两个重复组，先按协议取中位数，再逐指标比差值。
+8. 补缺口：看哪些模型族、规模、负载还没有样本，登记成 `Gap`。
+
+## 新增与变更
+
+- 新增操作：`Validate`（按协议校验一次运行）、`CompareGroups`（比两个重复组）、`JudgePolicy`（接结构化阈值判定）。
+- 保留原动作：`Judge`（按阈值表名字判）、`Compare`（比两条运行），签名不变。
+- 新增字段：`Bench.$protocol`、`Bench.$validated_runs`、`Artifacts.$trace`、`RunSpec.$warmup_steps` / `$timeout_s` / `$parallel` / `$protocol_version`、`RunRecord.$protocol_version`。
+- 字段拆分：`Bench.$runs` 只存执行得到的运行记录，`Bench.$validated_runs` 单独存通过校验的子集；`$samples`、`$protocol` 的说明各只讲一件事。
+- 变更类型：`CkptSli` 由六项减为三项（删 `training_stall`、`write_throughput`、`metadata_commit`），`CkptSlo` 随之只留三项；`MetricLE` 增 `$passed`。这不是新增动作，是 SLI 收敛带来的类型变更。
 
 ## apis.viba
 
 ```bash apis
 import aisp.bench.checkpoint.sample.public as sample
 import aisp.bench.checkpoint.performance.public as sli
+import aisp.bench.checkpoint.protocol.public as protocol
+import aisp.bench.checkpoint.validator.public as validator
+import aisp.bench.checkpoint.validator.apis as validator_api
 import aisp.bench.checkpoint.readme.types as ckpt_bench
 import aisp.bench.checkpoint.ckpt_bypass_plan.public as ckpt_bypass_plan_api
 import aisp.bench.checkpoint.measures.public as measures_api
@@ -90,28 +113,55 @@ Execute =
      sample.RunRecord
   <- $spec (sample.RunSpec * { 一条用例 })
   <- {
-    旁路计算，保留 checkpoint 写入与读取，跑一次，记 IO 与 SLI
+    旁路计算，保留 checkpoint 写入与读取，跑一次，记 IO；SLI 由 Measure 从 trace 折算
   }
   <- $prepare (ckpt_bypass_plan_api.PrepareBypass * { 它交回的五步做法与四条约束决定这次怎么旁路：模型在 meta device 上建，反向与 optimizer 换占位，checkpoint 写入原样保留 })
   <- $collect (observation_api.Collect * { 开跑前先让它开观测，trace 才有来源；它交回实际开的层，少于两层这次运行就不算数 })
-  <- $measure (sample.Measure * { 跑完把这条记录交给它，它把 trace 折算成六项 SLI，填进 Artifacts.metrics })
-  <- $run (sample.Execute * { 请求交给它同步跑到结束；它交回的四份产物就是这条运行记录的产物 })
+  <- $measure (sample.Measure * { 跑完把这条记录交给它，它把 trace 折算成三项 SLI，填进 Artifacts.metrics })
+  <- $run (sample.Execute * { 请求交给它同步跑到结束；它交回的五份产物就是这条运行记录的产物 })
+
+Validate =
+     validator.ValidationVerdict
+  <- $run (sample.RunRecord * { 一次已经跑完的运行 })
+  <- $protocol (protocol.RunProtocol * { 这次评测共用的协议，来自 Bench })
+  <- {
+    逐条核对协议规则：全部满足答合规；有规则不满足答不合规；有规则缺证据答证据不足。不合规或证据不足的运行不进入判定与比较
+  }
+  <- $check (validator_api.Validate * { 协议与运行一起交给它，它先核协议版本是否一致，再逐条核对运行留下的证据，交回判定与证据 })
 
 Judge =
      list[sli.CkptSlo]
-  <- $sli (list[sli.CkptSli] * { 这次测得的指标 })
-  <- $policy (str * { 部署方给的阈值 })
+  <- $sli (list[sli.CkptSli] * { 这次测得的指标；来源是 Bench.validated_runs 的运行 })
+  <- $policy (str * { 部署方给的阈值表名字；按名字查三项阈值 })
   <- {
     逐指标对照阈值，给出通过 / 失败 / 不可比
   }
-  <- $judge (sli.Judge * { 把 Artifacts.metrics 交给它，它逐项配阈值判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
+  <- $judge (sli.Judge * { 把指标与阈值表名字交给它，它逐项判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
+
+JudgePolicy =
+     list[sli.CkptSlo]
+  <- $sli (list[sli.CkptSli] * { 这次测得的指标；来源是 Bench.validated_runs 的运行 })
+  <- $policy (sli.CkptSloPolicy * { 部署方给的阈值；没给的项不进返回列表，读作不可比 })
+  <- {
+    逐指标对照阈值，给出通过 / 失败 / 不可比
+  }
+  <- $judge (sli.JudgePolicy * { 把指标与结构化阈值交给它，它逐项判出 CkptSlo，成为 Artifacts.slo；这一步只决定用哪份阈值 })
 
 Compare =
      str
-  <- $a (sample.RunRecord * { 旧存储版本的运行 })
-  <- $b (sample.RunRecord * { 新存储版本的运行 })
+  <- $a (sample.RunRecord * { 旧存储版本的运行；来自 Bench.validated_runs })
+  <- $b (sample.RunRecord * { 新存储版本的运行；来自 Bench.validated_runs })
   <- {
     同一份负载，逐指标比差值，只允许存储两层里有一层不同；返回比较结果的位置
+  }
+  <- $compare (measures_api.CompareTolerance * { 两个版本同名的每项指标各调它一次，它按这一项的统计量判定两个值是否落在容差内；有一项超差，两个版本就不可比 })
+
+CompareGroups =
+     str
+  <- $a (list[sample.RunRecord] * { 旧存储版本的重复组；来自 Bench.validated_runs，至少 repeat 条 })
+  <- $b (list[sample.RunRecord] * { 新存储版本的重复组；来自 Bench.validated_runs，至少 repeat 条 })
+  <- {
+    同一份负载，逐指标取两边的中位数再比差值，只允许存储两层里有一层不同；返回比较结果的位置
   }
   <- $compare (measures_api.CompareTolerance * { 两个版本同名的每项指标各调它一次，它按这一项的统计量判定两个值是否落在容差内；有一项超差，两个版本就不可比 })
 
