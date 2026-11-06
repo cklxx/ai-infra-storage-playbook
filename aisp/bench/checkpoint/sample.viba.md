@@ -2,7 +2,7 @@
 
 ## 需求背景
 
-一条样本要能被描述、被执行、被记录：`RunSpec` 说明它跑什么程序、用哪份配置、评哪两层存储、用什么种子，`RunRecord` 记下它跑到哪一步、产物在哪里；执行与测量两个操作把样本跑起来并填好这条记录。这些名字是所有下游文档共用的词汇，所以从这里发布成 public。
+一条样本要能被描述、被执行、被记录：`RunSpec` 说明它跑什么程序、用哪份配置、评哪两层存储、用什么种子、预热多少步、超时多久，`RunRecord` 记下它跑到哪一步、产物在哪里；执行与测量两个操作把样本跑起来并填好这条记录。这些名字是所有下游文档共用的词汇，所以从这里发布成 public。
 
 ## public.viba
 
@@ -36,6 +36,7 @@ import aisp.bench.checkpoint.observation.public as observation
 RunRecord =
   Object
   * $run_id (str * { 运行标识，查状态、取产物都用它 })
+  * $protocol_version (str * { 这次运行实际执行的协议版本；与当前协议不同就不参与比较 })
   * $state (State * { 这次运行现在在哪一步 })
   * $progress (WorkProgress * { 已完成的工作量占总量的多少，单位由配置定 })
   * $artifacts (Artifacts * { 产物的位置；没跑完时相应字段缺 })
@@ -46,6 +47,9 @@ RunSpec =
   * $config (SampleConfigBase * { 样本 repo 里那份配置；下方列出的字段必须写全 })
   * $storage (StorageLayer * { 这次要评的存储两层 })
   * $seed (int * { 随机种子，决定同一请求重跑的一致性 })
+  * $warmup_steps (int * { 测量前跑多少步预热；与协议一致 })
+  * $timeout_s (float * { 本次运行超时，秒；与协议一致 })
+  * $protocol_version (str * { 这次运行按哪一版协议执行；由 Bench 的协议填入 })
 
 StorageLayer =
   Object
@@ -80,8 +84,9 @@ WorkProgress =
 Artifacts =
   Object
   * $manifest (str * { 运行清单：输入、版本、拓扑、观测配置，运行时写 })
+  * $trace (str * { 原始观测 trace 的目录；Measure 从这里读数，校验时核这里是否齐全 })
   * $metrics (list[sli.CkptSli] * { 这次运行的 SLI：每项一条，没有阈值 })
-  * $slo (list[sli.CkptSlo] * { 每个 SLI 指标的判定，阈值由部署方给 })
+  * $slo (list[sli.CkptSlo] * { 阈值已给的指标的判定；没给阈值的项不出现 })
   * $report (str * { 人读报告的位置 })
 
 Failure =
@@ -105,6 +110,7 @@ Topology =
   * $gpus_per_node (int * { 每节点卡数 })
   * $network (str * { 网络类型：rdma、tcp、none })
   * $mount (str * { 存储挂载方式：local-nvme、nfs、fuse })
+  * $parallel (str * { 并行切分：dp、tp、pp、ep 各自的度数，写成 dp8-tp2-pp1-ep1 })
 
 ObservationConfig =
   Object
@@ -118,8 +124,8 @@ ObservationConfig =
 
 两个操作。
 
-1. 执行一次：把同一份 `RunSpec` 交给样本进程跑到结束，拿到四份产物；旁路与观测由调用方接入。
-2. 测量一次：一次运行跑完，从它记下的观测里算出六个指标，每项一条 `CkptSli`，填进 `Artifacts.metrics`。
+1. 执行一次：把同一份 `RunSpec` 交给样本进程跑到结束，拿到五份产物；旁路与观测由调用方接入。
+2. 测量一次：一次运行跑完，从 `Artifacts.trace` 里算出三项指标，每项一条 `CkptSli`，填进 `Artifacts.metrics`。
 
 ## apis.viba
 
@@ -131,13 +137,13 @@ Execute =
      sample.Artifacts
   <- $spec (sample.RunSpec * { 同一份运行请求 })
   <- {
-    执行接口：同一份请求同步跑到结束，返回时四份产物已经写完；旁路与观测由调用方接入
+    执行接口：同一份请求同步跑到结束，返回时五份产物已经写完；旁路与观测由调用方接入
   }
 
 Measure =
      list[sli.CkptSli]
   <- $run (sample.RunRecord * { 一次已经跑完、观测已开的运行 })
   <- {
-    测量接口：从这次运行记下的观测里算出六个指标，填进 Artifacts.metrics；返回每项一条，没有阈值
+    测量接口：从 Artifacts.trace 里算出三项指标，填进 Artifacts.metrics；返回每项一条，没有阈值
   }
 ```
